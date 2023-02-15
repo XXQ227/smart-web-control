@@ -1,5 +1,7 @@
-﻿import childrenRoutes from './children-routes'
+﻿// TODO: 微前端 - 路由配置
+import routesChild from './routes-child';
 
+// TODO: 导出路由信息
 export default [
     {
         layout: false,
@@ -97,33 +99,7 @@ export default [
             },
         ],
     },
-    // TODO: Cargo 系统
-    // {
-    //     name: 'cargo',
-    //     icon: 'icon-cargo-ship',
-    //     path: '/cargo',
-    //     routes: [
-    //         {
-    //             path: '/cargo',
-    //             redirect: '/cargo/job-list',
-    //         },
-    //         {
-    //             name: 'ticket-list',
-    //             icon: 'icon-ticket',
-    //             path: '/cargo/job-list',
-    //             component: './sys-cargo/job-list',
-    //         },
-    //         {
-    //             name: 'ticket',
-    //             icon: 'icon-cargo-ship',
-    //             path: '/cargo/job',
-    //             component: './sys-cargo/job',
-    //             hideInMenu: true,   // 隐藏不显示
-    //         },
-    //     ],
-    // },
-    // TODO: Cargo 子系统
-    childrenRoutes.cargo_route,
+    routesChild.cargo_route,
     // TODO: Manager 系统
     {
         name: 'manager',

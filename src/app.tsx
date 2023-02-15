@@ -9,8 +9,6 @@ import {history,} from 'umi';
 import defaultSettings from '../config/defaultSettings';
 import {getUserID, getUserInfo} from "@/utils/auths";
 import qiankunApp from '../config/qiankunApp'
-// import entryUrl from '../config/entryUrl';
-// const { NODE_ENV } = process.env;
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -110,7 +108,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
                             enableDarkTheme
                             settings={initialState?.settings}
                             onSettingChange={(settings) => {
-                                setInitialState((preInitialState) => ({
+                                setInitialState((preInitialState: any) => ({
                                     ...preInitialState,
                                     settings,
                                 }));
