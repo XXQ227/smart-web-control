@@ -109,14 +109,32 @@
                 name: 'ticket-list',
                 icon: 'icon-ticket',
                 path: '/cargo/job-list',
-                component: './sys-cargo/ticket-list',
+                component: './sys-cargo/job-list',
             },
             {
                 name: 'ticket',
                 icon: 'icon-cargo-ship',
                 path: '/cargo/job',
-                component: './sys-cargo/ticket',
+                component: './sys-cargo/job',
                 hideInMenu: true,   // 隐藏不显示
+            },
+        ],
+    },
+    // TODO: Manager 系统
+    {
+        name: 'manager',
+        icon: 'icon-cargo-ship',
+        path: '/manager',
+        routes: [
+            {
+                path: '/manager',
+                redirect: '/sys-manager',
+            },
+            {
+                name: 'ticket-list',
+                icon: 'icon-ticket',
+                path: '/manager',
+                component: './sys-manager',
             },
         ],
     },
