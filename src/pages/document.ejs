@@ -37,7 +37,8 @@
         in your browser to use Ant Design, Out-of-the-box mid-stage front/design solution!
       </div>
     </noscript>
-    <div id="root">
+    <!--修改document.ejs文件,可以解决页面一直加载问题-->
+    <div id="<%= context.config.mountElementId %>">
       <style>
         html,
         body,
@@ -46,6 +47,7 @@
           margin: 0;
           padding: 0;
         }
+
         #root {
           background-repeat: no-repeat;
           background-size: 100% auto;
@@ -204,7 +206,7 @@
         }
       </style>
       <div
-        style="
+              style="
           display: flex;
           flex-direction: column;
           align-items: center;
@@ -213,21 +215,23 @@
           min-height: 420px;
         "
       >
-        <img src="<%= context.config.publicPath +'pro_icon.svg'%>" alt="logo" width="256" />
+        <img src="<%= context.config.publicPath + 'logo.png' %>" alt="logo" width="256"/>
         <div class="page-loading-warp">
           <div class="ant-spin ant-spin-lg ant-spin-spinning">
             <span class="ant-spin-dot ant-spin-dot-spin"
+            ><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i
               ><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i
-              ><i class="ant-spin-dot-item"></i><i class="ant-spin-dot-item"></i
-            ></span>
+              ></span>
           </div>
         </div>
         <div style="display: flex; align-items: center; justify-content: center">
-          <img
-            src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
-            width="32"
-            style="margin-right: 8px"
-          />
+          <!--          <img-->
+          <!--            src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"-->
+          <!--            width="32"-->
+          <!--            style="margin-right: 8px"-->
+          <!--          />-->
+          <img src="<%= context.config.publicPath + 'cargo-logo.svg' %>" alt="logo" width="32"
+               style="margin-right: 8px"/>
           Smart
         </div>
       </div>

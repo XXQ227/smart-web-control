@@ -19,7 +19,7 @@ const Settings: LayoutSettings & {
   title: 'Smart',
   pwa: false,
   logo: 'https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg',
-  iconfontUrl: '//at.alicdn.com/t/c/font_3886045_ijm3apl82mj.js',
+  iconfontUrl: '',
   menu: {
     locale: true,
   }

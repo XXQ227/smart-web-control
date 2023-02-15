@@ -57,6 +57,8 @@ export default {
   'menu.bill.invoice': '发票',
   'menu.bill.agent': '代收代付',
   'menu.cargo': '货代',
-  'menu.cargo.ticket': '单票',
-  'menu.cargo.ticket-list': '单票列表',
+  'menu.cargo.job': '单票',
+  'menu.cargo.job-list': '单票列表',
+  'menu.manager': '管家',
+  'menu.manager.settlement': '结算对象',
 };

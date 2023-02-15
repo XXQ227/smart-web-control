@@ -5,6 +5,7 @@ import { join } from 'path';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
+// import qiankunApp from './qiankunApp';
 
 const { REACT_APP_ENV } = process.env;
 
@@ -78,4 +79,10 @@ export default defineConfig({
   mfsu: {},
   webpack5: {},
   exportStatic: {},
+  mountElementId: 'root',
+  qiankun: {
+    master: {
+      // ...qiankunApp
+    }
+  }
 });

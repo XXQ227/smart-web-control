@@ -1,4 +1,6 @@
-﻿export default [
+﻿import childrenRoutes from './children-routes'
+
+export default [
     {
         layout: false,
         name: 'login',
@@ -96,30 +98,32 @@
         ],
     },
     // TODO: Cargo 系统
-    {
-        name: 'cargo',
-        icon: 'icon-cargo-ship',
-        path: '/cargo',
-        routes: [
-            {
-                path: '/cargo',
-                redirect: '/cargo/job-list',
-            },
-            {
-                name: 'ticket-list',
-                icon: 'icon-ticket',
-                path: '/cargo/job-list',
-                component: './sys-cargo/job-list',
-            },
-            {
-                name: 'ticket',
-                icon: 'icon-cargo-ship',
-                path: '/cargo/job',
-                component: './sys-cargo/job',
-                hideInMenu: true,   // 隐藏不显示
-            },
-        ],
-    },
+    // {
+    //     name: 'cargo',
+    //     icon: 'icon-cargo-ship',
+    //     path: '/cargo',
+    //     routes: [
+    //         {
+    //             path: '/cargo',
+    //             redirect: '/cargo/job-list',
+    //         },
+    //         {
+    //             name: 'ticket-list',
+    //             icon: 'icon-ticket',
+    //             path: '/cargo/job-list',
+    //             component: './sys-cargo/job-list',
+    //         },
+    //         {
+    //             name: 'ticket',
+    //             icon: 'icon-cargo-ship',
+    //             path: '/cargo/job',
+    //             component: './sys-cargo/job',
+    //             hideInMenu: true,   // 隐藏不显示
+    //         },
+    //     ],
+    // },
+    // TODO: Cargo 子系统
+    childrenRoutes.cargo_route,
     // TODO: Manager 系统
     {
         name: 'manager',
@@ -128,10 +132,10 @@
         routes: [
             {
                 path: '/manager',
-                redirect: '/sys-manager',
+                redirect: '/manager',
             },
             {
-                name: 'ticket-list',
+                name: 'settlement',
                 icon: 'icon-ticket',
                 path: '/manager',
                 component: './sys-manager',

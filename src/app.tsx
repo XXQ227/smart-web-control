@@ -8,6 +8,9 @@ import {Link} from 'umi';
 import {history,} from 'umi';
 import defaultSettings from '../config/defaultSettings';
 import {getUserID, getUserInfo} from "@/utils/auths";
+import qiankunApp from '../config/qiankunApp'
+// import entryUrl from '../config/entryUrl';
+// const { NODE_ENV } = process.env;
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -65,7 +68,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         onCollapse: (e) => {
             console.log(e);
         },
-        iconfontUrl: '',
+        iconfontUrl: '//at.alicdn.com/t/c/font_3886045_ijm3apl82mj.js',
         // collapsed: true,
         footerRender: () => <Footer/>,
         onPageChange: () => {
@@ -120,3 +123,14 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         ...initialState?.settings,
     };
 };
+
+export const qiankun = fetch('/config').then(() => ({
+    ...qiankunApp,
+    // 完整生命周期钩子请看 https://qiankun.umijs.org/zh/api/#registermicroapps-apps-lifecycles
+    lifeCycles: {
+        afterMount: (props: any) => {
+            console.log(props);
+        },
+    },
+    // 支持更多的其他配置，详细看这里 https://qiankun.umijs.org/zh/api/#start-opts
+}));
