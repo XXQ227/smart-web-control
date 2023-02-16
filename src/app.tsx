@@ -124,6 +124,8 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
 
 export const qiankun = fetch('/config').then(() => ({
     ...qiankunApp,
+    jsSandbox: true, // 是否启用 js 沙箱，默认为 false
+    prefetch: true, // 是否启用 prefetch 特性，默认为 true
     // 完整生命周期钩子请看 https://qiankun.umijs.org/zh/api/#registermicroapps-apps-lifecycles
     lifeCycles: {
         afterMount: (props: any) => {

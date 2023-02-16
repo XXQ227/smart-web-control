@@ -22,6 +22,7 @@ const cargo_route = {
         {
             path: '/cargo',
             redirect: '/cargo/job-list',
+            // ...MICRO_APP_CARGO('cargo'),
         },
         {
             name: 'job-list',
@@ -50,6 +51,7 @@ const bill_route = {
         {
             path: '/bill',
             redirect: '/bill/ticket',
+            // ...MICRO_APP_CARGO('bill'),
         },
         {
             name: 'ticket',
