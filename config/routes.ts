@@ -20,25 +20,6 @@ export default [
         icon: 'smile',
         component: './Welcome',
     },
-    // TODO: 超级管理员
-    {
-        path: '/admin',
-        name: 'admin',
-        icon: 'crown',
-        // hideInMenu: true,   // 隐藏不显示
-        access: 'isLeadAdmin',
-        routes: [
-            {
-                path: '/admin/sub-page',
-                name: 'sub-page',
-                icon: 'smile',
-                component: './Welcome',
-            },
-            {
-                component: './404',
-            },
-        ],
-    },
     // TODO: 用户个人信息
     {
         name: 'account',
@@ -63,43 +44,8 @@ export default [
             },
         ],
     },
-    // TODO: Bill 系统
-    {
-        name: 'bill',
-        icon: 'icon-bill_L3',
-        path: '/bill',
-        routes: [
-            {
-                path: '/bill',
-                redirect: '/bill/ticket',
-            },
-            {
-                name: 'ticket',
-                icon: 'DollarCircleOutlined',
-                path: '/bill/ticket',
-                component: './sys-bill/ticket',
-            },
-            {
-                name: 'bill',
-                icon: 'icon-bill',
-                path: '/bill/bill',
-                component: './sys-bill/bill',
-            },
-            {
-                name: 'invoice',
-                icon: 'icon-invoice-2',
-                path: '/bill/invoice',
-                component: './sys-bill/invoice',
-            },
-            {
-                name: 'agent',
-                icon: 'icon-invoice-2',
-                path: '/bill/agent',
-                component: './sys-bill/agent',
-            },
-        ],
-    },
     routesChild.cargo_route,
+    routesChild.bill_route,
     // TODO: Manager 系统
     {
         name: 'manager',

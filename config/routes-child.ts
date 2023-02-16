@@ -41,6 +41,47 @@ const cargo_route = {
     ],
 };
 
+// TODO: Bill 系统
+const bill_route = {
+    name: 'bill',
+    icon: 'icon-bill_L3',
+    path: '/bill',
+    routes: [
+        {
+            path: '/bill',
+            redirect: '/bill/ticket',
+        },
+        {
+            name: 'ticket',
+            icon: 'DollarCircleOutlined',
+            path: '/bill/ticket',
+            component: './sys-bill/ticket',
+            ...MICRO_APP_CARGO('bill'),
+        },
+        {
+            name: 'bill',
+            icon: 'icon-bill',
+            path: '/bill/bill',
+            component: './sys-bill/bill',
+            ...MICRO_APP_CARGO('bill'),
+        },
+        {
+            name: 'invoice',
+            icon: 'icon-invoice-2',
+            path: '/bill/invoice',
+            component: './sys-bill/invoice',
+            ...MICRO_APP_CARGO('bill'),
+        },
+        {
+            name: 'agent',
+            icon: 'icon-invoice-2',
+            path: '/bill/agent',
+            component: './sys-bill/agent',
+            ...MICRO_APP_CARGO('bill'),
+        },
+    ],
+};
 export default {
-    cargo_route
+    cargo_route,
+    bill_route
 };

@@ -1,4 +1,4 @@
-import {getCJobListAPI} from '@/services/ant-design-pro/joblist';
+import {getCJobListAPI} from '@/services/smart/joblist';
 import type React from "react";
 import {useCallback, useState} from "react";
 
