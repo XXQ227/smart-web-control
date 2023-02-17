@@ -4,20 +4,20 @@ import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components'
 import {Button} from 'antd'
 
 
-const Manager: React.FC<RouteChildrenProps> = () => {
+const SettlementList: React.FC<RouteChildrenProps> = () => {
 
     return (
         <PageContainer
-            loading={false}
+            // loading={false}
             header={{
                 breadcrumb: {},
             }}
         >
-            <ProCard>智慧管家</ProCard>
+            <ProCard>个人中心</ProCard>
             <FooterToolbar extra={<Button>返回</Button>}>
                 <Button key={'submit'} type={'primary'} htmlType={'submit'}>提交</Button>
             </FooterToolbar>
         </PageContainer>
     )
 }
-export default Manager;
+export default SettlementList;

@@ -8,7 +8,7 @@ import {
     UserOutlined,
     WeiboCircleOutlined,
 } from '@ant-design/icons';
-import {LoginForm, ProFormCaptcha, ProFormCheckbox, ProFormText,} from '@ant-design/pro-components';
+import {LoginFormPage, ProFormCaptcha, ProFormCheckbox, ProFormText,} from '@ant-design/pro-components';
 import {Alert, message, Tabs} from 'antd';
 import React, {useState} from 'react';
 import {FormattedMessage, history, SelectLang, useIntl, useModel} from 'umi';
@@ -91,7 +91,7 @@ const Login: React.FC = () => {
                 {SelectLang && <SelectLang/>}
             </div>
             <div className={styles.content}>
-                <LoginForm
+                <LoginFormPage
                     logo={<img alt="logo" src="/logo.svg"/>}
                     title="Smart"
                     subTitle={intl.formatMessage({id: 'pages.layouts.userLayout.title'})}
@@ -260,7 +260,7 @@ const Login: React.FC = () => {
                             <FormattedMessage id="pages.login.forgotPassword" defaultMessage="忘记密码"/>
                         </a>
                     </div>
-                </LoginForm>
+                </LoginFormPage>
             </div>
             <Footer/>
         </div>

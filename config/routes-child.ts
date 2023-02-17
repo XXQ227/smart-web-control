@@ -1,16 +1,16 @@
 
 /**
- * @Description: TODO 注册子应用
+ * @Description: TODO qiankun 架构注册子应用
  * @author XXQ
  * @date 2023/2/15
  * @param microApp  子应用路由参数
  * @returns
  */
 const MICRO_APP_CARGO = (microApp: string) => ({
-    microApp: microApp,
-    microAppProps: {
-        base: '', // TODO: 路由为空，可以直接跳转到对应路由，不会重定向到首页
-    },
+    // microApp,
+    // microAppProps: {
+    //     base: '', // TODO: 路由为空，可以直接跳转到对应路由，不会重定向到首页
+    // },
 });
 
 // TODO: 货代路由
@@ -22,7 +22,6 @@ const cargo_route = {
         {
             path: '/cargo',
             redirect: '/cargo/job-list',
-            // ...MICRO_APP_CARGO('cargo'),
         },
         {
             name: 'job-list',
@@ -45,13 +44,12 @@ const cargo_route = {
 // TODO: Bill 系统
 const bill_route = {
     name: 'bill',
-    icon: 'icon-bill_L3',
+    icon: 'icon-bill_L4',
     path: '/bill',
     routes: [
         {
             path: '/bill',
             redirect: '/bill/ticket',
-            // ...MICRO_APP_CARGO('bill'),
         },
         {
             name: 'ticket',
@@ -83,7 +81,35 @@ const bill_route = {
         },
     ],
 };
+
+// TODO: Bill 系统
+const manager_route = {
+    name: 'manager',
+    icon: 'icon-bill_L3',
+    path: '/manager',
+    routes: [
+        {
+            path: '/manager',
+            redirect: '/manager',
+        },
+        {
+            name: 'settlement',
+            icon: 'DollarCircleOutlined',
+            path: '/manager/settlement-form',
+            component: './sys-manager/settlement/settlement-form',
+            ...MICRO_APP_CARGO('manager'),
+        },
+        {
+            name: 'settlement.info',
+            icon: 'icon-bill',
+            path: '/manager/settlement-list',
+            component: './sys-manager/settlement/settlement-list',
+            ...MICRO_APP_CARGO('manager'),
+        },
+    ],
+};
 export default {
     cargo_route,
-    bill_route
+    bill_route,
+    manager_route
 };

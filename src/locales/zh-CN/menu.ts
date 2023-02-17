@@ -60,5 +60,7 @@ export default {
   'menu.cargo.job': '单票',
   'menu.cargo.job-list': '单票列表',
   'menu.manager': '管家',
+  'menu.manager.manager': '智慧管家',
   'menu.manager.settlement': '结算对象',
+  'menu.manager.settlement.info': '结算对象-详情',
 };

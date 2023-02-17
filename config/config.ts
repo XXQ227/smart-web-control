@@ -8,6 +8,7 @@ import routes from './routes';
 
 const { REACT_APP_ENV } = process.env;
 
+console.log(routes);
 
 export default defineConfig({
   hash: true,
@@ -79,8 +80,9 @@ export default defineConfig({
   mfsu: {},
   webpack5: {},
   exportStatic: {},
-  mountElementId: 'root',
-  qiankun: {
-    master: {}
-  }
+  //region TODO: qiankun 微前端
+  // mountElementId: 'root1',
+  // base: '/',
+  // qiankun: {master: {},},
+  //endregion TODO:
 });

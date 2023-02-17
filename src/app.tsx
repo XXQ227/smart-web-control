@@ -8,7 +8,6 @@ import {Link} from 'umi';
 import {history,} from 'umi';
 import defaultSettings from '../config/defaultSettings';
 import {getUserID, getUserInfo} from "@/utils/auths";
-import qiankunApp from '../config/qiankunApp'
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -54,7 +53,6 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
-    // console.log({initialState, setInitialState});
     return {
         // TODO: 顶部右侧
         rightContentRender: () => <RightContent/>,
@@ -66,9 +64,9 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         onCollapse: (e) => {
             console.log(e);
         },
-        iconfontUrl: '//at.alicdn.com/t/c/font_3886045_ijm3apl82mj.js',
+        iconfontUrl: '//at.alicdn.com/t/c/font_3886045_6dthqhkt44r.js',
         // collapsed: true,
-        footerRender: () => <Footer/>,
+        footerRender: () => !!initialState?.userInfo?.ID && <Footer/>,
         onPageChange: () => {
             const {location} = history;
             // 如果没有登录【!getUserID()】，重定向到登录页面【/user/login】
@@ -122,6 +120,11 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
     };
 };
 
+/**
+ * @Description: TODO qiankun 主子应用
+ * @author XXQ
+ * @date 2023/2/17
+ * @returns
 export const qiankun = fetch('/config').then(() => ({
     ...qiankunApp,
     jsSandbox: true, // 是否启用 js 沙箱，默认为 false
@@ -134,3 +137,5 @@ export const qiankun = fetch('/config').then(() => ({
     },
     // 支持更多的其他配置，详细看这里 https://qiankun.umijs.org/zh/api/#start-opts
 }));
+ */
+

@@ -1,6 +1,7 @@
 ﻿// TODO: 微前端 - 路由配置
 import routesChild from './routes-child';
 
+
 // TODO: 导出路由信息
 export default [
     {
@@ -44,26 +45,12 @@ export default [
             },
         ],
     },
+    // TODO: Cargo 系统
     routesChild.cargo_route,
+    // TODO: Bill 系统
     routesChild.bill_route,
     // TODO: Manager 系统
-    {
-        name: 'manager',
-        icon: 'icon-cargo-ship',
-        path: '/manager',
-        routes: [
-            {
-                path: '/manager',
-                redirect: '/manager',
-            },
-            {
-                name: 'settlement',
-                icon: 'icon-ticket',
-                path: '/manager',
-                component: './sys-manager',
-            },
-        ],
-    },
+    routesChild.manager_route,
     // TODO: 异常页面
     {
         name: 'exception',
