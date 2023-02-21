@@ -1,12 +1,14 @@
 import moment from 'moment';
 import _ from 'lodash';
-import {useIntl} from '@@/plugin-locale/localeExports'
 
 
 //检测浏览器语言   navigator.language;   //判断除IE外其他浏览器使用语言
 export const LOCAL_LANGUAGE = false;
 // export const LOCAL_LANGUAGE = navigator.language === 'en-US';
 
+// TODO: 栅格布局
+export const rowGrid = { xs: 8, sm: 16, md: 24, lg: 32 };
+export const colGrid = { span: 6, xs: 8, md: 8, lg: 6, xl: 6, xxl: 4 };
 
 /**
  * 用于并排显示
