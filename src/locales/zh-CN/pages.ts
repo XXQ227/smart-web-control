@@ -75,4 +75,5 @@ export default {
   'pages.sys.carrier': '舱位公司',
   'pages.sys.cargo-type': '货物类型',
   'pages.sys.option': '操作',
+  'pages.sys.sales': '销售',
 };

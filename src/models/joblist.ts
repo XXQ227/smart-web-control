@@ -1,4 +1,4 @@
-import {getCJobListAPI} from '@/services/smart/joblist';
+import {GetCJobByKeyAPI} from '@/services/smart/joblist';
 import type React from "react";
 import {useCallback, useState} from "react";
 
@@ -11,11 +11,10 @@ interface T {
 
 export default (callback: T, deps: React.DependencyList) => {
     const jobList: API.CJobListItem[] = [];
-
     // TODO: 部门
     const [DivisionList, setDivisionList] = useState([]);
     // TODO: 单票集
-    const [CJobList, setCJobList] = useState( jobList || []);
+    const [CJobList, setCJobList] = useState(jobList);
     // TODO: 返回结果
     const [resResult, setResResult] = useState({});
 
@@ -24,7 +23,7 @@ export default (callback: T, deps: React.DependencyList) => {
     // TODO: 获取单票集
     const getCJobList = useCallback(async (params: API.GetCJobListInfo) => {
         // TODO: 请求后台 API
-        const response: API.APIGetCJobListResult = await getCJobListAPI(params);
+        const response: API.APIGetCJobListResult = await GetCJobByKeyAPI(params);
         if (!response) return;
         // TODO: 存部门信息
         setDivisionList(response.Divisions);

@@ -33,7 +33,7 @@ const cargo_route = {
         {
             name: 'job',
             icon: 'icon-cargo-ship',
-            path: '/cargo/job',
+            path: '/cargo/job/:id',
             component: './sys-cargo/job',
             ...MICRO_APP_CARGO('cargo'),
             hideInMenu: true,   // 隐藏不显示
