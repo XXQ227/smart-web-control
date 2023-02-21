@@ -1,6 +1,6 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import type { RouteChildrenProps } from 'react-router';
-import type { ProColumns, ActionType} from '@ant-design/pro-components';
+import type { ProColumns, ActionType, ColumnsState} from '@ant-design/pro-components';
 import {PageContainer, ProTable} from '@ant-design/pro-components';
 import {history, useModel} from 'umi';
 import {useIntl} from '@@/plugin-locale/localeExports'
@@ -17,20 +17,21 @@ const cjobListParams: API.GetCJobListInfo = {
     IsClickSearch: true,
     PageSize: 20,
     PageNum: 1,
-}
+};
+
+const operationList = [
+    {key: 'edit', type: 1, label: '编辑'},
+    {key: 'copy', type: 2, label: '复制'},
+    {key: 'cancel', type: 3, label: '退关'}
+];
+
+const columnsStateStr = '{"POLETA":{"fixed":"left","order":2},"ETA":{"fixed":"left","order":1},"Code":{"order":0,"show":true},"PrincipalNameEN":{"order":3},"MBOLNum":{"order":4,"show":false},"OceanTransportType":{"order":5,"fixed":"left"},"FreighterEN":{"order":6},"option":{"order":7}}';
 
 const JobList: React.FC<RouteChildrenProps> = () => {
-    const [loading, setLoading] = useState(true);
     const joblist = useModel('joblist');
 
     // 初始化（或用于 message 提醒）
     const intl = useIntl();
-
-    useEffect(()=>{
-        if (loading) {
-            setTimeout(()=> setLoading(!loading), 1500)
-        }
-    }, [loading]);
 
     // TODO: 获取列名<Title>
     const title = (code: string, defaultMessage: string) => getTitleInfo(code, intl, defaultMessage);
@@ -45,11 +46,14 @@ const JobList: React.FC<RouteChildrenProps> = () => {
      */
     const handleOperateJob = (type: number, id: number) => {
         if (type === 1 || type === 2) {
+            // TODO: 跳转页面<带参数>
             // @ts-ignore
             history.push({
-                pathname: '/cargo/ticket',
-                query: {id},
-            });
+                // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
+                pathname: `/cargo/job/${btoa(id.toString())}`,
+                // TODO: 不用 query 的原因：query 的参数会拼接到 url 地址栏上，用 params (可以是其他名<自定义>)，则可以隐藏
+                // query: urlParams,
+            })
         } else if (type === 3) {
             console.log('此处调用退关方法');
         }
@@ -63,9 +67,11 @@ const JobList: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     const getCJobList = async (params: any) => {
+        // setLoading(true);
         // TODO: 分页查询【参数页】
         params.PageNum = params.current;
         const result: API.RuleCJobList = (await joblist.getCJobList(params as API.GetCJobListInfo)) || {};
+        // setLoading(false);
         return result;
     }
 
@@ -80,10 +86,12 @@ const JobList: React.FC<RouteChildrenProps> = () => {
         {
             title: title('customer', '客户'),
             dataIndex: 'PrincipalNameEN',
+            disable: true,
         },
         {
             title: title('etd-pol', 'ETD POL'),
             dataIndex: 'POLETA',
+            valueType: 'date',
             align: 'center',
             width: 90,
             render: (text, record)=> record.ETD || text
@@ -91,6 +99,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
         {
             title: title('eta-pod', 'ETA POD'),
             dataIndex: 'ETA',
+            valueType: 'date',
             align: 'center',
             width: 90,
             render: (text, record)=> record.ATD || text,
@@ -104,8 +113,9 @@ const JobList: React.FC<RouteChildrenProps> = () => {
         {
             title: title('cargo-type', '货物类型'),
             dataIndex: 'OceanTransportType',
-            width: 80,
             align: 'center',
+            search: false,
+            width: 80,
             valueEnum: {
                 '1': {text: 'FCL', status: 'FCL'},
                 '2': {text: 'LCL', status: 'LCL'},
@@ -124,38 +134,25 @@ const JobList: React.FC<RouteChildrenProps> = () => {
             valueType: 'option',
             align: 'center',
             key: 'option',
+            disable: true,
             width: 120,
             render: (text, record) => {
-                return [
-                    <a
-                        key="editable"
-                        onClick={() => handleOperateJob(1, record.ID)}
-                    >
-                        编辑
-                    </a>,
-                    <a
-                        key="copy"
-                        onClick={() => handleOperateJob(2, record.ID)}
-                    >
-                        复制
-                    </a>,
-                    <a
-                        key="cancel"
-                        onClick={() => handleOperateJob(3, record.ID)}
-                    >
-                        退关
-                    </a>,
-                ]
+                return operationList?.map(x=>
+                    <a key={x.key} onClick={() => handleOperateJob(x.type, record.ID)}>
+                        {x.label}
+                    </a>
+                )
             },
         },
     ];
 
     const actionRef = useRef<ActionType>();
 
+    // TODO: 调整 ProTable 显示的列宽
+    const [columnsStateMap, setColumnsStateMap] = useState<Record<string, ColumnsState>>(JSON.parse(columnsStateStr) || {});
 
     return (
         <PageContainer
-            loading={loading}
             header={{
                 breadcrumb: {},
             }}
@@ -167,6 +164,10 @@ const JobList: React.FC<RouteChildrenProps> = () => {
                 actionRef={actionRef}
                 params={cjobListParams}
                 request={getCJobList}
+                columnsState={{
+                    value: columnsStateMap,
+                    onChange: setColumnsStateMap,
+                }}
                 className={'antd-pro-table-ant-space'}
              />
         </PageContainer>
