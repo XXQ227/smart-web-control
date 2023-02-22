@@ -14,7 +14,8 @@ export async function GetCJobByKeyAPI(body: API.GetCJobListInfo, options?: Recor
 }
 
 export async function GetNJobInfoByIDAPI(body: API.GetCJobByID, options?: Record<string, any>) {
-    return request<API.APIGetCJobListResult>(`/api/CargoJob/GetNJobInfoByID?${stringify(body)}`, {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request<API.GetCJobByIDResponse>(`/api/CargoJob/GetNJobInfoByID?${stringify(body)}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',

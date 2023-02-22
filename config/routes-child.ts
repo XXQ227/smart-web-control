@@ -53,7 +53,7 @@ const bill_route = {
         },
         {
             name: 'ticket',
-            icon: 'DollarCircleOutlined',
+            icon: 'icon-job',
             path: '/bill/ticket',
             component: './sys-bill/ticket',
             ...MICRO_APP_CARGO('bill'),
@@ -82,10 +82,10 @@ const bill_route = {
     ],
 };
 
-// TODO: Bill 系统
+// TODO: Manager 系统
 const manager_route = {
     name: 'manager',
-    icon: 'icon-bill_L3',
+    icon: 'icon-settlement',
     path: '/manager',
     routes: [
         {
@@ -94,14 +94,14 @@ const manager_route = {
         },
         {
             name: 'settlement',
-            icon: 'DollarCircleOutlined',
+            icon: 'icon-settlement',
             path: '/manager/settlement-form',
             component: './sys-manager/settlement/settlement-form',
             ...MICRO_APP_CARGO('manager'),
         },
         {
             name: 'settlement.info',
-            icon: 'icon-bill',
+            icon: 'icon-settlement',
             path: '/manager/settlement-list',
             component: './sys-manager/settlement/settlement-list',
             ...MICRO_APP_CARGO('manager'),

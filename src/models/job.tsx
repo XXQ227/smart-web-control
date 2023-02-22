@@ -2,14 +2,18 @@ import {GetNJobInfoByIDAPI} from '@/services/smart/joblist';
 import type React from "react";
 import {useCallback, useState} from "react";
 
+
 interface T {
     // TODO: 单票详情
     CJobInfo: API.NJobDetailDto,
     resResult: object,
 }
 
+
 export default (callback: T, deps: React.DependencyList) => {
-    const jobInfo: { NBasicInfo: { Code: string, Principal: { SalesManName: string; SalesManID: number } }; } = {
+    //region TODO: 单票详情结构表
+    const jobInfo: API.NJobDetailDto = {
+        ID: 0,
         NBasicInfo: {
             Code: '',
             Principal: {
@@ -18,6 +22,8 @@ export default (callback: T, deps: React.DependencyList) => {
             },
         },
     };
+    //endregion
+
     // TODO: 单票详情
     const [CJobInfo, setCJobInfo] = useState(jobInfo || {});
     // TODO: 返回结果
@@ -29,14 +35,14 @@ export default (callback: T, deps: React.DependencyList) => {
         // TODO: 请求后台 API
         const response: API.GetCJobByIDResponse = await GetNJobInfoByIDAPI(params);
         if (!response) return;
-        console.log(response);
+        const NJobDetailDto = response.Content?.NJobDetailDto;
         if (response.Result) {
             // TODO: 整理返回结果
             // TODO: 将数据存到 model 里
-            setCJobInfo(response.Content?.NJobDetailDto);
+            setCJobInfo(NJobDetailDto);
         }
         setResResult(response);
-        return response;
+        return NJobDetailDto;
     }, []);
     //endregion
 

@@ -53,6 +53,7 @@ export async function getInitialState(): Promise<{
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
+
     return {
         // TODO: 顶部右侧
         rightContentRender: () => <RightContent/>,
@@ -64,7 +65,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         onCollapse: (e) => {
             console.log(e);
         },
-        iconfontUrl: '//at.alicdn.com/t/c/font_3886045_6dthqhkt44r.js',
+        iconfontUrl: '//at.alicdn.com/t/c/font_3886045_vb2amxas9kg.js',
         // collapsed: true,
         footerRender: () => !!initialState?.userInfo?.ID && <Footer/>,
         onPageChange: () => {

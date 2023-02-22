@@ -116,32 +116,6 @@ declare namespace API {
     SystemID?: number;
   };
 
-  // TODO: 用户登录后返回信息
-  type LoginUserInfo = {
-    AuthorityIDList: string,
-    password: string,
-    DisplayName: string,
-    ID: number,
-    BranchID: number,
-    Token: string,
-    CityID: number,
-    CityName: string,
-    CountryID: number,
-    CountryName: string,
-    FuncCurrency: string,
-    IsOpenAccount: boolean,
-    IsSalesMan: boolean,
-    DivisionID: number,
-    BranchCode: string,
-    FinereportURL: string,
-    PUAList: any,
-    Email: string,
-    geographic?: {
-      province?: { label?: string; key?: string };
-      city?: { label?: string; key?: string };
-    };
-  };
-
   // TODO: 接口返回结果
   type APIResult = {
     status?: string;

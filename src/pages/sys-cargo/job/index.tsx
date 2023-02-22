@@ -13,24 +13,28 @@ let isLoadingData = false;
 const Ticket: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}} = props;
-    const job = useModel('job');
-    const {CJobInfo: {NBasicInfo, NBasicInfo: {Principal}}} = job;
+    const {
+        CJobInfo: {NBasicInfo, NBasicInfo: {Principal}}, getCJobInfoByID
+    } = useModel('job', (res: any) => ({
+        CJobInfo: res.CJobInfo,
+        getCJobInfoByID: res.getCJobInfoByID,
+    }));
     const [jobID, setJobID] = useState(0);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         // TODO: 当【没有 ID && isLoadingData == false】时调用接口获取数据
         if (!jobID && !isLoadingData) {
             isLoadingData = true;
-            job.getCJobInfoByID({CJobID: Number(atob(params?.id)), UserID: getUserID()})
+            getCJobInfoByID({CJobID: Number(atob(params?.id)), UserID: getUserID()})
                 // @ts-ignore
-                .then((res: API.GetCJobByIDResponse) => {
+                .then((res: API.NJobDetailDto) => {
                     // TODO: 设置 ID 且初始化数据
-                    setJobID(res?.Content?.NJobDetailDto?.ID);
+                    setJobID(res?.ID);
                     setLoading(false);
                     isLoadingData = false;
                 })
         }
-    }, [job, jobID, params?.id])
+    }, [])
 
 
     // 初始化（或用于 message 提醒）

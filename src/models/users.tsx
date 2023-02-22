@@ -55,7 +55,7 @@ export default (callback: T, deps: React.DependencyList) => {
             setUserInfo(response?.Content);
         }
         return response;
-    }, deps);
+    }, []);
 
     /**
      * @Description: TODO 推出登录
