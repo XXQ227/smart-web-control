@@ -20,6 +20,7 @@ declare namespace API {
         ATD: string,
         ETA: string,
         MBOLNum: string,
+        HBOLNum: string,
         FreighterEN: string,
         state: string,
     }

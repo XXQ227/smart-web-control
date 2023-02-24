@@ -65,7 +65,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         onCollapse: (e) => {
             console.log(e);
         },
-        iconfontUrl: '//at.alicdn.com/t/c/font_3886045_vb2amxas9kg.js',
+        iconfontUrl: '//at.alicdn.com/t/c/font_3886045_o6l90rcy87.js',
         // collapsed: true,
         footerRender: () => !!initialState?.userInfo?.ID && <Footer/>,
         onPageChange: () => {

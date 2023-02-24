@@ -85,7 +85,7 @@ const bill_route = {
 // TODO: Manager 系统
 const manager_route = {
     name: 'manager',
-    icon: 'icon-settlement',
+    icon: 'icon-menu-settlement',
     path: '/manager',
     routes: [
         {

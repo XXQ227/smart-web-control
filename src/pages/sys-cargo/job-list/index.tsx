@@ -6,6 +6,7 @@ import {history, useModel} from 'umi';
 import {useIntl} from '@@/plugin-locale/localeExports'
 import {getTitleInfo} from '@/utils/units';
 import {getUserID} from '@/utils/auths'
+import {Button} from 'antd'
 
 // TODO: 获取单票集的请求参数
 const cjobListParams: API.GetCJobListInfo = {
@@ -110,6 +111,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
             width: 120,
             ellipsis: true,
         },
+        {dataIndex: 'HBOLNum', hideInTable: true,},
         {
             title: title('cargo-type', '货物类型'),
             dataIndex: 'OceanTransportType',
@@ -145,6 +147,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
             },
         },
     ];
+    
 
     const actionRef = useRef<ActionType>();
 
@@ -153,9 +156,11 @@ const JobList: React.FC<RouteChildrenProps> = () => {
 
     return (
         <PageContainer
-            header={{
-                breadcrumb: {},
-            }}
+            header={{breadcrumb: {}}}
+            extra={[
+                <Button key={1} icon={'create'} />,
+
+            ]}
         >
             <ProTable<API.CJobListItem>
                 rowKey={'ID'}
