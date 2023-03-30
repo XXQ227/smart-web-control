@@ -10,11 +10,10 @@ interface T {
 }
 
 export default (callback: T, deps: React.DependencyList) => {
-    const jobList: API.CJobListItem[] = [];
     // TODO: 部门
     const [DivisionList, setDivisionList] = useState([]);
     // TODO: 单票集
-    const [CJobList, setCJobList] = useState(jobList);
+    const [CJobList, setCJobList] = useState<API.CJobListItem[]>([]);
     // TODO: 返回结果
     const [resResult, setResResult] = useState({});
 

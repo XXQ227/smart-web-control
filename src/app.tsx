@@ -1,6 +1,6 @@
 import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
-import {BookOutlined, LinkOutlined} from '@ant-design/icons';
+import {BookOutlined, LinkOutlined, PlusOutlined} from '@ant-design/icons';
 import type {Settings as LayoutSettings} from '@ant-design/pro-components';
 import {PageLoading, SettingDrawer} from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig} from 'umi';
@@ -8,6 +8,10 @@ import {Link} from 'umi';
 import {history,} from 'umi';
 import defaultSettings from '../config/defaultSettings';
 import {getUserID, getUserInfo} from "@/utils/auths";
+import {icon_font_url} from '@/utils/units';
+import RightHeaderTags from '@/components/RightHeaderTags';
+import ls from 'lodash';
+
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -24,7 +28,8 @@ export async function getInitialState(): Promise<{
     settings?: Partial<LayoutSettings>;
     userInfo?: API.LoginUserInfo;
     loading?: boolean;
-    collapsed?: boolean;
+    collapsed?: boolean;    // TODO：是否展开左侧菜单栏
+    groupInfo?: any;        // TODO: 分组信息
     fetchUserInfo?: () => Promise<API.LoginUserInfo | undefined>;
 }> {
     const fetchUserInfo = async () => {
@@ -37,24 +42,39 @@ export async function getInitialState(): Promise<{
     };
     const userInfo = await fetchUserInfo();
     // 如果不是登录页面，执行
-    if (history.location.pathname !== loginPath) {
-        return {
-            fetchUserInfo,
-            userInfo,
-            settings: defaultSettings,
-        };
-    }
+    // if (history.location.pathname !== loginPath) {
+    //     return {
+    //         userInfo,
+    //         fetchUserInfo,
+    //         settings: defaultSettings,
+    //     };
+    // }
     return {
-        fetchUserInfo,
         userInfo,
+        fetchUserInfo,
         settings: defaultSettings,
     };
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
-
+    const groupInfo: any = initialState?.groupInfo || {};
+    /**
+     * @Description: TODO 选中分组后，重新获取 <单票列表> 的数据
+     * @author XXQ
+     * @date 2023/3/30
+     * @param selectedRows  选中的分组的行
+     * @returns
+     */
+    const onChangeGroup = (selectedRows: object) => {
+        // eslint-disable-next-line prefer-const
+        let initInfo: any = ls.cloneDeep(initialState);
+        // 把分组信息存到初始化数据中
+        initInfo.groupInfo = selectedRows;
+        setInitialState(initInfo);
+    }
     return {
+        title: 'Smart',
         // TODO: 顶部右侧
         rightContentRender: () => <RightContent/>,
         disableContentMargin: false,
@@ -63,11 +83,12 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
             content: initialState?.userInfo?.DisplayName,
         },
         onCollapse: (e) => {
-            console.log(e);
+            // console.log(e);
         },
-        iconfontUrl: '//at.alicdn.com/t/c/font_3886045_o6l90rcy87.js',
+        iconfontUrl: icon_font_url,
         // collapsed: true,
         footerRender: () => !!initialState?.userInfo?.ID && <Footer/>,
+        enableDarkTheme: true,
         onPageChange: () => {
             const {location} = history;
             // 如果没有登录【!getUserID()】，重定向到登录页面【/user/login】
@@ -80,6 +101,10 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         links: isDev
             ? [
                 <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+                    <PlusOutlined />
+                    <span>创建</span>
+                </Link>,
+                <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
                     <LinkOutlined/>
                     <span>OpenAPI 文档</span>
                 </Link>,
@@ -90,7 +115,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
                 null
             ]
             : [],
-        menuHeaderRender: undefined,
+        menuHeaderRender: () => <RightHeaderTags onChangeGroup={onChangeGroup} groupInfo={groupInfo} />,
         // menuDataRender: (menuData)=> menuData,
         // 自定义 403 页面
         // unAccessible: <div>unAccessible</div>,

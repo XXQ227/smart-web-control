@@ -108,8 +108,29 @@ const manager_route = {
         },
     ],
 };
+
+// TODO: Chart 系统
+const chart_route = {
+    name: 'chart',
+    icon: 'icon-menu-settlement',
+    path: '/chart',
+    routes: [
+        {
+            path: '/chart',
+            redirect: '/chart',
+        },
+        {
+            name: 'line-chart',
+            icon: 'icon-settlement',
+            path: '/chart/line-chart',
+            component: './sys-chart/line-chart',
+            ...MICRO_APP_CARGO('chart'),
+        },
+    ],
+};
 export default {
     cargo_route,
     bill_route,
-    manager_route
+    manager_route,
+    chart_route,
 };

@@ -1,6 +1,8 @@
 import moment from 'moment';
 import _ from 'lodash';
+import { createFromIconfontCN } from '@ant-design/icons';
 
+export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_o6l90rcy87.js';
 
 //检测浏览器语言   navigator.language;   //判断除IE外其他浏览器使用语言
 export const LOCAL_LANGUAGE = false;
@@ -9,6 +11,8 @@ export const LOCAL_LANGUAGE = false;
 // TODO: 栅格布局
 export const rowGrid = { xs: 8, sm: 16, md: 24, lg: 32 };
 export const colGrid = { span: 6, xs: 8, md: 8, lg: 6, xl: 6, xxl: 4 };
+
+export const IconFont = createFromIconfontCN({scriptUrl: icon_font_url,});
 
 /**
  * 用于并排显示

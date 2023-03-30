@@ -63,4 +63,6 @@ export default {
   'menu.manager.manager': '智慧管家',
   'menu.manager.settlement': '结算对象',
   'menu.manager.settlement.info': '结算对象-详情',
+  'menu.chart': '图表',
+  'menu.chart.line-chart': '折线图',
 };

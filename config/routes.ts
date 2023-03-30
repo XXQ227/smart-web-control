@@ -51,6 +51,8 @@ export default [
     routesChild.bill_route,
     // TODO: Manager 系统
     routesChild.manager_route,
+    // TODO: Chart 系统
+    routesChild.chart_route,
     // TODO: 异常页面
     {
         name: 'exception',

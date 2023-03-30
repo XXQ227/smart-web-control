@@ -1,12 +1,11 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import type { RouteChildrenProps } from 'react-router';
 import type { ProColumns, ActionType, ColumnsState} from '@ant-design/pro-components';
 import {PageContainer, ProTable} from '@ant-design/pro-components';
 import {history, useModel} from 'umi';
-import {useIntl} from '@@/plugin-locale/localeExports'
-import {getTitleInfo} from '@/utils/units';
-import {getUserID} from '@/utils/auths'
-import {Button} from 'antd'
+import {useIntl} from '@@/plugin-locale/localeExports';
+import {getTitleInfo, IconFont} from '@/utils/units';
+import {getUserID} from '@/utils/auths';
 
 // TODO: 获取单票集的请求参数
 const cjobListParams: API.GetCJobListInfo = {
@@ -15,7 +14,7 @@ const cjobListParams: API.GetCJobListInfo = {
     AuthorityType: 2,
     TabID: 1,
     UserID: getUserID(),
-    IsClickSearch: true,
+    IsClickSearch: false,
     PageSize: 20,
     PageNum: 1,
 };
@@ -26,13 +25,30 @@ const operationList = [
     {key: 'cancel', type: 3, label: '退关'}
 ];
 
-const columnsStateStr = '{"POLETA":{"fixed":"left","order":2},"ETA":{"fixed":"left","order":1},"Code":{"order":0,"show":true},"PrincipalNameEN":{"order":3},"MBOLNum":{"order":4,"show":false},"OceanTransportType":{"order":5,"fixed":"left"},"FreighterEN":{"order":6},"option":{"order":7}}';
+const columnsStateStr = '{"Code":{"order":0,"show":true},"POLETA":{"fixed":"left","order":2},"ETA":{"fixed":"left","order":1},"PrincipalNameEN":{"order":3},"MBOLNum":{"order":4,"show":false},"OceanTransportType":{"order":5,"fixed":"left"},"FreighterEN":{"order":6},"option":{"order":7}}';
 
 const JobList: React.FC<RouteChildrenProps> = () => {
     const joblist = useModel('joblist');
+    const initInfo = useModel('@@initialState');
+    const initialState: any = initInfo?.initialState || {};
+    // 拿到所选的分组信息
+    const groupInfo: {id: any, name: string} = initialState?.groupInfo || {};
+
+    const [loading, setLoading] = useState(false);
+    const [groupId, setGroupID] = useState(null);
+    const [jobList, setJobList] = useState<API.CJobListItem[]>([]);
 
     // 初始化（或用于 message 提醒）
     const intl = useIntl();
+
+    useEffect(()=> {
+        if (groupInfo.id && groupInfo.id !== groupId) {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            getCJobList(cjobListParams, groupInfo.id !== groupId).then()
+            setGroupID(groupInfo.id);
+        }
+    }, [groupId, groupInfo]);
+
 
     // TODO: 获取列名<Title>
     const title = (code: string, defaultMessage: string) => getTitleInfo(code, intl, defaultMessage);
@@ -65,19 +81,30 @@ const JobList: React.FC<RouteChildrenProps> = () => {
      * @author XXQ
      * @date 2023/2/13
      * @param params    参数
+     * @param isLoading 是否调用接口
      * @returns
      */
-    const getCJobList = async (params: any) => {
-        // setLoading(true);
-        // TODO: 分页查询【参数页】
-        params.PageNum = params.current;
-        const result: API.RuleCJobList = (await joblist.getCJobList(params as API.GetCJobListInfo)) || {};
-        // setLoading(false);
+    const getCJobList = async (params: any, isLoading: boolean = false) => {
+        let result: API.RuleCJobList = {};
+        setLoading(true);
+        if (isLoading) {
+            // TODO: 分页查询【参数页】
+            params.PageNum = params.current || 1;
+            result = (await joblist.getCJobList(params as API.GetCJobListInfo)) || {};
+            setJobList(result.data || []);
+        }
+        setLoading(false);
         return result;
     }
 
     // TODO: 单票显示列
     const columns: ProColumns<API.CJobListItem>[] = [
+        // 序列
+        // {
+        //     dataIndex: 'index',
+        //     valueType: 'indexBorder',
+        //     width: 48,
+        // },
         {
             title: title('code', '业务编号'),
             dataIndex: 'Code',
@@ -147,7 +174,6 @@ const JobList: React.FC<RouteChildrenProps> = () => {
             },
         },
     ];
-    
 
     const actionRef = useRef<ActionType>();
 
@@ -158,17 +184,18 @@ const JobList: React.FC<RouteChildrenProps> = () => {
         <PageContainer
             header={{breadcrumb: {}}}
             extra={[
-                <Button key={1} icon={'create'} />,
-
+                <IconFont key={1} type={'icon-create'} onClick={()=> {console.log(123456)}} />,
             ]}
         >
             <ProTable<API.CJobListItem>
                 rowKey={'ID'}
                 bordered={true}
                 columns={columns}
+                dataSource={jobList}
                 actionRef={actionRef}
                 params={cjobListParams}
-                request={getCJobList}
+                loading={loading}
+                request={(params)=> getCJobList(params, !!groupInfo.id)}
                 columnsState={{
                     value: columnsStateMap,
                     onChange: setColumnsStateMap,

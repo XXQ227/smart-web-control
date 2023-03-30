@@ -43,6 +43,50 @@ ol {
   }
 }
 
+.auto-antd-layout-header{
+  height: 24px!important;
+  line-height: 24px!important;
+  padding-left: 8px!important;
+  background: #fff!important;
+}
+
+.ant-right-header-tags-modal-form{
+  top: 58px!important;
+  margin: 0 60px!important;
+  .ant-form{
+    margin-left: 0!important;
+  }
+  .ant-pro-card-body{
+    padding: 0!important;
+    // 隐藏选中的分组行
+    .ant-pro-table-alert{
+      display: none;
+    }
+    .ant-table{
+      .ant-table-container{
+        .ant-table-thead{
+          tr{
+            &:nth-child(2) {
+              // 选择分组，隐藏添加按钮行
+              td{
+                // 隐藏第一个td
+                &:first-child{
+                  display: none;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .ant-btn-modal-group{
+    border: 1px #fff dashed;
+    width: 100%;
+    margin-bottom: 5px;
+  }
+}
+
 @media (max-width: @screen-xs) {
   .ant-table {
     width: 100%;
