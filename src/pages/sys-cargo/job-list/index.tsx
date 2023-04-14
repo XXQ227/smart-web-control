@@ -6,6 +6,7 @@ import {history, useModel} from 'umi';
 import {useIntl} from '@@/plugin-locale/localeExports';
 import {getTitleInfo, IconFont} from '@/utils/units';
 import {getUserID} from '@/utils/auths';
+import {OceanTransportTypeEnum} from '@/utils/enum'
 
 // TODO: 获取单票集的请求参数
 const cjobListParams: API.GetCJobListInfo = {
@@ -21,11 +22,12 @@ const cjobListParams: API.GetCJobListInfo = {
 
 const operationList = [
     {key: 'edit', type: 1, label: '编辑'},
+    {key: 'charge', type: 4, label: '费用'},
     {key: 'copy', type: 2, label: '复制'},
     {key: 'cancel', type: 3, label: '退关'}
 ];
 
-const columnsStateStr = '{"Code":{"order":0,"show":true},"POLETA":{"fixed":"left","order":2},"ETA":{"fixed":"left","order":1},"PrincipalNameEN":{"order":3},"MBOLNum":{"order":4,"show":false},"OceanTransportType":{"order":5,"fixed":"left"},"FreighterEN":{"order":6},"option":{"order":7}}';
+const columnsStateStr = '{"Code":{"fixed":"left"},"PrincipalNameEN":{"show":true},"MBOLNum":{"show":true},"OceanTransportType":{"show":true},"CreateDate":{"show":true},"option":{"show":true}}';
 
 const JobList: React.FC<RouteChildrenProps> = () => {
     const joblist = useModel('joblist');
@@ -49,7 +51,6 @@ const JobList: React.FC<RouteChildrenProps> = () => {
         }
     }, [groupId, groupInfo]);
 
-
     // TODO: 获取列名<Title>
     const title = (code: string, defaultMessage: string) => getTitleInfo(code, intl, defaultMessage);
 
@@ -57,19 +58,25 @@ const JobList: React.FC<RouteChildrenProps> = () => {
      * @Description: TODO 单票操作（编辑、复制、退关）
      * @author XXQ
      * @date 2023/2/13
-     * @param type  操作类型【1：编辑；2：复制；3、退关】
-     * @param id    被操作行的 ID
+     * @param type      操作类型【1：编辑；2：复制；3、退关】
+     * @param record    被操作单票行
      * @returns
      */
-    const handleOperateJob = (type: number, id: number) => {
-        if (type === 1 || type === 2) {
+    const handleOperateJob = (type: number, record: any) => {
+        if (type === 1 || type === 2 || type === 4) {
+            // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
+            const url = `/cargo/job/job-${type === 4 ? 'charge' : 'info'}/${btoa(record?.ID)}/${btoa(record?.BizType4ID)}`;
+            // const url = `/cargo/job/${btoa(record?.ID)}/${btoa(record?.BizType4ID)}`;
             // TODO: 跳转页面<带参数>
             // @ts-ignore
             history.push({
-                // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-                pathname: `/cargo/job/${btoa(id.toString())}`,
+                pathname: url,
                 // TODO: 不用 query 的原因：query 的参数会拼接到 url 地址栏上，用 params (可以是其他名<自定义>)，则可以隐藏
-                // query: urlParams,
+                // pathname: `/cargo/job/job-info`,
+                // query: {
+                //     id: btoa(record?.ID),
+                //     bizType4ID: record?.BizType4ID,
+                // },
             })
         } else if (type === 3) {
             console.log('此处调用退关方法');
@@ -117,22 +124,6 @@ const JobList: React.FC<RouteChildrenProps> = () => {
             disable: true,
         },
         {
-            title: title('etd-pol', 'ETD POL'),
-            dataIndex: 'POLETA',
-            valueType: 'date',
-            align: 'center',
-            width: 90,
-            render: (text, record)=> record.ETD || text
-        },
-        {
-            title: title('eta-pod', 'ETA POD'),
-            dataIndex: 'ETA',
-            valueType: 'date',
-            align: 'center',
-            width: 90,
-            render: (text, record)=> record.ATD || text,
-        },
-        {
             title: title('mbl', '提单号'),
             dataIndex: 'MBOLNum',
             width: 120,
@@ -145,18 +136,15 @@ const JobList: React.FC<RouteChildrenProps> = () => {
             align: 'center',
             search: false,
             width: 80,
-            valueEnum: {
-                '1': {text: 'FCL', status: 'FCL'},
-                '2': {text: 'LCL', status: 'LCL'},
-                '3': {text: 'BULK', status: 'BULK'},
-            }
+            valueEnum: OceanTransportTypeEnum
         },
         {
-            title: title('carrier', '舱位公司'),
-            dataIndex: 'FreighterEN',
-            width: 260,
-            ellipsis: true,
-            tip: `${title('carrier', '舱位公司')}过长会自动收缩`,
+            title: title('create-date', '创建时间'),
+            dataIndex: 'CreateDate',
+            valueType: 'date',
+            align: 'center',
+            width: 90,
+            render: (text, record)=> record.ETD || text
         },
         {
             title: title('option', '操作'),
@@ -164,10 +152,10 @@ const JobList: React.FC<RouteChildrenProps> = () => {
             align: 'center',
             key: 'option',
             disable: true,
-            width: 120,
+            width: 160,
             render: (text, record) => {
                 return operationList?.map(x=>
-                    <a key={x.key} onClick={() => handleOperateJob(x.type, record.ID)}>
+                    <a key={x.key} onClick={() => handleOperateJob(x.type, record)}>
                         {x.label}
                     </a>
                 )
@@ -198,7 +186,10 @@ const JobList: React.FC<RouteChildrenProps> = () => {
                 request={(params)=> getCJobList(params, !!groupInfo.id)}
                 columnsState={{
                     value: columnsStateMap,
-                    onChange: setColumnsStateMap,
+                    onChange: (str) => {
+                        // console.log(JSON.stringify(str));
+                        setColumnsStateMap(str);
+                    },
                 }}
                 className={'antd-pro-table-ant-space'}
              />

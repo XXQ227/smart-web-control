@@ -193,7 +193,7 @@ function currencyUnit(currency: string) {
  * @param currency  转换的币种单位
  * @returns {string}
  */
-export function moneyToEnglish(amount: number, currency: string) {
+export function SayTotal(amount: number, currency: string) {
     if (!amount || typeof (amount) == 'undefined' || amount == 0) return;
     // 获得币种的单位信息
     const currUnit = currencyUnit(currency);
@@ -343,6 +343,7 @@ export function formatNumToMoney(amount: number) {
     if (amount) {
         const strArr = amount?.toString()?.split('.') || [];
         let result = String(strArr[0]).replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1,");
+        // TODO: 小数位不用分号
         if (strArr?.length > 1 && strArr[1]) {
             result += '.' + String(strArr[1]);
         }

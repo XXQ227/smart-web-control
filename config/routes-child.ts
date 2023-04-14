@@ -30,13 +30,37 @@ const cargo_route = {
             component: './sys-cargo/job-list',
             ...MICRO_APP_CARGO('cargo'),
         },
+        // {
+        //     name: 'job1',
+        //     icon: 'icon-cargo-ship',
+        //     path: '/cargo/job/:id/:bizType4id',
+        //     component: './sys-cargo/job',
+        // },
         {
             name: 'job',
             icon: 'icon-cargo-ship',
-            path: '/cargo/job/:id',
-            component: './sys-cargo/job',
+            path: '/cargo/job',
+            // 只有在编辑页面时，才显示
+            access: 'isJobEditPage',
+            routes: [
+                {
+                    path: '/cargo/job',
+                    redirect: '/cargo/job/job-info/:id/:bizType4id',
+                },
+                {
+                    name: 'job-info',
+                    icon: 'icon-cargo-ship',
+                    path: '/cargo/job/job-info/:id/:bizType4id',
+                    component: './sys-cargo/job/basicInfo',
+                },
+                {
+                    name: 'job-charge',
+                    icon: 'icon-cargo-ship',
+                    path: '/cargo/job/job-charge/:id/:bizType4id',
+                    component: './sys-cargo/job/charge',
+                },
+            ],
             ...MICRO_APP_CARGO('cargo'),
-            hideInMenu: true,   // 隐藏不显示
         },
     ],
 };

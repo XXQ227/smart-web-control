@@ -23,6 +23,7 @@ export const initUserInfo = {
 export function setSystemMes(sysMes: any = initUserInfo) {
     //设置token到客户端，并且同时设置登录用户权限到客户端
     sessionStorage.setItem('user-info', JSON.stringify(sysMes));
+    sessionStorage.setItem('authID', sysMes.AuthIDList);
     sessionStorage.setItem('auth', sysMes.AuthorityIDList);
     sessionStorage.setItem('password', sysMes.password);
     sessionStorage.setItem('userName', sysMes.DisplayName);
@@ -61,6 +62,9 @@ export function getAccess_Token() {
 export function getAuthority() {
     return sessionStorage.getItem('auth');
 }
+export function getAuthIDList() {
+    return sessionStorage.getItem('authID');
+}
 
 export function getCurrentUser() {
     return sessionStorage.getItem('userName');
@@ -83,7 +87,7 @@ export function getCityName() {
 }
 
 export function getCountryID() {
-    return sessionStorage.getItem('countryID');
+    return Number(sessionStorage.getItem('countryID'));
 }
 
 export function getCountryName() {
@@ -103,7 +107,7 @@ export function getIsSalesMan() {
 }
 
 export function getDivisionID() {
-    return sessionStorage.getItem('DivisionID');
+    return Number(sessionStorage.getItem('DivisionID'));
 }
 
 export function getBranchCode() {

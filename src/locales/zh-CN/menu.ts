@@ -59,6 +59,8 @@ export default {
   'menu.cargo': '货代',
   'menu.cargo.job': '单票',
   'menu.cargo.job-list': '单票列表',
+  'menu.cargo.job.job-info': '业务详情',
+  'menu.cargo.job.job-charge': '费用详情',
   'menu.manager': '管家',
   'menu.manager.manager': '智慧管家',
   'menu.manager.settlement': '结算对象',

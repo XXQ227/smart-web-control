@@ -25,10 +25,10 @@ export type Props = {
 
 const RightHeaderTags: React.FC<Props> = (props) => {
     const {onChangeGroup, groupInfo} = props;
-    console.log(props);
     // TODO: 左侧菜单栏控制
     const [collapsed, setCollapsed] = useState(false);
-    const [open, setOpen] = useState(true);
+    // 当没有分组时，不显示，有分组时，显示分组弹框，选默认分组
+    const [open, setOpen] = useState(!(groupInfo?.id));
     const [editableKeys, setEditableRowKeys] = useState<React.Key[]>([]);
     const [dataSource, setDataSource] = useState<DataSourceType[]>([]);
     // TODO: 分组选中行
@@ -206,7 +206,7 @@ const RightHeaderTags: React.FC<Props> = (props) => {
                             }
                             return result
                         },
-                    }}></EditableProTable>
+                    }} />
             </Modal>
         </Fragment>
     )

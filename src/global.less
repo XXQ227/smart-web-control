@@ -50,6 +50,23 @@ ol {
   background: #fff!important;
 }
 
+//region可编辑表格
+.editable-cell {
+  position: relative;
+}
+
+.editable-cell-value-wrap {
+  padding: 5px 12px;
+  cursor: pointer;
+}
+
+.editable-row:hover .editable-cell-value-wrap {
+  padding: 4px 11px;
+  border: 1px solid #d9d9d9;
+  border-radius: 2px;
+}
+//endregion
+
 .ant-right-header-tags-modal-form{
   top: 58px!important;
   margin: 0 60px!important;
@@ -86,6 +103,137 @@ ol {
     margin-bottom: 5px;
   }
 }
+
+.ant-card{
+  margin-bottom: 24px;
+}
+
+.ant-margin-bottom-24{
+  margin-bottom: 24px;
+}
+
+.ant-pro-table-charge-info{
+  .ant-pro-card-body{
+    padding: 0;
+  }
+  .ant-table {
+    .ant-table-title {
+      height: 40px;
+      padding: 4px 1px 4px 8px !important;
+      font-weight: bold;
+      .ant-table-title-info{
+        .ant-table-title-label{
+          margin-right: 30px;
+        }
+      }
+    }
+
+    .ant-table-content {
+      .ant-table-thead {
+        .ant-table-cell {
+          padding: 7px 3px !important;
+        }
+      }
+      .ant-table-tbody{
+        .ant-table-placeholder{
+          height: 37px;
+        }
+        input, select, .ant-select-selector{
+          border: 0!important;
+        }
+        td, input, select{
+          padding: 2px 1px !important;
+        }
+        .ant-form-item{
+          margin: 0;
+          .ant-form-item-explain{
+            display: none;
+          }
+          // TODO: Select 选择框
+          .ant-select-selector {
+            padding: 0 3px;
+            .ant-select-selection-search{
+              left: 4px!important;
+              input{
+                text-align: left;
+              }
+            }
+            .ant-select-selection-item {
+              padding-right: 5px;
+            }
+          }
+          .ant-select-arrow{
+            right: 4px;
+          }
+          // TODO: Input 编辑框
+          .ant-form-item-control-input-content{
+            height: 100% !important;
+            .ant-input-edit{
+              width: 100%;
+              height: 100%;
+              line-height: 32px;
+            }
+            .ant-input-status-error{
+              border: 1px #ff4d4f dashed!important;
+              &:after{
+                content: 'is required.';
+                right: 30px;
+                top: 120px;
+                color: #ff4d4f!important;
+                font-size: 23px;
+                background-color: #d91212;
+                width: 100px!important;
+                height: 32px!important;
+                font-weight:bold;
+              }
+            }
+            input {
+              height: 32px;
+            }
+            input,.ant-input-edit {
+              text-align: right;
+            }
+          }
+        }
+      }
+    }
+
+    .ant-table-footer{
+      .ant-table-footer-info{
+        margin-top: -8px!important;
+        .ant-space-item{
+          //margin-top: -6px!important;
+        }
+      }
+    }
+  }
+}
+
+.ant-pro-table-charge-info .ant-table .ant-table-content .ant-table-tbody .ant-form-item .ant-form-item-control-input-content .ant-input-status-error::after{
+
+  content: 'is required.';
+  right: 30px;
+  top: 120px;
+  color: #ff4d4f!important;
+  font-size: 23px;
+  background-color: #d91212;
+  width: 100px!important;
+  height: 32px!important;
+  font-weight:bold;
+}
+.ant-div-left{
+  float: left;
+}
+.ant-div-right{
+  float: right;
+}
+.ant-btn-charge-add{
+  width: 100%;
+  margin-top: 6px!important;
+  border: 1px dashed;
+}
+
+
 
 @media (max-width: @screen-xs) {
   .ant-table {

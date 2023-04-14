@@ -69,6 +69,7 @@ export default {
   'pages.sys.pol': '装货港',
   'pages.sys.pod': '卸货港',
   'pages.sys.etd-pol': 'ETD POL',
+  'pages.sys.create-date': '创建时间',
   'pages.sys.eta-pod': 'ETA POD',
   'pages.sys.mbl': '提单号(MB/L)',
   'pages.sys.hbl': '提单号(HB/L)',

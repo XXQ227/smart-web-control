@@ -11,7 +11,7 @@ interface T {
 
 
 export default (callback: T, deps: React.DependencyList) => {
-    //region TODO: 单票详情结构表
+    //region TODO: 业务详情结构表
     const jobInfo: API.NJobDetailDto = {
         ID: 0,
         NBasicInfo: {
@@ -30,12 +30,12 @@ export default (callback: T, deps: React.DependencyList) => {
     const [resResult, setResResult] = useState({});
 
     //region TODO: 接口
-    // TODO: 获取单票集
+    // TODO: 获取单票业务详情请求
     const getCJobInfoByID = useCallback(async (params: API.GetCJobByID) => {
         // TODO: 请求后台 API
         const response: API.GetCJobByIDResponse = await GetNJobInfoByIDAPI(params);
         if (!response) return;
-        const NJobDetailDto = response.Content?.NJobDetailDto;
+        const NJobDetailDto = response.Content?.NJobDetailDto || jobInfo;
         if (response.Result) {
             // TODO: 整理返回结果
             // TODO: 将数据存到 model 里
@@ -43,8 +43,7 @@ export default (callback: T, deps: React.DependencyList) => {
         }
         setResResult(response);
         return NJobDetailDto;
-    }, []);
-    //endregion
+    }, [jobInfo]);
 
 
     return {

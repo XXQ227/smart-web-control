@@ -11,6 +11,7 @@ import {getUserID, getUserInfo} from "@/utils/auths";
 import {icon_font_url} from '@/utils/units';
 import RightHeaderTags from '@/components/RightHeaderTags';
 import ls from 'lodash';
+import Exception403 from '@/pages/exception/403';
 
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -30,6 +31,7 @@ export async function getInitialState(): Promise<{
     loading?: boolean;
     collapsed?: boolean;    // TODO：是否展开左侧菜单栏
     groupInfo?: any;        // TODO: 分组信息
+    isJobEditPage?: boolean;// TODO: 是否是编辑页面
     fetchUserInfo?: () => Promise<API.LoginUserInfo | undefined>;
 }> {
     const fetchUserInfo = async () => {
@@ -41,24 +43,20 @@ export async function getInitialState(): Promise<{
         return undefined;
     };
     const userInfo = await fetchUserInfo();
+    // initialState 的返回结果
+    const result: any = {userInfo, fetchUserInfo, settings: defaultSettings,};
     // 如果不是登录页面，执行
-    // if (history.location.pathname !== loginPath) {
-    //     return {
-    //         userInfo,
-    //         fetchUserInfo,
-    //         settings: defaultSettings,
-    //     };
-    // }
-    return {
-        userInfo,
-        fetchUserInfo,
-        settings: defaultSettings,
-    };
+    if (history.location.pathname !== loginPath) {
+        result.groupInfo = {id: 624748504, name: '晶科'};
+        return result;
+    }
+    return result;
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
-    const groupInfo: any = initialState?.groupInfo || {};
+    // eslint-disable-next-line prefer-const
+    let initInfo: any = ls.cloneDeep(initialState) || {};
     /**
      * @Description: TODO 选中分组后，重新获取 <单票列表> 的数据
      * @author XXQ
@@ -67,14 +65,14 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
      * @returns
      */
     const onChangeGroup = (selectedRows: object) => {
-        // eslint-disable-next-line prefer-const
-        let initInfo: any = ls.cloneDeep(initialState);
         // 把分组信息存到初始化数据中
         initInfo.groupInfo = selectedRows;
         setInitialState(initInfo);
     }
+    const {location} = history;
     return {
         title: 'Smart',
+        // route: routes,
         // TODO: 顶部右侧
         rightContentRender: () => <RightContent/>,
         disableContentMargin: false,
@@ -82,18 +80,55 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         waterMarkProps: {
             content: initialState?.userInfo?.DisplayName,
         },
-        onCollapse: (e) => {
-            // console.log(e);
-        },
         iconfontUrl: icon_font_url,
         // collapsed: true,
         footerRender: () => !!initialState?.userInfo?.ID && <Footer/>,
         enableDarkTheme: true,
+        // 菜单的折叠收起事件
+        onCollapse: (e) => {
+            // console.log(e);
+        },
+        // 侧边菜单宽度
+        siderWidth: 130,
+        // 页面切换时触发
         onPageChange: () => {
-            const {location} = history;
+            // 当前页面的路径 <history>
+            const newPathname = history?.location?.pathname;
+            // 上一个页面的路径
+            const oldPathname = location?.pathname;
             // 如果没有登录【!getUserID()】，重定向到登录页面【/user/login】
-            if (!getUserID() && location.pathname !== loginPath) {
+            if (!getUserID() && newPathname !== loginPath) {
                 history.push(loginPath);
+            } else {
+                // 判断是不是单票编辑页面，只有在编辑页面时才显示，跟 access.ts 文配合使用
+                // let isSetJobEditPage = false;
+                // if (newPathname.indexOf('/cargo/job/') > -1) {
+                //     isSetJobEditPage = true;
+                //     initInfo.isJobEditPage = true
+                // } else if (oldPathname.indexOf('/cargo/job/') > -1) {
+                //     isSetJobEditPage = true;
+                //     initInfo.isJobEditPage = false
+                // }
+                // // 只能进入过业务详情页面时，才做 set 操作
+                // if (isSetJobEditPage) {
+                //     setInitialState(initInfo);
+                // }
+                initInfo.isJobEditPage = history?.location?.pathname?.indexOf('/cargo/job/') > -1;
+                setInitialState(initInfo);
+                const newPathnameArr = newPathname?.split('/') ?? [];
+                const oldPathParamsArr = oldPathname.split('/') ?? [];
+                // console.log(pathname.indexOf('/cargo/job/job-') > -1, pathname);
+                // if (pathnameHistory.indexOf('/cargo/job/job-') > -1 && pathnameHistory[4] === ':id') {
+                //     console.log(pathnameHistory);
+                //     history.push({
+                //         pathname: `/cargo/job/${pathnameHistory[3]}/${pathParams[4]}/${pathParams[5]}`,
+                //     })
+                // }
+                // 当路径为 <route.ts> 中定义的路径时，重新配置路径
+                if (newPathname.indexOf('/cargo/job/') > -1 && newPathnameArr[4] === ':id') {
+                    // 参数用旧的，路径用新的
+                    history.push({pathname: `/cargo/job/${newPathnameArr[3]}/${oldPathParamsArr[4]}/${oldPathParamsArr[5]}`});
+                }
             }
         },
         // TODO: 左侧菜单拦的点击设置
@@ -115,11 +150,9 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
                 null
             ]
             : [],
-        menuHeaderRender: () => <RightHeaderTags onChangeGroup={onChangeGroup} groupInfo={groupInfo} />,
+        menuHeaderRender: () => <RightHeaderTags onChangeGroup={onChangeGroup} groupInfo={initInfo.groupInfo} />,
         // menuDataRender: (menuData)=> menuData,
         // 自定义 403 页面
-        // unAccessible: <div>unAccessible</div>,
-        // 增加一个 loading 的状态
         childrenRender: (children, props) => {
             // if (initialState?.loading) return <PageLoading />;
             return (
@@ -142,6 +175,8 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
                 </>
             );
         },
+        // 增加一个 loading 的状态
+        unAccessible: initInfo.isJobEditPage ? <div/> : <Exception403/>,
         ...initialState?.settings,
     };
 };
