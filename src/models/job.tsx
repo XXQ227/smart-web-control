@@ -19,6 +19,9 @@ export default (callback: T, deps: React.DependencyList) => {
             Principal: {
                 SalesManID: 0,
                 SalesManName: '',
+                PrincipalXID: 0,
+                PrincipalXName: '',
+                PrincipalXNameEN: '',
             },
         },
     };

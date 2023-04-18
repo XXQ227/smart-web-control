@@ -89,6 +89,9 @@ declare namespace API {
     type Principal = {
         SalesManID: number,
         SalesManName: string,
+        PrincipalXID: number,
+        PrincipalXName: string,
+        PrincipalXNameEN: string,
     }
     //endregion TODO: 单票业务详情返回结果
 

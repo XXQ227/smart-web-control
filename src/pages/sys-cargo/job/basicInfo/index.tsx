@@ -6,6 +6,7 @@ import {getUserID} from '@/utils/auths'
 import {history, useModel} from 'umi'
 import {useIntl} from '@@/plugin-locale/localeExports'
 import {getTitleInfo, colGrid, rowGrid} from '@/utils/units'
+import SearchInput from '@/components/SearchInput'
 
 const FormItem = Form.Item;
 // TODO: 用来判断是否是第一次加载数据
@@ -43,6 +44,18 @@ const BasicInfo: React.FC<RouteChildrenProps> = (props) => {
         }
     }, [getCJobInfoByID, jobID, params?.bizType4id, params?.id])
 
+    /**
+     * @Description: TODO: change 事件
+     * @author XXQ
+     * @date 2023/4/17
+     * @param filedName
+     * @param val
+     * @param option
+     * @returns
+     */
+    const handleChange =(filedName: string, val: any, option?: any)=> {
+        console.log(filedName, val, option);
+    }
 
     // 初始化（或用于 message 提醒）
     const intl = useIntl();
@@ -88,6 +101,26 @@ const BasicInfo: React.FC<RouteChildrenProps> = (props) => {
                     <Col {...colGrid}>
                         <FormItem label={formLabel('sales', '销售')}>
                             {Principal?.SalesManName}
+                        </FormItem>
+                    </Col>
+                </Row>
+                <Row gutter={rowGrid}>
+                    <Col {...colGrid}>
+                        <FormItem
+                            label={'客户'}
+                            initialValue={{value: Principal.PrincipalXID, label: Principal.PrincipalXName}}
+                        >
+                            <SearchInput
+                                qty={5}
+                                id={'Customer'}
+                                value={{value: Principal.PrincipalXID, label: Principal.PrincipalXName}}
+                                url={'/api/MCommon/GetCTNameByStrOrType'}
+                                query={{
+                                    IsJobCustomer: true, BusinessLineID: null,
+                                    UserID: getUserID(), CTType: 1, SystemID: 4,
+                                }}
+                                handleChangeData={(val: any, option: any)=> handleChange('CustomerID', val, option)}
+                            />
                         </FormItem>
                     </Col>
                 </Row>
