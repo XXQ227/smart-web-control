@@ -6,24 +6,52 @@ import { stringify } from 'qs';
 import {getBranchID, getUserID} from '@/utils/auths'
 
 
+/**
+ * @Description: TODO: 远程获得数据。并重组后台返回的数据参数结构
+ * @author XXQ
+ * @date 2023/4/17
+ * @param searchVal 搜索参数
+ * @param url       后台接口地址
+ * @param query     查询参数
+ * @param qty       查询数量
+ * @param resValue  返回结果的 【Key】 值
+ * @param resLabel  返回结果的 【Value】 值
+ * @returns
+ */
+export async function fetchData(searchVal: any, url: string, query: any, qty: number = 5, resValue: string, resLabel: string): Promise<API.APISearchResult[]> {
+    const params = Object.assign({}, query, {value: searchVal, PageSize: qty});
+    const options: any = { headers: { Lang: 'en_EN', BranchID: getBranchID(),UserID: getUserID()} };
+    return fetch(`${url}?${stringify(params)}`, options)
+        .then(response => response.json())
+        .then((result) => {
+            // TODO: 返回结果
+            return result.map((item: any) => ({value: item[resValue], label: item[resLabel], data: item}));
+        })
+        .catch(e => {
+            console.log(e);
+        });
+}
+
 export interface DebounceSelectProps<ValueType = any>
     extends Omit<SelectProps<ValueType | ValueType[]>, 'options' | 'children'> {
-    fetchOptions: (search: string) => Promise<ValueType[]>;     // TODO: 异步获取数据
+    fetchOptions: (search: string, url: string, query: any, qty: number, resValue: string, resLabel: string) => Promise<ValueType[]>;     // TODO: 异步获取数据
     debounceTimeout?: number;       // TODO: 防抖动时间；默认：1000
+    fetchParams?: any;              // TODO: 查询参数
     handleChangeData?: (val: any, option?: any) => void,   // 选中后，返回的结果
 }
 
 function DebounceSelect<
     ValueType extends { key?: string | number; label: React.ReactNode; value: string | number } = any,
->({ fetchOptions, debounceTimeout = 1000, handleChangeData, ...props }: DebounceSelectProps<ValueType>) {
+>({ fetchOptions, debounceTimeout = 1000, fetchParams, handleChangeData, ...props }: DebounceSelectProps<ValueType>) {
     const [fetching, setFetching] = useState(false);
     const [options, setOptions] = useState<ValueType[]>([]);
     const fetchRef = useRef(0);
+    const {url, query, qty, resValue, resLabel} = fetchParams;
 
     // TODO: 【useMemo: 】做性能优化用的；类似类组件的性能优化的方法【shouldComponentUpdate、PureComponent】，当数据变动时，做更新
     const debounceFetcher = useMemo(() => {
         /**
-         * @Description: TODO: 搜索结果
+         * @Description: TODO: 搜索结果显示
          * @author XXQ
          * @date 2023/4/18
          * @param value     搜索参数
@@ -35,7 +63,7 @@ function DebounceSelect<
             // TODO: 初始数据，且做【loading】
             setOptions([]);
             setFetching(true);
-            fetchOptions(value).then(newOptions => {
+            fetchOptions(value, url, qty, query, resValue, resLabel).then(newOptions => {
                 if (fetchId !== fetchRef.current) {
                     // for fetch callback order
                     return;
@@ -46,7 +74,7 @@ function DebounceSelect<
         };
         // TODO: 返回数据，做防抖动设置
         return debounce(loadOptions, debounceTimeout);
-    }, [fetchOptions, debounceTimeout]);
+    }, [debounceTimeout, fetchOptions, url, qty, query, resValue, resLabel]);
 
 
     /**
@@ -81,13 +109,6 @@ function DebounceSelect<
     );
 }
 
-// TODO: 返回结果的类型
-type searchResult = {
-    value: number | string,
-    label: string,
-    data?: any
-}
-
 // TODO: 父组件传回来的值
 interface Props {
     id: any,
@@ -104,34 +125,13 @@ interface Props {
 const SearchInput: React.FC<Props> = (props) => {
     const {url, qty, query, disabled, filedValue, filedLabel, } = props;
     // 设置是否是编辑
-    const [value, setValue] = useState<searchResult>(props.value || {});
+    const [value, setValue] = useState<API.APISearchResult>(props.value || {});
 
     // TODO: 返回结果的数据结构；默认 {Key: number, Value: string}，当有其他返回键值对时，在组件调用时定义
     const resValue: string = filedValue || 'Key';
     const resLabel: string = filedLabel || 'Value';
     // const [resValue, setResValue] = useState<string>('Key');
     // const [resLabel, setResLabel] = useState<string>('Value');
-
-    /**
-     * @Description: TODO: 远程获得数据。并重组后台返回的数据参数结构
-     * @author XXQ
-     * @date 2023/4/17
-     * @param searchVal 搜索参数
-     * @returns
-     */
-    async function fetchData(searchVal: any): Promise<searchResult[]> {
-        const params = Object.assign({}, query, {value: searchVal, PageSize: qty || 5});
-        const options: any = { headers: { Lang: 'en_EN', BranchID: getBranchID(),UserID: getUserID()} };
-        return fetch(`${url}?${stringify(params)}`, options)
-            .then(response => response.json())
-            .then((result) => {
-                // TODO: 返回结果
-                return result.map((item: any) => ({value: item[resValue], label: item[resLabel], data: item}));
-            })
-            .catch(e => {
-                console.log(e);
-            });
-    }
 
     /**
      * @Description: TODO: onChange、onSelect 方法，选中后返回结果
@@ -155,6 +155,7 @@ const SearchInput: React.FC<Props> = (props) => {
             showSearch={true}
             disabled={!!disabled}
             fetchOptions={fetchData}
+            fetchParams={{url, query, qty, resValue, resLabel}}
             style={{ width: '100%' }}
             dropdownMatchSelectWidth={false}
             // onChange={newValue => handleChange(newValue)}

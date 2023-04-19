@@ -23,6 +23,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
 
     /** 实例化Form */
     const [form] = Form.useForm();
+    const formRef = React.useRef<FormInstance>(null);
 
     const [jobID, setJobID] = useState(0);
     // TODO: 用来判断是否是第一次加载数据
@@ -118,8 +119,6 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
 
     // TODO: 获取列名<Title>
     const formLabel = (code: string, defaultMessage: string) => getTitleInfo(code, intl, defaultMessage);
-
-    const formRef = React.useRef<FormInstance>(null);
 
     const baseCGDON: any = {formRef, FormItem, handleChangeData};
 

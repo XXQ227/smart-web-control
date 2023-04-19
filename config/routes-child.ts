@@ -51,7 +51,7 @@ const cargo_route = {
                     name: 'job-info',
                     icon: 'icon-cargo-ship',
                     path: '/cargo/job/job-info/:id/:bizType4id',
-                    component: './sys-cargo/job/basicInfo',
+                    component: './sys-cargo/job/basicInfoForm',
                 },
                 {
                     name: 'job-charge',

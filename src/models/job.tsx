@@ -22,6 +22,12 @@ export default (callback: T, deps: React.DependencyList) => {
                 PrincipalXID: 0,
                 PrincipalXName: '',
                 PrincipalXNameEN: '',
+                PayerID: 0,
+                PayerName: '',
+                PayerNameEN: '',
+                CargoOwnerID: 0,
+                CargoOwnerName: '',
+                CargoOwnerNameEN: '',
             },
         },
     };

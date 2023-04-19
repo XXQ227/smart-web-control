@@ -92,6 +92,16 @@ declare namespace API {
         PrincipalXID: number,
         PrincipalXName: string,
         PrincipalXNameEN: string,
+        PayerID?: number,
+        PayerName?: string,
+        PayerNameEN?: string,
+        CargoOwnerID?: number,
+        CargoOwnerName?: string,
+        CargoOwnerNameEN?: string,
+        BookingUserID?: number,
+        BookingUserName?: string,
+        CGItemID?: number,
+        CGItemName?: string,
     }
     //endregion TODO: 单票业务详情返回结果
 

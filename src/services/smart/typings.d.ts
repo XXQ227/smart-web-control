@@ -140,4 +140,11 @@ declare namespace API {
     Value?: string
   }
 
+  // TODO: SearchInput、SearchModal 组件的返回结果的数据结构
+  type APISearchResult = {
+    value: number | string,
+    label: string,
+    data?: any
+  }
+
 }
