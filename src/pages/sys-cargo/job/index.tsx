@@ -15,7 +15,7 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
         {
             key: '1',
             label: `业务详情`,
-            children: <BasicInfo {...props} />,
+            children: <BasicInfo FormItem={undefined} title={''} NBasicInfo={undefined} Principal={undefined} {...props} />,
         },
         {
             key: '2',

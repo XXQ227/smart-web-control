@@ -70,6 +70,11 @@ declare namespace API {
             AccountPeriodInfo?: AccountPeriodInfo,
         }
     }
+
+    type CommonBasicInfo = {
+        SalesMan: API.APIKey$Value,
+    }
+
     type NJobDetailDto = {
         ID: number,
         NBasicInfo?: NBasicInfo,
@@ -100,8 +105,8 @@ declare namespace API {
         CargoOwnerNameEN?: string,
         BookingUserID?: number,
         BookingUserName?: string,
-        CGItemID?: number,
-        CGItemName?: string,
+        POLID?: number,
+        POLName?: string,
     }
     //endregion TODO: 单票业务详情返回结果
 
@@ -120,36 +125,38 @@ declare namespace API {
     }
     type PRCGInfo = {
         CGID?: any,
-        CTID?: number,
+        CTID?: number | null,
         CTName?: string,
-        CGItemID?: number,
+        CGItemID?: number | null,
         CGItemName?: string,
+        CGUnitID?: number | null,
+        CGUnitName?: string,
         QTY?: any,
         QTYStr?: string,
         UnitPrice?: any,
         UnitPriceStr?: string,
         Amount?: any,
         AmountStr?: string,
-        AmountABill?: number,
-        AmountFunc?: number,
-        AmountFuncNoTax?: number,
-        IsOperatorConfirm?: boolean,
-        IsManagerConfirm?: boolean,
-        IsSecondConfirm?: boolean,
+        AmountABill?: number | null,
+        AmountFunc?: number | null,
+        AmountFuncNoTax?: number | null,
+        IsOperatorConfirm?: boolean | null,
+        IsManagerConfirm?: boolean | null,
+        IsSecondConfirm?: boolean | null,
         CurrencyID?: number,
         CurrencyName?: string,
         ABillCurrencyTempID?: number,
         ABillCurrencyTempName?: string,
         ExRate?: number,
         ExRateStr?: string,
-        CreatorID?: number,
+        CreatorID?: number | null,
         CreatorName?: string,
         InvoTypeID?: number,
         InvoTypeName?: string,
         Remark?: string,
         CreateTime?: string,
-        isChange?: boolean,
-        InvoNum?: number,
+        isChange?: boolean | null,
+        InvoNum?: string | null,
         State?: string,
         CGType?: number,
     }

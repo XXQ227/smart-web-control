@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components';
 import {Button, Col, Form, message, Row} from 'antd';
@@ -14,16 +14,20 @@ let isLoadingData = false;
 const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}} = props;
+    //region TODO: 数据层
     const {
         JobChargeInfo: {NBasicInfo, PayCGList, ReceiveCGList}, getCJobCGByID
     } = useModel('jobCharge', (res: any) => ({
         JobChargeInfo: res.JobChargeInfo,
         getCJobCGByID: res.getCJobCGByID,
     }));
+    //endregion
 
     /** 实例化Form */
     const [form] = Form.useForm();
-    const formRef = React.useRef<FormInstance>(null);
+    const formRef = useRef<FormInstance>(null);
+    // TODO: form.current 里【取值、改值】的方法
+    const formCurrent: any = formRef?.current;
 
     const [jobID, setJobID] = useState(0);
     // TODO: 用来判断是否是第一次加载数据
@@ -84,25 +88,13 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                     const isChangeCG: API.PRCGInfo[] = [...arChangeList, ...apChangeList];
                     console.log(isChangeCG, arChangeList );
                 } else {
-                    message.info('没有需要保存的数据')
+                    message.info('没有需要保存的数据');
                 }
             })
             .catch((errorInfo) => {
                 /** 错误信息 */
                 console.log(errorInfo);
-            });
-    }
-
-    /**
-     * @Description: TODO: 提交失败。弹出错误提示
-     * @author XXQ
-     * @date 2023/4/14
-     * @returns
-     */
-    const onFinishFailed = () => {
-        form.validateFields()
-            .catch((errorInfo) => {
-                /** 错误信息 */
+                // TODO: 提交失败。弹出错误提示
                 const {errorFields} = errorInfo;
                 if (errorFields?.length > 0) {
                     const errList = errorFields.map((x: any)=> x.errors[0]);
@@ -112,7 +104,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                     message.error(errInfo);
                 }
             });
-    };
+    }
 
     // 初始化（或用于 message 提醒）
     const intl = useIntl();
@@ -120,7 +112,8 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
     // TODO: 获取列名<Title>
     const formLabel = (code: string, defaultMessage: string) => getTitleInfo(code, intl, defaultMessage);
 
-    const baseCGDON: any = {formRef, FormItem, handleChangeData};
+    // TODO: 传给子组件的参数
+    const baseCGDON: any = {form, formRef, formCurrent, FormItem, handleChangeData};
 
     return (
         <PageContainer
@@ -170,7 +163,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                 name={'formCharge'}
                 autoComplete={'off'}
                 onFinish={handleSave}
-                onFinishFailed={onFinishFailed}
+                onFinishFailed={handleSave}
             >
                 <ProCard title={'费用信息'} className={'ant-card'} bordered={true} extra={
                     <div>
@@ -196,10 +189,8 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                         <Col span={24}>
                             <ChargeTable
                                 CGType={2}
-                                formRef={formRef}
-                                FormItem={FormItem}
+                                {...baseCGDON}
                                 CGList={payCGList}
-                                handleChangeData={handleChangeData}
                             />
                         </Col>
                     </Row>

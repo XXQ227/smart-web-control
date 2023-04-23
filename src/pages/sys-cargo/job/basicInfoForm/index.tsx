@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {history, useModel} from 'umi';
 import type {RouteChildrenProps} from 'react-router';
-import {FooterToolbar, PageContainer} from '@ant-design/pro-components';
-import {Button, Form, message} from 'antd';
+import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components';
+import {Button, Col, Form, message, Row} from 'antd';
 import {getUserID} from '@/utils/auths';
 import BasicInfo from '@/pages/sys-cargo/job/basicInfoForm/basicInfo';
-import type {FormInstance} from 'antd/es/form';
+import {colGrid, getTitleInfo, rowGrid} from '@/utils/units'
+import {useIntl} from '@@/plugin-locale/localeExports'
 
 
 const FormItem = Form.Item;
@@ -15,17 +16,19 @@ let isLoadingData = false;
 const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}} = props;
-    /** 实例化Form */
-    const [form] = Form.useForm();
-    const formRef = React.useRef<FormInstance>(null);
-
     //region TODO: 数据层
     const {
+        SalesMan,
         CJobInfo: {NBasicInfo, NBasicInfo: {Principal}}, getCJobInfoByID
     } = useModel('job', (res: any) => ({
         CJobInfo: res.CJobInfo,
         getCJobInfoByID: res.getCJobInfoByID,
     }));
+    //endregion
+
+    /** 实例化Form */
+    const [form] = Form.useForm();
+
     const [jobID, setJobID] = useState(0);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
@@ -55,13 +58,13 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const handleSave = () => {
-        console.log(1111);
         form.validateFields()
             .then((value) => {
-                console.log(value);
+                console.log('value: ', value);
             })
             .catch((errorInfo) => {
-                console.log(errorInfo);
+                // TODO: 提交失败。弹出错误提示
+                console.log('errorInfo: ' + errorInfo);
                 /** 错误信息 */
                 const {errorFields} = errorInfo;
                 if (errorFields?.length > 0) {
@@ -73,28 +76,12 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
                 }
             });
     }
-    /**
-     * @Description: TODO: 提交失败。弹出错误提示
-     * @author XXQ
-     * @date 2023/4/14
-     * @returns
-     */
-    const onFinishFailed = () => {
-        console.log(22222);
-        form.validateFields()
-            .catch((errorInfo) => {
-                /** 错误信息 */
-                const {errorFields} = errorInfo;
-                if (errorFields?.length > 0) {
-                    const errList = errorFields.map((x: any)=> x.errors[0]);
-                    // TODO: 去重
-                    const errArr: any = Array.from(new Set(errList));
-                    const errInfo = errArr.toString().replace(/,/g, ',  /  ');
-                    message.error(errInfo);
-                }
-            });
-    };
+    // 初始化（或用于 message 提醒）
+    const intl = useIntl();
+    // TODO: 获取列名<Title>
+    const formLabel = (code: string, defaultMessage: string) => getTitleInfo(code, intl, defaultMessage);
 
+    const baseCGDON: any = {form, FormItem};
 
     return (
         <PageContainer
@@ -104,16 +91,58 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
                 breadcrumb: {},
             }}
         >
+            <ProCard className={'ant-card'}>
+                <Form
+                    layout={'inline'}
+                    name={'showBasicInfo'}
+                >
+                    <Row gutter={rowGrid}>
+                        <Col {...colGrid}>
+                            <FormItem label={formLabel('code', '业务编号')}>
+                                {NBasicInfo?.Code}
+                            </FormItem>
+                        </Col>
+                        <Col {...colGrid}>
+                            <FormItem label={formLabel('sales', '销售')}>
+                                {Principal?.SalesManName}
+                            </FormItem>
+                        </Col>
+                        <Col {...colGrid}>
+                            <FormItem label={formLabel('sales', '销售')}>
+                                {Principal?.SalesManName}
+                            </FormItem>
+                        </Col>
+                        <Col {...colGrid}>
+                            <FormItem label={formLabel('sales', '销售')}>
+                                {Principal?.SalesManName}
+                            </FormItem>
+                        </Col>
+                        <Col {...colGrid}>
+                            <FormItem label={formLabel('sales', '销售')}>
+                                {Principal?.SalesManName}
+                            </FormItem>
+                        </Col>
+                        <Col {...colGrid}>
+                            <FormItem label={formLabel('sales', '销售')}>
+                                {Principal?.SalesManName}
+                            </FormItem>
+                        </Col>
+                    </Row>
+                </Form>
+            </ProCard>
             <Form
                 form={form}
-                ref={formRef}
+                // ref={formRef}
+                name={'formBasic'}
+                layout={'vertical'}
                 autoComplete={'off'}
                 onFinish={handleSave}
-                onFinishFailed={onFinishFailed}
+                onFinishFailed={handleSave}
             >
                 {/* 委托信息 */}
                 <BasicInfo
-                    title={'委托信息'} FormItem={FormItem}
+                    {...baseCGDON}
+                    title={'委托信息'}
                     NBasicInfo={NBasicInfo} Principal={Principal}
                 />
 

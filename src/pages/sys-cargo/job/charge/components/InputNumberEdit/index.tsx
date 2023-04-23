@@ -4,7 +4,8 @@ import {Input} from 'antd'
 interface Props {
     id: any,
     value: any,
-    valueStr: string,
+    valueStr?: string,
+    className?: string,
 
     // TODO: 保存
     handleChangeData: (val: any) => void,
@@ -46,6 +47,7 @@ const InputEdit: React.FC<Props> = (props) => {
             id={props.id}
             autoComplete='off'
             onChange={handleChange}
+            className={props.className}
             value={isEdit ? value : props.valueStr || ''}
             // 获取焦点时，进入编辑状态
             onFocusCapture={()=> setIsEdit(true)}

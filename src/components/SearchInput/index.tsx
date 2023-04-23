@@ -37,6 +37,7 @@ export interface DebounceSelectProps<ValueType = any>
     fetchOptions: (search: string, url: string, query: any, qty: number, resValue: string, resLabel: string) => Promise<ValueType[]>;     // TODO: 异步获取数据
     debounceTimeout?: number;       // TODO: 防抖动时间；默认：1000
     fetchParams?: any;              // TODO: 查询参数
+    value?: any,                    // TODO: 默认值
     handleChangeData?: (val: any, option?: any) => void,   // 选中后，返回的结果
 }
 
@@ -103,7 +104,7 @@ function DebounceSelect<
             onSearch={debounceFetcher}
             // TODO: 当下拉列表为空时显示的内容
             notFoundContent={fetching ? <Spin size="small" /> : null}
-            onChange={newValue => handleChange(newValue)}
+            // onChange={newValue => handleChange(newValue)}
             onSelect={(newValue, option) => handleChange(newValue, option)}
         />
     );
@@ -155,9 +156,9 @@ const SearchInput: React.FC<Props> = (props) => {
             showSearch={true}
             disabled={!!disabled}
             fetchOptions={fetchData}
-            fetchParams={{url, query, qty, resValue, resLabel}}
             style={{ width: '100%' }}
             dropdownMatchSelectWidth={false}
+            fetchParams={{url, query, qty, resValue, resLabel}}
             // onChange={newValue => handleChange(newValue)}
             // onSelect={(newValue, option) => handleChange(newValue, option)}
             handleChangeData={(newValue, option) => handleChange(newValue, option)}

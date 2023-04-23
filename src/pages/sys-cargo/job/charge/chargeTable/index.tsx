@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Button, Col, Popconfirm, Row, Select, Space, Table} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import {PlusOutlined} from '@ant-design/icons';
-// import {useModel} from '@@/plugin-model/useModel';
 import {useModel} from 'umi';
 import {getBranchID, getFuncCurrency, getUserID} from '@/utils/auths';
 import {formatNumToMoney, keepDecimal} from '@/utils/units';
@@ -10,12 +9,16 @@ import InputEdit from '@/pages/sys-cargo/job/charge/components/InputNumberEdit'
 import {ChargeStateEnum} from '@/utils/enum'
 import {stringify} from 'querystring';
 import ls from 'lodash';
+import SearchModal from '@/components/SearchModal';
+
 const Option = Select.Option;
 
 interface Props {
     CGType: number,
     CGList: any,
+    form: any,
     formRef: any,
+    formCurrent: any,
     FormItem: any,
     // TODO: 保存
     handleChangeData: (data: any, CGType: number) => void,
@@ -31,13 +34,11 @@ type ABillRateResult = {
 
 const ChargeTable: React.FC<Props> = (props) => {
     // @ts-ignore
-    const {CGType, CGList, formRef, FormItem} = props;
+    const {CGType, CGList, form, formCurrent, FormItem} = props;
     const {
         ChargeBaseInfo: {CurrencyOpts}
     } = useModel('jobCharge', (res: any) => ({ChargeBaseInfo: res.ChargeBaseInfo}));
 
-    // TODO: form.current 里【取值、改值】的方法
-    const formCurrent: any = formRef?.current;
 
     const [cgList, setCGList] = useState<API.PRCGInfo[]>(CGList || []);
     const [currRateList, setCurrRateList] = useState<ABillRateResult[]>([]);
@@ -48,17 +49,71 @@ const ChargeTable: React.FC<Props> = (props) => {
             dataIndex: 'CGItemName',
             align: 'center',
             width: 140,
+            render: (text: any, record, index) =>
+                <FormItem
+                    initialValue={record.CGItemID}
+                    name={`CGItemID${record.CGID}`}
+                    rules={[{required: true, message: '请输入费用名称!'}]}
+                >
+                    <SearchModal
+                        qty={13}
+                        text={text}
+                        title={'Charge Name'}
+                        value={record.CGItemID}
+                        id={`CGItemID${record.CGID}`}
+                        url={'/api/MCommon/GetProCGItemByProID'}
+                        query={{UserID: getUserID(), CTType: 1, SystemID: 4,}}
+                        handleChangeData={(val: any, option: any)=> handleRowChange(index, record.CGID, 'CGItemID', val, option)}
+                    />
+                </FormItem>
         },
         {
             title: CGType === 1 ? 'Customer' : 'Payer',
-            dataIndex: 'CGItemName',
+            dataIndex: 'CTName',
             align: 'center',
+            render: (text: any, record, index) =>
+                <FormItem
+                    name={`CTID${record.CGID}`}
+                    initialValue={record.CGItemID}
+                    rules={[{required: true, message: `请输入${CGType === 1 ? 'Customer' : 'Payer'}`}]}
+                >
+                    <SearchModal
+                        qty={13}
+                        text={text}
+                        value={record.CTID}
+                        id={`CTID${record.CGID}`}
+                        url={'/api/MCommon/GetCTNameByStrOrType'}
+                        title={CGType === 1 ? 'Customer' : 'Payer'}
+                        query={{
+                            searchPayer: true, BusinessLineID: null,
+                            UserID: getUserID(), CTType: 1, SystemID: 4,
+                        }}
+                        handleChangeData={(val: any, option: any)=> handleRowChange(index, record.CGID, 'CTID', val, option)}
+                    />
+                </FormItem>
         },
         {
             title: 'Unit',
-            dataIndex: 'UnitName',
+            dataIndex: 'CGUnitName',
             align: 'center',
             width: 140,
+            render: (text: any, record, index) =>
+                <FormItem
+                    name={`CGUnitID${record.CGID}`}
+                    initialValue={record.CGUnitID}
+                    rules={[{required: true, message: '请输入费用单位!'}]}
+                >
+                    <SearchModal
+                        qty={13}
+                        text={text}
+                        title={'Unit'}
+                        value={record.CGUnitID}
+                        id={`CGUnitID${record.CGID}`}
+                        query={{BranchID: getBranchID()}}
+                        url={'/api/MCommon/GetCGUnitByStr'}
+                        handleChangeData={(val: any, option: any)=> handleRowChange(index, record.CGID, 'CGUnitID', val, option)}
+                    />
+                </FormItem>
         },
         {
             title: 'Currency',
@@ -93,7 +148,8 @@ const ChargeTable: React.FC<Props> = (props) => {
                     rules={[{required: true, message: `QTY is required.`}]}
                 >
                     <InputEdit
-                        id={`QTY${record.CGID}`} value={text} valueStr={record.QTYStr}
+                        value={text} valueStr={record.QTYStr}
+                        id={`QTY${record.CGID}`} className={'isNumber-inp'}
                         handleChangeData={(val) => handleRowChange(index, record.CGID, 'QTY', val)}
                     />
                 </FormItem>,
@@ -109,7 +165,8 @@ const ChargeTable: React.FC<Props> = (props) => {
                     rules={[{required: true, message: `Unit Price is required.`}]}
                 >
                     <InputEdit
-                        id={`UnitPrice${record.CGID}`} value={text} valueStr={record.UnitPriceStr}
+                        value={text} valueStr={record.UnitPriceStr}
+                        id={`UnitPrice${record.CGID}`} className={'isNumber-inp'}
                         handleChangeData={(val) => handleRowChange(index, record.CGID, 'UnitPrice', val)}
                     />
                 </FormItem>,
@@ -148,7 +205,8 @@ const ChargeTable: React.FC<Props> = (props) => {
                     rules={[{required: true, message: `Ex-Rate is required.`}]}
                 >
                     <InputEdit
-                        id={`ExRate${record.CGID}`} value={text} valueStr={record.ExRateStr}
+                        value={text} valueStr={record.ExRateStr}
+                        id={`ExRate${record.CGID}`} className={'isNumber-inp'}
                         handleChangeData={(val) => handleRowChange(index, record.CGID, 'ExRate', val)}
                     />
                 </FormItem>
@@ -188,9 +246,9 @@ const ChargeTable: React.FC<Props> = (props) => {
         const CGID = Date.now().toString();
         const newDataObj: API.PRCGInfo = {
             CGID,
-            CTID: 0,
+            CTID: null,
             CTName: '',
-            CGItemID: 0,
+            CGItemID: null,
             // CGItemName: '',
             QTY: null,
             UnitPrice: null,
@@ -198,7 +256,7 @@ const ChargeTable: React.FC<Props> = (props) => {
             AmountABill: 0,
             AmountFunc: 0,
             AmountFuncNoTax: 0,
-            InvoNum: 0,
+            InvoNum: '',
             IsOperatorConfirm: false,
             IsManagerConfirm: false,
             IsSecondConfirm: false,
@@ -226,32 +284,34 @@ const ChargeTable: React.FC<Props> = (props) => {
      * @date 2023/4/10
      * @param index     费用索引行
      * @param rowID     费用行
-     * @param fieldName 当前操作字段
+     * @param filedName 当前操作字段
      * @param val       当前行结果
      * @param data      选中的数据集
      * @returns
      */
-    function handleRowChange(index: number, rowID: any, fieldName: string, val: any, data?: any) {
+    function handleRowChange(index: number, rowID: any, filedName: string, val: any, data?: any) {
         const newData: API.PRCGInfo[] = cgList?.map((item: API.PRCGInfo) => ({...item})) || [];
         const target: any = newData.find((item: API.PRCGInfo) => item.CGID === rowID) || {};
+
+        const fileLen: number = filedName.length;
         // TODO: 当录入【数量、单价、汇率】时，转成数字型
-        target[fieldName] = ['QTY', 'UnitPrice', 'ExRate'].includes(fieldName) ? Number(val) || null : val?.target ? val?.target?.value || null : val;
+        target[filedName] = ['QTY', 'UnitPrice', 'ExRate'].includes(filedName) ? Number(val) || null : val?.target ? val?.target?.value || null : val;
         // TODO: 用于设置 form 里的值，否则必填字段验证时不会被响应
-        formCurrent?.setFieldsValue({[`${fieldName}${rowID}`]: target[fieldName]});
+        const setFieldsVal = {[`${filedName}${rowID}`]: target[filedName]};
         // TODO: 当录入【数量、单价】时，计算总价
-        if (['QTY', 'UnitPrice'].includes(fieldName)) {
+        if (['QTY', 'UnitPrice'].includes(filedName)) {
             // TODO: 千分符转换
-            target[`${fieldName}Str`] = formatNumToMoney(keepDecimal(target[fieldName], 5));
+            target[`${filedName}Str`] = formatNumToMoney(keepDecimal(target[filedName], 5));
             if (target.QTY && target.UnitPrice) {
-                target.Amount = keepDecimal(target[fieldName] * target[fieldName === 'QTY' ? 'UnitPrice' : 'QTY']);
+                target.Amount = keepDecimal(target[filedName] * target[filedName === 'QTY' ? 'UnitPrice' : 'QTY']);
                 target.AmountStr = formatNumToMoney(target.Amount);
             }
-        } else if (fieldName === 'ExRate') {
+        } else if (filedName === 'ExRate') {
             // TODO: 千分符转换
-            target[`${fieldName}Str`] = formatNumToMoney(keepDecimal(target[fieldName], 7));
-        } else if (['CurrencyID', 'ABillCurrencyTempID'].includes(fieldName)) {
-            const setFieldsVal = {[`ExRate${rowID}`]: data?.ExRate || 1};
-            if (fieldName === 'CurrencyID') {
+            target[`${filedName}Str`] = formatNumToMoney(keepDecimal(target[filedName], 7));
+        } else if (['CurrencyID', 'ABillCurrencyTempID'].includes(filedName)) {
+            setFieldsVal[`ExRate${rowID}`] = data?.ExRate || 1;
+            if (filedName === 'CurrencyID') {
                 // TODO: 账单币种跟着原币走
                 target.ABillCurrencyTempID = val;
                 setFieldsVal[`ABillCurrencyTempID${rowID}`] = val;
@@ -259,8 +319,12 @@ const ChargeTable: React.FC<Props> = (props) => {
             // TODO: 更新原币到账单币种的汇率
             target.ExRate = data?.ExRate || 1;
             target.ExRateStr = data?.ExRateStr || '1';
-            formCurrent?.setFieldsValue(setFieldsVal);
+        } else if (filedName.substring(fileLen-2, fileLen) === 'ID') {
+            console.log(data);
+            // TODO: 判断是不是 【ID】 字段，【ID】 字段需要存 【Name】 的值
+            target[filedName.substring(0, fileLen-2) + 'Name'] = data?.label;
         }
+        form?.setFieldsValue(setFieldsVal);
         target.isChange = true;
         newData.splice(index, 1, target);
         setCGList(newData);

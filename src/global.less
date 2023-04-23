@@ -191,7 +191,9 @@ ol {
             input {
               height: 32px;
             }
-            input,.ant-input-edit {
+            //input,.ant-input-edit {
+            //}
+            .isNumber-inp{
               text-align: right;
             }
           }
@@ -216,6 +218,37 @@ ol {
       .ant-table-content{
         .ant-table-cell{
           padding: 4px 3px!important;
+        }
+        .ant-table-row-active-class{
+          background-color: #fafafa;
+        }
+      }
+    }
+  }
+}
+
+.ant-modal-search-modal-select{
+  .ant-modal-body{
+    height: 660px;
+  }
+}
+
+.ant-modal-search-modal-select-option{
+  display: block!important;
+  .ant-table-wrapper, *{
+    //height: 100%;
+    color: #fff;
+  }
+  .ant-select-item-option{
+    padding: 3px 10px!important;
+    //padding: 0!important;
+    .ant-table{
+      .ant-table-content{
+        .ant-table-cell{
+          //opacity: 0.5;
+          height: 20px;
+          line-height: 20px;
+          padding: 5px 10px!important;
         }
       }
     }

@@ -4,6 +4,8 @@ import {useCallback, useState} from "react";
 
 
 interface T {
+    // TODO: 通用基础数据
+    CommonBasicInfo: API.CommonBasicInfo,
     // TODO: 单票详情
     CJobInfo: API.NJobDetailDto,
     resResult: object,
