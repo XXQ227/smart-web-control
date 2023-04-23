@@ -1,15 +1,5 @@
 
-declare namespace API {
-    type KeyValue = {
-        Key: number,
-        Value: string,
-    };
-    type responseObj = {
-        Content: string | object | any,
-        Page: object,
-        Result: boolean
-    };
-    type responseAny = object | any;
+declare namespace APIModel {
 
     //region TODO: 用户登录后返回信息
     type LoginUserInfo = {
@@ -40,6 +30,68 @@ declare namespace API {
     //endregion
 
 
+    //region TODO: 单票列表页
+    type responseAny = object | any;
+
+    type GetCJobListInfo = {
+        Key: string,
+        AuthorityType: number,
+        TimeLimitType?: number,
+        TabID: number,
+        UserID: number,
+        IsClickSearch: boolean,
+        PageNum: number,
+        PageSize: number,
+    };
+
+    type CJobListItem  = {
+        ID: number,
+        Code: string,
+        PrincipalNameEN: string,
+        POLETA: string,
+        ETD: string,
+        ATD: string,
+        ETA: string,
+        MBOLNum: string,
+        HBOLNum: string,
+        FreighterEN: string,
+        state: string,
+    }
+
+    type ResCJob = {
+        CJobList: CJobListItem[] | [];
+
+    }
+
+    // TODO: 单票列表结果集
+    type APIGetCJobListResult = {
+        Divisions?: any;
+        FinanceDates?: any;
+        JobDto?: {
+            Result?: boolean;
+            Page?: APIPage;
+            Content?: {
+                CJobList?: CJobListItem[],
+                AllFinishQty: number,
+                BizFinishQty: number,
+                FinishQty: number,
+                OnWayNewQty: number,
+                OnWayQty: number,
+                PendingQty: number,
+                SetFinishQty: number,
+                ShutoutQty: number,
+            };
+        };
+    };
+
+    type RuleCJobList = {
+        data?: CJobListItem[] | [];
+        /** 列表的内容总数 */
+        total?: number;
+        success?: boolean;
+    };
+    //endregion
+
     //region TODO: 单票详情页面
     // TODO: 单票详情搜索参数
     type GetCJobByID = {
@@ -59,20 +111,19 @@ declare namespace API {
             CurrencyOpts: object,
             DefaultUnit: object,
             FinanceDates: any,
-            Division: any,
-            PayInvoTypeList: any,
-            PayMethodOpts: any,
-            ProjectOpts: any,
-            ResInvoTypeList: any,
-            SalesMan: any,
-            UserInfo: object,
-            NJobDetailDto: NJobDetailDto,
+            Division: API.APIKey$Value[],
+            SalesMan?: API.APIKey$Value[],
+            PayMethodOpts?: API.APIKey$Value[],
+            PayInvoTypeList?: InvoiceType[],
+            ResInvoTypeList?: InvoiceType[],
+            UserInfo: LoginUserInfo,
+            NJobDetailDto?: NJobDetailDto,
             AccountPeriodInfo?: AccountPeriodInfo,
         }
     }
 
     type CommonBasicInfo = {
-        SalesMan: API.APIKey$Value,
+        SalesManList?: API.APIKey$Value[],
     }
 
     type NJobDetailDto = {

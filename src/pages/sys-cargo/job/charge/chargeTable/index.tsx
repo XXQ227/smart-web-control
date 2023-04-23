@@ -12,10 +12,13 @@ import ls from 'lodash';
 import SearchModal from '@/components/SearchModal';
 
 const Option = Select.Option;
+// TODO: 数据类型
+type APICGInfo = APIModel.PRCGInfo;
+type APICurrency = APIModel.CurrencyOpts;
 
 interface Props {
     CGType: number,
-    CGList: any,
+    CGList: APICGInfo[],
     form: any,
     formRef: any,
     formCurrent: any,
@@ -23,6 +26,7 @@ interface Props {
     // TODO: 保存
     handleChangeData: (data: any, CGType: number) => void,
 }
+
 
 // TODO: 获取原币到账单币种、账单币种到本位币的汇率数据
 type ABillRateResult = {
@@ -34,16 +38,16 @@ type ABillRateResult = {
 
 const ChargeTable: React.FC<Props> = (props) => {
     // @ts-ignore
-    const {CGType, CGList, form, formCurrent, FormItem} = props;
+    const {CGType, CGList, form, FormItem} = props;
     const {
         ChargeBaseInfo: {CurrencyOpts}
     } = useModel('jobCharge', (res: any) => ({ChargeBaseInfo: res.ChargeBaseInfo}));
 
 
-    const [cgList, setCGList] = useState<API.PRCGInfo[]>(CGList || []);
+    const [cgList, setCGList] = useState<APICGInfo[]>(CGList || []);
     const [currRateList, setCurrRateList] = useState<ABillRateResult[]>([]);
 
-    const cgColumns: ColumnsType<API.PRCGInfo> = [
+    const cgColumns: ColumnsType<APICGInfo> = [
         {
             title: 'Charge Name',
             dataIndex: 'CGItemName',
@@ -130,7 +134,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                         dropdownMatchSelectWidth={false}
                         onSelect={(e) => handleRowChange(index, record.CGID, 'CurrencyID', e)}
                     >
-                        {CurrencyOpts?.map((item: API.CurrencyOpts) =>
+                        {CurrencyOpts?.map((item: APICurrency) =>
                             <Option key={item.CurrencyID} value={item.CurrencyID}>{item.Currency}</Option>
                         )}
                     </Select>
@@ -188,7 +192,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                         dropdownMatchSelectWidth={false}
                         onSelect={(e) => handleChangeABillCurr(index, e, record)}
                     >
-                        {CurrencyOpts?.map((item: API.CurrencyOpts) =>
+                        {CurrencyOpts?.map((item: APICurrency) =>
                             <Option key={item.CurrencyID} value={item.CurrencyID}>{item.Currency}</Option>
                         )}
                     </Select>
@@ -242,9 +246,9 @@ const ChargeTable: React.FC<Props> = (props) => {
      * @returns
      */
     const handleAdd = () => {
-        const currLocalObj: API.CurrencyOpts = CurrencyOpts?.find((x: API.CurrencyOpts) => x.Currency === getFuncCurrency()) || {};
+        const currLocalObj: APICurrency = CurrencyOpts?.find((x: APICurrency) => x.Currency === getFuncCurrency()) || {};
         const CGID = Date.now().toString();
-        const newDataObj: API.PRCGInfo = {
+        const newDataObj: APICGInfo = {
             CGID,
             CTID: null,
             CTName: '',
@@ -274,7 +278,7 @@ const ChargeTable: React.FC<Props> = (props) => {
             State: '1',
             CGType,
         };
-        const newData: API.PRCGInfo[] = [...cgList, newDataObj];
+        const newData: APICGInfo[] = [...cgList, newDataObj];
         setCGList(newData);
     }
 
@@ -290,8 +294,8 @@ const ChargeTable: React.FC<Props> = (props) => {
      * @returns
      */
     function handleRowChange(index: number, rowID: any, filedName: string, val: any, data?: any) {
-        const newData: API.PRCGInfo[] = cgList?.map((item: API.PRCGInfo) => ({...item})) || [];
-        const target: any = newData.find((item: API.PRCGInfo) => item.CGID === rowID) || {};
+        const newData: APICGInfo[] = cgList?.map((item: APICGInfo) => ({...item})) || [];
+        const target: any = newData.find((item: APICGInfo) => item.CGID === rowID) || {};
 
         const fileLen: number = filedName.length;
         // TODO: 当录入【数量、单价、汇率】时，转成数字型
@@ -340,7 +344,7 @@ const ChargeTable: React.FC<Props> = (props) => {
      * @param record    费用行
      * @returns
      */
-    function handleChangeABillCurr(index: number, val: any, record: API.PRCGInfo) {
+    function handleChangeABillCurr(index: number, val: any, record: APICGInfo) {
         if (val !== record.CurrencyID) {
             // TODO: 判断本地是否存在原币，账单币种的搭配汇率
             const currRateObj: ABillRateResult = currRateList.find((item: ABillRateResult) =>
@@ -387,7 +391,7 @@ const ChargeTable: React.FC<Props> = (props) => {
      * @returns
      */
     function handleDeleteCharge(rowID: any) {
-        const newCGData: API.PRCGInfo[] = cgList.filter((item: API.PRCGInfo) => item.CGID !== rowID) || [];
+        const newCGData: APICGInfo[] = cgList.filter((item: APICGInfo) => item.CGID !== rowID) || [];
         setCGList(newCGData);
     }
 

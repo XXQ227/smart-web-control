@@ -5,16 +5,20 @@ import {useCallback, useState} from "react";
 
 interface T {
     // TODO: 通用基础数据
-    CommonBasicInfo: API.CommonBasicInfo,
+    CommonBasicInfo: APIModel.CommonBasicInfo,
     // TODO: 单票详情
-    CJobInfo: API.NJobDetailDto,
+    CJobInfo: APIModel.NJobDetailDto,
     resResult: object,
 }
 
 
 export default (callback: T, deps: React.DependencyList) => {
+    // TODO: 基础数据
+    const commonBasicInfo = {
+      SalesManList: [],
+    };
     //region TODO: 业务详情结构表
-    const jobInfo: API.NJobDetailDto = {
+    const jobInfo: APIModel.NJobDetailDto = {
         ID: 0,
         NBasicInfo: {
             Code: '',
@@ -36,21 +40,26 @@ export default (callback: T, deps: React.DependencyList) => {
     //endregion
 
     // TODO: 单票详情
-    const [CJobInfo, setCJobInfo] = useState(jobInfo || {});
+    const [CJobInfo, setCJobInfo] = useState<APIModel.NJobDetailDto>(jobInfo || {});
+    const [CommonBasicInfo, setCommonBasicInfo] = useState<APIModel.CommonBasicInfo>(commonBasicInfo || {});
     // TODO: 返回结果
     const [resResult, setResResult] = useState({});
 
     //region TODO: 接口
     // TODO: 获取单票业务详情请求
-    const getCJobInfoByID = useCallback(async (params: API.GetCJobByID) => {
+    const getCJobInfoByID = useCallback(async (params: APIModel.GetCJobByID) => {
         // TODO: 请求后台 API
-        const response: API.GetCJobByIDResponse = await GetNJobInfoByIDAPI(params);
+        const response: APIModel.GetCJobByIDResponse = await GetNJobInfoByIDAPI(params);
         if (!response) return;
-        const NJobDetailDto = response.Content?.NJobDetailDto || jobInfo;
+        const resContent: any = response.Content || {};
+        const NJobDetailDto = resContent.NJobDetailDto || jobInfo;
         if (response.Result) {
             // TODO: 整理返回结果
             // TODO: 将数据存到 model 里
             setCJobInfo(NJobDetailDto);
+            // 销售员
+            commonBasicInfo.SalesManList = resContent.SalesMan;
+            setCommonBasicInfo(commonBasicInfo);
         }
         setResResult(response);
         return NJobDetailDto;
@@ -59,6 +68,7 @@ export default (callback: T, deps: React.DependencyList) => {
 
     return {
         CJobInfo,
+        CommonBasicInfo,
         resResult,
         getCJobInfoByID,
     }

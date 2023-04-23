@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {history, useModel} from 'umi';
+import {history, useModel, useIntl} from 'umi';
 import type {RouteChildrenProps} from 'react-router';
 import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components';
 import {Button, Col, Form, message, Row} from 'antd';
 import {getUserID} from '@/utils/auths';
-import BasicInfo from '@/pages/sys-cargo/job/basicInfoForm/basicInfo';
+import BasicInfo from '../basicInfoForm/basicInfo';
 import {colGrid, getTitleInfo, rowGrid} from '@/utils/units'
-import {useIntl} from '@@/plugin-locale/localeExports'
 
 
 const FormItem = Form.Item;
@@ -18,10 +17,11 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     const {match: {params}} = props;
     //region TODO: 数据层
     const {
-        SalesMan,
+        CommonBasicInfo: {SalesManList},
         CJobInfo: {NBasicInfo, NBasicInfo: {Principal}}, getCJobInfoByID
     } = useModel('job', (res: any) => ({
         CJobInfo: res.CJobInfo,
+        CommonBasicInfo: res.CommonBasicInfo,
         getCJobInfoByID: res.getCJobInfoByID,
     }));
     //endregion
@@ -81,7 +81,8 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     // TODO: 获取列名<Title>
     const formLabel = (code: string, defaultMessage: string) => getTitleInfo(code, intl, defaultMessage);
 
-    const baseCGDON: any = {form, FormItem};
+    const baseParams: any = {form, FormItem};
+    const principalParams: any = {Principal, SalesManList};
 
     return (
         <PageContainer
@@ -141,9 +142,9 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
             >
                 {/* 委托信息 */}
                 <BasicInfo
-                    {...baseCGDON}
+                    {...baseParams}
                     title={'委托信息'}
-                    NBasicInfo={NBasicInfo} Principal={Principal}
+                    {...principalParams}
                 />
 
                 <FooterToolbar extra={<Button onClick={() => history.goBack()}>返回</Button>}>

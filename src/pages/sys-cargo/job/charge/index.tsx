@@ -10,6 +10,10 @@ import type {FormInstance} from 'antd/es/form'
 
 
 const FormItem = Form.Item;
+
+// TODO: 数据类型
+type APICGInfo = APIModel.PRCGInfo;
+
 let isLoadingData = false;
 const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
@@ -33,8 +37,8 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
     // TODO: 用来判断是否是第一次加载数据
     const [loading, setLoading] = useState(false);
 
-    const [payCGList, setPayCGList] = useState<API.PRCGInfo[]>(PayCGList || []);
-    const [receiveCGList, setReceiveCGList] = useState<API.PRCGInfo[]>(ReceiveCGList || []);
+    const [payCGList, setPayCGList] = useState<APICGInfo[]>(PayCGList || []);
+    const [receiveCGList, setReceiveCGList] = useState<APICGInfo[]>(ReceiveCGList || []);
     const [updateState, setUpdateState] = useState(false);
 
     useEffect(() => {
@@ -83,9 +87,9 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
             .then(() => {
                 /** 正确后的验证信息 */
                 if (updateState) {
-                    const apChangeList: API.PRCGInfo[] = payCGList.filter((item: API.PRCGInfo)=> item.isChange) || [];
-                    const arChangeList: API.PRCGInfo[] = receiveCGList.filter((item: API.PRCGInfo)=> item.isChange) || [];
-                    const isChangeCG: API.PRCGInfo[] = [...arChangeList, ...apChangeList];
+                    const apChangeList: APICGInfo[] = payCGList.filter((item: APICGInfo)=> item.isChange) || [];
+                    const arChangeList: APICGInfo[] = receiveCGList.filter((item: APICGInfo)=> item.isChange) || [];
+                    const isChangeCG: APICGInfo[] = [...arChangeList, ...apChangeList];
                     console.log(isChangeCG, arChangeList );
                 } else {
                     message.info('没有需要保存的数据');

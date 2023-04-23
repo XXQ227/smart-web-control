@@ -6,18 +6,18 @@ import {useCallback, useState} from "react";
 interface T {
     resResult: object,
     // TODO: 单票详情
-    JobChargeInfo: API.NJobDetailDto,
-    ChargeBaseInfo: API.AccountPeriodInfo,
+    JobChargeInfo: APIModel.NJobDetailDto,
+    ChargeBaseInfo: APIModel.AccountPeriodInfo,
 
-    ResInvoTypeList: API.InvoiceType[],
-    PayInvoTypeList: API.InvoiceType[],
+    ResInvoTypeList: APIModel.InvoiceType[],
+    PayInvoTypeList: APIModel.InvoiceType[],
     getCJobCGByID: () => void
 }
 
 
 export default (callback: T, deps: React.DependencyList) => {
     //region TODO: 费用详情结构表
-    const jobChargeInfo: API.NJobDetailDto = {
+    const jobChargeInfo: APIModel.NJobDetailDto = {
         ID: 0,
         NBasicInfo: {
             Code: '',
@@ -26,11 +26,11 @@ export default (callback: T, deps: React.DependencyList) => {
         ReceiveCGList: [],
     };
     // TODO: 费用的币种、发票类型数据，创建费用时用
-    const chargeBaseInfo: API.AccountPeriodInfo = {
+    const chargeBaseInfo: APIModel.AccountPeriodInfo = {
         CurrencyOpts: [],
     }
-    const arInvoTypeList: API.InvoiceType[] = [];
-    const apInvoTypeList: API.InvoiceType[] = [];
+    const arInvoTypeList: APIModel.InvoiceType[] = [];
+    const apInvoTypeList: APIModel.InvoiceType[] = [];
     //endregion
 
     // TODO: 单票详情
@@ -44,9 +44,9 @@ export default (callback: T, deps: React.DependencyList) => {
     const [resResult, setResResult] = useState({});
 
     // TODO: 获取单票费用详情请求
-    const getCJobCGByID = useCallback(async (params: API.GetCJobByID) => {
+    const getCJobCGByID = useCallback(async (params: APIModel.GetCJobByID) => {
         // TODO: 请求后台 API
-        const response: API.GetCJobByIDResponse = await GetNJobCGSByIDAPI(params);
+        const response: APIModel.GetCJobByIDResponse = await GetNJobCGSByIDAPI(params);
         if (!response) return;
         const NJobDetailDto = response.Content?.NJobDetailDto || jobChargeInfo;
         const ChargeBaseInfoDto = response.Content?.AccountPeriodInfo || chargeBaseInfo;

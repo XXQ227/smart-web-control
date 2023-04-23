@@ -12,8 +12,8 @@ interface Props {
     formRef?: any,
     formCurrent?: any,
     title: string,
-    NBasicInfo: any,
-    Principal: any,
+    Principal: APIModel.Principal,
+    SalesManList: API.APIKey$Value[],
 }
 
 const BasicInfo: React.FC<Props> = (props) => {
@@ -22,7 +22,7 @@ const BasicInfo: React.FC<Props> = (props) => {
         title, Principal,
     } = props;
     
-    const [principalInfo, setPrincipal] = useState<API.Principal>(Principal);
+    const [principalInfo, setPrincipal] = useState<APIModel.Principal>(Principal);
 
     useMemo(()=> {
 

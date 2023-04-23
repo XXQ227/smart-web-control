@@ -15,7 +15,7 @@ interface T {
 }
 
 export default (callback: T, deps: React.DependencyList) => {
-    const userInfoSession: API.LoginUserInfo = {
+    const userInfoSession: APIModel.LoginUserInfo = {
         AuthIDList: [],
         AuthorityIDList: '',
         BranchCode: '',
