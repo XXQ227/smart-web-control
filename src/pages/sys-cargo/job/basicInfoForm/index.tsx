@@ -41,7 +41,7 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
                 UserID: getUserID()
             })
                 // @ts-ignore
-                .then((res: API.NJobDetailDto) => {
+                .then((res: APIModel.NJobDetailDto) => {
                     // TODO: 设置 ID 且初始化数据
                     setJobID(res?.ID);
                     setLoading(false);
