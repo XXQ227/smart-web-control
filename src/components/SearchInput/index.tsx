@@ -18,7 +18,7 @@ import {getBranchID, getUserID} from '@/utils/auths'
  * @param resLabel  返回结果的 【Value】 值
  * @returns
  */
-export async function fetchData(searchVal: any, url: string, query: any, qty: number = 5, resValue: string, resLabel: string): Promise<API.APISearchResult[]> {
+export async function fetchData(searchVal: any, url: string, query: any, qty: number = 5, resValue: string, resLabel: string): Promise<API.APIValue$Label[]> {
     const params = Object.assign({}, query, {value: searchVal, PageSize: qty});
     const options: any = { headers: { Lang: 'en_EN', BranchID: getBranchID(),UserID: getUserID()} };
     return fetch(`${url}?${stringify(params)}`, options)
@@ -126,7 +126,7 @@ interface Props {
 const SearchInput: React.FC<Props> = (props) => {
     const {url, qty, query, disabled, filedValue, filedLabel, } = props;
     // 设置是否是编辑
-    const [value, setValue] = useState<API.APISearchResult>(props.value || {});
+    const [value, setValue] = useState<API.APIValue$Label>(props.value || {});
 
     // TODO: 返回结果的数据结构；默认 {Key: number, Value: string}，当有其他返回键值对时，在组件调用时定义
     const resValue: string = filedValue || 'Key';

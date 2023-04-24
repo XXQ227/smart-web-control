@@ -1,6 +1,6 @@
 import React, {useEffect, useMemo, useState} from 'react';
 import {ProCard} from '@ant-design/pro-components';
-import {Col, Input, Row} from 'antd';
+import {Col, Input, Row, Select} from 'antd';
 import {getUserID} from '@/utils/auths';
 import {colGrid, rowGrid} from '@/utils/units';
 import SearchInput from '@/components/SearchInput';
@@ -19,7 +19,7 @@ interface Props {
 const BasicInfo: React.FC<Props> = (props) => {
     const  {
         FormItem, form,
-        title, Principal,
+        title, Principal, SalesManList
     } = props;
     
     const [principalInfo, setPrincipal] = useState<APIModel.Principal>(Principal);
@@ -69,11 +69,24 @@ const BasicInfo: React.FC<Props> = (props) => {
                 <Col {...colGrid}>
                     <FormItem
                         label={'销售员'}
-                        name={'BookingUserID'}
-                        initialValue={principalInfo.BookingUserID}
+                        name={'SalesManID'}
+                        initialValue={principalInfo.SalesManID}
                         rules={[{required: true, message: '请选择销售!'}]}
                     >
-                        <Input/>
+                        <Select
+                            // labelInValue
+                            options={SalesManList}
+                            onSelect={(val, option)=> handleChange('SalesManID', val, option)}
+                        />
+                    </FormItem>
+                </Col>
+                <Col {...colGrid}>
+                    <FormItem
+                        name={'PONum'}
+                        label={'PO REFERENCE'}
+                        initialValue={principalInfo.PONum}
+                    >
+                        <Input onBlur={(val)=> handleChange('PONum', val)}/>
                     </FormItem>
                 </Col>
                 <Col {...colGrid}>

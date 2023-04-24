@@ -14,7 +14,7 @@ interface T {
 
 export default (callback: T, deps: React.DependencyList) => {
     // TODO: 基础数据
-    const commonBasicInfo = {
+    const commonBasicInfo: APIModel.CommonBasicInfo = {
       SalesManList: [],
     };
     //region TODO: 业务详情结构表
@@ -58,7 +58,11 @@ export default (callback: T, deps: React.DependencyList) => {
             // TODO: 将数据存到 model 里
             setCJobInfo(NJobDetailDto);
             // 销售员
-            commonBasicInfo.SalesManList = resContent.SalesMan;
+            if (resContent.SalesMan?.length > 0) {
+                resContent.SalesMan.map((item: API.APIKey$Value)=> {
+                    commonBasicInfo?.SalesManList?.push({value: item?.Key, label: item?.Value, data: item});
+                })
+            }
             setCommonBasicInfo(commonBasicInfo);
         }
         setResResult(response);

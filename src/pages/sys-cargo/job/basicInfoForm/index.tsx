@@ -139,6 +139,7 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
                 autoComplete={'off'}
                 onFinish={handleSave}
                 onFinishFailed={handleSave}
+                onValuesChange={()=> console.log(123456)}
             >
                 {/* 委托信息 */}
                 <BasicInfo

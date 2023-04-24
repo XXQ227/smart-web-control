@@ -123,7 +123,7 @@ declare namespace APIModel {
     }
 
     type CommonBasicInfo = {
-        SalesManList?: API.APIKey$Value[],
+        SalesManList?: API.APIValue$Label[],
     }
 
     type NJobDetailDto = {
@@ -156,6 +156,7 @@ declare namespace APIModel {
         CargoOwnerNameEN?: string,
         BookingUserID?: number,
         BookingUserName?: string,
+        PONum?: string,
         POLID?: number,
         POLName?: string,
     }

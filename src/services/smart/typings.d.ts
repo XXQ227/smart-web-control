@@ -136,14 +136,14 @@ declare namespace API {
 
   // TODO: 【Key-Value】键值对的返回结果
   type APIKey$Value = {
-    Key?: number,
-    Value?: string
+    Key?: any,
+    Value?: any
   }
 
   // TODO: SearchInput、SearchModal 组件的返回结果的数据结构
-  type APISearchResult = {
-    value: number | string,
-    label: string,
+  type APIValue$Label = {
+    value: any,
+    label: any,
     data?: any
   }
 
