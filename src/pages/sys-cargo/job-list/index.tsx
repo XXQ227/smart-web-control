@@ -8,8 +8,10 @@ import {getTitleInfo, IconFont} from '@/utils/units';
 import {getUserID} from '@/utils/auths';
 import {OceanTransportTypeEnum} from '@/utils/enum'
 
+type APICJobListItem = APIModel.CJobListItem
+
 // TODO: 获取单票集的请求参数
-const cjobListParams: API.GetCJobListInfo = {
+const cjobListParams: APIModel.GetCJobListInfo = {
     Key: '',
     TimeLimitType: 1,
     AuthorityType: 2,
@@ -38,7 +40,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
 
     const [loading, setLoading] = useState(false);
     const [groupId, setGroupID] = useState(null);
-    const [jobList, setJobList] = useState<API.CJobListItem[]>([]);
+    const [jobList, setJobList] = useState<APICJobListItem[]>([]);
 
     // 初始化（或用于 message 提醒）
     const intl = useIntl();
@@ -92,12 +94,12 @@ const JobList: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     const getCJobList = async (params: any, isLoading: boolean = false) => {
-        let result: API.RuleCJobList = {};
+        let result: APIModel.RuleCJobList = {};
         setLoading(true);
         if (isLoading) {
             // TODO: 分页查询【参数页】
             params.PageNum = params.current || 1;
-            result = (await joblist.getCJobList(params as API.GetCJobListInfo)) || {};
+            result = (await joblist.getCJobList(params as APIModel.GetCJobListInfo)) || {};
             setJobList(result.data || []);
         }
         setLoading(false);
@@ -105,7 +107,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
     }
 
     // TODO: 单票显示列
-    const columns: ProColumns<API.CJobListItem>[] = [
+    const columns: ProColumns<APICJobListItem>[] = [
         // 序列
         // {
         //     dataIndex: 'index',
@@ -175,7 +177,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
                 <IconFont key={1} type={'icon-create'} onClick={()=> {console.log(123456)}} />,
             ]}
         >
-            <ProTable<API.CJobListItem>
+            <ProTable<APICJobListItem>
                 rowKey={'ID'}
                 bordered={true}
                 columns={columns}

@@ -68,7 +68,7 @@ ol {
 //endregion
 
 .ant-right-header-tags-modal-form{
-  top: 58px!important;
+  top: 50px!important;
   margin: 0 60px!important;
   .ant-form{
     margin-left: 0!important;
@@ -97,11 +97,60 @@ ol {
       }
     }
   }
+  .ant-modal-content{
+    .ant-modal-header{
+      .ant-operate-work-space{
+        float: right;
+        color: #fff
+      }
+    }
+    .ant-modal-body{
+      padding: 10px 24px;
+      .ant-list {
+        .ant-list-items{
+          .ant-list-item{
+            height: 44px;
+            padding: 6px 0!important;
+            &:hover{
+              background-color: #fafafa;
+            }
+            .ant-list-item-meta-avatar{
+              background-color: red;
+              margin-right: 0;
+              padding: 0 6px;
+              border-radius: 5px;
+              min-width: 25px;
+              text-align: center;
+              font-weight: bold;
+            }
+            .ant-list-item-meta-title{
+              padding-left: 8px;
+              margin-bottom: 0!important;
+              .ant-input-edit-workspace{
+                display: table;
+                .ant-input{
+                  min-width: 240px;
+                  padding: 0 11px;
+                  margin-bottom: 0!important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   .ant-btn-modal-group{
     border: 1px #fff dashed;
     width: 100%;
     margin-bottom: 5px;
   }
+}
+
+.ant-right-header-tags-modal-form-operate{
+  top: 50px!important;
+  left: 200px;
+
 }
 
 .ant-card{
