@@ -9,7 +9,7 @@ import {history,} from 'umi';
 import defaultSettings from '../config/defaultSettings';
 import {getUserID, getUserInfo} from "@/utils/auths";
 import {icon_font_url} from '@/utils/units';
-import RightHeaderTags from '@/components/RightHeaderTags';
+import RightHeaderTags from '@/components/WorkSpace';
 import ls from 'lodash';
 import Exception403 from '@/pages/exception/403';
 
@@ -27,12 +27,12 @@ export const initialStateConfig = {
  * */
 export async function getInitialState(): Promise<{
     settings?: Partial<LayoutSettings>;
-    userInfo?: API.LoginUserInfo;
+    userInfo?: APIModel.LoginUserInfo;
     loading?: boolean;
     collapsed?: boolean;    // TODO：是否展开左侧菜单栏
     groupInfo?: any;        // TODO: 分组信息
     isJobEditPage?: boolean;// TODO: 是否是编辑页面
-    fetchUserInfo?: () => Promise<API.LoginUserInfo | undefined>;
+    fetchUserInfo?: () => Promise<APIModel.LoginUserInfo | undefined>;
 }> {
     const fetchUserInfo = async () => {
         try {
