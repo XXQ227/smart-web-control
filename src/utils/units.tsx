@@ -2,8 +2,12 @@ import moment from 'moment';
 import _ from 'lodash';
 import { createFromIconfontCN } from '@ant-design/icons';
 
-export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_o6l90rcy87.js';
+export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_r0kh0tk3dh.js';
 
+// TODO: 自定义图标使用 【For Example: <CustomizeIcon type={'icon-create'} />】
+export const CustomizeIcon = createFromIconfontCN({
+    scriptUrl: icon_font_url, // 在 iconfont.cn 上生成
+});
 //检测浏览器语言   navigator.language;   //判断除IE外其他浏览器使用语言
 export const LOCAL_LANGUAGE = false;
 // export const LOCAL_LANGUAGE = navigator.language === 'en-US';

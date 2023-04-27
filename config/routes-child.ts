@@ -114,21 +114,30 @@ const manager_route = {
     routes: [
         {
             path: '/manager',
-            redirect: '/manager',
+            component: './sys-manager',
         },
         {
             name: 'settlement',
-            icon: 'icon-settlement',
-            path: '/manager/settlement-form',
-            component: './sys-manager/settlement/settlement-form',
-            ...MICRO_APP_CARGO('manager'),
-        },
-        {
-            name: 'settlement.info',
-            icon: 'icon-settlement',
-            path: '/manager/settlement-list',
-            component: './sys-manager/settlement/settlement-list',
-            ...MICRO_APP_CARGO('manager'),
+            icon: 'icon-menu-settlement',
+            path: '/manager/settlement',
+            routes: [
+                {
+                    path: '/list',
+                    component: './sys-manager/settlement/settlement-list',
+                },
+                {
+                    name: 'settlement-list',
+                    icon: 'icon-settlement',
+                    path: '/manager/settlement/list',
+                    component: './sys-manager/settlement/settlement-list',
+                },
+                {
+                    name: 'settlement-info',
+                    icon: 'icon-settlement',
+                    path: '/manager/settlement/form',
+                    component: './sys-manager/settlement/settlement-form',
+                },
+            ]
         },
     ],
 };

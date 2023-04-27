@@ -63,8 +63,8 @@ export default {
   'menu.cargo.job.job-charge': '费用详情',
   'menu.manager': '管家',
   'menu.manager.manager': '智慧管家',
-  'menu.manager.settlement': '结算对象',
-  'menu.manager.settlement.info': '结算对象-详情',
+  'menu.manager.settlement.settlement-list': '结算对象',
+  'menu.manager.settlement.settlement-info': '结算对象-详情',
   'menu.chart': '图表',
   'menu.chart.line-chart': '折线图',
 };

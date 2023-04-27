@@ -41,7 +41,7 @@ const ChargeTable: React.FC<Props> = (props) => {
     const {CGType, CGList, form, FormItem} = props;
     const {
         ChargeBaseInfo: {CurrencyOpts}
-    } = useModel('jobCharge', (res: any) => ({ChargeBaseInfo: res.ChargeBaseInfo}));
+    } = useModel('cargo.jobCharge', (res: any) => ({ChargeBaseInfo: res.ChargeBaseInfo}));
 
 
     const [cgList, setCGList] = useState<APICGInfo[]>(CGList || []);

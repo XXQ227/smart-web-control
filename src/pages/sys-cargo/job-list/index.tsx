@@ -8,7 +8,7 @@ import {getTitleInfo, IconFont} from '@/utils/units';
 import {getUserID} from '@/utils/auths';
 import {OceanTransportTypeEnum} from '@/utils/enum'
 
-type APICJobListItem = APIModel.CJobListItem
+type APICJobListItem = APIModel.CJobListItem;
 
 // TODO: 获取单票集的请求参数
 const cjobListParams: APIModel.GetCJobListInfo = {
@@ -32,7 +32,7 @@ const operationList = [
 const columnsStateStr = '{"Code":{"fixed":"left"},"PrincipalNameEN":{"show":true},"MBOLNum":{"show":true},"OceanTransportType":{"show":true},"CreateDate":{"show":true},"option":{"show":true}}';
 
 const JobList: React.FC<RouteChildrenProps> = () => {
-    const joblist = useModel('joblist');
+    const joblist = useModel('cargo.joblist');
     const initInfo = useModel('@@initialState');
     const initialState: any = initInfo?.initialState || {};
     // 拿到所选的分组信息
@@ -97,6 +97,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
         let result: APIModel.RuleCJobList = {};
         setLoading(true);
         if (isLoading) {
+            console.log(params);
             // TODO: 分页查询【参数页】
             params.PageNum = params.current || 1;
             result = (await joblist.getCJobList(params as APIModel.GetCJobListInfo)) || {};

@@ -47,7 +47,7 @@ export async function getInitialState(): Promise<{
     const result: any = {userInfo, fetchUserInfo, settings: defaultSettings,};
     // 如果不是登录页面，执行
     if (history.location.pathname !== loginPath) {
-        result.groupInfo = {id: 624748504, name: '晶科'};
+        result.groupInfo = {id: 1, title: 'Bayer Project'};
         return result;
     }
     return result;
@@ -71,16 +71,16 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
     }
     const {location} = history;
     return {
-        title: 'Smart',
+        iconfontUrl: icon_font_url,
         // route: routes,
         // TODO: 顶部右侧
-        rightContentRender: () => <RightContent/>,
         disableContentMargin: false,
+        title: 'Smart',
         // TODO: 水印
+        rightContentRender: () => <RightContent/>,
         waterMarkProps: {
             content: initialState?.userInfo?.DisplayName,
         },
-        iconfontUrl: icon_font_url,
         // collapsed: true,
         footerRender: () => !!initialState?.userInfo?.ID && <Footer/>,
         enableDarkTheme: true,

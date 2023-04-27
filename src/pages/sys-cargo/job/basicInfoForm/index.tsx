@@ -19,7 +19,7 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     const {
         CommonBasicInfo: {SalesManList},
         CJobInfo: {NBasicInfo, NBasicInfo: {Principal}}, getCJobInfoByID
-    } = useModel('job', (res: any) => ({
+    } = useModel('cargo.job', (res: any) => ({
         CJobInfo: res.CJobInfo,
         CommonBasicInfo: res.CommonBasicInfo,
         getCJobInfoByID: res.getCJobInfoByID,

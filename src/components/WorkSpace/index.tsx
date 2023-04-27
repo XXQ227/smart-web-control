@@ -1,6 +1,13 @@
 import React, {Fragment, useState} from 'react';
-import {FastBackwardOutlined, FastForwardOutlined} from '@ant-design/icons';
-import {Col, Layout, List, Modal, Row, Space,} from 'antd';
+import {
+    CheckOutlined,
+    EditOutlined,
+    FastBackwardOutlined,
+    FastForwardOutlined,
+    HomeFilled,
+    LockOutlined, ReloadOutlined
+} from '@ant-design/icons';
+import {Col, Form, Layout, List, message, Modal, Popconfirm, Row,} from 'antd';
 import ls from 'lodash';
 import {Input} from 'antd/es'
 
@@ -32,6 +39,7 @@ const data: DataSourceType[] = [
 
 
 const ListItem = List.Item;
+const FormItem = Form.Item;
 
 // 父组件传过来的 方法、参数等；需要先在此定义、然后再 <React.FC<Props>> 中调用此类型
 export type Props = {
@@ -41,6 +49,10 @@ export type Props = {
 
 const RightHeaderTags: React.FC<Props> = (props) => {
     const {groupInfo} = props;
+
+    /** 实例化Form */
+    const [form] = Form.useForm();
+
     // TODO: 左侧菜单栏控制
     const [collapsed, setCollapsed] = useState(false);
     // 当没有分组时，不显示，有分组时，显示分组弹框，选默认分组
@@ -48,11 +60,8 @@ const RightHeaderTags: React.FC<Props> = (props) => {
     const [openOperate, setOpenOperate] = useState<boolean>(false);
 
     const [loading, setLoading] = useState<boolean>(false);
-    // TODO: 当前 workspace 是否有编辑且未保存判断
-    const [isRename, setIsRename] = useState<boolean>(false);
     // TODO: 鼠标移动所在的行
     const [workSpaceIndex, setWorkSpaceIndex] = useState<number>(-1);
-    const [workSpaceVal, setWorkSpaceVal] = useState<string>('');
 
     const [dataSource, setDataSource] = useState<DataSourceType[]>(data || []);
 
@@ -78,24 +87,55 @@ const RightHeaderTags: React.FC<Props> = (props) => {
      * @Description: TODO 保存分组信息
      * @author XXQ
      * @date 2023/3/29
-     * @param val    当前编辑行 id
      * @param record 当前编辑行数据
      * @returns
      */
-    const saveRow = (val: any, record: DataSourceType) => {
+    const saveRow = (record: DataSourceType) => {
         setLoading(true);
-        const newData = ls.cloneDeep(dataSource);
-        newData.map((item: DataSourceType) => {
-            if (item.id === record.id) {
-                item.title = val;
-            }
-            return item;
-        });
+        form.validateFields()
+            .then((values) => {
+                console.log(values);
+                const newData = ls.cloneDeep(dataSource);
+                newData.map((item: DataSourceType) => {
+                    if (item.id === record.id) {
+                        item.title = values[`Workspace${record.id}`];
+                    }
+                    return item;
+                });
+                setDataSource(newData);
+                // TODO: 初始化数据
+                setLoading(false);
+                setWorkSpaceIndex(-1);
+            })
+            .catch((errorInfo) => {
+                /** 错误信息 */
+                console.log(errorInfo);
+                // TODO: 提交失败。弹出错误提示
+                const {errorFields} = errorInfo;
+                if (errorFields?.length > 0) {
+                    const errList = errorFields.map((x: any) => x.errors[0]);
+                    // TODO: 去重
+                    const errArr: any = Array.from(new Set(errList));
+                    const errInfo = errArr.toString().replace(/,/g, ',  /  ');
+                    message.error(errInfo);
+                }
+            });
+    }
+
+    /**
+     * @Description: TODO: 删除工作空间
+     * @author XXQ
+     * @date 2023/4/25
+     * @param record
+     * @returns
+     */
+    const lockWorkspace = (record: DataSourceType) => {
+        const newData = dataSource.filter((item: DataSourceType) => item.id !== record.id) || [];
         setDataSource(newData);
-        // TODO: 初始化数据
-        setLoading(false);
-        setIsRename(false);
-        setWorkSpaceIndex(-1);
+    }
+
+    const handleSelectWorkSpace = (record: DataSourceType) => {
+        props.onChangeGroup(record);
     }
 
 
@@ -130,22 +170,72 @@ const RightHeaderTags: React.FC<Props> = (props) => {
                     dataSource={dataSource}
                     itemLayout={'horizontal'}
                     renderItem={(item: DataSourceType, index: number) => (
-                        <ListItem onMouseOver={() => isRename ? null : setWorkSpaceIndex(index)}>
+                        <ListItem
+                            // onClick={() => console.log(123123)}
+                            // onMouseOver={() => isRename ? null : setWorkSpaceIndex(index)}
+                        >
                             <ListItem.Meta
-                                title={workSpaceIndex !== index ? item.title :
+                                // avatar={item.title?.substring(0, 1)}
+                                title={
                                     <div className={'ant-input-edit-workspace'}>
-                                        <Space>
-                                            <Input
-                                                defaultValue={item.title}
-                                                onBlur={(e: any) => setWorkSpaceVal(e?.target?.value)}
-                                                onChange={()=> isRename ? null : setIsRename(true)}
-                                            />
-                                            <label onChange={()=> saveRow(workSpaceVal, item)}>save</label>
-                                            <label>delete</label>
-                                        </Space>
+                                        <Form form={form}>
+                                            <Row gutter={24}>
+                                                <Col span={3}>
+                                                    <div className={`ant-list-item-meta-avatar ${index === dataSource?.length - 1 ? 'bg-color-blue' : 'bg-color-red'}`}>
+                                                        {
+                                                            index === dataSource?.length - 1 ?
+                                                                <HomeFilled color={'#fff'}/>
+                                                                :
+                                                                item.title?.substring(0, 1)
+                                                        }
+                                                    </div>
+                                                </Col>
+                                                <Col span={16}>
+                                                    {workSpaceIndex === index ?
+                                                        <FormItem
+                                                            initialValue={item.title} name={`Workspace${item.id}`}
+                                                            rules={[{
+                                                                required: true,
+                                                                message: `Workspace is required.`
+                                                            }]}
+                                                        >
+                                                            <Input/>
+                                                        </FormItem>
+                                                        :
+                                                        <div className={'ant-list-item-label'}
+                                                             onDoubleClick={() => handleSelectWorkSpace(item)}
+                                                        >{item.title}</div>
+                                                    }
+                                                </Col>
+                                                <Col span={2}>
+                                                    {workSpaceIndex === index ?
+                                                        // TODO: 保存
+                                                        <CheckOutlined onClick={() => saveRow(item)} />
+                                                        :
+                                                        // TODO: 编辑
+                                                        <EditOutlined onClick={() => setWorkSpaceIndex(index)} />
+                                                    }
+                                                </Col>
+                                                <Col span={3}>
+                                                    {workSpaceIndex === index ?
+                                                        // TODO: cancel
+                                                        <ReloadOutlined onClick={() => setWorkSpaceIndex(-1)} />
+                                                        :
+                                                        <Popconfirm
+                                                            okText={'Yes'}
+                                                            cancelText={'No'}
+                                                            placement={'right'}
+                                                            title={'Are you sure to lock this workspace?'}
+                                                            onConfirm={() => lockWorkspace(item)}
+                                                        >
+                                                            <LockOutlined />
+                                                        </Popconfirm>
+                                                    }
+                                                </Col>
+                                            </Row>
+                                        </Form>
                                     </div>
                                 }
-                                avatar={item.title?.substring(0, 1)}
                             />
                         </ListItem>
                     )}
