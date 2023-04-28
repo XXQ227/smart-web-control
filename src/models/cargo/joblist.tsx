@@ -1,4 +1,4 @@
-import {GetCJobByKeyAPI} from '@/services/smart/joblist';
+import {GetCJobByKeyAPI} from '@/services/smart/cargo/joblist';
 import type React from "react";
 import {useCallback, useState} from "react";
 

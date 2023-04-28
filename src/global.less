@@ -181,10 +181,17 @@ ol {
   margin-bottom: 24px;
 }
 
+.ant-card-pro-table{
+  .ant-pro-table{
+    .ant-pro-card, .ant-pro-card-body{
+      padding: 0;
+    }
+  }
+}
+
 .ant-margin-bottom-24{
   margin-bottom: 24px;
 }
-
 .ant-pro-table-charge-info{
   .ant-pro-card-body{
     padding: 0;
@@ -193,7 +200,6 @@ ol {
   .ant-table {
     .ant-table-title {
       height: 40px;
-      padding: 4px 1px 4px 8px !important;
       font-weight: bold;
       .ant-table-title-info{
         .ant-table-title-label{
@@ -322,6 +328,20 @@ ol {
           padding: 5px 10px!important;
         }
       }
+    }
+  }
+}
+
+// TODO: table 表头样子
+.ant-table {
+  .ant-table-title {
+    padding: 4px 1px 4px 8px !important;
+    font-weight: bold;
+  }
+  .ant-table-thead {
+    .ant-table-cell {
+      padding: 7px 3px !important;
+      text-align: center!important;
     }
   }
 }

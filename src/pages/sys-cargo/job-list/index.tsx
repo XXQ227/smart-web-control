@@ -38,7 +38,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
     // 拿到所选的分组信息
     const groupInfo: {id: any, name: string} = initialState?.groupInfo || {};
 
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const [groupId, setGroupID] = useState(null);
     const [jobList, setJobList] = useState<APICJobListItem[]>([]);
 

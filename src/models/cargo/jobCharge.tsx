@@ -1,4 +1,4 @@
-import {GetNJobCGSByIDAPI} from '@/services/smart/joblist';
+import {GetNJobCGSByIDAPI} from '@/services/smart/cargo/joblist';
 import type React from "react";
 import {useCallback, useState} from "react";
 

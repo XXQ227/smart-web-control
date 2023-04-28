@@ -75,7 +75,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         // route: routes,
         // TODO: 顶部右侧
         disableContentMargin: false,
-        title: 'Smart',
+        title: 'EHK',
         // TODO: 水印
         rightContentRender: () => <RightContent/>,
         waterMarkProps: {
