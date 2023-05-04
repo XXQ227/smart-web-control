@@ -69,6 +69,8 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         setInitialState(initInfo);
     }
     const {location} = history;
+    console.log(history?.location?.pathname);
+    console.log(location?.pathname);
     return {
         iconfontUrl: icon_font_url,
         // route: routes,
@@ -151,7 +153,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
             : [],
         // TODO: 工作空间
         menuHeaderRender: () =>
-            history?.location?.pathname === '/job' ? null : <WorkSpace onChangeGroup={onChangeGroup} groupInfo={initInfo.groupInfo} />,
+            location?.pathname?.indexOf('/job') > -1 ? <WorkSpace onChangeGroup={onChangeGroup} groupInfo={initInfo.groupInfo} /> : null,
         // menuDataRender: (menuData)=> menuData,
         // 自定义 403 页面
         childrenRender: (children, props) => {

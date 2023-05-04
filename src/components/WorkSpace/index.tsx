@@ -5,7 +5,7 @@ import {
     FastBackwardOutlined,
     FastForwardOutlined,
     HomeFilled,
-    LockOutlined, ReloadOutlined
+    LockOutlined, PlusOutlined, ReloadOutlined
 } from '@ant-design/icons';
 import {Button, Col, Form, Layout, List, message, Modal, Popconfirm, Row,} from 'antd';
 import ls from 'lodash';
@@ -185,7 +185,7 @@ const RightHeaderTags: React.FC<Props> = (props) => {
                 }
                 className={'ant-right-header-tags-modal-form'}
             >
-                <Button onClick={handleAddWorkspace} icon={'add'}>Add workspace</Button>
+                <Button onClick={handleAddWorkspace} icon={<PlusOutlined />}>Add workspace</Button>
                 <List
                     loading={loading}
                     dataSource={dataSource}
