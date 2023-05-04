@@ -1,6 +1,6 @@
 import moment from 'moment';
 import _ from 'lodash';
-import { createFromIconfontCN } from '@ant-design/icons';
+import {createFromIconfontCN} from '@ant-design/icons';
 
 export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_r0kh0tk3dh.js';
 
@@ -539,4 +539,58 @@ export function getFormatIDToNum(num: number, state = 'up', needDecimal = false)
 export function getTitleInfo(code: string, intl: any, defaultMessage: string) {
     const str = 'pages.sys.';
     return intl?.formatMessage({id: str + code, defaultMessage});
+}
+
+/**
+ * @Description: TODO 获取业务线名称
+ * @author XXQ
+ * @date 2022/12/15
+ * @returns
+ * @param businessLineID
+ */
+export function getBusinessLineName(businessLineID: number) {
+    let name = "";
+    switch (businessLineID) {
+        case 1:
+            name = "Project Logistics";
+            break;
+        case 2:
+            name = "Contract Logistics";
+            break;
+        case 3:
+            name = "E-Commercial";
+            break;
+        case 4:
+            name = "Shipping Agency";
+            break;
+        case 5:
+            name = "Freight Forwarding";
+            break;
+        default:
+            break;
+    }
+    return name;
+}
+
+/**
+ * @Description: TODO 选择账期月
+ * @author XXQ
+ * @date 2023/5/3
+ * @returns
+ * @param FinanceDates
+ */
+export function selectBillingMonth(FinanceDates: string[]) {
+    /*return FinanceDates.map((dateString) => {
+        const date1 = new Date(dateString + "-01");
+        return date1.toLocaleString("default", {year: "numeric", month: "long"});
+    });*/
+    const billingMonth = {}
+
+    const FinanceDate = FinanceDates.map((dateString) => {
+        const date1 = new Date(dateString + "-01");
+        return date1.toLocaleString("default", {year: "numeric", month: "long"});
+    })
+    console.log(FinanceDate)
+
+    return billingMonth;
 }

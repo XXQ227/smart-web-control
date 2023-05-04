@@ -1,10 +1,12 @@
 import React, {useEffect, useMemo, useState} from 'react';
-import {ProCard} from '@ant-design/pro-components';
-import {Col, Input, Row, Select} from 'antd';
+import {ProCard, ProFormRadio, ProFormText, ProFormSelect} from '@ant-design/pro-components';
+import {Col, Input, Row, Select, Radio} from 'antd';
 import {getUserID} from '@/utils/auths';
-import {colGrid, rowGrid} from '@/utils/units';
+import {colGrid, rowGrid, selectBillingMonth} from '@/utils/units';
 import SearchInput from '@/components/SearchInput';
-import SearchModal from '@/components/SearchModal'
+import SearchModal from '@/components/SearchModal';
+import styles from '../style.less';
+
 
 interface Props {
     FormItem: any,
@@ -12,17 +14,21 @@ interface Props {
     formRef?: any,
     formCurrent?: any,
     title: string,
+    NBasicInfo: APIModel.NBasicInfo,
     Principal: APIModel.Principal,
     SalesManList: API.APIKey$Value[],
+    FinanceDates: string[],
 }
 
 const BasicInfo: React.FC<Props> = (props) => {
     const  {
         FormItem, form,
-        title, Principal, SalesManList
+        title, NBasicInfo,
+        NBasicInfo: {Principal}, SalesManList,
+        FinanceDates,
     } = props;
     
-    const [principalInfo, setPrincipal] = useState<APIModel.Principal>(Principal);
+    const [principalInfo, setPrincipal] = useState<APIModel.Principal | undefined>(Principal);
 
     useMemo(()=> {
 
@@ -43,17 +49,20 @@ const BasicInfo: React.FC<Props> = (props) => {
      */
     const handleChange =(filedName: string, val: any, option?: any)=> {
         console.log(filedName, val, option);
-        principalInfo[filedName] = val;
-        const fileLen: number = filedName.length;
-        // TODO: 判断是不是 【ID】 字段，【ID】 字段需要存 【Name】 的值
-        if (filedName.substring(fileLen-2, fileLen) === 'ID') {
-            principalInfo[filedName.substring(0, fileLen-2) + 'Name'] = option?.label;
-            form?.setFieldsValue({[filedName]: val});
+        if (principalInfo) {
+            principalInfo[filedName] = val;
+            const fileLen: number = filedName.length;
+            // TODO: 判断是不是 【ID】 字段，【ID】 字段需要存 【Name】 的值
+            if (filedName.substring(fileLen-2, fileLen) === 'ID') {
+                principalInfo[filedName.substring(0, fileLen-2) + 'Name'] = option?.label;
+                form?.setFieldsValue({[filedName]: val});
+            }
+            setPrincipal(principalInfo);
         }
-        setPrincipal(principalInfo);
     }
 
     console.log(principalInfo);
+    // const billingMonth = selectBillingMonth(FinanceDates)
 
     const portColumns = [
         { title: 'Port', dataIndex: 'Name', render: (_: any, record: any)=> record.data?.Name},
@@ -64,13 +73,98 @@ const BasicInfo: React.FC<Props> = (props) => {
     ];
 
     return (
-        <ProCard title={title} bordered={true}>
+        <ProCard
+            title={title}
+            bordered={true}
+            headerBordered
+            collapsible
+        >
             <Row gutter={rowGrid}>
+                <Col {...colGrid}>
+                    <ProFormRadio.Group
+                        name="BizType3ID"
+                        label="Business Type"
+                        options={[
+                            {
+                                label: 'Free Hand',
+                                value: 1,
+                            },
+                            {
+                                label: 'R/O Shipment',
+                                value: 2,
+                            },
+                        ]}
+                    />
+                    <ProFormSelect
+                        name="FinanceDate"
+                        label="Billing Month"
+                        // valueEnum={billingMonth}
+                        options={FinanceDates}
+                        placeholder="Please select a country"
+                    />
+                    <ProFormText width="md" name="name" label="Purchase/Shipment Order (Customer)" />
+                    <ProFormText width="md" name="name" label="Purchase/Shipment Order (Customer)" />
+                </Col>
+                <Col {...colGrid}>
+                    <ProFormText width="md" name="name" label="Purchase/Shipment Order (Customer)" />
+                    <ProFormText width="md" name="name" label="Purchase/Shipment Order (Customer)" />
+                    <ProFormText width="md" name="name" label="Purchase/Shipment Order (Customer)" />
+                </Col>
+                <Col {...colGrid}>
+                    <FormItem
+                        label={'客户'}
+                        name={'PrincipalXID'}
+                        initialValue={{value: principalInfo?.PrincipalXID, label: principalInfo?.PrincipalXName}}
+                    >
+                        <SearchInput
+                            qty={5}
+                            id={'Customer'}
+                            value={{value: principalInfo?.PrincipalXID, label: principalInfo?.PrincipalXName}}
+                            url={'/api/MCommon/GetCTNameByStrOrType'}
+                            query={{
+                                IsJobCustomer: true, BusinessLineID: null,
+                                UserID: getUserID(), CTType: 1, SystemID: 4,
+                            }}
+                            handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label={'付款方'}
+                        name={'PayerID'}
+                        initialValue={{value: principalInfo?.PayerID, label: principalInfo?.PayerName}}
+                    >
+                        <SearchInput
+                            qty={5}
+                            id={'PayerID'}
+                            value={{value: principalInfo?.PayerID, label: principalInfo?.PayerName}}
+                            url={'/api/MCommon/GetCTNameByStrOrType'}
+                            query={{
+                                searchPayer: true, BusinessLineID: null,
+                                UserID: getUserID(), CTType: 1, SystemID: 4,
+                            }}
+                            handleChangeData={(val: any, option: any) => handleChange('PayerID', val, option)}
+                        />
+                    </FormItem>
+                    <FormItem
+                        label={'货主'}
+                        name={'CargoOwnerID'}
+                        initialValue={{value: principalInfo?.CargoOwnerID, label: principalInfo?.CargoOwnerName}}
+                    >
+                        <SearchInput
+                            qty={5}
+                            id={'CargoOwnerID'}
+                            value={{value: principalInfo?.CargoOwnerID, label: principalInfo?.CargoOwnerName}}
+                            url={'/api/MCommon/GetCTNameByStrOrType'}
+                            query={{UserID: getUserID(), CTType: 1, SystemID: 4,}}
+                            handleChangeData={(val: any, option: any) => handleChange('CargoOwnerID', val, option)}
+                        />
+                    </FormItem>
+                </Col>
                 <Col {...colGrid}>
                     <FormItem
                         label={'销售员'}
                         name={'SalesManID'}
-                        initialValue={principalInfo.SalesManID}
+                        initialValue={principalInfo?.SalesManID}
                         rules={[{required: true, message: '请选择销售!'}]}
                     >
                         <Select
@@ -84,7 +178,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                     <FormItem
                         name={'PONum'}
                         label={'PO REFERENCE'}
-                        initialValue={principalInfo.PONum}
+                        initialValue={principalInfo?.PONum}
                     >
                         <Input onBlur={(val)=> handleChange('PONum', val)}/>
                     </FormItem>
@@ -93,8 +187,8 @@ const BasicInfo: React.FC<Props> = (props) => {
                     <FormItem
                         label={'POL'}
                         name={'POLID'}
-                        initialValue={principalInfo.POLID}
-                        rules={[{required: true, message: '请输入POL!'}]}
+                        initialValue={principalInfo?.POLID}
+                        // rules={[{required: true, message: '请输入POL!'}]}
                     >
                         <SearchModal
                             qty={15}
@@ -105,66 +199,10 @@ const BasicInfo: React.FC<Props> = (props) => {
                             filedValue={'ID'}
                             filedLabel={'Name'}
                             columns={portColumns}
-                            value={principalInfo.POLID}
-                            text={principalInfo.POLName}
+                            value={principalInfo?.POLID}
+                            text={principalInfo?.POLName}
                             url={"/api/MCommon/GetPortCityOrCountry"}
                             handleChangeData={(val: any, option: any) => handleChange('POLID', val, option)}
-                        />
-                    </FormItem>
-                </Col>
-            </Row>
-            <Row gutter={rowGrid}>
-                <Col {...colGrid}>
-                    <FormItem
-                        label={'客户'}
-                        name={'PrincipalXID'}
-                        initialValue={{value: principalInfo.PrincipalXID, label: principalInfo.PrincipalXName}}
-                    >
-                        <SearchInput
-                            qty={5}
-                            id={'Customer'}
-                            value={{value: principalInfo.PrincipalXID, label: principalInfo.PrincipalXName}}
-                            url={'/api/MCommon/GetCTNameByStrOrType'}
-                            query={{
-                                IsJobCustomer: true, BusinessLineID: null,
-                                UserID: getUserID(), CTType: 1, SystemID: 4,
-                            }}
-                            handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
-                        />
-                    </FormItem>
-                </Col>
-                <Col {...colGrid}>
-                    <FormItem
-                        label={'付款方'}
-                        name={'PayerID'}
-                        initialValue={{value: principalInfo.PayerID, label: principalInfo.PayerName}}
-                    >
-                        <SearchInput
-                            qty={5}
-                            id={'PayerID'}
-                            value={{value: principalInfo.PayerID, label: principalInfo.PayerName}}
-                            url={'/api/MCommon/GetCTNameByStrOrType'}
-                            query={{
-                                searchPayer: true, BusinessLineID: null,
-                                UserID: getUserID(), CTType: 1, SystemID: 4,
-                            }}
-                            handleChangeData={(val: any, option: any) => handleChange('PayerID', val, option)}
-                        />
-                    </FormItem>
-                </Col>
-                <Col {...colGrid}>
-                    <FormItem
-                        label={'货主'}
-                        name={'CargoOwnerID'}
-                        initialValue={{value: principalInfo.CargoOwnerID, label: principalInfo.CargoOwnerName}}
-                    >
-                        <SearchInput
-                            qty={5}
-                            id={'CargoOwnerID'}
-                            value={{value: principalInfo.CargoOwnerID, label: principalInfo.CargoOwnerName}}
-                            url={'/api/MCommon/GetCTNameByStrOrType'}
-                            query={{UserID: getUserID(), CTType: 1, SystemID: 4,}}
-                            handleChangeData={(val: any, option: any) => handleChange('CargoOwnerID', val, option)}
                         />
                     </FormItem>
                 </Col>
