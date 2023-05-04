@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
 import type { RouteChildrenProps } from 'react-router';
 import type { ProColumns} from '@ant-design/pro-components';
-import {FooterToolbar, PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
-import {Button,} from 'antd'
-import {useModel} from '@@/plugin-model/useModel'
-import {getUserID} from '@/utils/auths'
+import {FooterToolbar, PageContainer, ProCard, ProTable} from '@ant-design/pro-components';
+import {Button,} from 'antd';
+import {useModel} from 'umi';
+import {getUserID} from '@/utils/auths';
 
 type APICVInfoList = APIModel.CVInfoList;
 type APICVSearchParams = APIModel.CVSearchParams;

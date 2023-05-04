@@ -2,16 +2,15 @@ import React, {useEffect, useState, useRef} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components';
 import {Button, Col, Form, message, Row} from 'antd';
-import {history, useModel} from 'umi';
-import {useIntl} from '@@/plugin-locale/localeExports';
+import {history, useModel, useIntl} from 'umi';
 import {colGrid, getTitleInfo, rowGrid} from '@/utils/units';
-import ChargeTable from '@/pages/sys-cargo/job/charge/chargeTable';
+import ChargeTable from '@/pages/sys-job/job/charge/chargeTable';
 import type {FormInstance} from 'antd/es/form'
 
 
 const FormItem = Form.Item;
 
-// TODO: 数据类型
+// TODO: 数据类型1
 type APICGInfo = APIModel.PRCGInfo;
 
 let isLoadingData = false;
@@ -21,7 +20,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
     //region TODO: 数据层
     const {
         JobChargeInfo: {NBasicInfo, PayCGList, ReceiveCGList}, getCJobCGByID
-    } = useModel('jobCharge', (res: any) => ({
+    } = useModel('job.jobCharge', (res: any) => ({
         JobChargeInfo: res.JobChargeInfo,
         getCJobCGByID: res.getCJobCGByID,
     }));

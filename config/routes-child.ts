@@ -14,53 +14,53 @@ const MICRO_APP_CARGO = (microApp: string) => ({
 });
 
 // TODO: 货代路由
-const cargo_route = {
+const job_route = {
     name: 'cargo',
-    icon: 'icon-cargo-ship',
-    path: '/cargo',
+    icon: 'icon-job-ship',
+    path: '/job',
     routes: [
         {
-            path: '/cargo',
-            redirect: '/cargo/job-list',
+            path: '/job',
+            redirect: '/job/job-list',
         },
         {
             name: 'job-list',
             icon: 'icon-ticket',
-            path: '/cargo/job-list',
-            component: './sys-cargo/job-list',
-            ...MICRO_APP_CARGO('cargo'),
+            path: '/job/job-list',
+            component: './sys-job/job-list',
+            ...MICRO_APP_CARGO('job'),
         },
         // {
         //     name: 'job1',
-        //     icon: 'icon-cargo-ship',
-        //     path: '/cargo/job/:id/:bizType4id',
-        //     component: './sys-cargo/job',
+        //     icon: 'icon-job-ship',
+        //     path: '/job/job/:id/:bizType4id',
+        //     component: './sys-job/job',
         // },
         {
             name: 'job',
-            icon: 'icon-cargo-ship',
-            path: '/cargo/job',
+            icon: 'icon-job-ship',
+            path: '/job/job',
             // 只有在编辑页面时，才显示
             access: 'isJobEditPage',
             routes: [
                 {
-                    path: '/cargo/job',
-                    redirect: '/cargo/job/job-info/:id/:bizType4id',
+                    path: '/job/job',
+                    redirect: '/job/job/job-info/:id/:bizType4id',
                 },
                 {
                     name: 'job-info',
-                    icon: 'icon-cargo-ship',
-                    path: '/cargo/job/job-info/:id/:bizType4id',
-                    component: './sys-cargo/job/basicInfoForm',
+                    icon: 'icon-job-ship',
+                    path: '/job/job/job-info/:id/:bizType4id',
+                    component: './sys-job/job/basicInfoForm',
                 },
                 {
                     name: 'job-charge',
-                    icon: 'icon-cargo-ship',
-                    path: '/cargo/job/job-charge/:id/:bizType4id',
-                    component: './sys-cargo/job/charge',
+                    icon: 'icon-job-ship',
+                    path: '/job/job/job-charge/:id/:bizType4id',
+                    component: './sys-job/job/charge',
                 },
             ],
-            ...MICRO_APP_CARGO('cargo'),
+            ...MICRO_APP_CARGO('job'),
         },
     ],
 };
@@ -162,7 +162,7 @@ const chart_route = {
     ],
 };
 export default {
-    cargo_route,
+    job_route,
     bill_route,
     manager_route,
     chart_route,

@@ -20,10 +20,9 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     //region TODO: 数据层
     const {
         CommonBasicInfo: {SalesManList, FinanceDates},
-        CJobInfo,
-        CJobInfo: {NBasicInfo, NBasicInfo: {Principal}, LockDate},
+        CJobInfo, CJobInfo: {NBasicInfo, NBasicInfo: {Principal}, LockDate},
         getCJobInfoByID
-    } = useModel('cargo.job', (res: any) => ({
+    } = useModel('job.job', (res: any) => ({
         CJobInfo: res.CJobInfo,
         CommonBasicInfo: res.CommonBasicInfo,
         getCJobInfoByID: res.getCJobInfoByID,

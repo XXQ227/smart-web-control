@@ -5,7 +5,7 @@ import {PlusOutlined} from '@ant-design/icons';
 import {useModel} from 'umi';
 import {getBranchID, getFuncCurrency, getUserID} from '@/utils/auths';
 import {formatNumToMoney, keepDecimal} from '@/utils/units';
-import InputEdit from '@/pages/sys-cargo/job/charge/components/InputNumberEdit'
+import InputEdit from '@/pages/sys-job/job/charge/components/InputNumberEdit'
 import {ChargeStateEnum} from '@/utils/enum'
 import {stringify} from 'querystring';
 import ls from 'lodash';
@@ -41,7 +41,7 @@ const ChargeTable: React.FC<Props> = (props) => {
     const {CGType, CGList, form, FormItem} = props;
     const {
         ChargeBaseInfo: {CurrencyOpts}
-    } = useModel('cargo.jobCharge', (res: any) => ({ChargeBaseInfo: res.ChargeBaseInfo}));
+    } = useModel('job.jobCharge', (res: any) => ({ChargeBaseInfo: res.ChargeBaseInfo}));
 
 
     const [cgList, setCGList] = useState<APICGInfo[]>(CGList || []);

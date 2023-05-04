@@ -2,8 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import type { RouteChildrenProps } from 'react-router';
 import type { ProColumns, ActionType, ColumnsState} from '@ant-design/pro-components';
 import {PageContainer, ProTable} from '@ant-design/pro-components';
-import {history, useModel} from 'umi';
-import {useIntl} from '@@/plugin-locale/localeExports';
+import {history, useModel, useIntl} from 'umi';
 import {getTitleInfo, IconFont} from '@/utils/units';
 import {getUserID} from '@/utils/auths';
 import {OceanTransportTypeEnum} from '@/utils/enum'
@@ -32,7 +31,7 @@ const operationList = [
 const columnsStateStr = '{"Code":{"fixed":"left"},"PrincipalNameEN":{"show":true},"MBOLNum":{"show":true},"OceanTransportType":{"show":true},"CreateDate":{"show":true},"option":{"show":true}}';
 
 const JobList: React.FC<RouteChildrenProps> = () => {
-    const joblist = useModel('cargo.joblist');
+    const joblist = useModel('job.joblist');
     const initInfo = useModel('@@initialState');
     const initialState: any = initInfo?.initialState || {};
     // 拿到所选的分组信息
@@ -67,14 +66,14 @@ const JobList: React.FC<RouteChildrenProps> = () => {
     const handleOperateJob = (type: number, record: any) => {
         if (type === 1 || type === 2 || type === 4) {
             // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-            const url = `/cargo/job/job-${type === 4 ? 'charge' : 'info'}/${btoa(record?.ID)}/${btoa(record?.BizType4ID)}`;
-            // const url = `/cargo/job/${btoa(record?.ID)}/${btoa(record?.BizType4ID)}`;
+            const url = `/job/job/job-${type === 4 ? 'charge' : 'info'}/${btoa(record?.ID)}/${btoa(record?.BizType4ID)}`;
+            // const url = `/job/job/${btoa(record?.ID)}/${btoa(record?.BizType4ID)}`;
             // TODO: 跳转页面<带参数>
             // @ts-ignore
             history.push({
                 pathname: url,
                 // TODO: 不用 query 的原因：query 的参数会拼接到 url 地址栏上，用 params (可以是其他名<自定义>)，则可以隐藏
-                // pathname: `/cargo/job/job-info`,
+                // pathname: `/job/job/job-info`,
                 // query: {
                 //     id: btoa(record?.ID),
                 //     bizType4ID: record?.BizType4ID,
@@ -134,7 +133,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
         },
         {dataIndex: 'HBOLNum', hideInTable: true,},
         {
-            title: title('cargo-type', '货物类型'),
+            title: title('job-type', '货物类型'),
             dataIndex: 'OceanTransportType',
             align: 'center',
             search: false,

@@ -25,11 +25,11 @@ const entryManagerUrl = {
 export default {
     apps: [
         {
-            name: 'cargo',  // 唯一 id
+            name: 'job',  // 唯一 id
             entry: entryCargoUrl[NODE_ENV || 'development'], // 子应用的地址
-            // base: '/cargo',
+            // base: '/job',
             // history: 'browser', // 子应用的 history 配置，默认为当前主应用 history 配置
-            // mountElementId: 'cargo',  // 注意这里是子应用要挂载在父应用上的节点id
+            // mountElementId: 'job',  // 注意这里是子应用要挂载在父应用上的节点id
             props: {
                 isMenu: false,
                 userInfo: getUserInfo(),

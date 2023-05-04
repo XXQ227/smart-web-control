@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {
     CheckOutlined,
     EditOutlined,
@@ -7,7 +7,7 @@ import {
     HomeFilled,
     LockOutlined, ReloadOutlined
 } from '@ant-design/icons';
-import {Col, Form, Layout, List, message, Modal, Popconfirm, Row,} from 'antd';
+import {Button, Col, Form, Layout, List, message, Modal, Popconfirm, Row,} from 'antd';
 import ls from 'lodash';
 import {Input} from 'antd/es'
 
@@ -64,6 +64,13 @@ const RightHeaderTags: React.FC<Props> = (props) => {
     const [workSpaceIndex, setWorkSpaceIndex] = useState<number>(-1);
 
     const [dataSource, setDataSource] = useState<DataSourceType[]>(data || []);
+
+    useEffect(()=> {
+        const addWorkspaceObj: DataSourceType | undefined = dataSource.find(x=> x.id === 0);
+        if (!(addWorkspaceObj?.id === 0)) {
+            // dataSource.splice(0, 0, {id: 0, title: 'add Workspace'})
+        }
+    }, [dataSource]);
 
     // 打开/关闭 分组
     const onClick = () => {
@@ -123,6 +130,19 @@ const RightHeaderTags: React.FC<Props> = (props) => {
     }
 
     /**
+     * @Description: TODO: 添加 Workspace
+     * @author XXQ
+     * @date 2023/5/4
+     * @returns
+     */
+    const handleAddWorkspace = () => {
+        const newData: DataSourceType[] = ls.cloneDeep(dataSource);
+        newData.splice(0, 0, {id: 0, title: ''});
+        setDataSource(newData);
+        setWorkSpaceIndex(0);
+    }
+
+    /**
      * @Description: TODO: 删除工作空间
      * @author XXQ
      * @date 2023/4/25
@@ -165,6 +185,7 @@ const RightHeaderTags: React.FC<Props> = (props) => {
                 }
                 className={'ant-right-header-tags-modal-form'}
             >
+                <Button onClick={handleAddWorkspace} icon={'add'}>Add workspace</Button>
                 <List
                     loading={loading}
                     dataSource={dataSource}

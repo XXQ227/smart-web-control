@@ -26,6 +26,7 @@ export default [
         name: 'account',
         icon: 'user',
         path: '/account',
+        hideInMenu: true,   // 隐藏不显示
         routes: [
             {
                 path: '/account',
@@ -46,7 +47,7 @@ export default [
         ],
     },
     // TODO: Cargo 系统
-    routesChild.cargo_route,
+    routesChild.job_route,
     // TODO: Bill 系统
     routesChild.bill_route,
     // TODO: Manager 系统

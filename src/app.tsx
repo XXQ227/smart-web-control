@@ -8,7 +8,7 @@ import {Link, history} from 'umi';
 import defaultSettings from '../config/defaultSettings';
 import {getUserID, getUserInfo} from "@/utils/auths";
 import {icon_font_url} from '@/utils/units';
-import RightHeaderTags from '@/components/WorkSpace';
+import WorkSpace from '@/components/WorkSpace';
 import ls from 'lodash';
 import Exception403 from '@/pages/exception/403';
 
@@ -75,8 +75,8 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         // TODO: 顶部右侧
         disableContentMargin: false,
         title: 'EHK',
-        // TODO: 水印
         rightContentRender: () => <RightContent/>,
+        // TODO: 水印
         waterMarkProps: {
             content: initialState?.userInfo?.DisplayName,
         },
@@ -101,10 +101,10 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
             } else {
                 // 判断是不是单票编辑页面，只有在编辑页面时才显示，跟 access.ts 文配合使用
                 // let isSetJobEditPage = false;
-                // if (newPathname.indexOf('/cargo/job/') > -1) {
+                // if (newPathname.indexOf('/job/job/') > -1) {
                 //     isSetJobEditPage = true;
                 //     initInfo.isJobEditPage = true
-                // } else if (oldPathname.indexOf('/cargo/job/') > -1) {
+                // } else if (oldPathname.indexOf('/job/job/') > -1) {
                 //     isSetJobEditPage = true;
                 //     initInfo.isJobEditPage = false
                 // }
@@ -112,21 +112,21 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
                 // if (isSetJobEditPage) {
                 //     setInitialState(initInfo);
                 // }
-                initInfo.isJobEditPage = history?.location?.pathname?.indexOf('/cargo/job/') > -1;
+                initInfo.isJobEditPage = history?.location?.pathname?.indexOf('/job/job/') > -1;
                 setInitialState(initInfo);
                 const newPathnameArr = newPathname?.split('/') ?? [];
                 const oldPathParamsArr = oldPathname.split('/') ?? [];
-                // console.log(pathname.indexOf('/cargo/job/job-') > -1, pathname);
-                // if (pathnameHistory.indexOf('/cargo/job/job-') > -1 && pathnameHistory[4] === ':id') {
+                // console.log(pathname.indexOf('/job/job/job-') > -1, pathname);
+                // if (pathnameHistory.indexOf('/job/job/job-') > -1 && pathnameHistory[4] === ':id') {
                 //     console.log(pathnameHistory);
                 //     history.push({
-                //         pathname: `/cargo/job/${pathnameHistory[3]}/${pathParams[4]}/${pathParams[5]}`,
+                //         pathname: `/job/job/${pathnameHistory[3]}/${pathParams[4]}/${pathParams[5]}`,
                 //     })
                 // }
                 // 当路径为 <route.ts> 中定义的路径时，重新配置路径
-                if (newPathname.indexOf('/cargo/job/') > -1 && newPathnameArr[4] === ':id') {
+                if (newPathname.indexOf('/job/job/') > -1 && newPathnameArr[4] === ':id') {
                     // 参数用旧的，路径用新的
-                    history.push({pathname: `/cargo/job/${newPathnameArr[3]}/${oldPathParamsArr[4]}/${oldPathParamsArr[5]}`});
+                    history.push({pathname: `/job/job/${newPathnameArr[3]}/${oldPathParamsArr[4]}/${oldPathParamsArr[5]}`});
                 }
             }
         },
@@ -149,7 +149,9 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
                 null
             ]
             : [],
-        menuHeaderRender: () => <RightHeaderTags onChangeGroup={onChangeGroup} groupInfo={initInfo.groupInfo} />,
+        // TODO: 工作空间
+        menuHeaderRender: () =>
+            history?.location?.pathname === '/job' ? null : <WorkSpace onChangeGroup={onChangeGroup} groupInfo={initInfo.groupInfo} />,
         // menuDataRender: (menuData)=> menuData,
         // 自定义 403 页面
         childrenRender: (children, props) => {
