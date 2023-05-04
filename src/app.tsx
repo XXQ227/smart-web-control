@@ -69,8 +69,6 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         setInitialState(initInfo);
     }
     const {location} = history;
-    console.log(history?.location?.pathname);
-    console.log(location?.pathname);
     return {
         iconfontUrl: icon_font_url,
         // route: routes,
