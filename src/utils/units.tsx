@@ -2,7 +2,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import {createFromIconfontCN} from '@ant-design/icons';
 
-export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_r0kh0tk3dh.js';
+export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_zgc9p9fhavs.js';
 
 // TODO: 自定义图标使用 【For Example: <CustomizeIcon type={'icon-create'} />】
 export const CustomizeIcon = createFromIconfontCN({
