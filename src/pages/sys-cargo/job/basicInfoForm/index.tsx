@@ -2,11 +2,13 @@ import React, {useEffect, useState} from 'react';
 import {history, useModel, useIntl} from 'umi';
 import type {RouteChildrenProps} from 'react-router';
 import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components';
-import {Button, Col, Form, message, Row} from 'antd';
+import {Button, Col, Form, message, Row, Descriptions} from 'antd';
 import {getUserID} from '@/utils/auths';
 import BasicInfo from '../basicInfoForm/basicInfo';
-import {colGrid, getTitleInfo, rowGrid} from '@/utils/units'
-
+import {colGrid, getBusinessLineName, getStatus, getTitleInfo, rowGrid} from '@/utils/units'
+import styles from './style.less';
+import moment from 'moment';
+import ProForm from "@ant-design/pro-form";
 
 const FormItem = Form.Item;
 // TODO: 用来判断是否是第一次加载数据
@@ -17,8 +19,10 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     const {match: {params}} = props;
     //region TODO: 数据层
     const {
-        CommonBasicInfo: {SalesManList},
-        CJobInfo: {NBasicInfo, NBasicInfo: {Principal}}, getCJobInfoByID
+        CommonBasicInfo: {SalesManList, FinanceDates},
+        CJobInfo,
+        CJobInfo: {NBasicInfo, NBasicInfo: {Principal}, LockDate},
+        getCJobInfoByID
     } = useModel('cargo.job', (res: any) => ({
         CJobInfo: res.CJobInfo,
         CommonBasicInfo: res.CommonBasicInfo,
@@ -57,7 +61,7 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
      * @date 2023/4/18
      * @returns
      */
-    const handleSave = () => {
+    /*const handleSave = () => {
         form.validateFields()
             .then((value) => {
                 console.log('value: ', value);
@@ -65,7 +69,7 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
             .catch((errorInfo) => {
                 // TODO: 提交失败。弹出错误提示
                 console.log('errorInfo: ' + errorInfo);
-                /** 错误信息 */
+                /!** 错误信息 *!/
                 const {errorFields} = errorInfo;
                 if (errorFields?.length > 0) {
                     const errList = errorFields.map((x: any) => x.errors[0]);
@@ -75,24 +79,50 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
                     message.error(errInfo);
                 }
             });
-    }
+    }*/
+
+    const handleFinish = async (values: Record<string, any>) => {
+        try {
+            console.log(values)
+            // await fakeSubmitForm(values);
+            message.success('提交成功');
+        } catch {
+            // console.log
+        }
+    };
+
     // 初始化（或用于 message 提醒）
-    const intl = useIntl();
+    //const intl = useIntl();
     // TODO: 获取列名<Title>
-    const formLabel = (code: string, defaultMessage: string) => getTitleInfo(code, intl, defaultMessage);
+    //const formLabel = (code: string, defaultMessage: string) => getTitleInfo(code, intl, defaultMessage);
 
     const baseParams: any = {form, FormItem};
-    const principalParams: any = {Principal, SalesManList};
+    const basicInfoParams: any = {NBasicInfo, SalesManList, FinanceDates};
 
+    const description = (
+        <Descriptions className={styles.headerList} size="small" column={{ xs: 1, sm: 2, md: 3, lg: 4, xl: 4, xxl: 6}}>
+            <Descriptions.Item label="Business Line">{getBusinessLineName(NBasicInfo?.BusinessLineID)}</Descriptions.Item>
+            <Descriptions.Item label="Job No.">{NBasicInfo?.Code}</Descriptions.Item>
+            <Descriptions.Item label="Shipment Type">{NBasicInfo?.BizTypeEN}</Descriptions.Item>
+            <Descriptions.Item label="Sales">{Principal?.SalesManName}</Descriptions.Item>
+            <Descriptions.Item label="Taking Date">{!!LockDate ? moment(LockDate).format("YYYY-MM-DD") : ""}</Descriptions.Item>
+            <Descriptions.Item label="Last Modified">{NBasicInfo?.LastEditor} / {NBasicInfo?.LastEditDate ? moment(NBasicInfo?.LastEditDate).format("YYYY-MM-DD") : ""}</Descriptions.Item>
+        </Descriptions>
+    );
+
+    // @ts-ignore
     return (
         <PageContainer
+            className={styles.pageContainer}
+            title={false}
+            content={description}
             loading={loading}
             header={{
                 // title: props?.title,
                 breadcrumb: {},
             }}
         >
-            <ProCard className={'ant-card'}>
+            {/*<ProCard className={'ant-card'}>
                 <Form
                     layout={'inline'}
                     name={'showBasicInfo'}
@@ -130,8 +160,8 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
                         </Col>
                     </Row>
                 </Form>
-            </ProCard>
-            <Form
+            </ProCard>*/}
+            {/*<Form
                 form={form}
                 // ref={formRef}
                 name={'formBasic'}
@@ -141,7 +171,6 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
                 onFinishFailed={handleSave}
                 onValuesChange={()=> console.log(123456)}
             >
-                {/* 委托信息 */}
                 <BasicInfo
                     {...baseParams}
                     title={'委托信息'}
@@ -151,7 +180,34 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
                 <FooterToolbar extra={<Button onClick={() => history.goBack()}>返回</Button>}>
                     <Button key={'submit'} type={'primary'} htmlType={'submit'}>提交</Button>
                 </FooterToolbar>
-            </Form>
+            </Form>*/}
+            <ProForm
+                className={styles.proForm}
+                layout="vertical"
+                submitter={{
+                    // 完全自定义整个区域
+                    render: (props, doms) => {
+                        return (
+                            <FooterToolbar extra={<Button onClick={() => history.goBack()}>返回</Button>}>
+                                <Button key={'submit'} type={'primary'} htmlType={'submit'}>提交</Button>
+                            </FooterToolbar>
+                        );
+                    },
+                }}
+                onFinish={handleFinish}
+                initialValues={CJobInfo}
+            >
+                <ProForm.Group>
+                    <BasicInfo
+                        {...baseParams}
+                        title={'Basic Information'}
+                        {...basicInfoParams}
+                    />
+                </ProForm.Group>
+                <ProForm.Item>
+
+                </ProForm.Item>
+            </ProForm>
         </PageContainer>
     )
 }

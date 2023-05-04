@@ -110,7 +110,7 @@ declare namespace APIModel {
             IsPrepareClose: boolean,
             CurrencyOpts: object,
             DefaultUnit: object,
-            FinanceDates: any,
+            FinanceDates?: any,
             Division: API.APIKey$Value[],
             SalesMan?: API.APIKey$Value[],
             PayMethodOpts?: API.APIKey$Value[],
@@ -124,10 +124,13 @@ declare namespace APIModel {
 
     type CommonBasicInfo = {
         SalesManList?: API.APIValue$Label[],
+        FinanceDates?: string[],
     }
 
     type NJobDetailDto = {
         ID: number,
+        LockDate: string,
+        FinanceDate: string,
         NBasicInfo?: NBasicInfo,
         PayCGList?: PRCGInfo[],
         ReceiveCGList?: PRCGInfo[],
@@ -135,11 +138,17 @@ declare namespace APIModel {
 
     type AccountPeriodInfo = {
         CurrencyOpts?: CurrencyOpts[],
+        FinanceDates?: [],
     }
 
     //region TODO: 单票业务详情返回结果
     type NBasicInfo = {
         Code: string,
+        LastEditor: string,
+        LastEditDate: string,
+        BusinessLineID: number,
+        BizTypeEN: string,
+        CreateDate: string,
         Principal?: Principal,
     }
     type Principal = {

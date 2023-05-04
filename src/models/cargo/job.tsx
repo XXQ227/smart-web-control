@@ -16,12 +16,20 @@ export default (callback: T, deps: React.DependencyList) => {
     // TODO: 基础数据
     const commonBasicInfo: APIModel.CommonBasicInfo = {
       SalesManList: [],
+      FinanceDates: [],
     };
     //region TODO: 业务详情结构表
     const jobInfo: APIModel.NJobDetailDto = {
         ID: 0,
+        LockDate: '',
+        FinanceDate: '',
         NBasicInfo: {
             Code: '',
+            LastEditor: '',
+            LastEditDate: '',
+            BusinessLineID: 0,
+            BizTypeEN: '',
+            CreateDate: '',
             Principal: {
                 SalesManID: 0,
                 SalesManName: '',
@@ -61,6 +69,12 @@ export default (callback: T, deps: React.DependencyList) => {
             if (resContent.SalesMan?.length > 0) {
                 resContent.SalesMan.map((item: API.APIKey$Value)=> {
                     commonBasicInfo?.SalesManList?.push({value: item?.Key, label: item?.Value, data: item});
+                })
+            }
+            // 账期月
+            if (resContent.AccountPeriodInfo?.FinanceDates?.length > 0) {
+                resContent.AccountPeriodInfo?.FinanceDates.map((item: string) => {
+                    commonBasicInfo?.FinanceDates?.push(item);
                 })
             }
             setCommonBasicInfo(commonBasicInfo);
