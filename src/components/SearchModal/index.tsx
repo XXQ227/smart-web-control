@@ -1,28 +1,31 @@
 import React, {Fragment, useEffect, useMemo, useState} from 'react';
-import {Input, Modal, Table} from 'antd';
+import {Button, Input, Modal, Table} from 'antd';
 import {debounce} from 'lodash'
 import {fetchData} from '@/components/SearchInput'
+import {PlusOutlined} from '@ant-design/icons'
 
 interface Props {
     id: string,
-    value: any,             // ID 数据 / 其他字符
-    text?: string,           // 显示 【Name】 数据
-    url: string,    // 搜索地址
-    qty: number,    // 搜索条数
-    query?: any,     // 搜索参数
+    value?: any,             // TODO: ID 数据 / 其他字符
+    text?: string,           // TODO: 显示 【Name】 数据
+    url: string,    // TODO: 搜索接口地址
+    qty: number,    // TODO: 搜索条数
+    query?: any,     // TODO: 搜索参数
     title?: string,
     disabled?: boolean,
     modalWidth?: number,
     columns?: any,
     showHeader?: any,
-    filedValue?: string,    // 用于显示返回结果 【value】 的返回参数
-    filedLabel?: string,    // 用于显示返回结果 【label】 的参数
-    handleChangeData: (val: any, option?: any) => void,   // 选中后，返回的结果
+    filedValue?: string,    // TODO: 用于显示返回结果 【value】 的返回参数
+    filedLabel?: string,    // TODO: 用于显示返回结果 【label】 的参数
+    handleChangeData: (val: any, option?: any) => void,   // TODO: 选中后，返回的结果
+    isBtn?: boolean,        // TODO: 是否为按钮
+    btnName?: string        // TODO: 按钮名字
 }
 
 const SearchModal: React.FC<Props> = (props) => {
     const {
-        url, query, qty, filedValue, filedLabel,
+        url, query, qty, filedValue, filedLabel, isBtn, btnName
     } = props;
 
     const [visible, setVisible] = useState<boolean>(false);     // TODO: Modal 隐藏显示开关
@@ -177,10 +180,16 @@ const SearchModal: React.FC<Props> = (props) => {
 
     return (
         <Fragment>
-            <Input
-                id={props.id} value={showText} autoComplete={'off'}
-                onChange={handleModal} onClick={handleModal} onKeyDown={handleKeyDown}
-            />
+            {isBtn ?
+                <Button icon={<PlusOutlined />} onClick={handleModal}>
+                    {btnName}
+                </Button>
+                :
+                <Input
+                    id={props.id} value={showText} autoComplete={'off'}
+                    onChange={handleModal} onClick={handleModal} onKeyDown={handleKeyDown}
+                />
+            }
             {
                 !visible ? null :
                     <Modal

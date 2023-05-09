@@ -1,4 +1,4 @@
-import {GetNJobInfoByIDAPI} from '@/services/smart/job/job-list';
+import {GetCJobByKeyAPI} from '@/services/smart/job/job-list';
 import type React from "react";
 import {useCallback, useState} from "react";
 
@@ -17,9 +17,9 @@ export default (callback: T, deps: React.DependencyList) => {
 
     //region TODO: 接口
     // TODO: 获取单票业务详情请求
-    const getBasicInfo = useCallback(async (params: APIModel.GetCJobByID) => {
+    const getBasicInfo = useCallback(async (params: APIModel.GetCJobListInfo) => {
         // TODO: 请求后台 API
-        const response = await GetNJobInfoByIDAPI(params);
+        const response = await GetCJobByKeyAPI(params);
         if (!response) return;
         setBasicInfo(response)
     }, []);

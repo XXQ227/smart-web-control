@@ -2,7 +2,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import {createFromIconfontCN} from '@ant-design/icons';
 
-export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_zgc9p9fhavs.js';
+export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_ix9dwtrntle.js';
 
 // TODO: 自定义图标使用 【For Example: <CustomizeIcon type={'icon-create'} />】
 export const CustomizeIcon = createFromIconfontCN({
@@ -593,4 +593,110 @@ export function selectBillingMonth(FinanceDates: string[]) {
     console.log(FinanceDate)
 
     return billingMonth;
+}
+
+/**
+ * @Description: TODO:
+ * @author XXQ
+ * @date 2023/5/5
+ * @param data          需要转的数据
+ * @param fieldKey      转的数据的 id 值
+ * @param fieldValue    转的数据的 name 值
+ * @returns
+ */
+export function getLabel$Value (data: any = [], fieldKey = 'Key', fieldValue = 'Value') {
+    let result = data;
+    if (data?.length > 0) {
+        result = data.map((x: any)=> ({...x, value: x[fieldKey], label: x[fieldValue]}))
+    }
+    return result;
+}
+
+/**
+ * @Description: TODO:
+ * @author XXQ
+ * @date 2023/5/6
+ * @param data              要处理的数据
+ * @param fieldKey          id
+ * @param fieldValue        name
+ * @param childrenName      子数据名
+ * @param childFieldKey     子数据 id
+ * @param childFieldValue   子数据 name
+ * @returns
+ */
+export function getTreeSelectTitle$Value (
+    data: any = [], fieldKey = 'Key', fieldValue = 'Value',
+    childrenName = 'children', childFieldKey = 'Key', childFieldValue = 'Value',
+) {
+    let result: any[] = [];
+    if (data?.length > 0) {
+        result = data.map((item: any)=> ({
+            key: item[fieldKey],
+            value: item[fieldKey],
+            title: item[fieldValue],
+            children: item[childrenName]?.map((child: any)=> ({
+                key: child[childFieldKey],
+                value: child[childFieldKey],
+                title: child[childFieldValue]
+            }))
+        }));
+    }
+    return result;
+}
+
+
+/**
+ * 将后台返回的行业数据转换成 TreeSelect 可以识别的形式
+ * 3级行业
+ * @param Arr
+ * @param LineID
+ * @returns {[{disabled: boolean, title: (string), value: string, key: string}]}
+ * @constructor
+ */
+/**
+ * @Description: TODO: 行业类型处理
+ * @author XXQ
+ * @date 2023/5/6
+ * @param data      行业数据
+ * @param LineID    业务线
+ * @returns
+ */
+export function getTransIndustryListToLine(data: any[] = [], LineID: number) {
+    const IndustryList: any[] = []
+    let IndustryListTOLine: any[] = [];
+    if (data?.length > 0) {
+        data.map((x: any) => {
+            const ChildrenList: any[] = [];
+            if (x.industrys?.length > 0) {
+                x.industrys.map((y: any) => {
+                    ChildrenList.push({
+                        title: y.NameEN,
+                        value: y.IndustryID,
+                        key: y.IndustryID,
+                        remark: y.RemarkEN,
+                    });
+                });
+            }
+            IndustryList.push({
+                title: x.NameEN,
+                value: `I-${x.PrimaryID}`,
+                key: `I-${x.PrimaryID}`,
+                disabled: true,
+                children: ChildrenList,
+            });
+        });
+    }
+    // Other 不用嵌套三层
+    if (LineID === 5) {
+        IndustryListTOLine = [
+            {
+                title: 'Other',
+                value: 75,
+                key: 75,
+            }
+        ];
+    } else {
+        IndustryListTOLine = IndustryList;
+    }
+    return IndustryListTOLine;
 }

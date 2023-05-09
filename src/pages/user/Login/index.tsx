@@ -41,7 +41,7 @@ const Login: React.FC = () => {
     const handleSubmit = async (values: API.LoginParams) => {
         try {
             // 登录
-            values.SystemID = 4;
+            values.SystemID = 1;
             const result = await users.login(values) || {Result: false};
             // 登录成功
             if (result.Result) {
@@ -119,7 +119,7 @@ const Login: React.FC = () => {
                                 <LoginMessage
                                     content={intl.formatMessage({
                                         id: 'pages.login.accountLogin.errorMessage',
-                                        defaultMessage: '账户或密码错误(admin/ant.design)',
+                                        defaultMessage: '账户或密码错误',
                                     })}
                                 />
                             )}

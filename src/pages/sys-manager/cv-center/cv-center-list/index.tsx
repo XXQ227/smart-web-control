@@ -5,8 +5,9 @@ import {FooterToolbar, PageContainer, ProCard, ProTable} from '@ant-design/pro-c
 import {Button,} from 'antd';
 import {useModel} from 'umi';
 import {getUserID} from '@/utils/auths';
+import {history} from '@@/core/history'
 
-type APICVInfoList = APIModel.CVInfoList;
+type APICVInfo = APIModel.CVInfo;
 type APICVSearchParams = APIModel.CVSearchParams;
 
 // TODO: 获取单票集的请求参数
@@ -23,18 +24,23 @@ const searchParams: APICVSearchParams = {
     UserID: getUserID(),
 };
 
-const SettlementList: React.FC<RouteChildrenProps> = () => {
+const operationList = [
+    {key: 'edit', type: 1, label: '编辑'},
+];
+
+
+const CVCenterList: React.FC<RouteChildrenProps> = () => {
 
     const {
         CVInfoList, getGetCTPByStr
-    } = useModel('manager.settlement', (res: any)=> ({
+    } = useModel('manager.cv-center', (res: any)=> ({
         CVInfoList: res.CVInfoList,
         getGetCTPByStr: res.getGetCTPByStr,
     }));
 
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [cvInfoList, setCVInfoList] = useState<APICVInfoList[]>(CVInfoList);
+    const [cvInfoList, setCVInfoList] = useState<APICVInfo[]>(CVInfoList);
 
 
     /**
@@ -42,71 +48,85 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
      * @author XXQ
      * @date 2023/2/13
      * @param params    参数
-     * @param isLoading 是否调用接口
      * @returns
      */
-    async function handleGetGetCTPByStr (params: APICVSearchParams, isLoading: boolean = false){
+    async function handleGetGetCTPByStr (params: APICVSearchParams){
         setLoading(true);
-        console.log(params);
+        params.CTName = params.NameFull;
         // TODO: 分页查询【参数页】
         params.PageNum = params.current || 1;
-        const result: APIModel.RuleCJobList = await getGetCTPByStr(params);
-        setCVInfoList(result.data || []);
+        const result: APIModel.CVResultInfo = await getGetCTPByStr(params);
+        setCVInfoList(result.data);
         setLoading(false);
         return result;
     }
 
-    const columns: ProColumns<APIModel.CVInfoList>[] = [
+    /**
+     * @Description: TODO: 编辑 CV 信息
+     * @author XXQ
+     * @date 2023/5/5
+     * @param record    操作当前 行
+     * @returns
+     */
+    const handleOperateJob = (record: any) => {
+        // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
+        const url = `/manager/cv-center/form/${btoa(record?.CTPID)}`;
+        // TODO: 跳转页面<带参数>
+        // @ts-ignore
+        history.push({pathname: url})
+    }
+
+    const columns: ProColumns<APICVInfo>[] = [
         {
             title: 'CV Type',
-            dataIndex: 'Code',
-            width: 80,
+            dataIndex: 'CTTypeItem',
+            width: 123,
             disable: true,
             align: 'center',
         },
         {
             title: 'CV Identity',
-            dataIndex: 'TaxNum',
+            dataIndex: 'InternalCompanyCode',
             width: 100,
             disable: true,
             align: 'center',
         },
         {
             title: 'CV Name',
-            dataIndex: 'TaxNum',
+            dataIndex: 'NameFull',
             disable: true,
         },
         {
             title: 'MDM Number',
-            dataIndex: 'TaxNum',
+            dataIndex: 'CDHCode',
             width: 100,
             disable: true,
             align: 'center',
         },
         {
             title: 'CV Center Number',
-            dataIndex: 'TaxNum',
+            dataIndex: 'CustSupCode',
             width: 140,
             disable: true,
             align: 'center',
         },
         {
             title: 'OracleID(C)',
-            dataIndex: 'TaxNum',
+            dataIndex: 'OracleID',
             width: 100,
             disable: true,
             align: 'center',
         },
         {
             title: 'OracleID(V)',
-            dataIndex: 'TaxNum',
+            dataIndex: 'OracleIDSupplier',
             width: 100,
             disable: true,
             align: 'center',
         },
         {
             title: 'Status',
-            dataIndex: 'TaxNum',
+            dataIndex: 'Freezen',
             width: 100,
             disable: true,
             align: 'center',
@@ -116,6 +136,13 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
             width: 80,
             disable: true,
             align: 'center',
+            render: (text, record) => {
+                return operationList?.map(x=>
+                    <a key={x.key} onClick={() => handleOperateJob(record)}>
+                        {x.label}
+                    </a>
+                )
+            },
         },
     ];
 
@@ -127,7 +154,7 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
             }}
         >
             <ProCard className={'ant-card ant-card-pro-table'}>
-                <ProTable<APIModel.CVInfoList>
+                <ProTable<APICVInfo>
                     rowKey={'ID'}
                     options={false}
                     bordered={true}
@@ -138,8 +165,9 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
                     search={{
                         layout: 'vertical',
                         defaultCollapsed: false,
-                        hiddenNum: 1,
+                        // hiddenNum: 1,
                     }}
+                    // @ts-ignore
                     request={(params: APICVSearchParams)=> handleGetGetCTPByStr(params)}
                 />
             </ProCard>
@@ -149,4 +177,4 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
         </PageContainer>
     )
 }
-export default SettlementList;
+export default CVCenterList;

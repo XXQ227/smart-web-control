@@ -1,7 +1,7 @@
 
 declare namespace APIModel {
     //region TODO:  结算对象
-    type CVInfoList = {
+    type BillInfo = {
 
     }
     //endregion
