@@ -39,29 +39,6 @@ const BasicInfo: React.FC<Props> = (props) => {
 
     }, [])
 
-    /**
-     * @Description: TODO: change 事件
-     * @author XXQ
-     * @date 2023/4/17
-     * @param filedName
-     * @param val
-     * @param option
-     * @returns
-     */
-    const handleChange =(filedName: string, val: any, option?: any)=> {
-        console.log(filedName, val, option);
-        if (principalInfo) {
-            principalInfo[filedName] = val;
-            const fileLen: number = filedName.length;
-            // TODO: 判断是不是 【ID】 字段，【ID】 字段需要存 【Name】 的值
-            if (filedName.substring(fileLen-2, fileLen) === 'ID') {
-                principalInfo[filedName.substring(0, fileLen-2) + 'Name'] = option?.label;
-                form?.setFieldsValue({[filedName]: val});
-            }
-            setPrincipal(principalInfo);
-        }
-    }
-
     // const billingMonth = selectBillingMonth(FinanceDates)
 
     const fetchOptions = async (value: any) => {
