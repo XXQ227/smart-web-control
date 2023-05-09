@@ -32,6 +32,20 @@ ol {
   list-style: none;
 }
 
+.ant-form {
+  .ant-input, .ant-input-affix-wrapper, .ant-select-selector, .ant-picker {
+    border-radius: 5px !important;
+  }
+  .ant-input-number {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+  }
+  .ant-input-number-group-addon {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+}
+
 // TODO: 编辑框中 ant-space 下面的距离
 .antd-pro-table-ant-space{
   .ant-table{
@@ -292,11 +306,19 @@ ol {
   }
 }
 
+.searchTable-input {
+  margin-bottom: 24px;
+  input {
+    text-align: right;
+    cursor: pointer;
+  }
+}
+
 .ant-modal-search-modal{
   .ant-modal-body{
     .ant-table{
       .ant-table-content{
-        .ant-table-cell{
+        .ant-table-cell:not(.columnsStyle){
           padding: 4px 3px!important;
         }
         .ant-table-row-active-class{
@@ -304,6 +326,27 @@ ol {
         }
       }
     }
+  }
+
+  .ant-modal-title {
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .columnsStyle {
+    cursor   : pointer;
+    padding  : 5px 10px !important;
+    font-size: 16px;
+  }
+
+  .table {
+    height    : 460px !important;
+    overflow-x: auto !important;
+    padding   : 6px 6px !important;
+  }
+
+  .modal-table {
+    padding: 0 !important;
   }
 }
 

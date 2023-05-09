@@ -5,6 +5,8 @@ import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components'
 import {Button, Col, Form, message, Row, Descriptions} from 'antd';
 import {getUserID} from '@/utils/auths';
 import BasicInfo from '../basicInfoForm/basicInfo';
+import Cargo from '../basicInfoForm/cargo';
+import Payment from '../basicInfoForm/payment';
 import {colGrid, getBusinessLineName, getStatus, getTitleInfo, rowGrid} from '@/utils/units'
 import styles from './style.less';
 import moment from 'moment';
@@ -20,7 +22,7 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     //region TODO: 数据层
     const {
         CommonBasicInfo: {SalesManList, FinanceDates},
-        CJobInfo, CJobInfo: {NBasicInfo, NBasicInfo: {Principal}, LockDate},
+        CJobInfo, CJobInfo: {NBasicInfo, NBasicInfo: {Principal}, LockDate, CargoInfo},
         getCJobInfoByID
     } = useModel('job.job', (res: any) => ({
         CJobInfo: res.CJobInfo,
@@ -96,14 +98,16 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     //const formLabel = (code: string, defaultMessage: string) => getTitleInfo(code, intl, defaultMessage);
 
     const baseParams: any = {form, FormItem};
-    const basicInfoParams: any = {NBasicInfo, SalesManList, FinanceDates};
+    const basicInfoParams: any = {CJobInfo, NBasicInfo, SalesManList, FinanceDates};
+    const cargoParams: any = {CargoInfo, NBasicInfo};
 
     const description = (
-        <Descriptions className={styles.headerList} size="small" column={{ xs: 1, sm: 2, md: 3, lg: 4, xl: 4, xxl: 6}}>
+        <Descriptions className={styles.headerList} size="small" column={{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 7}}>
             <Descriptions.Item label="Business Line">{getBusinessLineName(NBasicInfo?.BusinessLineID)}</Descriptions.Item>
             <Descriptions.Item label="Job No.">{NBasicInfo?.Code}</Descriptions.Item>
             <Descriptions.Item label="Shipment Type">{NBasicInfo?.BizTypeEN}</Descriptions.Item>
             <Descriptions.Item label="Sales">{Principal?.SalesManName}</Descriptions.Item>
+            <Descriptions.Item label="Creator" >{NBasicInfo?.Operator}</Descriptions.Item>
             <Descriptions.Item label="Taking Date">{!!LockDate ? moment(LockDate).format("YYYY-MM-DD") : ""}</Descriptions.Item>
             <Descriptions.Item label="Last Modified">{NBasicInfo?.LastEditor} / {NBasicInfo?.LastEditDate ? moment(NBasicInfo?.LastEditDate).format("YYYY-MM-DD") : ""}</Descriptions.Item>
         </Descriptions>
@@ -201,6 +205,18 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
                         {...baseParams}
                         title={'Basic Information'}
                         {...basicInfoParams}
+                    />
+                    <Cargo
+                        title={'Cargo'}
+                        {...cargoParams}
+                    />
+                    <Payment
+                        title={'Payment & Shipping Terms'}
+                        NBasicInfo={NBasicInfo}
+                    />
+                    <Payment
+                        title={'Remark'}
+                        NBasicInfo={NBasicInfo}
                     />
                 </ProForm.Group>
                 <ProForm.Item>

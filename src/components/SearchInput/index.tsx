@@ -20,7 +20,7 @@ import {getBranchID, getUserID} from '@/utils/auths'
  */
 export async function fetchData(searchVal: any, url: string, query: any = {}, qty: number = 5, resValue: string, resLabel: string): Promise<API.APIValue$Label[]> {
     const params = Object.assign({}, query, {value: searchVal, PageSize: qty});
-    const options: any = { headers: { Lang: 'en_EN', BranchID: getBranchID(),UserID: getUserID()} };
+    const options: any = { headers: { Lang: 'en_EN', BranchID: getBranchID(), UserID: getUserID()} };
     return fetch(`${url}?${stringify(params)}`, options)
         .then(response => response.json())
         .then((result) => {

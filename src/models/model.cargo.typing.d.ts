@@ -132,6 +132,7 @@ declare namespace APIModel {
         LockDate: string,
         FinanceDate: string,
         NBasicInfo?: NBasicInfo,
+        CargoInfo?: CargoInfo,
         PayCGList?: PRCGInfo[],
         ReceiveCGList?: PRCGInfo[],
     }
@@ -143,15 +144,31 @@ declare namespace APIModel {
 
     //region TODO: 单票业务详情返回结果
     type NBasicInfo = {
+        ID: number,
         Code: string,
         LastEditor: string,
         LastEditDate: string,
+        BizType1ID: number,
         BusinessLineID: number,
         BizTypeEN: string,
         CreateDate: string,
+        Operator: string,
+        OceanTransportTypeID: string,
+        BizRemark: string,
         Principal?: Principal,
+        Terms?: Terms,
+    }
+    type CargoInfo = {
+        HSCode?: string,
+        Description?: string,
+        DescriptionCN?: string,
+        Mark?: string,
+        GrossWeight?: number,
+        Pieces?: number,
+        Measurement?: number,
     }
     type Principal = {
+        ClientInvoNum?: string,
         SalesManID: number,
         SalesManName: string,
         PrincipalXID: number,
@@ -168,6 +185,13 @@ declare namespace APIModel {
         PONum?: string,
         POLID?: number,
         POLName?: string,
+    }
+    type Terms = {
+        IncotermsID: number,
+        ServiceTypeID: number,
+        ServiceTypeName: string,
+        PayableAtID: number,
+        PayableAtName: string,
     }
     //endregion TODO: 单票业务详情返回结果
 

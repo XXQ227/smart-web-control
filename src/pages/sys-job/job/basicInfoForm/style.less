@@ -40,6 +40,76 @@
     .ant-space {
       display: block;
     }
+
+    .ant-space-item {
+      margin-bottom: 24px;
+    }
   }
+
+  //region TODO: BasicInfo表单样式
+  .proFormBasicInfo {
+
+  }
+  //endregion TODO: BasicInfo表单样式
+
+  //region TODO: Cargo表单样式
+  .proFormCargo {
+    .TextArea {
+      :global {
+        .ant-form-item, .ant-form-item-control-input, .ant-form-item-control-input-content {
+          display: flex;
+          height: 100%;
+        }
+        .ant-input {
+          height: 83%;
+        }
+        @media (max-width: 575px) {
+          .ant-form-item {
+            display: block;
+          }
+        }
+      }
+    }
+
+    .label {
+      label {
+        display: block;
+        margin-bottom: 8px;
+      }
+      :global {
+        .ant-input-number-group-wrapper {
+          margin-bottom: 24px;
+          width: 100%;
+        }
+      }
+    }
+
+    .proFormTextContainer {
+      display: flex;
+      :global {
+        .ant-form-item:first-child {
+          margin-right: 5px;
+        }
+      }
+    }
+  }
+  //endregion TODO: Cargo表单样式
+
+  //region TODO: Payment表单样式
+  .proFormPayment {
+    .siteSpace {
+      display: inline-flex !important;
+      gap: 0 !important;
+
+      .siteSpaceSpan {
+        display: inline-block;
+        border-top: #797979 dashed 1px;
+        width: 30px;
+      }
+
+    }
+  }
+  //endregion TODO: Payment表单样式
+
 }
 
