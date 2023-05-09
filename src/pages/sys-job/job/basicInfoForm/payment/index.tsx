@@ -72,16 +72,15 @@ const Payment: React.FC<Props> = (props) => {
             {
                 title === 'Payment & Shipping Terms' ?
                     <Row gutter={rowGrid}>
-                        <Col xs={24} sm={24} md={12} lg={12} xl={9} xxl={4}>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={9} xxl={6}>
                             <ProFormSelect
-                                width="md"
                                 name="Incoterms"
                                 label="Incoterms"
                                 initialValue={{ value: NBasicInfo?.Terms?.IncotermsID }}
                                 options={IncotermsOption}
                             />
                         </Col>
-                        <Col xs={24} sm={24} md={12} lg={12} xl={9} xxl={4}>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={9} xxl={6}>
                             <label style={{ display: 'block', marginBottom: 8 }}>Shipment Term</label>
                             <SearchModal
                                 qty={20}
@@ -94,10 +93,9 @@ const Payment: React.FC<Props> = (props) => {
                                 handleChangeData={(val: any, option: any) => handleChange('ServiceTypeID', val, option)}
                             />
                         </Col>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={8}>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={12}>
                             <Space direction="horizontal" align="center" className={styles.siteSpace}>
                                 <ProFormSelect
-                                    width="md"
                                     name="Incoterms1"
                                     label="Incoterms"
                                     initialValue={{ value: 1, label: "CFR - COST AND FREIGHT" }}
@@ -125,11 +123,10 @@ const Payment: React.FC<Props> = (props) => {
                     <Row gutter={rowGrid}>
                         <Col span={24}>
                             <ProFormTextArea
-                                width="lg"
                                 name="BizRemark"
                                 label="Job Remark"
                                 initialValue={NBasicInfo?.BizRemark}
-                                style={{ height: 400 }}
+                                fieldProps={{rows: 4}}
                             />
                         </Col>
                     </Row>
