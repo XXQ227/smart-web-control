@@ -109,43 +109,86 @@ const bill_route = {
 // TODO: Manager 系统
 const manager_route = {
     name: 'manager',
-    icon: 'icon-menu-settlement',
+    icon: 'icon-menu-cv-center',
     path: '/manager',
     routes: [
         {
             path: '/manager',
-            component: './sys-manager',
+            redirect: '/manager',
+        },
+        // TODO: 客户、供应商
+        {
+            name: 'cv-center-list',
+            icon: 'icon-cv-center',
+            path: '/manager/cv-center/list',
+            component: './sys-manager/cv-center/cv-center-list',
         },
         {
-            name: 'settlement',
-            icon: 'icon-menu-settlement',
-            path: '/manager/settlement',
-            routes: [
-                {
-                    path: '/list',
-                    component: './sys-manager/settlement/settlement-list',
-                },
-                {
-                    name: 'settlement-list',
-                    icon: 'icon-settlement',
-                    path: '/manager/settlement/list',
-                    component: './sys-manager/settlement/settlement-list',
-                },
-                {
-                    name: 'settlement-info',
-                    icon: 'icon-settlement',
-                    path: '/manager/settlement/form',
-                    component: './sys-manager/settlement/settlement-form',
-                },
-            ]
+            hideInMenu: true,   // 隐藏不显示
+            name: 'cv-center-info',
+            icon: 'icon-cv-center',
+            path: '/manager/cv-center/form/:id',
+            component: './sys-manager/cv-center/cv-center-form',
         },
+        // TODO: 客户审批
+        {
+            name: 'customer-approval-list',
+            icon: 'icon-cv-center',
+            path: '/manager/cv-approval/list',
+            component: './sys-manager/cv-center/customer-approval-list',
+        },
+        {
+            hideInMenu: true,   // 隐藏不显示
+            name: 'customer-approval-list',
+            icon: 'icon-cv-center',
+            path: '/manager/cv-approval/form/:id',
+            component: './sys-manager/cv-center/cv-center-form',
+        },
+        // TODO: 港口数据
+        {
+            name: 'port-list',
+            icon: 'icon-port',
+            path: '/manager/port/list',
+            component: './sys-manager/port/port-list',
+        },
+        {
+            hideInMenu: true,   // 隐藏不显示
+            name: 'port-info',
+            icon: 'icon-port',
+            path: '/manager/port/form/:id',
+            component: './sys-manager/port/port-form',
+        },
+        // {
+        //     name: 'cv-center',
+        //     icon: 'icon-cv-center',
+        //     path: './sys-manager/cv-center/list',
+        //     routes: [
+        //         {
+        //             path: '/list',
+        //             component: './sys-manager/cv-center/cv-center-list',
+        //         },
+        //         {
+        //             name: 'cv-center-list',
+        //             icon: 'icon-cv-center',
+        //             path: '/manager/cv-center/list',
+        //             component: './sys-manager/cv-center/cv-center-list',
+        //         },
+        //         {
+        //             hideInMenu: true,   // 隐藏不显示
+        //             name: 'cv-center-info',
+        //             icon: 'icon-cv-center',
+        //             path: '/manager/cv-center/form',
+        //             component: './sys-manager/cv-center/cv-center-form',
+        //         },
+        //     ]
+        // },
     ],
 };
 
 // TODO: Chart 系统
 const chart_route = {
     name: 'chart',
-    icon: 'icon-menu-settlement',
+    icon: 'icon-menu-cv-center',
     path: '/chart',
     routes: [
         {
@@ -154,7 +197,7 @@ const chart_route = {
         },
         {
             name: 'line-chart',
-            icon: 'icon-settlement',
+            icon: 'icon-cv-center',
             path: '/chart/line-chart',
             component: './sys-chart/line-chart',
             ...MICRO_APP_CARGO('chart'),

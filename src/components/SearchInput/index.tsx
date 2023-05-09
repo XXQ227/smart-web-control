@@ -1,8 +1,8 @@
 import React, {useMemo, useRef, useState} from 'react';
-import { Select, Spin } from 'antd';
-import type { SelectProps } from 'antd/es/select';
+import {Select, Spin} from 'antd';
+import type {SelectProps} from 'antd/es/select';
 import {debounce} from 'lodash';
-import { stringify } from 'qs';
+import {stringify} from 'qs';
 import {getBranchID, getUserID} from '@/utils/auths'
 
 
@@ -18,7 +18,7 @@ import {getBranchID, getUserID} from '@/utils/auths'
  * @param resLabel  返回结果的 【Value】 值
  * @returns
  */
-export async function fetchData(searchVal: any, url: string, query: any, qty: number = 5, resValue: string, resLabel: string): Promise<API.APIValue$Label[]> {
+export async function fetchData(searchVal: any, url: string, query: any = {}, qty: number = 5, resValue: string, resLabel: string): Promise<API.APIValue$Label[]> {
     const params = Object.assign({}, query, {value: searchVal, PageSize: qty});
     const options: any = { headers: { Lang: 'en_EN', BranchID: getBranchID(),UserID: getUserID()} };
     return fetch(`${url}?${stringify(params)}`, options)
@@ -37,13 +37,12 @@ export interface DebounceSelectProps<ValueType = any>
     fetchOptions: (search: string, url: string, query: any, qty: number, resValue: string, resLabel: string) => Promise<ValueType[]>;     // TODO: 异步获取数据
     debounceTimeout?: number;       // TODO: 防抖动时间；默认：1000
     fetchParams?: any;              // TODO: 查询参数
-    value?: any,                    // TODO: 默认值
     handleChangeData?: (val: any, option?: any) => void,   // 选中后，返回的结果
 }
 
 function DebounceSelect<
     ValueType extends { key?: string | number; label: React.ReactNode; value: string | number } = any,
->({ fetchOptions, debounceTimeout = 1000, fetchParams, handleChangeData, ...props }: DebounceSelectProps<ValueType>) {
+>({fetchOptions, debounceTimeout = 1000, fetchParams, handleChangeData, ...props}: DebounceSelectProps<ValueType>) {
     const [fetching, setFetching] = useState(false);
     const [options, setOptions] = useState<ValueType[]>([]);
     const fetchRef = useRef(0);
@@ -55,16 +54,16 @@ function DebounceSelect<
          * @Description: TODO: 搜索结果显示
          * @author XXQ
          * @date 2023/4/18
-         * @param value     搜索参数
+         * @param val     搜索参数
          * @returns
          */
-        const loadOptions = (value: string) => {
+        const loadOptions = (val: string) => {
             fetchRef.current += 1;
             const fetchId = fetchRef.current;
             // TODO: 初始数据，且做【loading】
             setOptions([]);
             setFetching(true);
-            fetchOptions(value, url, qty, query, resValue, resLabel).then(newOptions => {
+            fetchOptions(val, url, query, qty, resValue, resLabel).then(newOptions => {
                 if (fetchId !== fetchRef.current) {
                     // for fetch callback order
                     return;
@@ -103,7 +102,7 @@ function DebounceSelect<
             // TODO: 搜索结果防抖动设置
             onSearch={debounceFetcher}
             // TODO: 当下拉列表为空时显示的内容
-            notFoundContent={fetching ? <Spin size="small" /> : null}
+            notFoundContent={fetching ? <Spin size="small"/> : null}
             // onChange={newValue => handleChange(newValue)}
             onSelect={(newValue, option) => handleChange(newValue, option)}
         />
@@ -113,20 +112,21 @@ function DebounceSelect<
 // TODO: 父组件传回来的值
 interface Props {
     id: any,
-    value: any,
+    value?: any,
+    valueObj?: any,
     disabled?: boolean,
     filedValue?: string,    // 用于显示返回结果 【value】 的返回参数
     filedLabel?: string,    // 用于显示返回结果 【label】 的参数
     url: string,    // 搜索地址
-    qty: number,    // 搜索条数
-    query: any,     // 搜索参数
+    qty?: number | 5,    // 搜索条数
+    query?: any,     // 搜索参数
     placeholder?: string,   // 提示信息
-    handleChangeData: (val: any, option?: any) => void,   // 选中后，返回的结果
+    handleChangeData?: (val: any, option?: any) => void,   // 选中后，返回的结果
 }
 const SearchInput: React.FC<Props> = (props) => {
-    const {url, qty, query, disabled, filedValue, filedLabel, } = props;
+    const {url, qty, query, disabled, filedValue, filedLabel} = props;
     // 设置是否是编辑
-    const [value, setValue] = useState<API.APIValue$Label>(props.value || {});
+    const [value, setValue] = useState<API.APIValue$Label>(props.valueObj || {});
 
     // TODO: 返回结果的数据结构；默认 {Key: number, Value: string}，当有其他返回键值对时，在组件调用时定义
     const resValue: string = filedValue || 'Key';
@@ -156,7 +156,7 @@ const SearchInput: React.FC<Props> = (props) => {
             showSearch={true}
             disabled={!!disabled}
             fetchOptions={fetchData}
-            style={{ width: '100%' }}
+            style={{width: '100%'}}
             dropdownMatchSelectWidth={false}
             fetchParams={{url, query, qty, resValue, resLabel}}
             // onChange={newValue => handleChange(newValue)}
