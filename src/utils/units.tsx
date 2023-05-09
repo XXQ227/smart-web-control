@@ -2,7 +2,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import {createFromIconfontCN} from '@ant-design/icons';
 
-export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_zgc9p9fhavs.js';
+export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_dejbxgjg84n.js';
 
 // TODO: 自定义图标使用 【For Example: <CustomizeIcon type={'icon-create'} />】
 export const CustomizeIcon = createFromIconfontCN({
@@ -586,11 +586,19 @@ export function selectBillingMonth(FinanceDates: string[]) {
     });*/
     const billingMonth = {}
 
-    const FinanceDate = FinanceDates.map((dateString) => {
+    /*const FinanceDate = FinanceDates.map((dateString) => {
         const date1 = new Date(dateString + "-01");
         return date1.toLocaleString("default", {year: "numeric", month: "long"});
     })
-    console.log(FinanceDate)
+    console.log(FinanceDate)*/
+
+
+    for (const date of FinanceDates) {
+        const dateObj = new Date(date);
+        billingMonth[date] = `${dateObj.toLocaleString('en-US', {month: 'long'})} ${dateObj.getFullYear()}`;
+    }
+    console.log(FinanceDates)
+    console.log(billingMonth)
 
     return billingMonth;
 }
