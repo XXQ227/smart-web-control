@@ -1,4 +1,4 @@
-import React, {useMemo, useRef, useState} from 'react';
+import React, {forwardRef, useMemo, useRef, useState} from 'react';
 import {Select, Spin} from 'antd';
 import type {SelectProps} from 'antd/es/select';
 import {debounce} from 'lodash';
@@ -114,6 +114,7 @@ interface Props {
     id: any,
     value?: any,
     valueObj?: any,
+    ref?: any,
     disabled?: boolean,
     filedValue?: string,    // 用于显示返回结果 【value】 的返回参数
     filedLabel?: string,    // 用于显示返回结果 【label】 的参数
@@ -123,8 +124,9 @@ interface Props {
     placeholder?: string,   // 提示信息
     handleChangeData?: (val: any, option?: any) => void,   // 选中后，返回的结果
 }
-const SearchInput: React.FC<Props> = (props) => {
-    const {url, qty, query, disabled, filedValue, filedLabel} = props;
+
+const SearchInput: React.FC<Props> = forwardRef((props) => {
+    const {url, qty, query, disabled, filedValue, filedLabel, ref} = props;
     // 设置是否是编辑
     const [value, setValue] = useState<API.APIValue$Label>(props.valueObj || {});
 
@@ -147,6 +149,8 @@ const SearchInput: React.FC<Props> = (props) => {
         if (props.handleChangeData) props.handleChangeData(val, option);
     }
 
+    console.log(props);
+
     return (
         <DebounceSelect
             value={value}
@@ -164,6 +168,5 @@ const SearchInput: React.FC<Props> = (props) => {
             handleChangeData={(newValue, option) => handleChange(newValue, option)}
         />
     )
-}
-
+});
 export default SearchInput;

@@ -700,3 +700,24 @@ export function getTransIndustryListToLine(data: any[] = [], LineID: number) {
     }
     return IndustryListTOLine;
 }
+
+/**
+ * @Description: TODO: Form 表单错误信息解析
+ * @author XXQ
+ * @date 2023/5/10
+ * @param errorInfo     Form 表单提交时错误信息
+ * @returns
+ */
+export function getFormErrorMsg(errorInfo: any) {
+    /** 错误信息 */
+    let errInfo = '';
+    // TODO: 提交失败。弹出错误提示
+    const {errorFields} = errorInfo;
+    if (errorFields?.length > 0) {
+        const errList = errorFields.map((x: any) => x.errors[0]);
+        // TODO: 去重
+        const errArr: any = Array.from(new Set(errList));
+        errInfo = errArr.toString().replace(/,/g, ',  /  ');
+    }
+    return errInfo;
+}

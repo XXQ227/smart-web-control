@@ -23,7 +23,7 @@ import {message} from 'antd/es'
 import ls from 'lodash';
 import {CloseOutlined} from '@ant-design/icons'
 
-type APICVInfo = APIModel.CVInfo;
+type APICVInfo = APIManager.CVInfo;
 const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}} = props;

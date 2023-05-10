@@ -5,7 +5,8 @@ import {
     FooterToolbar,
     PageContainer,
     ProCard,
-    ProForm,
+    DrawerForm,
+    // ProForm,
     ProFormRadio,
     ProFormSwitch,
     ProFormText,
@@ -14,9 +15,10 @@ import {Button, Col, Form, Row} from 'antd'
 import {history} from '@@/core/history'
 import {useModel} from '@@/plugin-model/useModel'
 import SearchInput from '@/components/SearchInput'
+import {EditOutlined} from '@ant-design/icons'
 
 
-type APIPort = APIModel.Port;
+type APIPort = APIManager.Port;
 
 const TransportTypeList = [
     {value: 1, label: '海运'}, {value: 2, label: '陆运'}, {value: 3, label: '空运'}, {value: 4, label: '铁路'}
@@ -83,7 +85,7 @@ const PortForm: React.FC<RouteChildrenProps> = (props) => {
                 breadcrumb: {},
             }}
         >
-            <ProForm
+            <DrawerForm
                 // form={form}
                 formRef={formRef}
                 // TODO: 不显示提交、重置按键
@@ -93,6 +95,7 @@ const PortForm: React.FC<RouteChildrenProps> = (props) => {
                 // TODO: 设置默认值
                 initialValues={PortInfoVO}
                 formKey={'cv-center-information'}
+                trigger={<EditOutlined/>}
                 // TODO: 空间有改数据时触动
                 // onValuesChange={handleProFormValueChange}
                 // TODO: 提交数据
@@ -179,7 +182,7 @@ const PortForm: React.FC<RouteChildrenProps> = (props) => {
                     extra={<Button onClick={() => history.push({pathname: '/manager/port/list'})}>返回</Button>}>
                     <Button key={'submit'} type={'primary'} htmlType={'submit'}>提交</Button>
                 </FooterToolbar>
-            </ProForm>
+            </DrawerForm>
         </PageContainer>
     )
 }

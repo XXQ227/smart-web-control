@@ -7,8 +7,8 @@ import {useModel} from 'umi';
 import {getUserID} from '@/utils/auths';
 import {history} from '@@/core/history'
 
-type APICVInfo = APIModel.CVInfo;
-type APICVSearchParams = APIModel.CVSearchParams;
+type APICVInfo = APIManager.CVInfo;
+type APICVSearchParams = APIManager.CVSearchParams;
 
 // TODO: 获取单票集的请求参数
 const searchParams: APICVSearchParams = {
@@ -55,7 +55,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = () => {
         params.CTName = params.NameFull;
         // TODO: 分页查询【参数页】
         params.PageNum = params.current || 1;
-        const result: APIModel.CVResultInfo = await getGetCTPByStr(params);
+        const result: APIManager.CVResultInfo = await getGetCTPByStr(params);
         setCVInfoList(result.data);
         setLoading(false);
         return result;
