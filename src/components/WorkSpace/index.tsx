@@ -10,6 +10,7 @@ import {
 import {Button, Col, Form, Layout, List, message, Modal, Popconfirm, Row,} from 'antd';
 import ls from 'lodash';
 import {Input} from 'antd/es'
+import {getFormErrorMsg} from '@/utils/units'
 
 const {Header,} = Layout;
 
@@ -115,17 +116,8 @@ const RightHeaderTags: React.FC<Props> = (props) => {
                 setWorkSpaceIndex(-1);
             })
             .catch((errorInfo) => {
-                /** 错误信息 */
-                console.log(errorInfo);
-                // TODO: 提交失败。弹出错误提示
-                const {errorFields} = errorInfo;
-                if (errorFields?.length > 0) {
-                    const errList = errorFields.map((x: any) => x.errors[0]);
-                    // TODO: 去重
-                    const errArr: any = Array.from(new Set(errList));
-                    const errInfo = errArr.toString().replace(/,/g, ',  /  ');
-                    message.error(errInfo);
-                }
+                /** TODO: 错误信息 */
+                message.error(getFormErrorMsg(errorInfo));
             });
     }
 

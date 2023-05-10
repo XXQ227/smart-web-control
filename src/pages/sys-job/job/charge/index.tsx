@@ -3,7 +3,7 @@ import type {RouteChildrenProps} from 'react-router';
 import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components';
 import {Button, Col, Form, message, Row} from 'antd';
 import {history, useModel, useIntl} from 'umi';
-import {colGrid, getTitleInfo, rowGrid} from '@/utils/units';
+import {colGrid, getFormErrorMsg, getTitleInfo, rowGrid} from '@/utils/units';
 import ChargeTable from '@/pages/sys-job/job/charge/chargeTable';
 import type {FormInstance} from 'antd/es/form'
 
@@ -95,17 +95,8 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                 }
             })
             .catch((errorInfo) => {
-                /** 错误信息 */
-                console.log(errorInfo);
-                // TODO: 提交失败。弹出错误提示
-                const {errorFields} = errorInfo;
-                if (errorFields?.length > 0) {
-                    const errList = errorFields.map((x: any)=> x.errors[0]);
-                    // TODO: 去重
-                    const errArr: any = Array.from(new Set(errList));
-                    const errInfo = errArr.toString().replace(/,/g, ',  /  ');
-                    message.error(errInfo);
-                }
+                /** TODO: 错误信息 */
+                message.error(getFormErrorMsg(errorInfo));
             });
     }
 

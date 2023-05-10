@@ -1,8 +1,7 @@
 
-declare namespace APIModel {
+declare namespace APIManager {
     //region TODO:  结算对象
     // TODO: 结算对象搜索参数
-    import PageParams = API.PageParams
     type CVSearchParams = {
         current?: number | null,
         PageNum?: 1 | number | null,

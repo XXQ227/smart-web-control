@@ -1,20 +1,14 @@
-import React, {useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
-import {history} from '@@/core/history'
 import {useModel} from '@@/plugin-model/useModel'
-import {DeleteOutlined, EditOutlined} from '@ant-design/icons'
+import {DeleteOutlined} from '@ant-design/icons'
 import {Divider} from 'antd'
+import PortDrawerForm from '@/pages/sys-manager/port/port-drawer-form'
 
-type APIPort = APIModel.Port;
-type APISearchPort = APIModel.SearchPortParams;
-
-
-const operationList = [
-    {key: 'edit', type: 1, label: 'edit', icon: <EditOutlined/>},
-    {key: 'delete', type: 2, label: 'delete', icon: <DeleteOutlined color={'red'}/>},
-];
+type APIPort = APIManager.Port;
+type APISearchPort = APIManager.SearchPortParams;
 
 
 // TODO: 获取单票集的请求参数
@@ -37,21 +31,6 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
     const [PortListVO, setPortListVO] = useState<APIPort[]>(PortList || []);
 
     /**
-     * @Description: TODO: 编辑 港口 信息
-     * @author XXQ
-     * @date 2023/5/9
-     * @param record    操作当前 行
-     * @returns
-     */
-    const handleOperateJob = (record: APIPort) => {
-        // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        const url = `/manager/port/form/${btoa(String(record.ID))}`;
-        // TODO: 跳转页面<带参数>
-        // @ts-ignore
-        history.push({pathname: url})
-    }
-
-    /**
      * @Description: TODO 获取单票数据集合
      * @author XXQ
      * @date 2023/2/13
@@ -64,12 +43,11 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
         params.PageNum = params.current || 1;
         params.pageSize = params.PageSize || 15;
         params.PageSize = params.PageSize || 15;
-        const result: APIModel.PortResult = await getGetPortList(params);
+        const result: APIManager.PortResult = await getGetPortList(params);
         setPortListVO(result.data);
         setLoading(false);
         return result;
     }
-
 
     const columns: ProColumns<APIPort>[] = [
         {
@@ -118,11 +96,18 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
             disable: true,
             align: 'center',
             render: (text, record) => {
-                return operationList?.map((x, index) =>
-                    <a key={x.key} onClick={() => handleOperateJob(record)}>
-                        {x.icon}
-                        {index < operationList.length - 1 ? <Divider type="vertical" /> : null}
-                    </a>
+                // return operationList?.map((x, index) =>
+                //     <a key={x.key} onClick={() => handleOperateJob(record)}>
+                //         {x.icon}
+                //         {index < operationList.length - 1 ? <Divider type="vertical" /> : null}
+                //     </a>
+                // )
+                return (
+                    <Fragment>
+                        <PortDrawerForm PortInfo={record}/>
+                        <Divider type='vertical'/>
+                        <DeleteOutlined color={'red'}/>
+                    </Fragment>
                 )
             },
         },

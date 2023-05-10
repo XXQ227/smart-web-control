@@ -3,12 +3,12 @@ import type React from "react";
 import {useCallback, useState} from "react";
 import {getLabel$Value, getTransIndustryListToLine} from '@/utils/units'
 
-type APICVInfo = APIModel.CVInfo;
-type APICTTypeItemList = APIModel.CTTypeItemList[];
-type APICustomerProperty = APIModel.CustomerProperty[];
-type APIBusinessLine = APIModel.BusinessLine[];
-type APIIndustrys = APIModel.Industrys[];
-type APIIndustrysTreeSelect = APIModel.IndustrysTreeSelect[][];
+type APICVInfo = APIManager.CVInfo;
+type APICTTypeItemList = APIManager.CTTypeItemList[];
+type APICustomerProperty = APIManager.CustomerProperty[];
+type APIBusinessLine = APIManager.BusinessLine[];
+type APIIndustrys = APIManager.Industrys[];
+type APIIndustrysTreeSelect = APIManager.IndustrysTreeSelect[][];
 
 interface T {
     CVInfoList: APICVInfo[],
@@ -54,12 +54,12 @@ export default (callback: T, deps: React.DependencyList) => {
 
     //region TODO: 接口
     // TODO: 获取单票业务详情请求
-    const getGetCTPByStr = useCallback(async (params: APIModel.CVSearchParams) => {
+    const getGetCTPByStr = useCallback(async (params: APIManager.CVSearchParams) => {
         // TODO: 请求后台 API
         const response: any = await GetCTPByStr(params);
         if (!response) return;
         // TODO: 定义返回结果
-        const result: APIModel.CVResultInfo = {
+        const result: APIManager.CVResultInfo = {
             success: true,
             total: response.Page?.ItemTotal,
             data: response.Content,
@@ -71,9 +71,9 @@ export default (callback: T, deps: React.DependencyList) => {
 
     //region TODO: 接口
     // TODO: 获取单票业务详情请求
-    const getGetCTPByID = useCallback(async (params: APIModel.GetCVInfoParams) => {
+    const getGetCTPByID = useCallback(async (params: APIManager.GetCVInfoParams) => {
         // TODO: 请求后台 API
-        const response: APIModel.GetCVInfoResult = await GetCTPByID(params);
+        const response: APIManager.GetCVInfoResult = await GetCTPByID(params);
         if (!response) return;
         const ctDetailInfo: APICVInfo = response.CTDetailDto;
         if (ctDetailInfo.BusinessLine) {

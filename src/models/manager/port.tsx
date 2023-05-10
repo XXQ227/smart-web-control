@@ -2,7 +2,7 @@ import {GetPortList, GetPortByID} from '@/services/smart/manager/port';
 import type React from "react";
 import {useCallback, useState} from "react";
 
-type APIPort = APIModel.Port;
+type APIPort = APIManager.Port;
 
 interface T {
     PortList: APIPort[]
@@ -30,11 +30,11 @@ export default (callback: T, deps: React.DependencyList) => {
 
     //region TODO: 接口
     // TODO: 获取港口列表请求
-    const getGetPortList = useCallback(async (params: APIModel.SearchPortParams) => {
+    const getGetPortList = useCallback(async (params: APIManager.SearchPortParams) => {
         // TODO: 请求后台 API
         const response: any = await GetPortList(params);
         if (!response) return;
-        const result: APIModel.PortResult = {
+        const result: APIManager.PortResult = {
             success: response.Result,
             total: response.Page?.ItemTotal,
             data: response.Content,
