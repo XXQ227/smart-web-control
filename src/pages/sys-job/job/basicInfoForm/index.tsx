@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from 'react';
-import {history, useModel, useIntl} from 'umi';
+import {history, useModel} from 'umi';
 import type {RouteChildrenProps} from 'react-router';
-import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components';
-import {Button, Col, Form, message, Row, Descriptions} from 'antd';
+import {FooterToolbar, PageContainer, ProForm} from '@ant-design/pro-components';
+import {Button, Form, message} from 'antd';
 import {getUserID} from '@/utils/auths';
 import BasicInfo from '../basicInfoForm/basicInfo';
 import Cargo from '../basicInfoForm/cargo';
 import Payment from '../basicInfoForm/payment';
-import {colGrid, getBusinessLineName, getStatus, getTitleInfo, rowGrid} from '@/utils/units'
+import {HeaderInfo} from '@/utils/units'
 import styles from './style.less';
-import moment from 'moment';
-import ProForm from "@ant-design/pro-form";
+import {LeftOutlined, SaveOutlined} from "@ant-design/icons";
 
 const FormItem = Form.Item;
 // TODO: 用来判断是否是第一次加载数据
@@ -101,98 +100,28 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     const basicInfoParams: any = {CJobInfo, NBasicInfo, SalesManList, FinanceDates};
     const cargoParams: any = {CargoInfo, NBasicInfo};
 
-    const description = (
-        <Descriptions className={styles.headerList} size="small" column={{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 7}}>
-            <Descriptions.Item label="Business Line">{getBusinessLineName(NBasicInfo?.BusinessLineID)}</Descriptions.Item>
-            <Descriptions.Item label="Job No.">{NBasicInfo?.Code}</Descriptions.Item>
-            <Descriptions.Item label="Shipment Type">{NBasicInfo?.BizTypeEN}</Descriptions.Item>
-            <Descriptions.Item label="Sales">{Principal?.SalesManName}</Descriptions.Item>
-            <Descriptions.Item label="Creator" >{NBasicInfo?.Operator}</Descriptions.Item>
-            <Descriptions.Item label="Taking Date">{!!LockDate ? moment(LockDate).format("YYYY-MM-DD") : ""}</Descriptions.Item>
-            <Descriptions.Item label="Last Modified">{NBasicInfo?.LastEditor} / {NBasicInfo?.LastEditDate ? moment(NBasicInfo?.LastEditDate).format("YYYY-MM-DD") : ""}</Descriptions.Item>
-        </Descriptions>
-    );
-
     // @ts-ignore
     return (
         <PageContainer
             className={styles.pageContainer}
             title={false}
-            content={description}
+            content={HeaderInfo(NBasicInfo, LockDate, Principal?.SalesManName)}
             loading={loading}
             header={{
-                // title: props?.title,
                 breadcrumb: {},
             }}
         >
-            {/*<ProCard className={'ant-card'}>
-                <Form
-                    layout={'inline'}
-                    name={'showBasicInfo'}
-                >
-                    <Row gutter={rowGrid}>
-                        <Col {...colGrid}>
-                            <FormItem label={formLabel('code', '业务编号')}>
-                                {NBasicInfo?.Code}
-                            </FormItem>
-                        </Col>
-                        <Col {...colGrid}>
-                            <FormItem label={formLabel('sales', '销售')}>
-                                {Principal?.SalesManName}
-                            </FormItem>
-                        </Col>
-                        <Col {...colGrid}>
-                            <FormItem label={formLabel('sales', '销售')}>
-                                {Principal?.SalesManName}
-                            </FormItem>
-                        </Col>
-                        <Col {...colGrid}>
-                            <FormItem label={formLabel('sales', '销售')}>
-                                {Principal?.SalesManName}
-                            </FormItem>
-                        </Col>
-                        <Col {...colGrid}>
-                            <FormItem label={formLabel('sales', '销售')}>
-                                {Principal?.SalesManName}
-                            </FormItem>
-                        </Col>
-                        <Col {...colGrid}>
-                            <FormItem label={formLabel('sales', '销售')}>
-                                {Principal?.SalesManName}
-                            </FormItem>
-                        </Col>
-                    </Row>
-                </Form>
-            </ProCard>*/}
-            {/*<Form
-                form={form}
-                // ref={formRef}
-                name={'formBasic'}
-                layout={'vertical'}
-                autoComplete={'off'}
-                onFinish={handleSave}
-                onFinishFailed={handleSave}
-                onValuesChange={()=> console.log(123456)}
-            >
-                <BasicInfo
-                    {...baseParams}
-                    title={'委托信息'}
-                    {...principalParams}
-                />
-
-                <FooterToolbar extra={<Button onClick={() => history.goBack()}>返回</Button>}>
-                    <Button key={'submit'} type={'primary'} htmlType={'submit'}>提交</Button>
-                </FooterToolbar>
-            </Form>*/}
             <ProForm
-                className={styles.proForm}
+                className={styles.basicInfoProForm}
                 layout="vertical"
                 submitter={{
                     // 完全自定义整个区域
-                    render: (props, doms) => {
+                    render: () => {
                         return (
-                            <FooterToolbar extra={<Button onClick={() => history.goBack()}>返回</Button>}>
-                                <Button key={'submit'} type={'primary'} htmlType={'submit'}>提交</Button>
+                            <FooterToolbar
+                                style={{height: 55}}
+                                extra={<Button icon={<LeftOutlined />} onClick={() => history.goBack()}>Back</Button>}>
+                                <Button icon={<SaveOutlined />} key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
                             </FooterToolbar>
                         );
                     },

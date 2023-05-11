@@ -153,7 +153,7 @@ declare namespace APIModel {
         BizTypeEN: string,
         CreateDate: string,
         Operator: string,
-        OceanTransportTypeID: string,
+        OceanTransportTypeID: number,
         BizRemark: string,
         Principal?: Principal,
         Terms?: Terms,

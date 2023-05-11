@@ -1,6 +1,9 @@
 import moment from 'moment';
 import _ from 'lodash';
 import {createFromIconfontCN} from '@ant-design/icons';
+import {Descriptions} from "antd";
+import styles from "@/pages/sys-job/job/basicInfoForm/style.less";
+import React from "react";
 
 export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_ix9dwtrntle.js';
 
@@ -728,4 +731,18 @@ export function getFormErrorMsg(errorInfo: any) {
         errInfo = errArr.toString().replace(/,/g, ',  /  ');
     }
     return errInfo;
+}
+
+export function HeaderInfo(NBasicInfo: APIModel.NBasicInfo, LockDate: string, SalesManName?: string) {
+    return (
+        <Descriptions className={styles.headerList} size="small" column={{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 7}}>
+            <Descriptions.Item label="Business Line">{getBusinessLineName(NBasicInfo?.BusinessLineID)}</Descriptions.Item>
+            <Descriptions.Item label="Job No.">{NBasicInfo?.Code}</Descriptions.Item>
+            <Descriptions.Item label="Shipment Type">{NBasicInfo?.BizTypeEN}</Descriptions.Item>
+            <Descriptions.Item label="Sales">{SalesManName}</Descriptions.Item>
+            <Descriptions.Item label="Creator" >{NBasicInfo?.Operator}</Descriptions.Item>
+            <Descriptions.Item label="Taking Date">{!!LockDate ? moment(LockDate).format("YYYY-MM-DD") : ""}</Descriptions.Item>
+            <Descriptions.Item label="Last Modified">{NBasicInfo?.LastEditor} / {NBasicInfo?.LastEditDate ? moment(NBasicInfo?.LastEditDate).format("YYYY-MM-DD") : ""}</Descriptions.Item>
+        </Descriptions>
+    )
 }
