@@ -24,12 +24,17 @@ export default (callback: T, deps: React.DependencyList) => {
         LockDate: '',
         FinanceDate: '',
         NBasicInfo: {
+            ID: 0,
             Code: '',
             LastEditor: '',
             LastEditDate: '',
+            BizType1ID: 0,
             BusinessLineID: 0,
             BizTypeEN: '',
             CreateDate: '',
+            Operator: '',
+            OceanTransportTypeID: 0,
+            BizRemark: '',
             Principal: {
                 SalesManID: 0,
                 SalesManName: '',
