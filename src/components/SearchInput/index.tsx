@@ -1,4 +1,4 @@
-import React, {forwardRef, useMemo, useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Select, Spin} from 'antd';
 import type {SelectProps} from 'antd/es/select';
 import {debounce} from 'lodash';
@@ -89,7 +89,6 @@ function DebounceSelect<
         setOptions([]);
         if (handleChangeData) handleChangeData(val, option);
     }
-
     return (
         <Select
             {...props}
@@ -114,7 +113,6 @@ interface Props {
     id: any,
     value?: any,
     valueObj?: any,
-    ref?: any,
     disabled?: boolean,
     filedValue?: string,    // 用于显示返回结果 【value】 的返回参数
     filedLabel?: string,    // 用于显示返回结果 【label】 的参数
@@ -125,8 +123,8 @@ interface Props {
     handleChangeData?: (val: any, option?: any) => void,   // 选中后，返回的结果
 }
 
-const SearchInput: React.FC<Props> = forwardRef((props) => {
-    const {url, qty, query, disabled, filedValue, filedLabel, ref} = props;
+const SearchInput: React.FC<Props> = (props) => {
+    const {url, qty, query, disabled, filedValue, filedLabel} = props;
     // 设置是否是编辑
     const [value, setValue] = useState<API.APIValue$Label>(props.valueObj || {});
 
@@ -135,6 +133,14 @@ const SearchInput: React.FC<Props> = forwardRef((props) => {
     const resLabel: string = filedLabel || 'Value';
     // const [resValue, setResValue] = useState<string>('Key');
     // const [resLabel, setResLabel] = useState<string>('Value');
+
+    useEffect(()=> {
+        // TODO: 1、当 value 有值且 props 没有值 时, 清空当前空间数据
+        // TODO: 2、当 value 没有值 且 props 有值时, 当前是录入状态
+        if ((value?.value && !(props.valueObj?.value)) || !(value?.value) && props.valueObj?.value) {
+            setValue(props.valueObj);
+        }
+    }, [props.valueObj, value])
 
     /**
      * @Description: TODO: onChange、onSelect 方法，选中后返回结果
@@ -148,8 +154,6 @@ const SearchInput: React.FC<Props> = forwardRef((props) => {
         setValue(val);
         if (props.handleChangeData) props.handleChangeData(val, option);
     }
-
-    console.log(props);
 
     return (
         <DebounceSelect
@@ -168,5 +172,5 @@ const SearchInput: React.FC<Props> = forwardRef((props) => {
             handleChangeData={(newValue, option) => handleChange(newValue, option)}
         />
     )
-});
+};
 export default SearchInput;

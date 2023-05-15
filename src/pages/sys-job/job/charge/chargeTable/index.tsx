@@ -188,7 +188,6 @@ const ChargeTable: React.FC<Props> = (props) => {
                     rules={[{required: true, message: `Bill CUR is required.`}]}
                 >
                     <Select
-                        // value={record.ABillCurrencyTempID}
                         dropdownMatchSelectWidth={false}
                         onSelect={(e) => handleChangeABillCurr(index, e, record)}
                     >
@@ -456,7 +455,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                     title={() => renderTableTitle}
                     footer={() => renderTableFooter}
                     locale={{emptyText: "NO DATA"}}
-                    className={'ant-pro-table-charge-info'}
+                    className={'ant-pro-table-charge-info ant-pro-table-edit'}
                 />
             </Col>
             <Col span={24}>

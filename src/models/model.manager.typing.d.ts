@@ -142,13 +142,113 @@ declare namespace APIManager {
         TransportTypeID?: number | null,
         TransportTypeName?: string,
     }
-
     //endregion
 
-    //region TODO:
+    //region TODO: 账期
+    type SearchAccountParams = {
+        UserID: number,
+        Year: string | undefined,
+    }
+    type AccountResult = {
+        data: AccountList[];
+        /** 列表的内容总数 */
+        total: number | null;
+        success?: boolean;
+    };
+    type AccountList = {
+        AccountState: number,
+        DFStatus: number | null,
+        DFStatusName: string,
+        ESStatus: number | null,
+        ESStatusName: string,
+        EndDate: string,
+        ErrorMes: string,
+        FinaMonth: string,
+        FinaYear: string,
+        ID: number,
+        IsDisplayCloseBtn: boolean,
+        IsDisplayDFBtn: boolean,
+        IsDisplayESBtn: boolean,
+        IsPrepareClose: boolean,
+        PeriodCode: string,
+        StartDate: string,
+        StateName: string,
+        TypeName: string,
+    };
+    type AccountPeriodResult = {
+        AccountPeriod: AccountPeriod,
+        // Currencys: APCurrency[],
+    }
+    type AccountPeriod = {
+        AccountMouth: string,
+        BranchID: number | null,
+        CNYRate: number | null,
+        EndDate: string,
+        ErrorMes: string,
+        ExRates: APExRate[],
+        ID: number | string | null,
+        PeriodCode: string,
+        StartDate: string,
+        State: number | null,
+        StateName: string,
+        Type: number | null,
+    }
+    type APExRate = {
+        RateValue: number,
+        CurrencyID: number,
+    }
+    type APCurrency = {
+        ID: number,
+        Name: string,
+    }
     //endregion
 
-    //region TODO:
+    //region TODO: 费目管理
+    type SearchCGItemParams = {
+        value?: string,
+        UserID: number,
+        SystemID: number,
+        current?: number | null,
+        pageSize?: number | 15 | null,
+        PageSize?: number | 15 | null,
+        PageNum?: number | 1 | null,
+    }
+
+    type CGItemResult = {
+        data: CGItem[];
+        /** 列表的内容总数 */
+        total: number | null;
+        /** 返回结果 */
+        success?: boolean;
+    };
+
+    type CGItem = {
+        ID: number | string | null,
+        CargoCGItemID: number | string | null,
+        Code: string,
+        Freezen: boolean,
+        Biztype1ID: number | null,
+        Name: string,
+        CGItemName: string,
+        CGUnitID?: number | null,
+        CGUnitName?: string,
+        StandardCGItemID?: number | null,
+        StandardCGItemName?: string,
+        UBSCode?: string,
+        UBSCodeAPNoVat?: string,
+        UBSCodeAPVat?: string,
+        UBSCodeARNoVat?: string,
+        UBSCodeARVat?: string,
+        isChange?: boolean,
+        UserID?: number,
+    }
+    type DeleteFreezenCGItem = {
+        SystemID: number,
+        UserID: number,
+        CGItemID: number,
+        CGItemName: string,
+        IsFreezen?: boolean,
+    }
     //endregion
 
     //region TODO:

@@ -209,6 +209,85 @@ ol {
 .ant-margin-bottom-24{
   margin-bottom: 24px;
 }
+
+.ant-pro-table-edit {
+  .ant-table {
+    .ant-table-content {
+      .ant-table-tbody{
+        input, select, .ant-select-selector{
+          border: 0!important;
+        }
+        td, input, select{
+          padding: 2px 1px !important;
+        }
+        .ant-form-item {
+          margin: 0;
+
+          .ant-form-item-explain {
+            display: none;
+          }
+
+          // TODO: Select 选择框
+          .ant-select-selector {
+            padding: 0 3px;
+
+            .ant-select-selection-search {
+              left: 4px !important;
+
+              input {
+                text-align: left;
+              }
+            }
+
+            .ant-select-selection-item {
+              padding-right: 5px;
+            }
+          }
+
+          .ant-select-arrow {
+            right: 4px;
+          }
+
+          // TODO: Input 编辑框
+          .ant-form-item-control-input-content {
+            height: 100% !important;
+
+            .ant-input-edit {
+              width: 100%;
+              height: 100%;
+              line-height: 32px;
+            }
+
+            .ant-input-status-error {
+              border: 1px #ff4d4f dashed !important;
+
+              &:after {
+                content: 'is required.';
+                right: 30px;
+                top: 120px;
+                color: #ff4d4f !important;
+                font-size: 23px;
+                background-color: #d91212;
+                width: 100px !important;
+                height: 32px !important;
+                font-weight: bold;
+              }
+            }
+
+            input {
+              height: 32px;
+            }
+
+            .isNumber-inp {
+              text-align: right;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 .ant-pro-table-charge-info{
   .ant-pro-card-body{
     padding: 0;
@@ -234,63 +313,6 @@ ol {
       .ant-table-tbody{
         .ant-table-placeholder{
           height: 37px;
-        }
-        input, select, .ant-select-selector{
-          border: 0!important;
-        }
-        td, input, select{
-          padding: 2px 1px !important;
-        }
-        .ant-form-item{
-          margin: 0;
-          .ant-form-item-explain{
-            display: none;
-          }
-          // TODO: Select 选择框
-          .ant-select-selector {
-            padding: 0 3px;
-            .ant-select-selection-search{
-              left: 4px!important;
-              input{
-                text-align: left;
-              }
-            }
-            .ant-select-selection-item {
-              padding-right: 5px;
-            }
-          }
-          .ant-select-arrow{
-            right: 4px;
-          }
-          // TODO: Input 编辑框
-          .ant-form-item-control-input-content{
-            height: 100% !important;
-            .ant-input-edit{
-              width: 100%;
-              height: 100%;
-              line-height: 32px;
-            }
-            .ant-input-status-error{
-              border: 1px #ff4d4f dashed!important;
-              &:after{
-                content: 'is required.';
-                right: 30px;
-                top: 120px;
-                color: #ff4d4f!important;
-                font-size: 23px;
-                background-color: #d91212;
-                width: 100px!important;
-                height: 32px!important;
-                font-weight:bold;
-              }
-            }
-            input {
-              height: 32px;
-            }
-            .isNumber-inp{
-              text-align: right;
-            }
-          }
         }
       }
     }
@@ -413,6 +435,19 @@ ol {
     .ant-tag-close-icon{
       margin-left: 6px;
       svg{color: #1765AE;}
+    }
+  }
+}
+// TODO: 港口
+.antd-pro-table-port-list{
+  .ant-pro-card-body{
+    padding: 0!important;
+  }
+  .ant-table-content{
+    .ant-table-tbody{
+      .ant-table-cell{
+        padding: 8px 6px!important;
+      }
     }
   }
 }

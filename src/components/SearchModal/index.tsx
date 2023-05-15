@@ -25,7 +25,7 @@ interface Props {
 
 const SearchModal: React.FC<Props> = (props) => {
     const {
-        url, query, qty, filedValue, filedLabel, isBtn, btnName
+        url, query, qty, filedValue, filedLabel, isBtn, btnName, disabled
     } = props;
 
     const [visible, setVisible] = useState<boolean>(false);     // TODO: Modal 隐藏显示开关
@@ -182,7 +182,7 @@ const SearchModal: React.FC<Props> = (props) => {
                 </Button>
                 :
                 <Input
-                    id={props.id} value={showText} autoComplete={'off'}
+                    id={props.id} value={showText} autoComplete={'off'} disabled={disabled}
                     onChange={handleModal} onClick={handleModal} onKeyDown={handleKeyDown}
                 />
             }

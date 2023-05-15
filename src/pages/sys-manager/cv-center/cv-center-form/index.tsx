@@ -16,12 +16,11 @@ import {
 } from '@ant-design/pro-components'
 import {Button, Col, Form, Row, Tag} from 'antd'
 import {getUserID} from '@/utils/auths'
-import {useModel} from '@@/plugin-model/useModel'
-import {history} from '@@/core/history'
 import SearchModal from '@/components/SearchModal'
 import {message} from 'antd/es'
 import ls from 'lodash';
 import {CloseOutlined} from '@ant-design/icons'
+import {useModel, history} from 'umi'
 
 type APICVInfo = APIManager.CVInfo;
 const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {

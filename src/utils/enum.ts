@@ -48,4 +48,27 @@ export const ChargeStateEnum = {
     '12': {text: 'Partial Return', status: 'Partial Return', key: 12},
 };
 
+// TODO: 账期类型举值
+export const AccountPeriodTypeEnum = {
+    0: {text: 'Normal', status: 'Normal', key: 1},
+    1: {text: 'Replenishment', status: 'Replenishment', key: 0},
+};
+
+// TODO: 账期预估状态举值
+export const AccountPeriodESStatusEnum = {
+    0: {text: 'Unopened', status: 'Unopened', key: 1},
+    1: {text: 'Pending', status: 'Pending', key: 1},
+    2: {text: 'Success', status: 'Success', key: 2},
+    [-2]: {text: 'Failed', status: 'Failed', key: 2},
+};
+
+// TODO: 账期开启状态举值
+export const AccountPeriodStateEnum = {
+    0: {text: 'New', status: 'New', key: 1},
+    1: {text: 'Active', status: 'Active', key: 1},
+    2: {text: 'Closing', status: 'Closing', key: 2},
+    3: {text: 'Closed', status: 'Closed', key: 2},
+};
+
+
 

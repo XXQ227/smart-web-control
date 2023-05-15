@@ -118,70 +118,81 @@ const manager_route = {
         },
         // TODO: 客户、供应商
         {
-            name: 'cv-center-list',
+            name: 'cv_center_list',
             icon: 'icon-cv-center',
             path: '/manager/cv-center/list',
             component: './sys-manager/cv-center/cv-center-list',
         },
         {
             hideInMenu: true,   // 隐藏不显示
-            name: 'cv-center-info',
+            name: 'cv_center_info',
             icon: 'icon-cv-center',
             path: '/manager/cv-center/form/:id',
             component: './sys-manager/cv-center/cv-center-form',
         },
         // TODO: 客户审批
         {
-            name: 'customer-approval-list',
-            icon: 'icon-cv-center',
+            name: 'customer_approval_list',
+            icon: 'icon-cv-approval',
             path: '/manager/cv-approval/list',
             component: './sys-manager/cv-center/customer-approval-list',
         },
         {
             hideInMenu: true,   // 隐藏不显示
-            name: 'customer-approval-list',
+            name: 'customer_approval_list',
             icon: 'icon-cv-center',
             path: '/manager/cv-approval/form/:id',
             component: './sys-manager/cv-center/cv-center-form',
         },
         // TODO: 港口数据
         {
-            name: 'port-list',
+            name: 'port_list',
             icon: 'icon-port',
             path: '/manager/port/list',
             component: './sys-manager/port/port-list',
         },
+        // TODO: 账期数据
+        {
+            name: 'account_list',
+            icon: 'icon-account-manage',
+            path: '/manager/account/list',
+            component: './sys-manager/account/account-list',
+        },
+        // TODO: 费用名称数据
+        {
+            name: 'charge_description_list',
+            icon: 'icon-charge-subject',
+            path: '/manager/charge-description/list',
+            component: './sys-manager/charge-description/charge-description-list',
+        },
+        // TODO: 费用模板数据
+        {
+            name: 'charge_template_list',
+            icon: 'icon-charge-manage',
+            path: '/manager/charge-template/list',
+            component: './sys-manager/charge-template/charge-template-list',
+        },
         {
             hideInMenu: true,   // 隐藏不显示
-            name: 'port-info',
-            icon: 'icon-port',
-            path: '/manager/port/form/:id',
-            component: './sys-manager/port/port-form',
+            name: 'charge_template_info',
+            icon: 'icon-charge-manage',
+            path: '/manager/charge-template/form/:id',
+            component: './sys-manager/charge-template/charge-template-form',
         },
-        // {
-        //     name: 'cv-center',
-        //     icon: 'icon-cv-center',
-        //     path: './sys-manager/cv-center/list',
-        //     routes: [
-        //         {
-        //             path: '/list',
-        //             component: './sys-manager/cv-center/cv-center-list',
-        //         },
-        //         {
-        //             name: 'cv-center-list',
-        //             icon: 'icon-cv-center',
-        //             path: '/manager/cv-center/list',
-        //             component: './sys-manager/cv-center/cv-center-list',
-        //         },
-        //         {
-        //             hideInMenu: true,   // 隐藏不显示
-        //             name: 'cv-center-info',
-        //             icon: 'icon-cv-center',
-        //             path: '/manager/cv-center/form',
-        //             component: './sys-manager/cv-center/cv-center-form',
-        //         },
-        //     ]
-        // },
+        // TODO: 报价数据
+        {
+            name: 'charge_quotation_list',
+            icon: 'icon-charge-quotation',
+            path: '/manager/charge-quotation/list',
+            component: './sys-manager/charge-quotation/charge-quotation-list',
+        },
+        {
+            hideInMenu: true,   // 隐藏不显示
+            name: 'charge_quotation_info',
+            icon: 'icon-charge-quotation',
+            path: '/manager/charge-quotation/form/:id',
+            component: './sys-manager/charge-quotation/charge-quotation-form',
+        },
     ],
 };
 
