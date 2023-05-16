@@ -1,5 +1,5 @@
 
-declare namespace APIModel {
+declare namespace APIBill {
     //region TODO:  结算对象
     type BillInfo = {
 
