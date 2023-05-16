@@ -3,9 +3,58 @@
 .pageContainer {
   padding: 20px;
   :global {
+    .ant-pro-page-container-warp, .ant-page-header {
+      border-radius: 5.5px;
+    }
+
+    /*.ant-page-header {
+      padding: 0;
+    }
+    .ant-page-header-content {
+      padding: 28px 24px 0;
+    }*/
+
+    /*.ant-pro-page-container-warp, .ant-page-header {
+      padding: 0;
+      background-color: transparent !important;
+    }
+
+    .ant-page-header-content {
+      padding: 16px 24px;
+      background-color: #242525  !important;
+    }
+
+    .ant-page-header .ant-pro-page-container-detail {
+      padding: 16px 24px;
+      background-color: rgb(16, 19, 30);
+      border-radius: 5.5px;
+    }*/
+
     .ant-pro-page-container-children-content {
       margin: 24px 0;
     }
+
+    .ant-tabs-nav-wrap .ant-tabs-nav-list {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .ant-tabs-nav-wrap .ant-tabs-tab, .ant-tabs-nav-add {
+      justify-content: center;
+      flex-grow: 1;
+    }
+
+    .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+      background-color: @primary-color !important;
+    }
+
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+      color: #fff;
+    }
+
+
+
   }
 }
 
@@ -28,7 +77,7 @@
       display: block;
     }
 
-    .ant-space-item {
+    .ant-space-item .ant-pro-card {
       margin-bottom: 24px;
     }
   }

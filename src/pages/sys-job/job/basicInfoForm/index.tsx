@@ -2,18 +2,18 @@ import React, {useEffect, useState} from 'react';
 import {history, useModel} from 'umi';
 import type {RouteChildrenProps} from 'react-router';
 import {FooterToolbar, PageContainer, ProForm} from '@ant-design/pro-components';
-import {Button, Form, message} from 'antd';
+import {Button, message,} from 'antd';
 import {getUserID} from '@/utils/auths';
-import BasicInfo from '../basicInfoForm/basicInfo';
-import Cargo from '../basicInfoForm/cargo';
-import Payment from '../basicInfoForm/payment';
+import Job from './job';
 import {HeaderInfo} from '@/utils/units'
 import styles from './style.less';
 import {LeftOutlined, SaveOutlined} from "@ant-design/icons";
+import AddServiceModal from '@/components/AddServiceModal';
 
-const FormItem = Form.Item;
+// const FormItem = Form.Item;
 // TODO: 用来判断是否是第一次加载数据
 let isLoadingData = false;
+type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
@@ -21,7 +21,7 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     //region TODO: 数据层
     const {
         CommonBasicInfo: {SalesManList, FinanceDates},
-        CJobInfo, CJobInfo: {NBasicInfo, NBasicInfo: {Principal}, LockDate, CargoInfo},
+        CJobInfo, CJobInfo: {NBasicInfo, NBasicInfo: {Principal}, LockDate},
         getCJobInfoByID
     } = useModel('job.job', (res: any) => ({
         CJobInfo: res.CJobInfo,
@@ -30,11 +30,27 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     }));
     //endregion
 
-    /** 实例化Form */
-    const [form] = Form.useForm();
+    // 动态生成标签页信息
+    const initialTabList = [
+        {
+            tab: 'Job',
+            key: 'job',
+            closable: false,
+            content: <Job
+                CJobInfo={CJobInfo}
+                SalesManList={SalesManList}
+                FinanceDates={FinanceDates}
+            />,
+        },
+    ];
 
+    /** 实例化Form */
+    // const [form] = Form.useForm();
+    const [activeKey, setActiveKey] = useState('job');
+    const [tabList, setTabList] = useState(initialTabList);
     const [jobID, setJobID] = useState(0);
     const [loading, setLoading] = useState(true);
+    const [isModalOpen, setIsModalOpen] = useState(false);
     useEffect(() => {
         // TODO: 当【没有 ID && isLoadingData == false】时调用接口获取数据
         if (!jobID && !isLoadingData && params?.id !== ':id') {
@@ -54,6 +70,10 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
         }
     }, [getCJobInfoByID, jobID, params?.bizType4id, params?.id])
     //endregion
+
+    const handleTabChange = (key: string) => {
+        setActiveKey(key);
+    };
 
     /**
      * @Description: TODO: 保存数据
@@ -91,16 +111,61 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
         }
     };
 
-    // 初始化（或用于 message 提醒）
-    //const intl = useIntl();
-    // TODO: 获取列名<Title>
-    //const formLabel = (code: string, defaultMessage: string) => getTitleInfo(code, intl, defaultMessage);
+    const showModal = () => {
+        setIsModalOpen(true);
+    };
 
-    const baseParams: any = {form, FormItem};
-    const basicInfoParams: any = {CJobInfo, NBasicInfo, SalesManList, FinanceDates};
-    const cargoParams: any = {CargoInfo, NBasicInfo};
+    const handleOk = () => {
+        setIsModalOpen(false);
+    };
 
-    // @ts-ignore
+    const handleCancel = () => {
+        setIsModalOpen(false);
+    };
+
+    const add = () => {
+        console.log('添加一个新的标签页');
+        showModal()
+        /*const newActiveKey = `newTab${newTabIndex.current++}`;
+        const newPanes = [...tabList];
+        newPanes.push({ label: 'New Tab', children: 'Content of new Tab', key: newActiveKey });
+        setTabList(newPanes);
+        setActiveKey(newActiveKey);*/
+    };
+
+    const remove = (targetKey: TargetKey) => {
+        console.log(targetKey)
+        /*let newActiveKey = activeKey;
+        let lastIndex = -1;
+        tabList.forEach((item, i) => {
+            if (item.key === targetKey) {
+                lastIndex = i - 1;
+            }
+        });
+        const newPanes = tabList.filter((item) => item.key !== targetKey);
+        if (newPanes.length && newActiveKey === targetKey) {
+            if (lastIndex >= 0) {
+                newActiveKey = newPanes[lastIndex].key;
+            } else {
+                newActiveKey = newPanes[0].key;
+            }
+        }
+        setTabList(newPanes);
+        setActiveKey(newActiveKey);*/
+    };
+
+    const onEdit = (
+        targetKey: React.MouseEvent | React.KeyboardEvent | string,
+        action: 'add' | 'remove',
+    ) => {
+        console.log(targetKey, action)
+        if (action === 'add') {
+            add();
+        } else {
+            remove(targetKey);
+        }
+    };
+
     return (
         <PageContainer
             className={styles.pageContainer}
@@ -109,6 +174,15 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
             loading={loading}
             header={{
                 breadcrumb: {},
+            }}
+            tabList={tabList}
+            onTabChange={handleTabChange}
+            tabProps={{
+                type: 'editable-card',
+                tabBarGutter: 0,
+                // tabBarStyle: 'tabBarCard',
+                tabBarStyle: { flexGrow: 1 },
+                onEdit: onEdit,
             }}
         >
             <ProForm
@@ -130,28 +204,24 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
                 initialValues={CJobInfo}
             >
                 <ProForm.Group>
-                    <BasicInfo
-                        {...baseParams}
-                        title={'Basic Information'}
-                        {...basicInfoParams}
-                    />
-                    <Cargo
-                        title={'Cargo'}
-                        {...cargoParams}
-                    />
-                    <Payment
-                        title={'Payment & Shipping Terms'}
-                        NBasicInfo={NBasicInfo}
-                    />
-                    <Payment
-                        title={'Remark'}
-                        NBasicInfo={NBasicInfo}
-                    />
+                    {activeKey === 'job' && (
+                        <Job
+                            CJobInfo={CJobInfo}
+                            SalesManList={SalesManList}
+                            FinanceDates={FinanceDates}
+                        />
+                    )}
+
                 </ProForm.Group>
                 <ProForm.Item>
 
                 </ProForm.Item>
             </ProForm>
+            <AddServiceModal
+                open={isModalOpen}
+                onOk={handleOk}
+                onCancel={handleCancel}
+            />
         </PageContainer>
     )
 }

@@ -10,7 +10,7 @@ interface Props {
     formRef?: any,
     formCurrent?: any,
     title: string,
-    NBasicInfo: APIModel.NBasicInfo,
+    NBasicInfo?: APIModel.NBasicInfo,
 }
 
 const Incoterms = [
