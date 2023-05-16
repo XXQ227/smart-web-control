@@ -5,7 +5,7 @@ import {PlusOutlined} from '@ant-design/icons';
 import {useModel} from 'umi';
 import {getBranchID, getFuncCurrency, getUserID} from '@/utils/auths';
 import {formatNumToMoney, keepDecimal} from '@/utils/units';
-import InputEdit from '@/pages/sys-job/job/charge/components/InputNumberEdit'
+import InputEdit from '@/components/InputNumberEdit'
 import {ChargeStateEnum} from '@/utils/enum'
 import {stringify} from 'querystring';
 import ls from 'lodash';
