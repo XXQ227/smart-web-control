@@ -3,7 +3,6 @@ import _ from 'lodash';
 import {createFromIconfontCN} from '@ant-design/icons';
 import {Descriptions} from "antd";
 import styles from "@/pages/sys-job/job/basicInfoForm/style.less";
-import React from "react";
 
 export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_trtenh9jdub.js';
 
@@ -35,6 +34,20 @@ export function ItemLayout(label: number, wrapper: number) {
     };
 }
 
+/**
+ * @Description: TODO: 整理后台返回的数据，重组，用于 PorTable 数据结构
+ * @author XXQ
+ * @date 2023/5/15
+ * @param response  接口返回结果
+ * @returns
+ */
+export function getTableDataFormat (response: any = {}) {
+    return {
+        success: response.Result,
+        total: response.Page?.ItemTotal,
+        data: response.Content,
+    }
+}
 
 /**
  * 金额中文大写

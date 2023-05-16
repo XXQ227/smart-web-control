@@ -251,7 +251,72 @@ declare namespace APIManager {
     }
     //endregion
 
-    //region TODO:
+    //region TODO: 费用模板
+    type SearchCGTempParams = {
+        UserID: number,
+        Name: string,
+    }
+
+
+    type CGTempResult = {
+        data: CGTemp[];
+        /** 列表的内容总数 */
+        total: number | null;
+        /** 返回结果 */
+        success?: boolean;
+    };
+
+    type CGTemp = {
+        ID: number | string,
+        Name: string,
+        BizType1Name: string,
+        BizType1NameEN: string,
+        CreateDate: string,
+        CreatorName: string,
+    }
+
+    type CGTempByIDParams = {
+        UserID: number,
+        ID: number | string,
+    }
+
+    type CGTempByIDResult = {
+        UserID: number,
+        Name: string,
+    }
+
+
+    type SaveCGItem = {
+        Name: string,
+        APUSDRate: string,
+        ARUSDRate: string,
+        ServicesID?: number | null,
+        PurposeofCallID?: number | null,
+        ID: number | string,
+        CGTempItems?: CGTempItems[],
+        BizType1ID?: number | null,
+    }
+
+    type CGTempItems = {
+        ID: number | string,
+        SettlementID: number | null,
+        SettlementName?: string,
+        SettlementNameEN?: string,
+        CTName: string,
+        CGUnitID: number | null,
+        CGUnitName: string | null,
+        CGItemID: number | null,
+        CGItemName?: string,
+        CGTypeID: number,
+        UnitPrice: number | null,
+        // TODO: 原币
+        CurrencyID: number | null,
+
+        PayMethodID: number | null,
+        ctCheck?: boolean,
+        TaxFree?: boolean,
+    }
+
     //endregion
 
     //region TODO:

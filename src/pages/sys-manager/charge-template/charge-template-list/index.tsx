@@ -3,32 +3,34 @@ import type {RouteChildrenProps} from 'react-router';
 import type {ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
-import {DeleteOutlined} from '@ant-design/icons'
+import {DeleteOutlined, EditOutlined} from '@ant-design/icons'
 import {Divider} from 'antd'
 import PortDrawerForm from '@/pages/sys-manager/port/port-drawer-form'
+import {getUserID} from '@/utils/auths'
+import {history} from '@@/core/history'
 
-type APIPort = APIManager.Port;
-type APISearchPort = APIManager.SearchPortParams;
+type APICGTemp = APIManager.CGTemp;
+type APISearchCGTemp = APIManager.SearchCGTempParams;
 
 
 // TODO: 获取单票集的请求参数
-const searchParams: APISearchPort = {
-    Key: '',
-    Type: null,
-    PageSize: 15,
+const searchParams: APISearchCGTemp = {
+    Name: '',
+    UserID: getUserID()
 };
 
-const PortListIndex: React.FC<RouteChildrenProps> = () => {
+const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
 
     const {
-        PortList, getGetPortList
-    } = useModel('manager.port', (res: any) => ({
-        PortList: res.PortList,
-        getGetPortList: res.getGetPortList,
+        CGTempList, getCGTempList, DelTempByID
+    } = useModel('manager.charge-template', (res: any) => ({
+        CGTempList: res.CGTempList,
+        getCGTempList: res.getCGTempList,
+        DelTempByID: res.DelTempByID,
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [PortListVO, setPortListVO] = useState<APIPort[]>(PortList || []);
+    const [CGTempListVO, setCGTempListVO] = useState<APICGTemp[]>(CGTempList || []);
 
     /**
      * @Description: TODO 获取单票数据集合
@@ -37,70 +39,71 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
      * @param params    参数
      * @returns
      */
-    async function handleGetPortList(params: APISearchPort) {
+    async function handleGetCGTempList(params: APISearchCGTemp) {
         setLoading(true);
         // TODO: 分页查询【参数页】
-        params.PageNum = params.current || 1;
-        params.pageSize = params.PageSize || 15;
-        params.PageSize = params.PageSize || 15;
-        const result: APIManager.PortResult = await getGetPortList(params);
-        setPortListVO(result.data);
+        // params.PageNum = params.current || 1;
+        // params.pageSize = params.PageSize || 15;
+        // params.PageSize = params.PageSize || 15;
+        const result: APIManager.CGTempResult = await getCGTempList(params);
+        setCGTempListVO(result.data);
         setLoading(false);
         return result;
     }
 
-    const columns: ProColumns<APIPort>[] = [
+    /**
+     * @Description: TODO: 编辑 CV 信息
+     * @author XXQ
+     * @date 2023/5/5
+     * @param record    操作当前 行
+     * @param state     操作状态
+     * @returns
+     */
+    const handleOperateCGTemplate = async (record: any, state?: string) => {
+        if (state) {
+            // TODO: 删除费用模板
+            const result: any = await DelTempByID({ID: getUserID()});
+            if (result.Result) {
+
+            }
+        } else {
+            // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
+            const url = `/manager/charge-template/form/${btoa(record?.ID)}`;
+            // TODO: 跳转页面<带参数>
+            // @ts-ignore
+            history.push({pathname: url})
+        }
+    }
+
+
+    const columns: ProColumns<APICGTemp>[] = [
         {
-            title: 'Code',
-            dataIndex: 'Code',
-            width: 123,
-            disable: true,
-            align: 'center',
-        },
-        {
-            title: 'Port',
+            title: 'Template Name',
             dataIndex: 'Name',
-            disable: true,
+            align: 'left',
+        },
+        {
+            title: 'Creator',
+            dataIndex: 'CreatorName',
+            width: 160,
             align: 'center',
         },
         {
-            title: 'City',
-            dataIndex: 'CityName',
-            width: 160,
-            disable: true,
-        },
-        {
-            title: 'Country',
-            dataIndex: 'CountryName',
-            width: 160,
-            disable: true,
-            align: 'center',
-        },
-        {
-            title: 'Country',
-            dataIndex: 'CountryName',
-            width: 160,
-            disable: true,
-            align: 'center',
-        },
-        {
-            title: 'Type',
-            dataIndex: 'TransportTypeName',
+            title: 'Create Date',
+            dataIndex: 'CreateDate',
             width: 100,
-            disable: true,
             align: 'center',
         },
         {
             title: 'Action',
-            width: 80,
-            disable: true,
+            width: 100,
             align: 'center',
             render: (text, record) => {
                 return (
                     <Fragment>
-                        <PortDrawerForm PortInfo={record}/>
+                        <EditOutlined color={'#1765AE'} onClick={() => handleOperateCGTemplate(record)}/>
                         <Divider type='vertical'/>
-                        <DeleteOutlined color={'red'}/>
+                        <DeleteOutlined color={'red'} onClick={() => handleOperateCGTemplate(record, 'delete')}/>
                     </Fragment>
                 )
             },
@@ -116,7 +119,7 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
             extra={<PortDrawerForm PortInfo={{}} isCreate={true}/>}
         >
             <ProCard>
-                <ProTable<APIPort>
+                <ProTable<APICGTemp>
                     rowKey={'ID'}
                     search={false}
                     options={false}
@@ -124,14 +127,14 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
                     loading={loading}
                     columns={columns}
                     params={searchParams}
-                    dataSource={PortListVO}
+                    dataSource={CGTempListVO}
                     className={'antd-pro-table-port-list'}
                     pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
                     // @ts-ignore
-                    request={(params: APISearchPort) => handleGetPortList(params)}
+                    request={(params: APISearchCGTemp) => handleGetCGTempList(params)}
                 />
             </ProCard>
         </PageContainer>
     )
 }
-export default PortListIndex;
+export default CGTempListIndex;

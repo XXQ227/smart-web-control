@@ -3,19 +3,50 @@
 import { request } from '@/utils/request';
 import {stringify} from 'querystring'
 
-/** 获取当前的用户 GET /api/currentUser */
-export async function GetAPList(body: APIManager.SearchAccountParams, options?: { [key: string]: any }) {
-  return request(`/api/AccountPeriod/GetAPList?${stringify(body)}`, {
+/** 获取费用模板数据 */
+export async function GetCGTempList(body: APIManager.SearchCGTempParams, options?: { [key: string]: any }) {
+  return request(`/api/CGTemp/GetCGTempList?${stringify(body)}`, {
     method: 'GET',
     ...(options || {}),
   });
 }
 
 
-/** 获取当前的用户 GET /api/currentUser */
-export async function GetDetailByID(body: { ID: number, UserID: number }, options?: { [key: string]: any }) {
-  return request(`/api/AccountPeriod/GetDetailByID?${stringify(body)}`, {
+/**
+ * 获得明细
+ * @param params
+ * @param options
+ */
+export async function GetVOByID(params: APIManager.CGTempByIDParams, options?: { [key: string]: any }) {
+  return request(`/api/CGTemp/GetVOByID?${stringify(params)}`, {
     method: 'GET',
+    ...(options || {}),
+  });
+}
+
+/**
+ * 获得明细
+ * @param params
+ * @param options
+ */
+export async function DelTempByID(params: {ID: number}, options?: { [key: string]: any }) {
+  return request(`/api/CGTemp/DelTempByID?${stringify(params)}`, {
+    method: 'POST',
+    ...(options || {}),
+  });
+}
+
+/**
+ * 获得明细
+ * @param params
+ * @param options
+ */
+export async function SaveCGTemp(params: APIManager.SaveCGItem, options?: { [key: string]: any }) {
+  return request(`/api/CGTemp/SaveCGTemp`, {
+    method: 'POST',
+    body: {
+      ...params,
+    },
     ...(options || {}),
   });
 }
