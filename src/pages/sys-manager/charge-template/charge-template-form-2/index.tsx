@@ -1,6 +1,5 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
-import type {ProFormInstance} from '@ant-design/pro-components';
 import {FooterToolbar, PageContainer, ProCard, ProForm, ProFormSelect, ProFormText,} from '@ant-design/pro-components'
 import {Button, Col, Form, message, Row} from 'antd'
 import {history, useModel, useParams} from 'umi'
@@ -13,11 +12,10 @@ const FormItem = Form.Item;
 type APICGTemp = APIManager.CGTemp;
 type CGTempItems = APIManager.CGTempItems;
 
-
+let isLoadingData = true;
 const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
     const params: any = useParams();
     const [form] = Form.useForm();
-    const formRef = useRef<ProFormInstance>();
     const ID = Number(atob(params?.id));
 
     const {
@@ -38,12 +36,10 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
     const [loading, setLoading] = useState<boolean>(false);
 
     useEffect(() => {
-        if (!(CGTempInfoVO?.ID) && !!(CGTempInfo.ID)) {
-            setCGTempInfoVO(CGTempInfo);
-            setARListVO(CGTempInfo.ARList);
-            setAPListVO(CGTempInfo.APList);
+        if (isLoadingData) {
+            handleGetCGTempByID()
         }
-    }, [CGTempInfo, CGTempInfoVO?.ID])
+    }, [handleGetCGTempByID])
 
     /**
      * @Description: TODO: 获取 港口 详情
@@ -51,33 +47,38 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
      * @date 2023/5/5
      * @returns
      */
-    async function handleGetCGTempByID(paramsVal: APIManager.CGTempByIDParams) {
+    async function handleGetCGTempByID() {
+    // const handleGetCGTempByID = async (values: any) => {
         setLoading(true);
-        const result: any = await getVOByID(paramsVal);
+        const result: any = await getVOByID({UserID: getUserID(), ID});
         setCGTempInfoVO(result.CGTempVO);
         setARListVO(result.ARList);
         setAPListVO(result.APList);
         setLoading(false);
-        return result.CGTempVO;
+        isLoadingData = false;
+        // return result;
     }
 
-    const handleSave = async (values: any) => {
+    const handleSave = (values: any) => {
         console.log(values);
         setLoading(true);
-        if (values.errorFields?.length > 0) {
-            /** TODO: 错误信息 */
-            message.error(getFormErrorMsg(values));
-            setLoading(false);
-        } else {
-            values.ID = ID;
-            const result: any = await saveCGTemp(values);
-            if (result.Result) {
-                message.success('Success!');
-            } else {
-                message.error(result.Content);
-            }
-            setLoading(false);
-        }
+        form.validateFields()
+            .then(async () => {
+                // values.ID = ID;
+                // console.log(values);
+                // const result: any = await saveCGTemp(values);
+                // if (result.Result) {
+                //     message.success('Success!');
+                // } else {
+                //     message.error(result.Content);
+                // }
+                setLoading(false);
+            })
+            .catch((errorInfo) => {
+                /** TODO: 错误信息 */
+                message.error(getFormErrorMsg(errorInfo));
+                setLoading(false);
+            });
     }
 
     /**
@@ -89,13 +90,11 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     const handleCGTempChange = (filedName: string, val: any) => {
-        if (['CityID', 'CountryID'].includes(filedName)) {
-            formRef?.current?.setFieldsValue({[filedName]: val.value});
-        }
+
     }
 
     // TODO: 传给子组件的参数
-    const baseCGDON: any = {form, formRef, FormItem, handleCGTempChange, CurrencyList, PayMethodList};
+    const baseCGDON: any = {form, FormItem, handleCGTempChange, CurrencyList, PayMethodList};
 
     return (
         <PageContainer
@@ -104,24 +103,16 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
                 breadcrumb: {},
             }}
         >
-            <ProForm
+            <Form
                 form={form}
-                formRef={formRef}
-                // TODO: 不显示提交、重置按键
-                submitter={false}
-                // TODO: 焦点给到第一个控件
-                autoFocusFirstInput
+                layout={'vertical'}
+                autoComplete={'off'}
+                name={'form-charge-template'}
                 // TODO: 设置默认值
                 initialValues={CGTempInfoVO}
-                formKey={'cv-center-information'}
-                // TODO: 空间有改数据时触动
-                // onValuesChange={handleProFormValueChange}
                 // TODO: 提交数据
                 onFinish={handleSave}
                 onFinishFailed={handleSave}
-                params={{UserID: getUserID(), ID}}
-                // @ts-ignore
-                request={async (paramsVal: APIManager.CGTempByIDParams) => handleGetCGTempByID(paramsVal)}
             >
                 {/** // TODO: Template Name、AP USD Rate、AR USD Rate、Services、Purpose of call */}
                 <ProCard title={'Basic Info'} className={'ant-card'}>
@@ -170,7 +161,6 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
                             />
                         </Col>
                     </Row>
-
                 </ProCard>
 
                 <ProCard className={'ant-card'}>
@@ -182,8 +172,6 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
                                 {...baseCGDON}
                                 CGList={ARListVO}
                             />
-                            {/*<FormItem label={ARListVO} name={'ARListVO'}>*/}
-                            {/*</FormItem>*/}
                         </Col>
                     </Row>
                     <Row gutter={24}>
@@ -194,8 +182,6 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
                                 {...baseCGDON}
                                 CGList={APListVO}
                             />
-                            {/*<FormItem label={APListVO} name={'APListVO'}>*/}
-                            {/*</FormItem>*/}
                         </Col>
                     </Row>
                 </ProCard>
@@ -203,9 +189,9 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
                 <FooterToolbar
                     extra={<Button
                         onClick={() => history.push({pathname: '/manager/charge-template/list'})}>返回</Button>}>
-                    <Button type={'primary'} htmlType={'submit'}>提交</Button>
+                    <Button key={'submit'} type={'primary'} htmlType={'submit'}>提交</Button>
                 </FooterToolbar>
-            </ProForm>
+            </Form>
         </PageContainer>
     )
 }
