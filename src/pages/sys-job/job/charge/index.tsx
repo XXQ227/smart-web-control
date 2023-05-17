@@ -1,11 +1,10 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useEffect, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components';
 import {Button, Col, Form, message, Row} from 'antd';
 import {history, useModel, useIntl} from 'umi';
 import {colGrid, getFormErrorMsg, getTitleInfo, rowGrid} from '@/utils/units';
 import ChargeTable from '@/pages/sys-job/job/charge/chargeTable';
-import type {FormInstance} from 'antd/es/form'
 
 
 const FormItem = Form.Item;
@@ -28,9 +27,6 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
 
     /** 实例化Form */
     const [form] = Form.useForm();
-    const formRef = useRef<FormInstance>(null);
-    // TODO: form.current 里【取值、改值】的方法
-    const formCurrent: any = formRef?.current;
 
     const [jobID, setJobID] = useState(0);
     // TODO: 用来判断是否是第一次加载数据
@@ -81,9 +77,10 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
      * @date 2023/4/11
      * @returns
      */
-    const handleSave = () => {
+    const handleSave = (values: any) => {
+        console.log(values);
         form.validateFields()
-            .then(() => {
+            .then(async () => {
                 /** 正确后的验证信息 */
                 if (updateState) {
                     const apChangeList: APICGInfo[] = payCGList.filter((item: APICGInfo)=> item.isChange) || [];
@@ -95,6 +92,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                 }
             })
             .catch((errorInfo) => {
+                console.log(errorInfo);
                 /** TODO: 错误信息 */
                 message.error(getFormErrorMsg(errorInfo));
             });
@@ -107,7 +105,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
     const formLabel = (code: string, defaultMessage: string) => getTitleInfo(code, intl, defaultMessage);
 
     // TODO: 传给子组件的参数
-    const baseCGDON: any = {form, formRef, formCurrent, FormItem, handleChangeData};
+    const baseCGDON: any = {form, FormItem, handleChangeData};
 
     return (
         <PageContainer
@@ -153,7 +151,6 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
 
             <Form
                 form={form}
-                ref={formRef}
                 name={'formCharge'}
                 autoComplete={'off'}
                 onFinish={handleSave}
@@ -191,7 +188,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                     {/* endregion AP */}
                 </ProCard>
                 <FooterToolbar extra={<Button onClick={() => history.goBack()}>返回</Button>}>
-                    <Button key={'submit'} type={'primary'} htmlType={'submit'}>保存</Button>
+                    <Button type={'primary'} htmlType={'submit'}>保存</Button>
                 </FooterToolbar>
             </Form>
         </PageContainer>

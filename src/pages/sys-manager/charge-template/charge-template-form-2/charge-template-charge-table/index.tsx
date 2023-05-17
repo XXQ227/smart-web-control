@@ -16,8 +16,6 @@ interface Props {
     CGType: number,
     CGList: APICGTempItems[],
     form: any,
-    formRef: any,
-    formCurrent: any,
     FormItem: any,
     CurrencyList: APIValue$Label[],
     PayMethodList: APIValue$Label[],
@@ -29,7 +27,6 @@ interface Props {
 const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
     // @ts-ignore
     const {CGType, CGList, form, FormItem, label, CurrencyList, PayMethodList} = props;
-
 
     const [CGListVO, setCGListVO] = useState<APICGTempItems[]>(CGList || []);
 
@@ -43,7 +40,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
                 <FormItem
                     name={`CGItemID${record.ID}`}
                     initialValue={record.CGItemID}
-                    rules={[{required: true, message: 'Charge Name'}]}
+                    rules={[{required: true, message: '请输入费用名称!'}]}
                 >
                     <SearchModal
                         qty={13}
@@ -65,7 +62,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
                 <FormItem
                     name={`SettlementID${record.ID}`}
                     initialValue={record.SettlementID}
-                    rules={[{required: true, message: CGType === 1 ? 'Customer' : 'Payer'}]}
+                    rules={[{required: true, message: `请输入${CGType === 1 ? 'Customer' : 'Payer'}`}]}
                 >
                     <SearchModal
                         qty={13}
@@ -91,7 +88,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
                 <FormItem
                     name={`CGUnitID${record.ID}`}
                     initialValue={record.CGUnitID}
-                    rules={[{required: true, message: 'Unit'}]}
+                    rules={[{required: true, message: '请输入费用单位!'}]}
                 >
                     <SearchModal
                         qty={13}
@@ -113,7 +110,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItem
                     initialValue={text} name={`UnitPrice${record.ID}`}
-                    rules={[{required: true, message: 'Unit Price'}]}
+                    rules={[{required: true, message: `Unit Price is required.`}]}
                 >
                     <InputEdit
                         value={text} valueStr={record.UnitPriceStr}
@@ -133,7 +130,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
                     options={CurrencyList}
                     name={`CurrencyID${record.ID}`}
                     initialValue={record.CurrencyID}
-                    rules={[{required: true, message: 'Currency'}]}
+                    rules={[{required: true, message: `Currency is required.`}]}
                     fieldProps={{
                         dropdownMatchSelectWidth: false,
                         onSelect: (e) => handleRowChange(index, record.ID, 'CurrencyID', e)
@@ -152,7 +149,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
                     options={PayMethodList}
                     name={`PayMethodID${record.ID}`}
                     initialValue={record.PayMethodID}
-                    rules={[{required: true, message: 'PayMethod'}]}
+                    rules={[{required: true, message: `PayMethod is required.`}]}
                     fieldProps={{
                         dropdownMatchSelectWidth: false,
                         onSelect: (e) => handleRowChange(index, record.ID, 'PayMethodID', e)

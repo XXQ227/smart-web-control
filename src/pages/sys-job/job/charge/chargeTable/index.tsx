@@ -20,8 +20,6 @@ interface Props {
     CGType: number,
     CGList: APICGInfo[],
     form: any,
-    formRef: any,
-    formCurrent: any,
     FormItem: any,
     // TODO: 保存
     handleChangeData: (data: any, CGType: number) => void,
