@@ -28,8 +28,6 @@ const searchParams: APICVSearchParams = {
 const operationList = [
     {key: 'edit', type: 1, label: '编辑'},
 ];
-
-
 const SettlementList: React.FC<RouteChildrenProps> = () => {
 
     const {
@@ -128,13 +126,6 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
             disable: true,
             align: 'center',
         },
-        // {
-        //     title: 'Status',
-        //     dataIndex: 'Freezen',
-        //     width: 100,
-        //     disable: true,
-        //     align: 'center',
-        // },
         {
             title: 'Action',
             width: 80,

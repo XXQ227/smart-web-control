@@ -1,7 +1,7 @@
 import React, {Fragment, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProColumns} from '@ant-design/pro-components';
-import {PageContainer, ProTable} from '@ant-design/pro-components'
+import {PageContainer, ProTable, ProCard} from '@ant-design/pro-components'
 import {useModel} from 'umi';
 import {DeleteOutlined, PlusOutlined} from '@ant-design/icons'
 import {Button, Divider, Form, Input, message, Popconfirm, Select} from 'antd'
@@ -301,17 +301,20 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
             render: (text, record, index) => {
                 return (
                     <Fragment>
-                        <CustomizeIcon type={'icon-save'} hidden={!record.isChange}
-                                       onClick={() => handleSave(record, index)}/>
-                        <Popconfirm
-                            okText={'Yes'} cancelText={'No'}
-                            onConfirm={() => handleFreezenCG(index, record)}
-                            title={`Are you sure to ${record.Freezen ? 'unlock' : 'lock'}?`}
-                        >
-                            <Divider type='vertical'/>
-                            <CustomizeIcon type={record.Freezen ? 'icon-unlock-2' : 'icon-lock-2'}/>
-                        </Popconfirm>
-                        <Divider type='vertical'/>
+                        <CustomizeIcon
+                            type={'icon-save'} hidden={!record.isChange}
+                            onClick={() => handleSave(record, index)}
+                        />
+                        {record.isChange ? <Divider type='vertical'/> : null}
+                        {typeof record.ID === 'string' ? null :
+                            <Popconfirm
+                                okText={'Yes'} cancelText={'No'}
+                                onConfirm={() => handleFreezenCG(index, record)}
+                                title={`Are you sure to ${record.Freezen ? 'unlock' : 'lock'}?`}
+                            >
+                                <CustomizeIcon type={record.Freezen ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            </Popconfirm>
+                        }
                         <Popconfirm
                             onConfirm={() => handleDelete(record)}
                             title={'Are you sure to delete?'} okText={'Yes'} cancelText={'No'}
@@ -335,37 +338,39 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
             <Form
                 form={form}
             >
-                <ProTable<APICGItem>
-                    search={false}
-                    options={false}
-                    bordered={true}
-                    loading={loading}
-                    columns={columns}
-                    params={searchParams}
-                    rowKey={'CargoCGItemID'}
-                    dataSource={CGItemListVO}
-                    className={'ant-pro-table-edit'}
-                    pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
-                    headerTitle={
-                        <Search
-                            placeholder='' enterButton="Search" loading={loading}
-                            onSearch={async (val: any) => {
-                                searchParams.value = val;
-                                await handleGetCGItemList(searchParams);
-                            }}/>
-                    }
-                    toolbar={{
-                        actions: [
-                            <Button key={'add'} onClick={handleAddCGItem} type={'primary'} icon={<PlusOutlined/>}>
-                                Add CGItem
-                            </Button>
-                        ]
-                    }}
-                    // @ts-ignore
-                    request={async (params: APISearchCGItem) => {
-                        await handleGetCGItemList(params)
-                    }}
-                />
+                <ProCard className={'ant-card-pro-table'}>
+                    <ProTable<APICGItem>
+                        search={false}
+                        options={false}
+                        bordered={true}
+                        loading={loading}
+                        columns={columns}
+                        params={searchParams}
+                        rowKey={'CargoCGItemID'}
+                        dataSource={CGItemListVO}
+                        className={'ant-pro-table-edit ant-pro-table-search'}
+                        pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
+                        headerTitle={
+                            <Search
+                                placeholder='' enterButton="Search" loading={loading}
+                                onSearch={async (val: any) => {
+                                    searchParams.value = val;
+                                    await handleGetCGItemList(searchParams);
+                                }}/>
+                        }
+                        toolbar={{
+                            actions: [
+                                <Button key={'add'} onClick={handleAddCGItem} type={'primary'} icon={<PlusOutlined/>}>
+                                    Add CGItem
+                                </Button>
+                            ]
+                        }}
+                        // @ts-ignore
+                        request={async (params: APISearchCGItem) => {
+                            await handleGetCGItemList(params)
+                        }}
+                    />
+                </ProCard>
             </Form>
         </PageContainer>
     )

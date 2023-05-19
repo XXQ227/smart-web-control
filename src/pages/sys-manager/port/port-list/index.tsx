@@ -4,8 +4,10 @@ import type {ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
 import {DeleteOutlined} from '@ant-design/icons'
-import {Divider} from 'antd'
+import {Divider, Input} from 'antd'
 import PortDrawerForm from '@/pages/sys-manager/port/port-drawer-form'
+
+const {Search} = Input;
 
 type APIPort = APIManager.Port;
 type APISearchPort = APIManager.SearchPortParams;
@@ -113,7 +115,6 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
             header={{
                 breadcrumb: {},
             }}
-            extra={<PortDrawerForm PortInfo={{}} isCreate={true}/>}
         >
             <ProCard>
                 <ProTable<APIPort>
@@ -125,7 +126,17 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
                     columns={columns}
                     params={searchParams}
                     dataSource={PortListVO}
-                    className={'antd-pro-table-port-list'}
+                    className={'antd-pro-table-port-list ant-pro-table-search'}
+                    headerTitle={
+                        <Search
+                            placeholder='' enterButton="Search" loading={loading}
+                            onSearch={async (val: any) => {
+                                searchParams.Key = val;
+                                await handleGetPortList(searchParams);
+                            }}
+                        />
+                    }
+                    toolbar={{actions: [<PortDrawerForm key={'add'} PortInfo={{}} isCreate={true}/>]}}
                     pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
                     // @ts-ignore
                     request={(params: APISearchPort) => handleGetPortList(params)}

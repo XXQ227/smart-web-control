@@ -307,10 +307,12 @@ declare namespace APIManager {
         CGUnitName: string | null,
         CGItemID: number | null,
         CGItemName?: string,
+        SettlementType?: string,
+        SettlementTypeName?: string,
         CGTypeID: number,
         UnitPrice: number | null,
-        // TODO: 原币
         CurrencyID: number | null,
+        InvoTypeID: number | null,
 
         PayMethodID: number | null,
         ctCheck?: boolean,

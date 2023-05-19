@@ -20,6 +20,8 @@ export default (callback: T, deps: React.DependencyList) => {
     const [CGTempInfo, setCGTempInfo] = useState({});
     const [CurrencyList, setCurrencyList] = useState<any[]>([]);
     const [PayMethodList, setPayMethodList] = useState<any[]>([]);
+    const [ARInvoTypeList, setARInvoTypeList] = useState<any[]>([]);
+    const [APInvoTypeList, setAPInvoTypeList] = useState<any[]>([]);
     const [ARList, setARList] = useState<CGTempItems[]>([]);
     const [APList, setAPList] = useState<CGTempItems[]>([]);
     const [PurposeOfCallList, setPurposeOfCallList] = useState<any[]>([]);
@@ -43,6 +45,8 @@ export default (callback: T, deps: React.DependencyList) => {
         if (!response) return;
         const currencyArr: APIValue$Label[] = getLabel$Value(response.CurrencyOpts);
         const payMethodArr: APIValue$Label[] = getLabel$Value(response.PayMethodOpts);
+        const arInvoTypeArr: APIValue$Label[] = getLabel$Value(response.RInvoTypeOpts);
+        const apInvoTypeArr: APIValue$Label[] = getLabel$Value(response.PInvoTypeOpts);
         const servicesArr: APIValue$Label[] = getLabel$Value(response.ServicesList, 'ID', 'NameEN');
         const purposeofCallArr: APIValue$Label[] = getLabel$Value(response.PurposeofCallList, 'ID', 'NameEN');
         let arCGArr: CGTempItems[] = [], apCGArr: CGTempItems[] = [];
@@ -58,14 +62,16 @@ export default (callback: T, deps: React.DependencyList) => {
             PayMethodList: payMethodArr,
             PurposeOfCallList: purposeofCallArr,
             ServicesList: servicesArr,
-            RInvoTypeOpts: response.RInvoTypeOpts,
-            PInvoTypeOpts: response.PInvoTypeOpts,
+            RInvoTypeOpts: arInvoTypeArr,
+            PInvoTypeOpts: apInvoTypeArr,
             ARList: arCGArr,
             APList: apCGArr,
         }
         setCGTempInfo(response.CGTempDetailDto || {});
         setCurrencyList(currencyArr);
         setPayMethodList(payMethodArr);
+        setARInvoTypeList(arInvoTypeArr);
+        setAPInvoTypeList(apInvoTypeArr);
         setARList(arCGArr);
         setAPList(apCGArr);
         setPurposeOfCallList(purposeofCallArr);
@@ -78,6 +84,7 @@ export default (callback: T, deps: React.DependencyList) => {
         // TODO: 请求后台 API
         const response = await DelTempByID(params);
         if (!response) return;
+        return response;
     }, []);
 
     // TODO: 删除费用模板
@@ -96,6 +103,8 @@ export default (callback: T, deps: React.DependencyList) => {
         CGTempInfo,
         CurrencyList,
         PayMethodList,
+        ARInvoTypeList,
+        APInvoTypeList,
         ARList,
         APList,
         PurposeOfCallList,

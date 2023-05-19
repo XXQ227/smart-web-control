@@ -175,8 +175,10 @@ const PortDrawerForm: React.FC<Props> = (props) => {
                                 />
                             </Col>
                         </Row>
-                        <FooterToolbar className={'ant-footer-tool-bar'}
-                                       extra={<Button onClick={() => setOpen(false)}>Cancel</Button>}>
+                        <FooterToolbar
+                            className={'ant-footer-tool-bar'}
+                            extra={<Button onClick={() => setOpen(false)}>Cancel</Button>}
+                        >
                             <Space>
                                 <Button type='primary' htmlType={'submit'}>Submit</Button>
                             </Space>

@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Button, Col, Popconfirm, Row, Space, Table} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
-import {PlusOutlined} from '@ant-design/icons';
+import {DeleteOutlined, PlusOutlined} from '@ant-design/icons';
 import {getBranchID, getFuncCurrency, getUserID} from '@/utils/auths';
 import {formatNumToMoney, keepDecimal} from '@/utils/units';
 import InputEdit from '@/components/InputNumberEdit'
@@ -21,6 +21,7 @@ interface Props {
     FormItem: any,
     CurrencyList: APIValue$Label[],
     PayMethodList: APIValue$Label[],
+    InvoTypeList: APIValue$Label[],
     label: string,
     // TODO: 保存
     handleCGTempChange: (data: any, CGType: number) => void,
@@ -28,17 +29,17 @@ interface Props {
 
 const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
     // @ts-ignore
-    const {CGType, CGList, form, FormItem, label, CurrencyList, PayMethodList} = props;
+    const {CGType, CGList, form, FormItem, label, CurrencyList, PayMethodList, InvoTypeList} = props;
 
 
-    const [CGListVO, setCGListVO] = useState<APICGTempItems[]>(CGList || []);
+    // const [CGListVO, setCGListVO] = useState<APICGTempItems[]>(CGList || []);
 
     const cgColumns: ColumnsType<APICGTempItems> = [
         {
             title: 'Charge Name',
             dataIndex: 'CGItemName',
             align: 'center',
-            width: 140,
+            width: 200,
             render: (text: any, record, index) =>
                 <FormItem
                     name={`CGItemID${record.ID}`}
@@ -65,7 +66,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
                 <FormItem
                     name={`SettlementID${record.ID}`}
                     initialValue={record.SettlementID}
-                    rules={[{required: true, message: CGType === 1 ? 'Customer' : 'Payer'}]}
+                    // rules={[{required: true, message: CGType === 1 ? 'Customer' : 'Payer'}]}
                 >
                     <SearchModal
                         qty={13}
@@ -130,6 +131,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <ProFormSelect
                     required
+                    placeholder={''}
                     options={CurrencyList}
                     name={`CurrencyID${record.ID}`}
                     initialValue={record.CurrencyID}
@@ -164,8 +166,11 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
             align: 'center',
             width: 100,
             render: (_, record: any) =>
-                <Popconfirm title="Sure to delete?" onConfirm={() => handleDeleteCharge(record.ID)}>
-                    <a>Delete</a>
+                <Popconfirm
+                    onConfirm={() => handleDeleteCharge(record.ID)}
+                    title="Sure to delete?" okText={'Yes'} cancelText={'No'}
+                >
+                    <DeleteOutlined color={'red'}/>
                 </Popconfirm>,
         },
     ];
@@ -189,19 +194,21 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
             CTName: '',
             CGItemID: null,
             CGItemName: '',
+            SettlementType: 'f',
+            SettlementTypeName: 'Regular',
             CGTypeID: CGType,
             CGUnitID: null,
             CGUnitName: '',
             UnitPrice: null,
-            // TODO: 原币
             CurrencyID: currLocalObj?.value,
-
-            PayMethodID: null,
+            InvoTypeID: InvoTypeList[0]?.value,
+            PayMethodID: PayMethodList[0]?.value,
             ctCheck: false,
             TaxFree: false
         };
-        const newData: APICGTempItems[] = [...CGListVO, newDataObj];
-        setCGListVO(newData);
+        const newData: APICGTempItems[] = [...CGList, newDataObj];
+        // setCGListVO(newData);
+        props.handleCGTempChange(newData, CGType);
     }
 
     /**
@@ -216,7 +223,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
      * @returns
      */
     function handleRowChange(index: number, rowID: any, filedName: string, val: any, data?: any) {
-        const newData: APICGTempItems[] = CGListVO?.map((item: APICGTempItems) => ({...item})) || [];
+        const newData: APICGTempItems[] = CGList?.map((item: APICGTempItems) => ({...item})) || [];
         const target: any = newData.find((item: APICGTempItems) => item.ID === rowID) || {};
 
         const fileLen: number = filedName.length;
@@ -233,11 +240,11 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
             // TODO: 判断是不是 【ID】 字段，【ID】 字段需要存 【Name】 的值
             target[filedName.substring(0, fileLen-2) + 'Name'] = data?.label;
         }
-        form?.setFieldsValue(setFieldsVal);
         target.isChange = true;
         newData.splice(index, 1, target);
-        setCGListVO(newData);
-        props.handleCGTempChange(data, CGType);
+        form?.setFieldsValue(setFieldsVal);
+        props.handleCGTempChange(newData, CGType);
+        // setCGListVO(newData);
     }
 
     /**
@@ -248,8 +255,9 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
      * @returns
      */
     function handleDeleteCharge(rowID: any) {
-        const newCGData: APICGTempItems[] = CGListVO.filter((item: APICGTempItems) => item.ID !== rowID) || [];
-        setCGListVO(newCGData);
+        const newData: APICGTempItems[] = CGList.filter((item: APICGTempItems) => item.ID !== rowID) || [];
+        // setCGListVO(newCGData);
+        props.handleCGTempChange(newData, CGType);
     }
 
     /**
@@ -286,7 +294,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
                     bordered={true}
                     pagination={false}
                     columns={cgColumns}
-                    dataSource={CGListVO}
+                    dataSource={CGList}
                     title={() => renderTableTitle}
                     locale={{emptyText: "NO DATA"}}
                     className={'ant-pro-table-charge-info ant-pro-table-edit'}

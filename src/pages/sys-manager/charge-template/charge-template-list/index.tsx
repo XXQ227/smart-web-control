@@ -3,11 +3,12 @@ import type {RouteChildrenProps} from 'react-router';
 import type {ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
-import {DeleteOutlined, EditOutlined} from '@ant-design/icons'
-import {Divider} from 'antd'
-import PortDrawerForm from '@/pages/sys-manager/port/port-drawer-form'
+import {DeleteOutlined, EditOutlined, PlusOutlined, CopyOutlined} from '@ant-design/icons'
+import {Divider, message, Popconfirm, Input, Button} from 'antd'
 import {getUserID} from '@/utils/auths'
 import {history} from '@@/core/history'
+
+const {Search} = Input;
 
 type APICGTemp = APIManager.CGTemp;
 type APISearchCGTemp = APIManager.SearchCGTempParams;
@@ -22,11 +23,11 @@ const searchParams: APISearchCGTemp = {
 const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
 
     const {
-        CGTempList, getCGTempList, DelTempByID
+        CGTempList, getCGTempList, delTempByID
     } = useModel('manager.charge-template', (res: any) => ({
         CGTempList: res.CGTempList,
         getCGTempList: res.getCGTempList,
-        DelTempByID: res.DelTempByID,
+        delTempByID: res.delTempByID,
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -59,16 +60,22 @@ const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
      * @param state     操作状态
      * @returns
      */
-    const handleOperateCGTemplate = async (record: any, state?: string) => {
-        if (state) {
+    const handleOperateCGTemplate = async (record: any, state: string = 'form') => {
+        if (state === 'delete') {
+            setLoading(true);
             // TODO: 删除费用模板
-            const result: any = await DelTempByID({ID: getUserID()});
+            const result: any = await delTempByID({ID: record.ID});
             if (result.Result) {
-
+                const newData: APICGTemp[] = CGTempListVO.filter((item: APICGTemp) => item.ID !== record.ID);
+                setCGTempListVO(newData);
+                message.success('Success!');
+            } else {
+                message.error(result.Content);
             }
+            setLoading(false);
         } else {
             // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-            const url = `/manager/charge-template/form/${btoa(record?.ID)}`;
+            const url = `/manager/charge-template/${state}/${btoa(record?.ID || 0)}`;
             // TODO: 跳转页面<带参数>
             // @ts-ignore
             history.push({pathname: url})
@@ -103,7 +110,14 @@ const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
                     <Fragment>
                         <EditOutlined color={'#1765AE'} onClick={() => handleOperateCGTemplate(record)}/>
                         <Divider type='vertical'/>
-                        <DeleteOutlined color={'red'} onClick={() => handleOperateCGTemplate(record, 'delete')}/>
+                        <CopyOutlined color={'#1765AE'} onClick={() => handleOperateCGTemplate(record, 'copy')}/>
+                        <Divider type='vertical'/>
+                        <Popconfirm
+                            onConfirm={() => handleOperateCGTemplate(record, 'delete')}
+                            title="Sure to delete?" okText={'Yes'} cancelText={'No'}
+                        >
+                            <DeleteOutlined color={'red'}/>
+                        </Popconfirm>
                     </Fragment>
                 )
             },
@@ -116,9 +130,8 @@ const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
             header={{
                 breadcrumb: {},
             }}
-            extra={<PortDrawerForm PortInfo={{}} isCreate={true}/>}
         >
-            <ProCard>
+            <ProCard className={'ant-card-pro-table'}>
                 <ProTable<APICGTemp>
                     rowKey={'ID'}
                     search={false}
@@ -128,7 +141,22 @@ const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
                     columns={columns}
                     params={searchParams}
                     dataSource={CGTempListVO}
-                    className={'antd-pro-table-port-list'}
+                    className={'antd-pro-table-port-list ant-pro-table-search'}
+                    headerTitle={
+                        <Search
+                            placeholder='' enterButton="Search" loading={loading}
+                            onSearch={async (val: any) => {
+                                searchParams.Name = val;
+                                await handleGetCGTempList(searchParams);
+                            }}/>
+                    }
+                    toolbar={{
+                        actions: [
+                            <Button key={'add'} onClick={handleOperateCGTemplate} type={'primary'} icon={<PlusOutlined/>}>
+                                Add Charge Template
+                            </Button>
+                        ]
+                    }}
                     pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
                     // @ts-ignore
                     request={(params: APISearchCGTemp) => handleGetCGTempList(params)}

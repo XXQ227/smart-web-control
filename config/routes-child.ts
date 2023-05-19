@@ -117,32 +117,56 @@ const manager_route = {
             redirect: '/manager',
         },
         // TODO: 客户、供应商
+        // {
+        //     name: 'cv_center_list',
+        //     icon: 'icon-cv-center',
+        //     path: '/manager/cv-center/list',
+        //     component: './sys-manager/cv-center/cv-center-list',
+        // },
+        // {
+        //     hideInMenu: true,   // 隐藏不显示
+        //     name: 'cv_center_info',
+        //     icon: 'icon-cv-center',
+        //     path: '/manager/cv-center/form/:id',
+        //     component: './sys-manager/cv-center/cv-center-form',
+        // },
         {
-            name: 'cv_center_list',
+            name: 'cv_center',
             icon: 'icon-cv-center',
-            path: '/manager/cv-center/list',
-            component: './sys-manager/cv-center/cv-center-list',
-        },
-        {
-            hideInMenu: true,   // 隐藏不显示
-            name: 'cv_center_info',
-            icon: 'icon-cv-center',
-            path: '/manager/cv-center/form/:id',
-            component: './sys-manager/cv-center/cv-center-form',
-        },
-        // TODO: 客户审批
-        {
-            name: 'customer_approval_list',
-            icon: 'icon-cv-approval',
-            path: '/manager/cv-approval/list',
-            component: './sys-manager/cv-center/customer-approval-list',
-        },
-        {
-            hideInMenu: true,   // 隐藏不显示
-            name: 'customer_approval_list',
-            icon: 'icon-cv-center',
-            path: '/manager/cv-approval/form/:id',
-            component: './sys-manager/cv-center/cv-center-form',
+            path: '/manager/cv-center',
+            routes: [
+                {
+                    path: '/manager/cv-center',
+                    redirect: '/manager/cv-center/list',
+                },
+                {
+                    name: 'cv_center_list',
+                    icon: 'icon-cv-center',
+                    path: '/manager/cv-center/list',
+                    component: './sys-manager/cv-center/cv-center-list',
+                },
+                {
+                    hideInMenu: true,   // 隐藏不显示
+                    name: 'cv_center_info',
+                    icon: 'icon-cv-center',
+                    path: '/manager/cv-center/form/:id',
+                    component: './sys-manager/cv-center/cv-center-form',
+                },
+                // TODO: 客户审批
+                {
+                    name: 'customer_approval_list',
+                    icon: 'icon-cv-approval',
+                    path: '/manager/cv-approval/list',
+                    component: './sys-manager/cv-center/customer/approval-list',
+                },
+                {
+                    hideInMenu: true,   // 隐藏不显示
+                    name: 'customer_approval_info',
+                    icon: 'icon-cv-center',
+                    path: '/manager/cv-approval/form/:id',
+                    component: './sys-manager/cv-center/cv-center-form',
+                },
+            ],
         },
         // TODO: 港口数据
         {
@@ -177,6 +201,13 @@ const manager_route = {
             name: 'charge_template_info',
             icon: 'icon-charge-manage',
             path: '/manager/charge-template/form/:id',
+            component: './sys-manager/charge-template/charge-template-form',
+        },
+        {
+            hideInMenu: true,   // 隐藏不显示
+            name: 'charge_template_info',
+            icon: 'icon-charge-manage',
+            path: '/manager/charge-template/copy/:id',
             component: './sys-manager/charge-template/charge-template-form',
         },
         // TODO: 报价数据
