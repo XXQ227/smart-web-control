@@ -10,7 +10,7 @@ interface Props {
     FinanceDates: string[],
 }
 
-const Job: React.FC<Props> = (props) => {
+const SeaImport: React.FC<Props> = (props) => {
     const  {
         CJobInfo,
         CJobInfo: {NBasicInfo, CargoInfo},
@@ -28,18 +28,6 @@ const Job: React.FC<Props> = (props) => {
 
     return (
        <Fragment>
-           <BasicInfo
-               title={'Basic Information'}
-               {...basicInfoParams}
-           />
-           <Cargo
-               title={'Cargo'}
-               {...cargoParams}
-           />
-           <Payment
-               title={'Payment & Shipping Terms'}
-               NBasicInfo={NBasicInfo}
-           />
            <Payment
                title={'Remark'}
                NBasicInfo={NBasicInfo}
@@ -47,4 +35,4 @@ const Job: React.FC<Props> = (props) => {
        </Fragment>
     )
 }
-export default Job;
+export default SeaImport;

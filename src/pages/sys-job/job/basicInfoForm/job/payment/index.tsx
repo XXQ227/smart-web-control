@@ -96,8 +96,8 @@ const Payment: React.FC<Props> = (props) => {
                         <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={12}>
                             <Space direction="horizontal" align="center" className={styles.siteSpace}>
                                 <ProFormSelect
-                                    name="Incoterms1"
-                                    label="Incoterms"
+                                    name="PayMethod"
+                                    label="Payment Term"
                                     initialValue={{ value: 1, label: "CFR - COST AND FREIGHT" }}
                                     options={IncotermsOption}
                                 />

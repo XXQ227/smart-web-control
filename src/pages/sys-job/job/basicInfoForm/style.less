@@ -3,8 +3,13 @@
 .pageContainer {
   padding: 20px;
   :global {
+
     .ant-pro-page-container-warp, .ant-page-header {
       border-radius: 5.5px;
+    }
+
+    .ant-pro-page-container-children-content {
+      margin: 24px 0;
     }
 
     /*.ant-page-header {
@@ -30,31 +35,42 @@
       border-radius: 5.5px;
     }*/
 
-    .ant-pro-page-container-children-content {
-      margin: 24px 0;
+    .ant-page-header-footer {
+      .ant-tabs-nav-wrap .ant-tabs-nav-list {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+      }
+
+      .ant-tabs-nav-wrap .ant-tabs-tab, .ant-tabs-nav-add {
+        justify-content: center;
+        flex-grow: 1;
+      }
+
+      .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+        background-color: @primary-color !important;
+      }
+
+      .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn, .ant-tabs-tab-remove {
+        color: #fff;
+      }
+    }
+  }
+}
+
+// Tabs实现吸顶效果
+.stickyTabs {
+  :global {
+    .ant-page-header-content {
+      //padding-top: 35px;
     }
 
-    .ant-tabs-nav-wrap .ant-tabs-nav-list {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
+    .ant-pro-page-container-warp {
+      position: sticky;
+      //top: 0;
+      top: 35px;
+      z-index: 1;
     }
-
-    .ant-tabs-nav-wrap .ant-tabs-tab, .ant-tabs-nav-add {
-      justify-content: center;
-      flex-grow: 1;
-    }
-
-    .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
-      background-color: @primary-color !important;
-    }
-
-    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
-      color: #fff;
-    }
-
-
-
   }
 }
 
@@ -90,27 +106,7 @@
 
   //region TODO: Cargo表单样式
   .proFormCargo {
-    .label {
-      label {
-        display: block;
-        margin-bottom: 8px;
-      }
-      :global {
-        .ant-input-number-group-wrapper {
-          margin-bottom: 24px;
-          width: 100%;
-        }
-      }
-    }
 
-    .proFormTextContainer {
-      display: flex;
-      :global {
-        .ant-form-item:first-child {
-          margin-right: 5px;
-        }
-      }
-    }
   }
   //endregion TODO: Cargo表单样式
 
@@ -133,6 +129,112 @@
     }
   }
   //endregion TODO: Payment表单样式
+
+
+  //region TODO: Local Delivery样式
+  .localDelivery {
+    :global {
+      .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+        background-color: rgb(211, 158, 89) !important;
+      }
+
+      .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn, .ant-tabs-tab-remove {
+        color: #fff;
+      }
+    }
+
+    // containerLayout表单样式
+    .containerLayout {
+      margin-top: 20px;
+      margin-bottom: 0;
+      :global {
+        .ant-pro-card-header {
+          padding: 10px 0;
+        }
+
+        .ant-pro-card-body {
+          padding: 24px 0;
+        }
+
+        .ant-space {
+          display: inline-flex;
+        }
+      }
+    }
+
+    .remark {
+      :global {
+        .ant-pro-card-header {
+          padding: 10px 0;
+        }
+
+        .ant-pro-card-body {
+          padding: 24px 0;
+        }
+
+      }
+    }
+
+    .title {
+      margin-bottom: 40px;
+      :global {
+        button {
+          border: none;
+        }
+      }
+    }
+
+    // Container List 表格
+    .containerTable {
+      margin-bottom: 25px;
+      :global {
+        .ant-table.ant-table-bordered > .ant-table-container {
+          border-left: 1px solid #fff !important;
+        }
+
+        .ant-table-thead > tr > th {
+          color: #fff;
+          background-color: @primary-color !important;
+          border-top: 1px solid #fff !important;
+          border-right: 1px solid #fff !important;
+          border-bottom: 1px solid #fff !important;
+        }
+
+        .ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table > tbody > tr > td {
+          padding: 0;
+          border-right: 1px solid #fff !important;
+          border-bottom: 1px solid #fff !important;
+        }
+
+        .ant-table-empty .ant-table-tbody > tr.ant-table-placeholder td {
+          padding: 10px !important;
+        }
+
+        .ant-table-tbody .ant-form-item {
+          margin: 0 !important;
+        }
+
+        .ant-input, .ant-input-affix-wrapper {
+          border: none;
+        }
+
+        .textCenter .ant-input, .textCenter .ant-input-affix-wrapper {
+          text-align: center;
+        }
+
+        // 被选中
+        .ant-table-tbody > tr.ant-table-row-selected > td, .ant-table-tbody > tr.ant-table-row-selected > td .ant-input, .ant-table-tbody > tr.ant-table-row-selected > td .ant-input-affix-wrapper {
+          background: #12394a;
+        }
+
+      }
+    }
+
+
+
+
+  }
+  //endregion TODO: Local Delivery样式
 
 }
 

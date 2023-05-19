@@ -135,6 +135,7 @@ declare namespace APIModel {
         CargoInfo?: CargoInfo,
         PayCGList?: PRCGInfo[],
         ReceiveCGList?: PRCGInfo[],
+        CTNPlanList?: ContainerList[],
     }
 
     type AccountPeriodInfo = {
@@ -192,6 +193,28 @@ declare namespace APIModel {
         ServiceTypeName: string,
         PayableAtID: number,
         PayableAtName: string,
+    }
+    type BatchData = {
+        shipmentNo: string;
+        truckingCompany: string;
+        grossWeight: number;
+        measurement: number;
+        pieces: number;
+        vehicleType: string;
+        plateNo: string;
+        driverName: string;
+        receivingContac: string;
+        phone: string;
+        containerList?: ContainerList[],
+    }
+    type ContainerList = {
+        ID: any,
+        CTNModelID: number,
+        CTNModelName: string,
+        QTY: number,
+        IsSOC: boolean,
+        Owner: string,
+        Remark: string,
     }
     //endregion TODO: 单票业务详情返回结果
 

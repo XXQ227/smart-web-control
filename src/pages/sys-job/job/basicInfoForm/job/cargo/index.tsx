@@ -102,7 +102,7 @@ const Cargo: React.FC<Props> = (props) => {
                 </Col>
             </Row>
             <Row gutter={rowGrid} style={{ marginTop: 7 }}>
-                <Col xs={13} sm={13} md={8} lg={7} xl={6} xxl={4} className={styles.label}>
+                <Col xs={13} sm={13} md={8} lg={7} xl={6} xxl={4} className={'custom-input'}>
                     <label>G.W.</label>
                     <InputNumber
                         addonAfter={selectAfter}
@@ -114,7 +114,7 @@ const Cargo: React.FC<Props> = (props) => {
                         defaultValue={cargoInfo?.GrossWeight}
                     />
                 </Col>
-                <Col xs={13} sm={13} md={8} lg={7} xl={6} xxl={4} className={styles.label}>
+                <Col xs={13} sm={13} md={8} lg={7} xl={6} xxl={4} className={'custom-input'}>
                     <label>N.W.</label>
                     <InputNumber
                         addonAfter={selectAfter}
@@ -127,7 +127,7 @@ const Cargo: React.FC<Props> = (props) => {
                     />
                 </Col>
                 <Col xs={13} sm={13} md={8} lg={7} xl={6} xxl={4}>
-                    <div className={styles.proFormTextContainer}>
+                    <div className={'proFormTextContainer'}>
                         <ProFormText
                             name="Measurement"
                             initialValue={cargoInfo?.Measurement}
@@ -136,7 +136,7 @@ const Cargo: React.FC<Props> = (props) => {
                         <ProFormText
                             name="Pieces"
                             initialValue={cargoInfo?.Pieces}
-                            label="QTY"
+                            label="QTY."
                         />
                     </div>
                     <ProFormSelect
