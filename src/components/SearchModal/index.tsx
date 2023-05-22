@@ -182,8 +182,14 @@ const SearchModal: React.FC<Props> = (props) => {
                 </Button>
                 :
                 <Input
-                    id={props.id} value={showText} autoComplete={'off'} disabled={disabled}
-                    onChange={handleModal} onClick={handleModal} onKeyDown={handleKeyDown}
+                    id={props.id}
+                    value={showText}
+                    autoComplete={'off'}
+                    disabled={disabled}
+                    className={'searchModal-input'}
+                    onChange={handleModal}
+                    onClick={handleModal}
+                    onKeyDown={handleKeyDown}
                 />
             }
             {

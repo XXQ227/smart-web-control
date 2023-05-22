@@ -114,7 +114,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                     />
                     <ProFormDatePicker width="md" name="LockDate" label="Completion Date" />
                 </Col>
-                <Col xs={0} sm={0} md={0} lg={0} xl={1} xxl={1} flex="auto">
+                <Col xs={0} sm={0} md={0} lg={0} xl={1} xxl={1} flex="auto" style={{ textAlign: "center" }}>
                     <Divider type="vertical" style={{ height: '100%' }} />
                 </Col>
                 {/*<Col {...colGrid}>
@@ -242,7 +242,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                 {/*<Col xs={0} sm={0} md={3} lg={8} xl={6} xxl={4}>
                     <Divider type="vertical" style={{ height: 250, margin: '0 10px' }} />
                 </Col>*/}
-                <Col xs={0} sm={0} md={2} lg={2} xl={0} xxl={1} flex="auto">
+                <Col xs={0} sm={0} md={2} lg={2} xl={0} xxl={1} flex="auto" style={{ textAlign: "center" }}>
                     <Divider type="vertical" style={{ height: '100%' }} />
                 </Col>
                 <Col xs={24} sm={24} md={7} lg={7} xl={7} xxl={3}>

@@ -2,18 +2,28 @@ import React, {useEffect, useState} from 'react';
 import {history, useModel} from 'umi';
 import type {RouteChildrenProps} from 'react-router';
 import {FooterToolbar, PageContainer, ProForm} from '@ant-design/pro-components';
-import {Button, message,} from 'antd';
+import {Button, message, Modal} from 'antd';
 import {getUserID} from '@/utils/auths';
 import Job from './job';
+import SeaImport from './SeaImport';
+import LocalDelivery from './LocalDelivery';
 import {HeaderInfo} from '@/utils/units'
 import styles from './style.less';
-import {LeftOutlined, SaveOutlined} from "@ant-design/icons";
+import {LeftOutlined, SaveOutlined, ExclamationCircleFilled} from "@ant-design/icons";
 import AddServiceModal from '@/components/AddServiceModal';
 
+// const { TabPane } = Tabs;
 // const FormItem = Form.Item;
+const { confirm } = Modal;
 // TODO: 用来判断是否是第一次加载数据
 let isLoadingData = false;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
+
+// 动态生成标签页信息
+const initialTabList = [
+    { tab: 'Job', key: 'Job', closable: false },
+    { tab: 'Local Delivery', key: 'Local Delivery', closable: false },
+];
 
 const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
@@ -21,7 +31,7 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     //region TODO: 数据层
     const {
         CommonBasicInfo: {SalesManList, FinanceDates},
-        CJobInfo, CJobInfo: {NBasicInfo, NBasicInfo: {Principal}, LockDate},
+        CJobInfo, CJobInfo: {NBasicInfo, NBasicInfo: {Principal}, LockDate, CTNPlanList},
         getCJobInfoByID
     } = useModel('job.job', (res: any) => ({
         CJobInfo: res.CJobInfo,
@@ -30,23 +40,11 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     }));
     //endregion
 
-    // 动态生成标签页信息
-    const initialTabList = [
-        {
-            tab: 'Job',
-            key: 'job',
-            closable: false,
-            content: <Job
-                CJobInfo={CJobInfo}
-                SalesManList={SalesManList}
-                FinanceDates={FinanceDates}
-            />,
-        },
-    ];
+
 
     /** 实例化Form */
     // const [form] = Form.useForm();
-    const [activeKey, setActiveKey] = useState('job');
+    const [activeKey, setActiveKey] = useState(initialTabList[1].key);
     const [tabList, setTabList] = useState(initialTabList);
     const [jobID, setJobID] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -111,64 +109,94 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
         }
     };
 
+    /*if (ticketData.basicInfo) {
+        tabList.push({
+            tab: '基本信息',
+            key: 'base',
+            closable: false,
+        });
+    }
+    if (ticketData.detailInfo) {
+        tabList.push({
+            tab: '详细信息',
+            key: 'info',
+        });
+    }
+    if (ticketData.operationRecord) {
+        tabList.push({
+            tab: '操作记录',
+            key: 'record',
+        });
+    }*/
+
     const showModal = () => {
         setIsModalOpen(true);
-    };
-
-    const handleOk = () => {
-        setIsModalOpen(false);
     };
 
     const handleCancel = () => {
         setIsModalOpen(false);
     };
 
-    const add = () => {
-        console.log('添加一个新的标签页');
-        showModal()
-        /*const newActiveKey = `newTab${newTabIndex.current++}`;
+    const add = (checkedValue: string) => {
         const newPanes = [...tabList];
-        newPanes.push({ label: 'New Tab', children: 'Content of new Tab', key: newActiveKey });
-        setTabList(newPanes);
-        setActiveKey(newActiveKey);*/
+        const targetIndex = tabList.findIndex((pane) => pane.key === checkedValue);
+        if (targetIndex < 0) {
+            newPanes.push({ tab: checkedValue, key: checkedValue, closable: true });
+            setTabList(newPanes);
+            setActiveKey(checkedValue);
+        } else {
+            message.warning({
+                content: 'This service type has already been added.',
+                style: {
+                    fontSize: 16,
+                },
+                duration: 5,
+            });
+        }
     };
 
     const remove = (targetKey: TargetKey) => {
-        console.log(targetKey)
-        /*let newActiveKey = activeKey;
-        let lastIndex = -1;
-        tabList.forEach((item, i) => {
-            if (item.key === targetKey) {
-                lastIndex = i - 1;
-            }
+        confirm({
+            title: `Are you sure delete this service type 【${targetKey}】?`,
+            icon: <ExclamationCircleFilled />,
+            okText: 'Yes',
+            okType: 'danger',
+            cancelText: 'No',
+            onOk() {
+                console.log('OK');
+                const targetIndex = tabList.findIndex((pane) => pane.key === targetKey);
+                const newPanes = tabList.filter((pane) => pane.key !== targetKey);
+                if (newPanes.length && targetKey === activeKey) {
+                    const { key } = newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
+                    setActiveKey(key);
+                }
+                setTabList(newPanes);
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
         });
-        const newPanes = tabList.filter((item) => item.key !== targetKey);
-        if (newPanes.length && newActiveKey === targetKey) {
-            if (lastIndex >= 0) {
-                newActiveKey = newPanes[lastIndex].key;
-            } else {
-                newActiveKey = newPanes[0].key;
-            }
-        }
-        setTabList(newPanes);
-        setActiveKey(newActiveKey);*/
     };
 
     const onEdit = (
         targetKey: React.MouseEvent | React.KeyboardEvent | string,
         action: 'add' | 'remove',
     ) => {
-        console.log(targetKey, action)
         if (action === 'add') {
-            add();
+            showModal();
         } else {
             remove(targetKey);
         }
     };
 
+    const handleOk = (checkedValue: string) => {
+        setIsModalOpen(false);
+        add(checkedValue);
+    };
+
     return (
         <PageContainer
-            className={styles.pageContainer}
+            className={`${styles.pageContainer} ${styles.stickyTabs}`}
             title={false}
             content={HeaderInfo(NBasicInfo, LockDate, Principal?.SalesManName)}
             loading={loading}
@@ -178,6 +206,7 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
             tabList={tabList}
             onTabChange={handleTabChange}
             tabProps={{
+                activeKey: activeKey,
                 type: 'editable-card',
                 tabBarGutter: 0,
                 // tabBarStyle: 'tabBarCard',
@@ -204,11 +233,26 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
                 initialValues={CJobInfo}
             >
                 <ProForm.Group>
-                    {activeKey === 'job' && (
+                    {activeKey === 'Job' && (
                         <Job
                             CJobInfo={CJobInfo}
                             SalesManList={SalesManList}
                             FinanceDates={FinanceDates}
+                        />
+                    )}
+
+                    {activeKey === 'Sea Import' && (
+                        <SeaImport
+                            CJobInfo={CJobInfo}
+                            SalesManList={SalesManList}
+                            FinanceDates={FinanceDates}
+                        />
+                    )}
+
+                    {activeKey === 'Local Delivery' && (
+                        <LocalDelivery
+                            CTNPlanList={CTNPlanList}
+                            NBasicInfo={NBasicInfo}
                         />
                     )}
 
