@@ -63,21 +63,32 @@ export default {
   'menu.cargo.job.job-charge': 'Job Charge',
   'menu.manager': 'System',
   'menu.manager.cv_center': 'CV',
-  'menu.manager.cv_center.cv_center_list': 'CV - Index',
-  'menu.manager.cv_center.cv_center_info': 'CV - Information',
-  // 'menu.manager.cv_center_list': 'CV - Index',
-  // 'menu.manager.cv_center_info': 'CV - Information',
-  'menu.manager.cv_center.customer_approval_list': 'Customer - Approval',
+  // TODO: 公司
+  'menu.manager.cv_center.company_list': 'Company - Index',
+  'menu.manager.cv_center.company_info': 'Company - Index',
+  // TODO: 客户
+  'menu.manager.cv_center.customer_list': 'Customer - Index',
+  'menu.manager.cv_center.customer_info': 'Customer - Information',
+  'menu.manager.cv_center.customer_approval_list': 'Customer - Approval - Index',
   'menu.manager.cv_center.customer_approval_info': 'Customer - Approval - Information',
+  // TODO: 供应商
+  'menu.manager.cv_center.vendor_list': 'Vendor - Index',
+  'menu.manager.cv_center.vendor_info': 'Vendor - Information',
+  // TODO: 港口
   'menu.manager.port_list': 'Port - Index',
   'menu.manager.port_info': 'Port - Information',
+  // TODO: 账期
   'menu.manager.account_list': 'Account - Index',
   'menu.manager.account_info': 'Account - Information',
+  // TODO: 费目
   'menu.manager.charge_description_list': 'Charge Description - Index',
+  // TODO: 费用模板
   'menu.manager.charge_template_list': 'Charge Template - Index',
   'menu.manager.charge_template_info': 'Charge Template - Information',
+  // TODO: 报价
   'menu.manager.charge_quotation_list': 'Charge Quotation - Index',
   'menu.manager.charge_quotation_info': 'Charge Quotation - Information',
+  // TODO:
   'menu.chart': 'Report',
   'menu.chart.line-chart': '折线图',
 };

@@ -6,6 +6,7 @@ import {Button,} from 'antd';
 import {useModel} from 'umi';
 import {getUserID} from '@/utils/auths';
 import {history} from '@@/core/history'
+import {EditOutlined} from '@ant-design/icons'
 
 type APICVInfo = APIManager.CVInfo;
 type APICVSearchParams = APIManager.CVSearchParams;
@@ -23,11 +24,6 @@ const searchParams: APICVSearchParams = {
     CTType: 1,
     UserID: getUserID(),
 };
-
-const operationList = [
-    {key: 'edit', type: 1, label: '编辑'},
-];
-
 
 const CVCenterList: React.FC<RouteChildrenProps> = () => {
 
@@ -70,27 +66,13 @@ const CVCenterList: React.FC<RouteChildrenProps> = () => {
      */
     const handleOperateJob = (record: any) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        const url = `/manager/cv-center/form/${btoa(record?.CTPID)}`;
+        const url = `/manager/cv-center/company/form/${btoa(record?.CTPID)}`;
         // TODO: 跳转页面<带参数>
         // @ts-ignore
         history.push({pathname: url})
     }
 
     const columns: ProColumns<APICVInfo>[] = [
-        {
-            title: 'CV Type',
-            dataIndex: 'CTTypeItem',
-            width: 123,
-            disable: true,
-            align: 'center',
-        },
-        {
-            title: 'CV Identity',
-            dataIndex: 'InternalCompanyCode',
-            width: 100,
-            disable: true,
-            align: 'center',
-        },
         {
             title: 'CV Name',
             dataIndex: 'NameFull',
@@ -102,6 +84,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = () => {
             width: 100,
             disable: true,
             align: 'center',
+            hideInSearch: true,
         },
         {
             title: 'CV Center Number',
@@ -109,6 +92,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = () => {
             width: 140,
             disable: true,
             align: 'center',
+            hideInSearch: true,
         },
         {
             title: 'OracleID(C)',
@@ -116,6 +100,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = () => {
             width: 100,
             disable: true,
             align: 'center',
+            hideInSearch: true,
         },
         {
             title: 'OracleID(V)',
@@ -123,26 +108,15 @@ const CVCenterList: React.FC<RouteChildrenProps> = () => {
             width: 100,
             disable: true,
             align: 'center',
-        },
-        {
-            title: 'Status',
-            dataIndex: 'Freezen',
-            width: 100,
-            disable: true,
-            align: 'center',
+            hideInSearch: true,
         },
         {
             title: 'Action',
             width: 80,
             disable: true,
             align: 'center',
-            render: (text, record) => {
-                return operationList?.map(x=>
-                    <a key={x.key} onClick={() => handleOperateJob(record)}>
-                        {x.label}
-                    </a>
-                )
-            },
+            render: (text, record) =>
+                <EditOutlined color={'#1765AE'} onClick={() => handleOperateJob(record)}/>,
         },
     ];
 

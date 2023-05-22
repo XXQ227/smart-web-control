@@ -2,8 +2,7 @@ import React, {useState} from 'react';
 import type { RouteChildrenProps } from 'react-router';
 import type { ProColumns} from '@ant-design/pro-components';
 import {FooterToolbar, PageContainer, ProCard, ProTable} from '@ant-design/pro-components';
-import type { TabsProps} from 'antd';
-import {Button, Tabs} from 'antd';
+import {Button,} from 'antd';
 import {useModel} from 'umi';
 import {getUserID} from '@/utils/auths';
 import {history} from '@@/core/history'
@@ -22,11 +21,11 @@ const searchParams: APICVSearchParams = {
     CTName: "",
     PageNum: 1,
     PageSize: 15,
-    CTType: '10',
+    CTType: 1,
     UserID: getUserID(),
 };
 
-const SettlementList: React.FC<RouteChildrenProps> = () => {
+const CVCenterList: React.FC<RouteChildrenProps> = () => {
 
     const {
         CVInfoList, getGetCTPByStr
@@ -34,12 +33,8 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
         CVInfoList: res.CVInfoList,
         getGetCTPByStr: res.getGetCTPByStr,
     }));
-    const { initialState } = useModel('@@initialState');
-    // TODO: 用户消息
-    const userInfo: any = initialState?.userInfo || {};
 
 
-    const [activeKey, setActiveKey] = useState<string>('10');
     const [loading, setLoading] = useState<boolean>(false);
     const [cvInfoList, setCVInfoList] = useState<APICVInfo[]>(CVInfoList);
 
@@ -54,7 +49,6 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
     async function handleGetGetCTPByStr (params: APICVSearchParams){
         setLoading(true);
         params.CTName = params.NameFull;
-        params.CTType = activeKey;
         // TODO: 分页查询【参数页】
         params.PageNum = params.current || 1;
         const result: APIManager.CVResultInfo = await getGetCTPByStr(params);
@@ -72,18 +66,20 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
      */
     const handleOperateJob = (record: any) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        const url = `/manager/cv-center/cv-approval/customer/form/${btoa(record?.CTPID)}`;
+        const url = `/manager/cv-center/vendor/form/${btoa(record?.CTPID)}`;
         // TODO: 跳转页面<带参数>
         // @ts-ignore
         history.push({pathname: url})
     }
 
-    const handleTabsChange = (key: string) => {
-        setCVInfoList([]);
-        setActiveKey(key);
-    };
-
     const columns: ProColumns<APICVInfo>[] = [
+        {
+            title: 'CV Type',
+            dataIndex: 'CTTypeItem',
+            width: 123,
+            disable: true,
+            align: 'center',
+        },
         {
             title: 'CV Identity',
             dataIndex: 'InternalCompanyCode',
@@ -125,51 +121,20 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
             align: 'center',
         },
         {
+            title: 'Status',
+            dataIndex: 'Freezen',
+            width: 100,
+            disable: true,
+            align: 'center',
+        },
+        {
             title: 'Action',
             width: 80,
             disable: true,
             align: 'center',
-            render: (text, record) => {
-                return (
-                    <EditOutlined color={'#1765AE'} onClick={() => handleOperateJob(record)}/>
-                )
-            },
+            render: (text, record) =>
+                <EditOutlined color={'#1765AE'} onClick={() => handleOperateJob(record)}/>,
         },
-    ];
-
-    // TODO: 市场部显示 所属公司
-    if (userInfo?.AuthIDList?.includes(87)) {
-        columns.splice(-1, 0, {
-            title: 'Branch',
-            dataIndex: 'BranchName',
-            width: 123,
-            disable: true,
-            align: 'center',
-        });
-    }
-
-    const CVProTable = (key: string) => (
-        <ProTable<APICVInfo>
-            rowKey={'ID'}
-            search={false}
-            options={false}
-            bordered={true}
-            columns={columns}
-            loading={loading}
-            params={searchParams}
-            dataSource={cvInfoList}
-            // @ts-ignore
-            request={(params: APICVSearchParams)=> activeKey === key ? handleGetGetCTPByStr(params) : null}
-        />
-    );
-
-    const items: TabsProps['items'] = [
-        {key: '10', label: 'Draft', children: CVProTable('10')},
-        {key: '2', label: 'Approved', children: CVProTable('2')},
-        {key: '3', label: 'Rejected', children: CVProTable('3')},
-        {key: '4', label: 'Re-Submit', children: CVProTable('4')},
-        {key: '5', label: 'Approved', children: CVProTable('5')},
-        {key: '6', label: 'Update', children: CVProTable('6')},
     ];
 
 
@@ -180,7 +145,22 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
             }}
         >
             <ProCard className={'ant-card ant-card-pro-table'}>
-                <Tabs destroyInactiveTabPane={true} activeKey={activeKey} items={items} onChange={handleTabsChange} />
+                <ProTable<APICVInfo>
+                    rowKey={'ID'}
+                    options={false}
+                    bordered={true}
+                    loading={loading}
+                    columns={columns}
+                    params={searchParams}
+                    dataSource={cvInfoList}
+                    search={{
+                        layout: 'vertical',
+                        defaultCollapsed: false,
+                        // hiddenNum: 1,
+                    }}
+                    // @ts-ignore
+                    request={(params: APICVSearchParams)=> handleGetGetCTPByStr(params)}
+                />
             </ProCard>
             <FooterToolbar extra={<Button>返回</Button>}>
                 <Button key={'submit'} type={'primary'} htmlType={'submit'}>提交</Button>
@@ -188,4 +168,4 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
         </PageContainer>
     )
 }
-export default SettlementList;
+export default CVCenterList;

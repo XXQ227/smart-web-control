@@ -121,14 +121,14 @@ const manager_route = {
         //     name: 'cv_center_list',
         //     icon: 'icon-cv-center',
         //     path: '/manager/cv-center/list',
-        //     component: './sys-manager/cv-center/cv-center-list',
+        //     component: './sys-manager/cv-center/customer-list',
         // },
         // {
         //     hideInMenu: true,   // 隐藏不显示
         //     name: 'cv_center_info',
         //     icon: 'icon-cv-center',
         //     path: '/manager/cv-center/form/:id',
-        //     component: './sys-manager/cv-center/cv-center-form',
+        //     component: './sys-manager/cv-center/vendor-form',
         // },
         {
             name: 'cv_center',
@@ -137,34 +137,63 @@ const manager_route = {
             routes: [
                 {
                     path: '/manager/cv-center',
-                    redirect: '/manager/cv-center/list',
+                    redirect: '/manager/cv-center/company/list',
                 },
+                // TODO: 公司
                 {
-                    name: 'cv_center_list',
+                    name: 'company_list',
                     icon: 'icon-cv-center',
-                    path: '/manager/cv-center/list',
-                    component: './sys-manager/cv-center/cv-center-list',
+                    path: '/manager/cv-center/company/list',
+                    component: './sys-manager/cv-center/company/company-list',
                 },
                 {
                     hideInMenu: true,   // 隐藏不显示
-                    name: 'cv_center_info',
+                    name: 'company_info',
                     icon: 'icon-cv-center',
-                    path: '/manager/cv-center/form/:id',
-                    component: './sys-manager/cv-center/cv-center-form',
+                    path: '/manager/cv-center/company/form/:id',
+                    component: './sys-manager/cv-center/company/company-form',
+                },
+                // TODO: 客户
+                {
+                    name: 'customer_list',
+                    icon: 'icon-cv-approval',
+                    path: '/manager/cv-center/customer/list',
+                    component: './sys-manager/cv-center/customer/customer-list',
+                },
+                {
+                    hideInMenu: true,   // 隐藏不显示
+                    name: 'customer_info',
+                    icon: 'icon-cv-center',
+                    path: '/manager/cv-center/customer/form/:id',
+                    component: './sys-manager/cv-center/customer/customer-form',
                 },
                 // TODO: 客户审批
                 {
                     name: 'customer_approval_list',
                     icon: 'icon-cv-approval',
-                    path: '/manager/cv-approval/list',
+                    path: '/manager/cv-center/cv-approval/list',
                     component: './sys-manager/cv-center/customer/approval-list',
                 },
                 {
                     hideInMenu: true,   // 隐藏不显示
                     name: 'customer_approval_info',
                     icon: 'icon-cv-center',
-                    path: '/manager/cv-approval/form/:id',
-                    component: './sys-manager/cv-center/cv-center-form',
+                    path: '/manager/cv-center/cv-approval/form/:id',
+                    component: './sys-manager/cv-center/customer/customer-form',
+                },
+                // TODO: 供应商
+                {
+                    name: 'vendor_list',
+                    icon: 'icon-cv-approval',
+                    path: '/manager/cv-approval/list',
+                    component: './sys-manager/cv-center/vendor/vendor-list',
+                },
+                {
+                    hideInMenu: true,   // 隐藏不显示
+                    name: 'vendor_info',
+                    icon: 'icon-cv-center',
+                    path: '/manager/vendor/form/:id',
+                    component: './sys-manager/cv-center/vendor/vendor-form',
                 },
             ],
         },
