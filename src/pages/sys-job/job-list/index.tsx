@@ -5,7 +5,7 @@ import {PageContainer, ProTable} from '@ant-design/pro-components';
 import {history, useModel, useIntl} from 'umi';
 import {getTitleInfo, IconFont} from '@/utils/units';
 import {getUserID} from '@/utils/auths';
-import {OceanTransportTypeEnum} from '@/utils/enum'
+import {OCEANTRANSPORTTYPE_ENUM} from '@/utils/enum'
 
 type APICJobListItem = APIModel.CJobListItem;
 
@@ -138,7 +138,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
             align: 'center',
             search: false,
             width: 80,
-            valueEnum: OceanTransportTypeEnum
+            valueEnum: OCEANTRANSPORTTYPE_ENUM
         },
         {
             title: title('create-date', '创建时间'),

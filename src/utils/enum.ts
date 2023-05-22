@@ -24,7 +24,7 @@ export const CTN_MODE = {
 };
 
 // TODO: 货物类型枚举值
-export const OceanTransportTypeEnum = {
+export const OCEANTRANSPORTTYPE_ENUM = {
     '1': {text: 'FCL', status: 'FCL', key: 1},
     '2': {text: 'LCL', status: 'LCL', key: 2},
     '3': {text: 'BULK', status: 'BULK', key: 3},
@@ -32,7 +32,7 @@ export const OceanTransportTypeEnum = {
 };
 
 // TODO: 费用状态枚举值
-export const ChargeStateEnum = {
+export const CHARGE_STATE_ENUM = {
     '1': {text: 'Draft', status: 'Draft', key: 1},
     '2': {text: 'Submitted', status: 'Submitted', key: 2},
     '3': {text: 'Approved', status: 'Approved', key: 3},
@@ -49,13 +49,13 @@ export const ChargeStateEnum = {
 };
 
 // TODO: 账期类型举值
-export const AccountPeriodTypeEnum = {
+export const ACCOUNT_PERIOD_TYPE_ENUM = {
     0: {text: 'Normal', status: 'Normal', key: 1},
     1: {text: 'Replenishment', status: 'Replenishment', key: 0},
 };
 
 // TODO: 账期预估状态举值
-export const AccountPeriodESStatusEnum = {
+export const ACCOUNT_PERIOD_ES_STATUS_ENUM = {
     0: {text: 'Unopened', status: 'Unopened', key: 1},
     1: {text: 'Pending', status: 'Pending', key: 1},
     2: {text: 'Success', status: 'Success', key: 2},
@@ -63,7 +63,7 @@ export const AccountPeriodESStatusEnum = {
 };
 
 // TODO: 账期开启状态举值
-export const AccountPeriodStateEnum = {
+export const ACCOUNT_PERIOD_STATE_ENUM = {
     0: {text: 'New', status: 'New', key: 1},
     1: {text: 'Active', status: 'Active', key: 1},
     2: {text: 'Closing', status: 'Closing', key: 2},

@@ -6,7 +6,7 @@ import {useModel} from 'umi';
 import {getBranchID, getFuncCurrency, getUserID} from '@/utils/auths';
 import {formatNumToMoney, keepDecimal} from '@/utils/units';
 import InputEdit from '@/components/InputNumberEdit'
-import {ChargeStateEnum} from '@/utils/enum'
+import {CHARGE_STATE_ENUM} from '@/utils/enum'
 import {stringify} from 'querystring';
 import ls from 'lodash';
 import SearchModal from '@/components/SearchModal';
@@ -214,7 +214,7 @@ const ChargeTable: React.FC<Props> = (props) => {
         },
         {
             title: 'State', dataIndex: 'State', align: 'center', width: 140,
-            render: (value: any) => <div>{ChargeStateEnum[value]?.status}</div>
+            render: (value: any) => <div>{CHARGE_STATE_ENUM[value]?.status}</div>
         },
         {
             title: 'Operate',

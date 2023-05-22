@@ -7,7 +7,7 @@ import {Divider, Input} from 'antd'
 import AccountDrawerForm from '@/pages/sys-manager/account/account-form'
 import {getUserID} from '@/utils/auths'
 import moment from 'moment'
-import {AccountPeriodESStatusEnum, AccountPeriodStateEnum, AccountPeriodTypeEnum} from '@/utils/enum'
+import {ACCOUNT_PERIOD_ES_STATUS_ENUM, ACCOUNT_PERIOD_STATE_ENUM, ACCOUNT_PERIOD_TYPE_ENUM} from '@/utils/enum'
 import {CustomizeIcon} from '@/utils/units'
 
 const { Search } = Input;
@@ -71,7 +71,7 @@ const AccountIndex: React.FC<RouteChildrenProps> = () => {
             disable: true,
             search: false,
             align: 'center',
-            valueEnum: AccountPeriodTypeEnum,
+            valueEnum: ACCOUNT_PERIOD_TYPE_ENUM,
         },
         {
             title: 'Code',
@@ -104,7 +104,7 @@ const AccountIndex: React.FC<RouteChildrenProps> = () => {
             disable: true,
             search: false,
             align: 'center',
-            valueEnum: AccountPeriodESStatusEnum,
+            valueEnum: ACCOUNT_PERIOD_ES_STATUS_ENUM,
         },
         {
             title: 'State',
@@ -113,7 +113,7 @@ const AccountIndex: React.FC<RouteChildrenProps> = () => {
             disable: true,
             search: false,
             align: 'center',
-            valueEnum: AccountPeriodStateEnum,
+            valueEnum: ACCOUNT_PERIOD_STATE_ENUM,
         },
         {
             title: 'Action',
