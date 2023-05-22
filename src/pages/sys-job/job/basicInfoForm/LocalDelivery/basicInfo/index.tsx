@@ -1,9 +1,12 @@
 import React, {useState} from 'react';
-import {ProCard, ProFormSelect, ProFormText} from '@ant-design/pro-components';
-import {Col, Row, InputNumber, Select, Divider} from 'antd';
+import {ProCard, ProFormDateTimePicker, ProFormSelect, ProFormText, ProFormTextArea} from '@ant-design/pro-components';
+import {Col, Row, InputNumber, Select, Divider, Space, Button, Popconfirm, Table} from 'antd';
 import {rowGrid} from '@/utils/units';
 import styles from "@/pages/sys-job/job/basicInfoForm/style.less";
 import ContainerLayout from "@/pages/sys-job/job/basicInfoForm/LocalDelivery/basicInfo/ContainerLayout";
+import {PlusCircleOutlined} from "@ant-design/icons";
+import type {ColumnsType} from "antd/es/table";
+import NonContainerLayout from "@/pages/sys-job/job/basicInfoForm/LocalDelivery/basicInfo/Non-ContainerLayout";
 
 interface Props {
     form?: any,
@@ -12,18 +15,34 @@ interface Props {
     batchNo: string,
     data?: APIModel.BatchData,
     CTNPlanList?: APIModel.ContainerList[],
+    PhotoRemarkList?: APIModel.PhotoRemarkList[],
     NBasicInfo: APIModel.NBasicInfo,
 }
 
 const { Option } = Select;
 
+const initialPhotoRemarkList: APIModel.PhotoRemarkList[] = [
+    {
+        ID: 'ID1',
+        Description: "青衣碼頭裝箱照片",
+        Time: "2023-03-20 15:30:10",
+    },
+    {
+        ID: 'ID2',
+        Description: "港區入口交通擁堵，無法及時提柜",
+        Time: "2023-03-20 20:10:10",
+    },
+];
+
 const BasicInfo: React.FC<Props> = (props) => {
     const  {
         batchNo, data,
-        CTNPlanList, NBasicInfo
+        CTNPlanList, PhotoRemarkList, NBasicInfo
     } = props;
 
     const [isContainer, setIsContainer] = useState(data?.vehicleType === '集装箱运输货车');
+    const [photoRemarkList, setPhotoRemarkList] = useState<APIModel.PhotoRemarkList[]>(PhotoRemarkList || initialPhotoRemarkList);
+    // const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
 
     const selectAfter = (
         <Select defaultValue="KG" style={{ width: 70 }}>
@@ -31,10 +50,103 @@ const BasicInfo: React.FC<Props> = (props) => {
         </Select>
     );
 
+    /*const rowSelection = {
+        columnWidth: 30,
+        onChange: (selectedRowKeys: React.Key[]) => {
+            setSelectedRowIDs(selectedRowKeys)
+        },
+    };*/
+
+    function handleRowChange(index: number, rowID: any, filedName: string, val: any, option?: any) {
+        console.log(index)
+        console.log(filedName)
+    }
+
+    const handleAdd = () => {
+        const newData: APIModel.PhotoRemarkList = {
+            ID: `ID${(new Date().getTime())}`,
+            Description: "",
+            Time: new Date().toString(),
+        };
+        setPhotoRemarkList([...photoRemarkList, newData]);
+    };
+
+    const handleDelete = (key: any) => {
+        const newData = photoRemarkList.filter(item => item.ID !== key);
+        setPhotoRemarkList(newData);
+    };
+
+    const handleChange = (value: string) => {
+        setIsContainer(value === "集装箱运输货车")
+    };
+
+    const columns: ColumnsType<APIModel.PhotoRemarkList> = [
+        {
+            title: 'Description',
+            dataIndex: 'Description',
+            key: 'Description',
+            render: (text: any, record, index) => {
+                return (
+                    <ProFormText
+                        name={`Description${record.ID}`}
+                        initialValue={record.Description}
+                        placeholder={''}
+                        fieldProps={{
+                            onChange: (e) => handleRowChange(index, record.ID, 'Description', e)
+                        }}
+                    />
+                );
+            }
+        },
+        {
+            title: 'Time',
+            align: "center",
+            dataIndex: 'Time',
+            key: 'Time',
+            render: (text: any, record, index) => {
+                return (
+                    <ProFormDateTimePicker
+                        name={`Time${record.ID}`}
+                        initialValue={record.Time}
+                        fieldProps={{
+                            // format: (value) => value.format('YYYY-MM-DD'),
+                            onChange: (e) => handleRowChange(index, record.ID, 'Description', e)
+                        }}
+                    />
+                );
+            }
+        },
+        {
+            title: 'Action',
+            align: "center",
+            dataIndex: 'photo',
+            key: 'photo',
+            width: '120px',
+            className: "textColor",
+            render: (text: any, record, index) => {
+                return (
+                    <div>
+                        <a>View</a>
+                        <span className="vertical-line" />
+                        <Popconfirm
+                            title={'Sure to delete?'}
+                            onConfirm={() => handleDelete(record.ID)}
+                        >
+                            <a>Delete</a>
+                        </Popconfirm>
+                    </div>
+                );
+            }
+        },
+    ];
+
+
     return (
-        <div style={{ marginTop: 20 }}>
+        <div
+            className={styles.antProCard}
+        >
             <Row gutter={rowGrid}>
-                <Col xs={24} sm={24} md={12} lg={12} xl={7} xxl={5} className={'custom-input'}>
+                <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5} className={'custom-input'}>
                     <ProFormText
                         name={`shipmentNo${batchNo}`}
                         initialValue={data?.shipmentNo}
@@ -47,7 +159,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                         defaultValue={data?.grossWeight}
                     />
                 </Col>
-                <Col xs={24} sm={24} md={12} lg={12} xl={7} xxl={5}>
+                <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5}>
                     <ProFormSelect
                         name={`truckingCompany${batchNo}`}
                         label="Trucking Company"
@@ -71,7 +183,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                         />
                     </div>
                 </Col>
-                <Col xs={24} sm={24} md={12} lg={12} xl={7} xxl={5}>
+                <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5}>
                     <ProFormSelect
                         name={`TransportVehicleType${batchNo}`}
                         label="Transport Vehicle Type"
@@ -79,10 +191,14 @@ const BasicInfo: React.FC<Props> = (props) => {
                         initialValue={data?.vehicleType}
                         options={[
                             {label: '平板货车 platform truck(flat bed truck)', value: '平板货车'},
-                            {label: '通用货车 general -purpose vehicle', value: '通用货车'},
+                            {label: '通用货车 general-purpose vehicle', value: '通用货车'},
                             {label: '集装箱运输货车 container carrier', value: '集装箱运输货车'},
                             {label: '厢式货车 van', value: '厢式货车'},
                         ]}
+                        fieldProps={{
+                            // onChange: (e) => handleChange(index, record.ID, 'Remark', e)
+                            onChange: handleChange,
+                        }}
                     />
                     <div className={'proFormTextContainer'}>
                         <ProFormText
@@ -97,23 +213,25 @@ const BasicInfo: React.FC<Props> = (props) => {
                         />
                     </div>
                 </Col>
-                <Col xs={0} sm={0} md={0} lg={0} xl={0} xxl={1} flex="auto" style={{ textAlign: "center" }}>
-                    <Divider type="vertical" style={{ height: '100%' }} />
-                </Col>
                 {
                     isContainer ?
-                        <Col xs={24} sm={24} md={12} lg={12} xl={7} xxl={5}>
-                            <ProFormText
-                                name={`receivingContac${batchNo}`}
-                                initialValue={data?.receivingContac}
-                                label="Receiving Contac"
-                            />
-                            <ProFormText
-                                name={`phone${batchNo}`}
-                                initialValue={data?.phone}
-                                label="Telephone"
-                            />
-                        </Col>
+                        <>
+                            <Col xs={0} sm={0} md={0} lg={0} xl={0} xxl={1} flex="auto" style={{ textAlign: "center" }}>
+                                <Divider type="vertical" style={{ height: '100%' }} />
+                            </Col>
+                            <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5}>
+                                <ProFormText
+                                    name={`receivingContac${batchNo}`}
+                                    initialValue={data?.receivingContac}
+                                    label="Receiving Contac"
+                                />
+                                <ProFormText
+                                    name={`phone${batchNo}`}
+                                    initialValue={data?.phone}
+                                    label="Telephone"
+                                />
+                            </Col>
+                        </>
                         : null
                 }
             </Row>
@@ -126,7 +244,10 @@ const BasicInfo: React.FC<Props> = (props) => {
                         batchNo={batchNo}
                         data={data}
                     />
-                    : null
+                    :
+                    <NonContainerLayout
+                        batchNo={batchNo}
+                    />
             }
 
             <ProCard
@@ -135,6 +256,39 @@ const BasicInfo: React.FC<Props> = (props) => {
                 headerBordered
                 collapsible
             >
+                <Row gutter={rowGrid}>
+                    <Col xs={24} sm={24} md={24} lg={24} xl={7} xxl={5}>
+                        <ProFormTextArea
+                            name={`OperationRemark${batchNo}`}
+                            fieldProps={{rows: 5}}
+                            label="Operation Remark"
+                            placeholder={''}
+                        />
+                    </Col>
+                    <Col xs={24} sm={24} md={24} lg={24} xl={17} xxl={15}>
+                        <div className={styles.title}>
+                            <div className={'ant-div-left'}>
+                                <span>Photo Remark</span>
+                            </div>
+                            <div className={'ant-div-right'}>
+                                <Space>
+                                    <Button onClick={handleAdd}><PlusCircleOutlined />Add</Button>
+                                </Space>
+                            </div>
+                        </div>
+                        <Table
+                            rowKey={'ID'}
+                            bordered
+                            pagination={false}
+                            columns={columns}
+                            dataSource={photoRemarkList}
+                            locale={{emptyText: "NO DATA"}}
+                            // rowSelection={rowSelection}
+                            className={`${styles.tableStyle} ${styles.photoRemarkTable}`}
+                        />
+                    </Col>
+                </Row>
+
 
             </ProCard>
 

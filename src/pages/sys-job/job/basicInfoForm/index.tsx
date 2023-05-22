@@ -44,7 +44,7 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
 
     /** 实例化Form */
     // const [form] = Form.useForm();
-    const [activeKey, setActiveKey] = useState(initialTabList[1].key);
+    const [activeKey, setActiveKey] = useState(initialTabList[0].key);
     const [tabList, setTabList] = useState(initialTabList);
     const [jobID, setJobID] = useState(0);
     const [loading, setLoading] = useState(true);

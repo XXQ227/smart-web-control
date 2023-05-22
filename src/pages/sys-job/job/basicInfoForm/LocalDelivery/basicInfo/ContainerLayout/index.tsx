@@ -43,7 +43,8 @@ const initialContainerList: APIModel.ContainerList[] = [
 
 const ContainerLayout: React.FC<Props> = (props) => {
     const  {
-        CTNPlanList, NBasicInfo
+        CTNPlanList, NBasicInfo,
+        batchNo
     } = props;
 
     const [containerList, setContainerList] = useState<APIModel.ContainerList[]>(CTNPlanList || initialContainerList);
@@ -204,7 +205,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
             collapsible
         >
             <Row gutter={24}>
-                <Col span={24}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={22} xxl={20}>
                     <div className={styles.title}>
                         <div className={'ant-div-left'}>
                             <span>Container List</span>
@@ -229,14 +230,14 @@ const ContainerLayout: React.FC<Props> = (props) => {
                         dataSource={containerList}
                         locale={{emptyText: "NO DATA"}}
                         rowSelection={rowSelection}
-                        className={styles.containerTable}
+                        className={`${styles.tableStyle} ${styles.containerTable}`}
                     />
                 </Col>
             </Row>
             <Row gutter={24}>
                 <Col span={12}>
                     <ProFormText
-                        name="pickupLoc"
+                        name={`pickupLoc${batchNo}`}
                         initialValue={'香港九龍灣宏光道1號億京中心B座20樓E室'}
                         label="Pickup Location"
                         placeholder={''}
@@ -244,7 +245,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                 </Col>
                 <Col span={12}>
                     <ProFormDateTimePicker
-                        name="pickupTime"
+                        name={`pickupTime${batchNo}`}
                         label="Pickup Time"
                         initialValue={'2023-05-19 00:00:10'}
                     />
@@ -253,7 +254,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
             <Row gutter={24}>
                 <Col span={12}>
                     <ProFormText
-                        name="S&DLoc"
+                        name={`S&DLoc${batchNo}`}
                         initialValue={'Unit F & G, 20/F., MG Tower, 133 Hoi Bun Road, Kwun Tong, Hong Kong'}
                         label="Containing Stuffing & Devanning at"
                         placeholder={''}
@@ -261,7 +262,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                 </Col>
                 <Col span={12}>
                     <ProFormDateTimePicker
-                        name="S&DTime"
+                        name={`S&DTime${batchNo}`}
                         label="Stuffing & Devanning Time"
                         initialValue={'2023-05-19 00:00:10'}
                     />
@@ -270,7 +271,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
             <Row gutter={24}>
                 <Col span={12}>
                     <ProFormText
-                        name="returnLoc"
+                        name={`returnLoc${batchNo}`}
                         initialValue={'16/F, Richmond Commercial Building, 109 Argyle Street, Mongkok, Kowloon'}
                         label="Return Location"
                         placeholder={''}
@@ -278,7 +279,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                 </Col>
                 <Col span={12}>
                     <ProFormDateTimePicker
-                        name="returnTime"
+                        name={`returnTime${batchNo}`}
                         label="Return Time"
                         initialValue={'2023-05-19 00:00:10'}
                     />

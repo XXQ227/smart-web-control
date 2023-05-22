@@ -216,6 +216,12 @@ declare namespace APIModel {
         Owner: string,
         Remark: string,
     }
+    type PhotoRemarkList = {
+        ID: any,
+        Description: string,
+        Time: string,
+        // photo:
+    }
     //endregion TODO: 单票业务详情返回结果
 
     //endregion TODO: 单票费用详情
