@@ -143,50 +143,68 @@
       }
     }
 
+    .antProCard {
+      margin-top: 20px;
+
+      :global {
+        .ant-pro-card-header {
+          padding: 10px 0;
+        }
+
+        .ant-pro-card-body {
+          padding: 24px 0;
+        }
+      }
+    }
+
     // containerLayout表单样式
     .containerLayout {
       margin-top: 20px;
       margin-bottom: 0;
+
+      .title {
+        margin-bottom: 40px;
+        :global {
+          button {
+            border: none;
+          }
+        }
+      }
+
       :global {
-        .ant-pro-card-header {
-          padding: 10px 0;
-        }
-
-        .ant-pro-card-body {
-          padding: 24px 0;
-        }
-
         .ant-space {
           display: inline-flex;
         }
       }
+
+      // Container List 表格
+      .containerTable {
+        margin-bottom: 25px;
+        :global {
+          .textCenter .ant-input, .textCenter .ant-input-affix-wrapper {
+            text-align: center;
+          }
+        }
+      }
     }
 
-    .remark {
-      :global {
-        .ant-pro-card-header {
-          padding: 10px 0;
-        }
+    .nonContainerLayout {
+      margin-bottom: 0;
 
-        .ant-pro-card-body {
-          padding: 24px 0;
+      .siteSpace {
+        display: inline-flex !important;
+        gap: 0 !important;
+
+        .siteSpaceSpan {
+          display: inline-block;
+          border-top: #797979 solid 1px;
+          width: 20px;
         }
 
       }
     }
 
-    .title {
-      margin-bottom: 40px;
-      :global {
-        button {
-          border: none;
-        }
-      }
-    }
-
-    // Container List 表格
-    .containerTable {
-      margin-bottom: 25px;
+    .tableStyle {
       :global {
         .ant-table.ant-table-bordered > .ant-table-container {
           border-left: 1px solid #fff !important;
@@ -206,33 +224,67 @@
           border-bottom: 1px solid #fff !important;
         }
 
-        .ant-table-empty .ant-table-tbody > tr.ant-table-placeholder td {
-          padding: 10px !important;
-        }
-
         .ant-table-tbody .ant-form-item {
           margin: 0 !important;
         }
 
-        .ant-input, .ant-input-affix-wrapper {
+        .ant-table-empty .ant-table-tbody > tr.ant-table-placeholder td {
+          padding: 10px !important;
+        }
+
+        .ant-input, .ant-input-affix-wrapper, .ant-picker {
           border: none;
         }
 
-        .textCenter .ant-input, .textCenter .ant-input-affix-wrapper {
-          text-align: center;
-        }
-
         // 被选中
-        .ant-table-tbody > tr.ant-table-row-selected > td, .ant-table-tbody > tr.ant-table-row-selected > td .ant-input, .ant-table-tbody > tr.ant-table-row-selected > td .ant-input-affix-wrapper {
+        .ant-table-tbody > tr.ant-table-row-selected > td,
+        .ant-table-tbody > tr.ant-table-row-selected > td .ant-input,
+        .ant-table-tbody > tr.ant-table-row-selected > td .ant-input-affix-wrapper,
+        .ant-table-tbody > tr.ant-table-row-selected > td .ant-picker
+        {
           background: #12394a;
         }
 
       }
     }
 
+    .remark {
+      .title {
+        :global {
+          button {
+            border: none;
+          }
+        }
+      }
 
+      .photoRemarkTable {
+        :global {
+          .textColor {
+            div {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
 
+            a {
+              color:  rgb(211, 158, 89);
+            }
 
+            a:hover {
+              color: @primary-color;
+            }
+
+            .vertical-line {
+              display: inline-block;
+              height: 15px;
+              width: 1px;
+              background-color: rgb(211, 158, 89);
+              margin: 0 5px 0 6px;
+            }
+          }
+        }
+      }
+    }
   }
   //endregion TODO: Local Delivery样式
 
