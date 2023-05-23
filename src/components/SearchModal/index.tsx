@@ -1,7 +1,7 @@
 import React, {Fragment, useEffect, useMemo, useState} from 'react';
 import {Button, Input, Modal, Table} from 'antd';
 import {debounce} from 'lodash'
-import {fetchData} from '@/components/SearchInput'
+import {fetchData} from '@/utils/fetch-utils'
 import {PlusOutlined} from '@ant-design/icons'
 
 interface Props {
