@@ -107,7 +107,7 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
         }
     };
 
-    /*if (ticketData.basicInfo) {
+    /*if (ticketData.basic-info) {
         tabList.push({
             tab: '基本信息',
             key: 'base',
