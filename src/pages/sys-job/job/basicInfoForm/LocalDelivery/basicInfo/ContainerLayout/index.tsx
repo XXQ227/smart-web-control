@@ -65,7 +65,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                         <SearchModal
                             qty={30}
                             id={`CTNModelID${record.ID}`}
-                            title={'Shipment Term'}
+                            title={'SIZE'}
                             modalWidth={500}
                             // value={record.CTNModelName}
                             text={record.CTNModelName}
