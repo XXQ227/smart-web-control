@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {ProFormSelect} from '@ant-design/pro-components'
-import styles from '@/pages/sys-job/job/basicInfoForm/style.less'
+import styles from '@/pages/sys-job/job/basic-info-form/style.less'
 import {fetchData} from '@/utils/fetch-utils'
 
 

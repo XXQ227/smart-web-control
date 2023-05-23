@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import {ProCard, ProFormSelect, ProFormText} from '@ant-design/pro-components';
 import {Col, Row, InputNumber, Select, Divider} from 'antd';
 import {rowGrid} from '@/utils/units';
-import styles from "@/pages/sys-job/job/basicInfoForm/style.less";
-import ContainerLayout from "@/pages/sys-job/job/basicInfoForm/LocalDelivery/basicInfo/ContainerLayout";
+import styles from "@/pages/sys-job/job/basic-info-form/style.less";
+import ContainerLayout from "@/pages/sys-job/job/basic-info-form/LocalDelivery/basicInfo/ContainerLayout";
 
 interface Props {
     form?: any,
