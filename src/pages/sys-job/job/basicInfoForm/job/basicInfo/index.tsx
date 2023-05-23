@@ -186,6 +186,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                         required={true}
                         label="Customer"
                         id={'CustomerID'}
+                        name={'CustomerID'}
                         url={'/api/MCommon/GetCTNameByStrOrType'}
                         valueObj={{value: principalInfo?.PrincipalXID, label: principalInfo?.PrincipalXName}}
                         query={{IsJobCustomer: true, BusinessLineID: null, UserID: getUserID(), CTType: 1, SystemID: 4}}

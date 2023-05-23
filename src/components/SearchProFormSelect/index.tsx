@@ -7,6 +7,7 @@ import {fetchData} from '@/utils/fetch-utils'
 // TODO: 父组件传回来的值
 interface Props {
     id: any,
+    name: string,
     value?: any,
     label?: any,
     valueObj?: any,
@@ -63,7 +64,7 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
             width="lg"
             showSearch
             label={label}
-            name={props.id}
+            name={props.name}
             required={required}
             debounceTime={1000}
             disabled={disabled}
