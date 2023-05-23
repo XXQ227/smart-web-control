@@ -1,7 +1,7 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "EHK",
+    "title": "Smart HK",
     "version": "1.0.0"
   },
   "servers": [

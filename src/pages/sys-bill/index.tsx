@@ -12,7 +12,7 @@ const Bill: React.FC<RouteChildrenProps> = () => {
                 breadcrumb: {},
             }}
         >
-            <ProCard>欢迎使用 EHK BILL </ProCard>
+            <ProCard>欢迎使用 Smart HK BILL </ProCard>
             <FooterToolbar extra={<Button>返回</Button>}>
                 <Button key={'submit'} type={'primary'} htmlType={'submit'}>提交</Button>
             </FooterToolbar>

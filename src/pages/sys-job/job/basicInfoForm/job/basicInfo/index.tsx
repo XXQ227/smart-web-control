@@ -5,6 +5,7 @@ import {getBranchID, getUserID} from '@/utils/auths';
 import {rowGrid} from '@/utils/units';
 import {stringify} from "qs";
 import styles from "@/pages/sys-job/job/basicInfoForm/style.less";
+import SearchProFormSelect from '@/components/SearchProFormSelect'
 
 
 interface Props {
@@ -180,8 +181,18 @@ const BasicInfo: React.FC<Props> = (props) => {
                     </FormItem>
                 </Col>*/}
                 <Col xs={24} sm={24} md={15} lg={15} xl={9} xxl={5}>
+                    <SearchProFormSelect
+                        qty={5}
+                        required={true}
+                        label="Customer"
+                        id={'CustomerID'}
+                        url={'/api/MCommon/GetCTNameByStrOrType'}
+                        valueObj={{value: principalInfo?.PrincipalXID, label: principalInfo?.PrincipalXName}}
+                        query={{IsJobCustomer: true, BusinessLineID: null, UserID: getUserID(), CTType: 1, SystemID: 4}}
+                        // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
+                    />
                     {/* 客户 */}
-                    <ProFormSelect
+                    {/*<ProFormSelect
                         width="lg"
                         name="CustomerID"
                         // suffix={<IconFont key={1} type={'icon-create'} className="iconfont icon-your-icon-name" />}
@@ -193,24 +204,24 @@ const BasicInfo: React.FC<Props> = (props) => {
                         // showSearch
                         debounceTime={400}
                         request={(value) => fetchOptions(value)}
-                        /*request={async (value: any) => {
-                            if (value.keyWords) {
-                                const response = await fetch(`/api/MCommon/GetCTNameByStrOrType?IsJobCustomer=true&BusinessLineID=null&UserID=${getUserID()}&CTType=1&SystemID=4&value=${value.keyWords}`);
-                                const data = await response.json();
-                                return data.map((item: any) => ({
-                                    value: item.Key,
-                                    label: item.Value,
-                                    data: item,
-                                }));
-                            }
-                        }}*/
+                        // request={async (value: any) => {
+                        //     if (value.keyWords) {
+                        //         const response = await fetch(`/api/MCommon/GetCTNameByStrOrType?IsJobCustomer=true&BusinessLineID=null&UserID=${getUserID()}&CTType=1&SystemID=4&value=${value.keyWords}`);
+                        //         const data = await response.json();
+                        //         return data.map((item: any) => ({
+                        //             value: item.Key,
+                        //             label: item.Value,
+                        //             data: item,
+                        //         }));
+                        //     }
+                        // }}
                         params={{
                             IsJobCustomer: true, BusinessLineID: null,
                             UserID: getUserID(), CTType: 1, SystemID: 4,
                         }}
                         placeholder="Please enter keyword search"
                         rules={[{ required: true, message: 'Please Input Customer!' }]}
-                    />
+                    />*/}
                     {/* 付款方 */}
                     <ProFormSelect
                         width="lg"

@@ -116,6 +116,20 @@ const manager_route = {
             path: '/manager',
             redirect: '/manager',
         },
+        // TODO: 经营单位<branch>数据
+        {
+            name: 'branch_list',
+            icon: 'icon-charge-quotation',
+            path: '/manager/branch/list',
+            component: './sys-manager/branch/branch-list',
+        },
+        {
+            hideInMenu: true,   // 隐藏不显示
+            name: 'branch_info',
+            icon: 'icon-charge-quotation',
+            path: '/manager/branch/form/:id',
+            component: './sys-manager/branch/branch-form',
+        },
         // TODO: 客户、供应商
         // {
         //     name: 'cv_center_list',

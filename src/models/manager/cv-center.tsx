@@ -1,4 +1,4 @@
-import {GetCTPByStr, GetCTPByID} from '@/services/smart/manager/cv-center';
+import {GetCTPByStr, GetCTPByID, UploadCTCenter} from '@/services/smart/manager/cv-center';
 import type React from "react";
 import {useCallback, useState} from "react";
 import {getLabel$Value, getTransIndustryListToLine} from '@/utils/units'
@@ -109,6 +109,12 @@ export default (callback: T, deps: React.DependencyList) => {
         return response.CTDetailDto;
     }, []);
 
+    const uploadCTCenter = useCallback(async (params: any) => {
+        const response: any = await UploadCTCenter(params);
+        if (!response) return;
+        return response;
+    }, []);
+
 
     return {
         CVInfoList,
@@ -121,5 +127,6 @@ export default (callback: T, deps: React.DependencyList) => {
         IndustryList,
         CustomerPropertyList,
         BusinessLineList,
+        uploadCTCenter,
     }
 }

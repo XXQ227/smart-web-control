@@ -21,6 +21,7 @@ import {message} from 'antd/es'
 import ls from 'lodash';
 import {CloseOutlined} from '@ant-design/icons'
 import {useModel, history} from 'umi'
+import SearchSelectInput from '@/components/SearchSelectInput'
 
 type APICVInfo = APIManager.CVInfo;
 const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
@@ -46,6 +47,9 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
     const [CVInfoVO, setCVInfoVO] = useState<APICVInfo>(CVInfo);
     const [ClientVO, setClientVO] = useState<API.APIKey$Value[]>(CVInfo.CTList);
     const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
+    const [companyNameEN, setCompanyNameEN] = useState<API.APIValue$Label>({
+        label: CVInfo.NameFullEN, value: CVInfo.ID
+    });
 
     // TODO: 客户类型
     const [customerTypeID, setCustomerTypeID] = useState<number | null>(CVInfo.CTTypeItemClient);
@@ -156,6 +160,13 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
         })
     }
 
+    const handleChangeData = (val: any, filedName: string) => {
+        console.log(val);
+        if (filedName === 'name_full_en') {
+            setCompanyNameEN(val);
+        }
+    }
+
     //region TODO: 显示隐藏：{SCAC, IATA}
     //endregion
     // TODO: 返回列表集合
@@ -191,14 +202,24 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                     {/** // TODO: CV Name、CV Name (For Print)、Short Name、CV Identity */}
                     <Row gutter={24}>
                         <Col span={7}>
-                            <ProFormText
+                            <Form.Item
                                 required
-                                name='NameFull'
-                                placeholder=''
-                                label='CV Name'
-                                tooltip='length: 100'
+                                label={'Company'}
+                                name={'name_full_en'}
+                                tooltip={'length: 100'}
                                 rules={[{required: true, message: '这是必填项'}]}
-                            />
+                            >
+                                <SearchSelectInput
+                                    qty={5}
+                                    filedValue={'ID'}
+                                    id={'name_full_en'}
+                                    filedLabel={'NameFull'}
+                                    valueObj={companyNameEN}
+                                    query={{UserID: getUserID()}}
+                                    url={'/api/CT/GetCTByStrNoPage'}
+                                    handleChangeData={(val: any)=> handleChangeData(val, 'name_full_en')}
+                                />
+                            </Form.Item>
                         </Col>
                         <Col span={7}>
                             <ProFormText
