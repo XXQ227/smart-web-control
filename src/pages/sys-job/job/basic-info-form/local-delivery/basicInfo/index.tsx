@@ -4,9 +4,9 @@ import {Col, Row, InputNumber, Select, Divider, Space, Button, Popconfirm, Table
 import {rowGrid} from '@/utils/units';
 import {PlusCircleOutlined} from "@ant-design/icons";
 import type {ColumnsType} from "antd/es/table";
-import NonContainerLayout from "@/pages/sys-job/job/basic-info-form/LocalDelivery/basicInfo/Non-ContainerLayout";
+import NonContainerLayout from "@/pages/sys-job/job/basic-info-form/local-delivery/basicInfo/Non-ContainerLayout";
 import styles from "@/pages/sys-job/job/basic-info-form/style.less";
-import ContainerLayout from "@/pages/sys-job/job/basic-info-form/LocalDelivery/basicInfo/ContainerLayout";
+import ContainerLayout from "@/pages/sys-job/job/basic-info-form/local-delivery/basicInfo/ContainerLayout";
 
 interface Props {
     form?: any,

@@ -5,8 +5,8 @@ import {FooterToolbar, PageContainer, ProForm} from '@ant-design/pro-components'
 import {Button, message, Modal} from 'antd';
 import {getUserID} from '@/utils/auths';
 import Job from './job';
-import SeaImport from './SeaImport';
-import LocalDelivery from './LocalDelivery';
+import SeaImport from './sea-import';
+import LocalDelivery from './local-delivery';
 import {HeaderInfo} from '@/utils/units'
 import styles from './style.less';
 import {LeftOutlined, SaveOutlined, ExclamationCircleFilled} from "@ant-design/icons";
