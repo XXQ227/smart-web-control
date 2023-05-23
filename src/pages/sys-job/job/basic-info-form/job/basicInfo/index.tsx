@@ -4,7 +4,7 @@ import {Col, Row, Divider} from 'antd';
 import {getBranchID, getUserID} from '@/utils/auths';
 import {rowGrid} from '@/utils/units';
 import {stringify} from "qs";
-import styles from "@/pages/sys-job/job/basicInfoForm/style.less";
+import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 import SearchProFormSelect from '@/components/SearchProFormSelect'
 
 

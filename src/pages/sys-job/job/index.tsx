@@ -2,7 +2,7 @@ import React from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import {Tabs} from 'antd';
 import type { TabsProps } from 'antd';
-import BasicInfo from './basicInfoForm/job/basicInfo';
+import BasicInfo from './basic-info-form/job/basicInfo';
 import JobChargeInfo from './charge';
 
 const TicketForm: React.FC<RouteChildrenProps> = (props) => {

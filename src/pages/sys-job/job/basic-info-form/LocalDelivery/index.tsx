@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import BasicInfo from './basicInfo';
-import styles from "@/pages/sys-job/job/basicInfoForm/style.less";
+import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 import {Tabs} from "antd";
 import {ProCard} from "@ant-design/pro-components";
 

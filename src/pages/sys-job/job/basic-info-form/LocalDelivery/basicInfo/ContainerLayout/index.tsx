@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {ProCard, ProFormText, ProFormSwitch, ProFormDateTimePicker} from '@ant-design/pro-components';
 import {Col, Row, Form, Space, Button, Table, Popconfirm} from 'antd';
 import {getBranchID} from '@/utils/auths';
-import styles from "@/pages/sys-job/job/basicInfoForm/style.less";
+import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 import {PlusCircleOutlined, DeleteOutlined} from "@ant-design/icons";
 import type { ColumnsType } from 'antd/es/table';
 import SearchModal from "@/components/SearchModal";

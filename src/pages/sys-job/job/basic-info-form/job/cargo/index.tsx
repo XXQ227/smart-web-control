@@ -2,7 +2,7 @@ import React, {useEffect, useMemo, useState} from 'react';
 import {ProCard,  ProFormRadio, ProFormSelect, ProFormText, ProFormTextArea} from '@ant-design/pro-components';
 import {Col, Row, InputNumber, Select} from 'antd';
 import {rowGrid} from '@/utils/units';
-import styles from "@/pages/sys-job/job/basicInfoForm/style.less";
+import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 
 const { Option } = Select;
 interface Props {
