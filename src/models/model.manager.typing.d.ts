@@ -365,6 +365,26 @@ declare namespace APIManager {
         update_time?: string;
     };
 
+    type Department = {
+        id: number | string | null,
+        name: string,
+        parent_id: number | null,
+        level: number | null,
+        sort: number | null,
+        charge_person: string,
+        contact_phone: string,
+        address: string,
+        parent_ids: boolean,
+        delete_flag: boolean,
+        enable_flag: boolean,
+        create_user_id: number | null,
+        create_user_name: string,
+        create_time: string,
+        update_user_id: number | null,
+        update_user_name: string,
+        update_time: string,
+    }
+
     //endregion
 
     //region TODO:

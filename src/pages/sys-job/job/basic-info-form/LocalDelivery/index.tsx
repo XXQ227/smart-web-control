@@ -2,6 +2,8 @@ import React, {useEffect, useState, useRef} from 'react';
 import BasicInfo from './basicInfo';
 import styles from "@/pages/sys-job/job/basicInfoForm/style.less";
 import {Modal, Tabs} from "antd";
+import styles from "@/pages/sys-job/job/basic-info-form/style.less";
+import {Tabs} from "antd";
 import {ProCard} from "@ant-design/pro-components";
 import {ExclamationCircleFilled} from "@ant-design/icons";
 

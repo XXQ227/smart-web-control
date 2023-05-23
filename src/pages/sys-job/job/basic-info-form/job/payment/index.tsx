@@ -4,7 +4,7 @@ import {Col, Row, Space} from 'antd';
 import {rowGrid} from '@/utils/units';
 import SearchModal from '@/components/SearchModal';
 import SearchTable from '@/components/SearchTable';
-import styles from "@/pages/sys-job/job/basicInfoForm/style.less";
+import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 
 interface Props {
     formRef?: any,

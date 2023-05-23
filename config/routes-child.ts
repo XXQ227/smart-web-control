@@ -51,7 +51,7 @@ const job_route = {
                     name: 'job-info',
                     icon: 'icon-job-ship',
                     path: '/job/job/job-info/:id/:bizType4id',
-                    component: './sys-job/job/basicInfoForm',
+                    component: './sys-job/job/basic-info-form',
                 },
                 {
                     name: 'job-charge',

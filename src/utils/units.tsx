@@ -2,7 +2,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import {createFromIconfontCN} from '@ant-design/icons';
 import {Descriptions} from "antd";
-import styles from "@/pages/sys-job/job/basicInfoForm/style.less";
+import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 
 export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_nbioly1kbfa.js';
 
