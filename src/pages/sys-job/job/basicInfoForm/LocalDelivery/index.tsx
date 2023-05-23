@@ -1,14 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import BasicInfo from './basicInfo';
 import styles from "@/pages/sys-job/job/basicInfoForm/style.less";
-import {Tabs} from "antd";
+import {Modal, Tabs} from "antd";
 import {ProCard} from "@ant-design/pro-components";
+import {ExclamationCircleFilled} from "@ant-design/icons";
 
 // const FormItem = Form.Item;
 interface Props {
     CTNPlanList?: APIModel.ContainerList[],
     NBasicInfo: APIModel.NBasicInfo,
 }
+const { confirm } = Modal;
+type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const LocalDelivery: React.FC<Props> = (props) => {
     const {
@@ -48,6 +51,7 @@ const LocalDelivery: React.FC<Props> = (props) => {
             NBasicInfo={NBasicInfo}
             batchNo={key}
             data={data}
+            handleChangeLabel={(val: any) => handleChangeLabel(val)}
         />
     }
 
@@ -67,11 +71,13 @@ const LocalDelivery: React.FC<Props> = (props) => {
     ];
     const [tabList, setTabList] = useState(initialTabList);
     const [activeKey, setActiveKey] = useState(initialTabList[0].key);
+    const activeKeyRef = useRef(activeKey);
+    activeKeyRef.current = activeKey;
+    const newTabIndex = useRef(3);
 
     useEffect(() => {
 
     }, [])
-    //endregion
 
     const handleAddBatch = () => {
         const newBatch: APIModel.BatchData = {
@@ -87,22 +93,43 @@ const LocalDelivery: React.FC<Props> = (props) => {
             phone: '',
         };
 
-        const newKey = (tabList.length + 1).toString();
-
+        const newActiveKey = (newTabIndex.current++).toString()
         setTabList(prevTabList => [
             ...prevTabList,
             {
-                label: newKey,
-                key: newKey,
+                label: 'New Tab',
+                key: newActiveKey,
                 closable: true,
-                children: renderContent(newKey, newBatch),
+                children: renderContent(newActiveKey, newBatch),
             },
         ]);
-        setActiveKey(newKey);
+        setActiveKey(newActiveKey);
     };
 
     const handleTabChange = (key: string) => {
         setActiveKey(key);
+    };
+
+    const remove = (targetKey: TargetKey) => {
+        confirm({
+            title: `Are you sure delete this shipment 【${targetKey}】?`,
+            icon: <ExclamationCircleFilled />,
+            okText: 'Yes',
+            okType: 'danger',
+            cancelText: 'No',
+            onOk() {
+                const targetIndex = tabList.findIndex((pane) => pane.key === targetKey);
+                const newPanes = tabList.filter((tab) => tab.key !== targetKey);
+                if (newPanes.length && targetKey === activeKey) {
+                    const { key } = newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
+                    setActiveKey(key);
+                }
+                setTabList(newPanes);
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
     };
 
     const onEdit = (
@@ -110,13 +137,23 @@ const LocalDelivery: React.FC<Props> = (props) => {
         action: 'add' | 'remove',
     ) => {
         if (action === 'add') {
-            console.log('添加')
             handleAddBatch()
         } else {
-            // remove(targetKey);
-            setTabList(prevTabList => prevTabList.filter(tab => tab.key !== targetKey));
+            remove(targetKey);
+            // setTabList(prevTabList => prevTabList.filter(tab => tab.key !== targetKey));
         }
     };
+
+    function handleChangeLabel(value: any) {
+        setTabList(prevTabList => {
+            const updatedTabList = [...prevTabList];
+            const activeTab = updatedTabList.find(tab => tab.key === activeKeyRef.current);
+            if (activeTab) {
+                activeTab.label = value;
+            }
+            return updatedTabList;
+        });
+    }
 
     return (
         <ProCard

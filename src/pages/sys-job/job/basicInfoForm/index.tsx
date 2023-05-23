@@ -40,8 +40,6 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     }));
     //endregion
 
-
-
     /** 实例化Form */
     // const [form] = Form.useForm();
     const [activeKey, setActiveKey] = useState(initialTabList[0].key);
@@ -163,7 +161,6 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
             okType: 'danger',
             cancelText: 'No',
             onOk() {
-                console.log('OK');
                 const targetIndex = tabList.findIndex((pane) => pane.key === targetKey);
                 const newPanes = tabList.filter((pane) => pane.key !== targetKey);
                 if (newPanes.length && targetKey === activeKey) {

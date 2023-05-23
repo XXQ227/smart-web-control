@@ -17,6 +17,7 @@ interface Props {
     CTNPlanList?: APIModel.ContainerList[],
     PhotoRemarkList?: APIModel.PhotoRemarkList[],
     NBasicInfo: APIModel.NBasicInfo,
+    handleChangeLabel: (val: any) => void,   // 选中后，返回的结果
 }
 
 const { Option } = Select;
@@ -76,8 +77,12 @@ const BasicInfo: React.FC<Props> = (props) => {
         setPhotoRemarkList(newData);
     };
 
-    const handleChange = (value: string) => {
-        setIsContainer(value === "集装箱运输货车")
+    const handleChange = (fieldName: string, value: string) => {
+        if (fieldName === 'shipmentNo') {
+            if (props.handleChangeLabel) props.handleChangeLabel(value);
+        } else if (fieldName === 'TransportVehicleType') {
+            setIsContainer(value === "集装箱运输货车")
+        }
     };
 
     const columns: ColumnsType<APIModel.PhotoRemarkList> = [
@@ -151,6 +156,9 @@ const BasicInfo: React.FC<Props> = (props) => {
                         name={`shipmentNo${batchNo}`}
                         initialValue={data?.shipmentNo}
                         label="Shipment No."
+                        fieldProps={{
+                            onChange: (e) => handleChange('shipmentNo', e.target.value)
+                        }}
                     />
                     <label>G.W.</label>
                     <InputNumber
@@ -196,8 +204,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                             {label: '厢式货车 van', value: '厢式货车'},
                         ]}
                         fieldProps={{
-                            // onChange: (e) => handleChange(index, record.ID, 'Remark', e)
-                            onChange: handleChange,
+                            onChange: (e) => handleChange('TransportVehicleType', e)
                         }}
                     />
                     <div className={'proFormTextContainer'}>
