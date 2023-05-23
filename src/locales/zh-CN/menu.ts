@@ -63,9 +63,12 @@ export default {
   'menu.cargo.job.job-charge': 'Job Charge',
   'menu.manager': 'System',
   'menu.manager.cv_center': 'CV',
-  // TODO: 公司
+  // TODO: 经营单位公司
+  'menu.manager.branch_list': 'Branch - Index',
+  'menu.manager.branch_info': 'Branch - Information',
+  // TODO: 业务公司
   'menu.manager.cv_center.company_list': 'Company - Index',
-  'menu.manager.cv_center.company_info': 'Company - Index',
+  'menu.manager.cv_center.company_info': 'Company - Information',
   // TODO: 客户
   'menu.manager.cv_center.customer_list': 'Customer - Index',
   'menu.manager.cv_center.customer_info': 'Customer - Information',

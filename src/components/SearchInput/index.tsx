@@ -2,39 +2,11 @@ import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Select, Spin} from 'antd';
 import type {SelectProps} from 'antd/es/select';
 import {debounce} from 'lodash';
-import {stringify} from 'qs';
-import {getBranchID, getUserID} from '@/utils/auths'
+import {fetchData} from '@/utils/fetch-utils'
 
-
-/**
- * @Description: TODO: 远程获得数据。并重组后台返回的数据参数结构
- * @author XXQ
- * @date 2023/4/17
- * @param searchVal 搜索参数
- * @param url       后台接口地址
- * @param query     查询参数
- * @param qty       查询数量
- * @param resValue  返回结果的 【Key】 值
- * @param resLabel  返回结果的 【Value】 值
- * @returns
- */
-export async function fetchData(searchVal: any, url: string, query: any = {}, qty: number = 5, resValue: string, resLabel: string): Promise<API.APIValue$Label[]> {
-    const params = Object.assign({}, query, {value: searchVal, PageSize: qty});
-    const options: any = { headers: { Lang: 'en_EN', BranchID: getBranchID(), UserID: getUserID()} };
-    return fetch(`${url}?${stringify(params)}`, options)
-        .then(response => response.json())
-        .then((result) => {
-            // TODO: 返回结果
-            return result.map((item: any) => ({value: item[resValue], label: item[resLabel], data: item}));
-        })
-        .catch(e => {
-            console.log(e);
-        });
-}
 
 export interface DebounceSelectProps<ValueType = any>
     extends Omit<SelectProps<ValueType | ValueType[]>, 'options' | 'children'> {
-    fetchOptions: (search: string, url: string, query: any, qty: number, resValue: string, resLabel: string) => Promise<ValueType[]>;     // TODO: 异步获取数据
     debounceTimeout?: number;       // TODO: 防抖动时间；默认：1000
     fetchParams?: any;              // TODO: 查询参数
     handleChangeData?: (val: any, option?: any) => void,   // 选中后，返回的结果
@@ -42,9 +14,9 @@ export interface DebounceSelectProps<ValueType = any>
 
 function DebounceSelect<
     ValueType extends { key?: string | number; label: React.ReactNode; value: string | number } = any,
->({fetchOptions, debounceTimeout = 1000, fetchParams, handleChangeData, ...props}: DebounceSelectProps<ValueType>) {
+>({debounceTimeout = 1000, fetchParams, handleChangeData, ...props}: DebounceSelectProps<ValueType>) {
     const [fetching, setFetching] = useState(false);
-    const [options, setOptions] = useState<ValueType[]>([]);
+    const [options, setOptions] = useState<API.APIValue$Label[]>([]);
     const fetchRef = useRef(0);
     const {url, query, qty, resValue, resLabel} = fetchParams;
 
@@ -63,7 +35,7 @@ function DebounceSelect<
             // TODO: 初始数据，且做【loading】
             setOptions([]);
             setFetching(true);
-            fetchOptions(val, url, query, qty, resValue, resLabel).then(newOptions => {
+            fetchData(val, url, query, qty, resValue, resLabel).then((newOptions: API.APIValue$Label[]) => {
                 if (fetchId !== fetchRef.current) {
                     // for fetch callback order
                     return;
@@ -74,7 +46,7 @@ function DebounceSelect<
         };
         // TODO: 返回数据，做防抖动设置
         return debounce(loadOptions, debounceTimeout);
-    }, [debounceTimeout, fetchOptions, url, qty, query, resValue, resLabel]);
+    }, [debounceTimeout, url, qty, query, resValue, resLabel]);
 
 
     /**
@@ -163,7 +135,6 @@ const SearchInput: React.FC<Props> = (props) => {
             // 配置可搜索
             showSearch={true}
             disabled={!!disabled}
-            fetchOptions={fetchData}
             style={{width: '100%'}}
             dropdownMatchSelectWidth={false}
             fetchParams={{url, query, qty, resValue, resLabel}}

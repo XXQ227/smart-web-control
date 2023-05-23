@@ -1,0 +1,50 @@
+@import '~antd/lib/style/themes/default.less';
+
+.searchInput {
+    position: relative;
+}
+
+@keyframes SlideUp-In {
+    0% {
+        opacity         : 0;
+        transform-origin: 0% 0%;
+        transform       : scaleY(.8);
+    }
+
+    100% {
+        opacity         : 1;
+        transform-origin: 0% 0%;
+        transform       : scaleY(1);
+    }
+}
+
+@keyframes SlideUp-Out {
+    0% {
+        opacity         : 1;
+        transform-origin: 0% 0%;
+        transform       : scaleY(1);
+    }
+
+    100% {
+        opacity         : 0;
+        transform-origin: 0% 0%;
+        transform       : scaleY(.8);
+    }
+}
+
+.slide-up(@name) {
+    animation-name                   :~"SlideUp@{name}";
+    animation-duration               : 0.2s;
+    animation-fill-mode              : both;
+    animation-timing-function        : cubic-bezier(0.23, 1, 0.32, 1);
+    -webkit-animation-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.slide-up-in {
+    .slide-up(-In);
+    display: block;
+}
+
+.slide-up-out {
+    .slide-up(-Out);
+}

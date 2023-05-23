@@ -56,6 +56,10 @@ declare namespace APIManager {
         CTTypeItemListSupplier?: number | null,
         CTList?: any[],
         SCAC?: string,
+        city_id?: number,
+        city_name?: string,
+        parent_company_id?: number,
+        parent_company_name?: string,
     }
     // TODO: 行业
     type Industrys = {
@@ -257,7 +261,6 @@ declare namespace APIManager {
         Name: string,
     }
 
-
     type CGTempResult = {
         data: CGTemp[];
         /** 列表的内容总数 */
@@ -321,7 +324,47 @@ declare namespace APIManager {
 
     //endregion
 
-    //region TODO:
+    //region TODO: Branch
+    type SearchBranchParams = {
+        UserID: number,
+        Name: string,
+    }
+    type BranchResult = {
+        data: Branch[];
+        /** 列表的内容总数 */
+        total: number | null;
+        /** 返回结果 */
+        success?: boolean;
+    };
+    type Branch = {
+        /** 列表的内容总数 */
+        id: number | null;
+        /** 返回结果 */
+        contact_name?: string;
+        phone?: string;
+        address?: string;
+        city_name?: string;
+        code?: string;
+        default_port_id?: number | null;
+        func_currency_name?: string;
+        name_full_en?: string;
+        name_full_local?: string;
+        name_short_en?: string;
+        name_short_local?: string;
+        org_id?: number | null;
+        org_create_id?: number | null;
+        tax_num?: string;
+        bank_account_ids?: string;
+        enable_flag?: string;
+        delete_flag?: string;
+        create_user_id?: number | null;
+        create_user_name?: string;
+        create_time?: string;
+        update_user_id?: number | null;
+        update_user_name?: string;
+        update_time?: string;
+    };
+
     //endregion
 
     //region TODO:
