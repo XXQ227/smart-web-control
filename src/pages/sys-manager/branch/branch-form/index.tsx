@@ -13,11 +13,10 @@ import {
 import {Button, Col, Form, Popover, Row, Space, Radio} from 'antd'
 import {getUserID} from '@/utils/auths'
 import {useModel, history} from 'umi'
-import SearchInput from '@/components/SearchInput'
 import {message} from 'antd/es'
 
-type APICVInfo = APIManager.CVInfo;
-const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
+type APIBranch = APIManager.Branch;
+const BranchForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}} = props;
     const {location: {pathname}} = history;
@@ -26,15 +25,15 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
     const {current} = formRef;
     //region TODO: 数据层
     const {
-        getGetCTPByID, CVInfo, IndustryList, CustomerPropertyList, uploadCTCenter
-    } = useModel('manager.cv-center', (res: any) => ({
-        CVInfo: res.CVInfo,
-        getGetCTPByID: res.getGetCTPByID,
+        getBranchInfo, BranchInfo, IndustryList, CustomerPropertyList, uploadCTCenter
+    } = useModel('manager.branch', (res: any) => ({
+        BranchInfo: res.BranchInfo,
+        getBranchInfo: res.getBranchInfo,
         IndustryList: res.IndustryList,
         CustomerPropertyList: res.CustomerPropertyList,
         uploadCTCenter: res.uploadCTCenter,
     }));
-    const [CVInfoVO, setCVInfoVO] = useState<APICVInfo>(CVInfo);
+    const [BranchInfoVO, setBranchInfoVO] = useState<APIBranch>(BranchInfo);
     const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
     const [CTCenterType, setCTCenterType] = useState<number | null>(null);
 
@@ -51,9 +50,9 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
      * @date 2023/5/5
      * @returns
      */
-    const handleGetCTPByID = async () => {
-        const result: any = await getGetCTPByID({UserID: getUserID(), CTPID: Number(atob(params?.id))});
-        setCVInfoVO(result);
+    const handleGetBranchInfo = async () => {
+        const result: any = await getBranchInfo({ID: Number(atob(params?.id))});
+        setBranchInfoVO(result);
         return result;
     }
 
@@ -116,7 +115,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                 // TODO: 焦点给到第一个控件
                 autoFocusFirstInput
                 // TODO: 设置默认值
-                initialValues={CVInfoVO}
+                initialValues={BranchInfoVO}
                 formKey={'cv-center-information'}
                 // TODO: 空间有改数据时触动
                 onValuesChange={handleProFormValueChange}
@@ -125,22 +124,12 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                     console.log(values);
                 }}
                 // TODO: 向后台请求数据
-                request={async () => handleGetCTPByID()}
+                request={async () => handleGetBranchInfo()}
             >
                 <ProCard title={'Name & Code'} className={'ant-card'}>
                     {/** // TODO: CV Name、CV Name (For Print)、Short Name、CV Identity */}
                     <Row gutter={24}>
-                        <Col span={7}>
-                            <ProFormText
-                                required
-                                name='name_full'
-                                placeholder=''
-                                tooltip='length: 100'
-                                label='Company'
-                                rules={[{required: true, message: 'is required'}]}
-                            />
-                        </Col>
-                        <Col span={7}>
+                        <Col span={6}>
                             <ProFormText
                                 required
                                 name='name_full_en'
@@ -150,25 +139,42 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                                 rules={[{required: true, message: 'is required'}]}
                             />
                         </Col>
+                        <Col span={6}>
+                            <ProFormText
+                                required
+                                name='name_full_local'
+                                placeholder=''
+                                tooltip='length: 100'
+                                label='Company'
+                                rules={[{required: true, message: 'is required'}]}
+                            />
+                        </Col>
                         <Col span={4}>
                             <ProFormText
                                 required
-                                name='tax_num'
+                                name='name_short_en'
                                 placeholder=''
                                 label='Tax Num'
                                 tooltip='length: 30'
                             />
                         </Col>
-                        <Col span={6}>
-                            <Form.Item label={'Affiliated Group'} name={'parent_company_id'}>
-                                <SearchInput
-                                    qty={5}
-                                    id={'parent_company_id'}
-                                    url={'/api/MCommon/GetCountryByKey'}
-                                    valueObj={{value: CVInfoVO.parent_company_id, label: CVInfoVO.parent_company_name}}
-                                    handleChangeData={(val: any) => handleChange('city_id', val)}
-                                />
-                            </Form.Item>
+                        <Col span={4}>
+                            <ProFormText
+                                required
+                                name='name_short_local'
+                                placeholder=''
+                                label='Tax Num'
+                                tooltip='length: 30'
+                            />
+                        </Col>
+                        <Col span={4}>
+                            <ProFormText
+                                required
+                                name='org_id'
+                                placeholder=''
+                                label='Tax Num'
+                                tooltip='length: 30'
+                            />
                         </Col>
                         <Col span={24}>
                             <ProFormTextArea name='Address' placeholder='' label='address'/>
@@ -177,17 +183,6 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                     <Row>
                         <Col span={4}>
                             <ProFormTextArea name='legal_entity' placeholder='' label='Legal Entity'/>
-                        </Col>
-                        <Col span={4}>
-                            <Form.Item label={'City'} name={'city_id'}>
-                                <SearchInput
-                                    qty={5}
-                                    id={'city_id'}
-                                    url={'/api/MCommon/GetCountryByKey'}
-                                    valueObj={{value: CVInfoVO.city_id, label: CVInfoVO.city_name}}
-                                    handleChangeData={(val: any) => handleChange('city_id', val)}
-                                />
-                            </Form.Item>
                         </Col>
                     </Row>
 
@@ -332,4 +327,4 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
         </PageContainer>
     )
 }
-export default CVCenterForm;
+export default BranchForm;

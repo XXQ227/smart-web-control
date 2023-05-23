@@ -6,7 +6,7 @@ import {Button,} from 'antd';
 import {useModel} from 'umi';
 import {getUserID} from '@/utils/auths';
 import {history} from '@@/core/history'
-import {EditOutlined} from '@ant-design/icons'
+import {EditOutlined, PlusOutlined} from '@ant-design/icons'
 
 type APICVInfo = APIManager.CVInfo;
 type APICVSearchParams = APIManager.CVSearchParams;
@@ -66,11 +66,12 @@ const CVCenterList: React.FC<RouteChildrenProps> = () => {
      */
     const handleOperateJob = (record: any) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        const url = `/manager/cv-center/customer/form/${btoa(record?.CTPID)}`;
+        const url = `/manager/cv-center/customer/form/${btoa(record?.CTPID || 0)}`;
         // TODO: 跳转页面<带参数>
         // @ts-ignore
         history.push({pathname: url})
     }
+
 
     const columns: ProColumns<APICVInfo>[] = [
         {
@@ -82,8 +83,8 @@ const CVCenterList: React.FC<RouteChildrenProps> = () => {
         },
         {
             title: 'CV Identity',
-            dataIndex: 'InternalCompanyCode',
-            width: 100,
+            dataIndex: 'TaxCode',
+            width: 180,
             disable: true,
             align: 'center',
         },
@@ -143,6 +144,11 @@ const CVCenterList: React.FC<RouteChildrenProps> = () => {
             header={{
                 breadcrumb: {},
             }}
+            extra={
+                <Button key={'add'} onClick={handleOperateJob} type={'primary'} icon={<PlusOutlined/>}>
+                    Add Customer
+                </Button>
+            }
         >
             <ProCard className={'ant-card ant-card-pro-table'}>
                 <ProTable<APICVInfo>

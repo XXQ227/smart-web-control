@@ -16,7 +16,7 @@ const Settings: LayoutSettings & {
   // 为了体验良好最好给每个一级菜单都设置一个重定向,这样可以防止切换到白屏页面。
   splitMenus: true,
   colorWeak: false,
-  title: 'EHK',
+  title: 'Smart HK',
   pwa: false,
   // pure: true,
   logo: '/logo.png',
