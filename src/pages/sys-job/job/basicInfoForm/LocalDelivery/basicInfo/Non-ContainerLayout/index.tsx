@@ -1,7 +1,7 @@
 import React from 'react';
 import {ProCard, ProFormText, ProFormDateTimePicker} from '@ant-design/pro-components';
 import {Col, Row, Space, Divider} from 'antd';
-import styles from "@/pages/sys-job/job/basicInfoForm/style.less";
+import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 import {rowGrid} from "@/utils/units";
 
 interface Props {
