@@ -8,8 +8,7 @@ import {fetchData} from '@/utils/fetch-utils'
 interface Props {
     id: any,
     name: string,
-    value?: any,
-    label?: any,
+    title?: any,
     valueObj?: any,
     disabled?: boolean,
     filedValue?: string,    // 用于显示返回结果 【value】 的返回参数
@@ -26,9 +25,9 @@ interface Props {
 let isSearch: number = 0;
 
 const SearchProFormSelect: React.FC<Props> = (props) => {
-    const {label, url, qty, query, disabled, filedValue, filedLabel, required, placeholder} = props;
+    const {title, url, qty, query, disabled, filedValue, filedLabel, required, placeholder} = props;
     // 设置是否是编辑
-    const [value, setValue] = useState<API.APIValue$Label>(props.valueObj || {});
+    const [userInput, setUserInput] = useState<API.APIValue$Label>(props.valueObj || {});
     // const [isSearch, setIsSearch] = useState<boolean>(false);
 
     // TODO: 返回结果的数据结构；默认 {Key: number, Value: string}，当有其他返回键值对时，在组件调用时定义
@@ -40,10 +39,10 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
     useEffect(()=> {
         // TODO: 1、当 value 有值且 props 没有值 时, 清空当前空间数据
         // TODO: 2、当 value 没有值 且 props 有值时, 当前是录入状态
-        if ((value?.value && !(props.valueObj?.value)) || !(value?.value) && props.valueObj?.value) {
-            setValue(props.valueObj);
+        if ((userInput?.value && !(props.valueObj?.value)) || !(userInput?.value) && props.valueObj?.value) {
+            setUserInput(props.valueObj);
         }
-    }, [props.valueObj, value])
+    }, [props.valueObj, userInput])
 
     /**
      * @Description: TODO: onChange、onSelect 方法，选中后返回结果
@@ -54,7 +53,7 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
      * @returns
      */
     const handleChange = (val: any, option?: any) => {
-        setValue(val);//setIsSearch(false);
+        setUserInput(val);//setIsSearch(false);
         isSearch = 2;
         if (props.handleChangeData) props.handleChangeData(val, option);
     }
@@ -63,19 +62,19 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
         <ProFormSelect
             width="lg"
             showSearch
-            label={label}
+            label={title}
             name={props.name}
             required={required}
             debounceTime={1000}
             disabled={disabled}
-            initialValue={value}
+            initialValue={userInput}
             className={styles.mySelect}
             placeholder={placeholder || ""}
             fieldProps={{
                 onSelect: handleChange,
                 onSearch: ()=> {
                     // TODO: isSearch === 0：变成搜索
-                    if(isSearch === 0) {
+                    if (isSearch === 0) {
                         isSearch = 1;
                     }
                     // TODO: isSearch === 2：结束搜索
@@ -84,7 +83,7 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
                     }
                 },
             }}
-            rules={[{ required: true, message: label }]}
+            rules={[{ required: true, message: title }]}
             // @ts-ignore
             request={(val: any) => {
                 // TODO: isSearch === 1：可搜索
@@ -94,9 +93,6 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
                     return [];
                 }
             }}
-            // suffix={<IconFont key={1} type={'icon-create'} className="iconfont icon-your-icon-name" />}
-            // suffixIcon={<IconFont key={1} type={'icon-create'} className="iconfont icon-your-icon-name" />}
-            // suffixIcon={<IconFont key={1} type={'icon-create'} className="iconfont icon-your-icon-name" />}
         />
     )
 };

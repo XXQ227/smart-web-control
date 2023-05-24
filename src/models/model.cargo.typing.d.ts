@@ -136,6 +136,7 @@ declare namespace APIModel {
         PayCGList?: PRCGInfo[],
         ReceiveCGList?: PRCGInfo[],
         CTNPlanList?: ContainerList[],
+        HouseBill?: HouseBill,
     }
 
     type AccountPeriodInfo = {
@@ -157,6 +158,7 @@ declare namespace APIModel {
         OceanTransportTypeID: number,
         BizRemark: string,
         Principal?: Principal,
+        Carrier?: Carrier,
         Terms?: Terms,
     }
     type CargoInfo = {
@@ -187,6 +189,26 @@ declare namespace APIModel {
         POLID?: number,
         POLName?: string,
     }
+    type Carrier = {
+        MBOLNum?: string,
+        HBOLNum?: string,
+        BookingAgentID?: number,
+        BookingAgentName?: string,
+        PODAgentID?: number,
+        PODAgentName?: string,
+        FreighterID?: number,
+        FreighterName?: string,
+        VesselName?: string,
+        VoyageNum?: string,
+        ContactNum?: string,
+        Terminal?: string,
+        ETD?: string,
+        ATD?: string,
+        ETAPOD?: string,
+        CutCustoms?: string,
+        CutVGM?: string,
+        CutSingle?: string,
+    }
     type Terms = {
         IncotermsID: number,
         ServiceTypeID: number,
@@ -215,6 +237,13 @@ declare namespace APIModel {
         IsSOC: boolean,
         Owner: string,
         Remark: string,
+    }
+    type HouseBill = {
+        SignMethodID?: number,
+        SignBillQTY?: number,
+        IssuePlaceID?: number,
+        IssuePlaceName?: string,
+        IssueDate?: string,
     }
     type PhotoRemarkList = {
         ID: any,

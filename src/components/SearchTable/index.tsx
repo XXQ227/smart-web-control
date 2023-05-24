@@ -1,9 +1,8 @@
 import React, {Fragment, useEffect, useMemo, useState} from 'react';
 import {Input, Modal, Table} from 'antd';
 import {debounce} from 'lodash'
-import {fetchData} from '@/components/SearchInput'
+import {fetchData} from '@/utils/fetch-utils'
 import { IconFont } from '@/utils/units';
-
 
 interface Props {
     id: string,
