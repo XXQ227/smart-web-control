@@ -3,7 +3,7 @@ import {Button, Col, Popconfirm, Row, Space, Table} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import {DeleteOutlined, PlusOutlined} from '@ant-design/icons';
 import {getBranchID, getFuncCurrency, getUserID} from '@/utils/auths';
-import {formatNumToMoney, keepDecimal} from '@/utils/units';
+import {formatNumToMoney, ID_STRING, keepDecimal} from '@/utils/units';
 import InputEdit from '@/components/InputNumberEdit'
 import SearchModal from '@/components/SearchModal';
 import {ProFormSelect} from '@ant-design/pro-components'
@@ -185,7 +185,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
      */
     const handleAdd = () => {
         const currLocalObj: APIValue$Label | undefined = CurrencyList?.find((x: APIValue$Label) => x.value === getFuncCurrency());
-        const CGID = Date.now().toString();
+        const CGID = ID_STRING;
         const newDataObj: APICGTempItems = {
             ID: CGID,
             SettlementID: null,

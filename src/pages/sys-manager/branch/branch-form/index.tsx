@@ -12,6 +12,10 @@ import {
 import {Button, Col, Form, Row, Space} from 'antd'
 import {useModel, history} from 'umi'
 import DepartmentForm from '@/pages/sys-manager/branch/branch-form/department'
+import {PlusOutlined} from '@ant-design/icons'
+import ls from 'lodash'
+import {getUserID} from '@/utils/auths'
+import {ID_STRING} from '@/utils/units'
 
 type APIBranch = APIManager.Branch;
 type APIDepartment = APIManager.Department;
@@ -50,6 +54,34 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
         const result: any = await getBranchInfo({ID: Number(atob(params?.id))});
         setBranchInfoVO(result);
         return result;
+    }
+
+    /**
+     * @Description: TODO: 添加部门
+     * @author XXQ
+     * @date 2023/5/24
+     * @param
+     * @returns
+     */
+    const handleAddDept = () => {
+        const newData: APIDepartment[] = ls.cloneDeep(DepartmentListVO);
+        const deptObj: APIDepartment = {
+            id: ID_STRING,
+            name: '',
+            parent_id: null,
+            level: null,
+            sort: null,
+            charge_person: '',
+            contact_phone: '',
+            address: '',
+            parent_ids: '',
+            delete_flag: false,
+            enable_flag: true,
+            create_user_id: getUserID(),
+            update_user_id: getUserID(),
+        }
+        newData.push(deptObj);
+        setDepartmentListVO(newData);
     }
 
     /**
@@ -167,7 +199,14 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                     </Row>
                 </ProCard>
 
-                <ProCard title={'Department'} className={'ant-card ant-card-pro-table'}>
+                <ProCard
+                    title={'Department'} className={'ant-card ant-card-pro-table'}
+                    extra={
+                        <Button onClick={handleAddDept} type={'primary'} icon={<PlusOutlined/>}>
+                            Add Department
+                        </Button>
+                }
+                >
                     <Row gutter={24}>
                         <Col span={24}>
                             <DepartmentForm

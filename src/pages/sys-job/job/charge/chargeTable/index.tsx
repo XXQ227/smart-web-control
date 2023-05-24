@@ -4,7 +4,7 @@ import type {ColumnsType} from 'antd/es/table';
 import {PlusOutlined} from '@ant-design/icons';
 import {useModel} from 'umi';
 import {getBranchID, getFuncCurrency, getUserID} from '@/utils/auths';
-import {formatNumToMoney, keepDecimal} from '@/utils/units';
+import {formatNumToMoney, ID_STRING, keepDecimal} from '@/utils/units';
 import InputEdit from '@/components/InputNumberEdit'
 import {CHARGE_STATE_ENUM} from '@/utils/enum'
 import {stringify} from 'querystring';
@@ -244,7 +244,7 @@ const ChargeTable: React.FC<Props> = (props) => {
      */
     const handleAdd = () => {
         const currLocalObj: APICurrency = CurrencyOpts?.find((x: APICurrency) => x.Currency === getFuncCurrency()) || {};
-        const CGID = Date.now().toString();
+        const CGID = ID_STRING;
         const newDataObj: APICGInfo = {
             CGID,
             CTID: null,

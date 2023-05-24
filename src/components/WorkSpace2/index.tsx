@@ -4,6 +4,7 @@ import type {ActionType, ProColumns} from '@ant-design/pro-components';
 import { EditableProTable,} from '@ant-design/pro-components';
 import { Form, Layout, Modal, Popconfirm } from 'antd';
 import ls from 'lodash';
+import {ID_STRING} from '@/utils/units'
 
 const {Header,} = Layout;
 
@@ -173,7 +174,7 @@ const RightHeaderTags: React.FC<Props> = (props) => {
                         // 样式设置
                         style: {top: -95},
                         // 每次新增的时候需要Key
-                        record: () => ({ id: Date.now().toString() }),
+                        record: () => ({ id: ID_STRING }),
                     }}
                     // 请求后台获取数据
                     request={async () => ({

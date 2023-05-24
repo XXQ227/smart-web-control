@@ -6,7 +6,7 @@ import {useModel} from 'umi';
 import {DeleteOutlined, PlusOutlined} from '@ant-design/icons'
 import {Button, Divider, Form, Input, message, Popconfirm, Select} from 'antd'
 import {getUserID} from '@/utils/auths'
-import {CustomizeIcon, getFormErrorMsg} from '@/utils/units'
+import {CustomizeIcon, getFormErrorMsg, ID_STRING} from '@/utils/units'
 import SearchModal from '@/components/SearchModal'
 
 const {Search} = Input;
@@ -73,7 +73,7 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
      */
     const handleAddCGItem = () => {
         const newData: APICGItem[] = CGItemListVO?.map((item: APICGItem) => ({...item})) || [];
-        const rowKey = Date.now().toString();
+        const rowKey = ID_STRING;
         newData.splice(0, 0, {
             CargoCGItemID: rowKey,
             ID: rowKey,

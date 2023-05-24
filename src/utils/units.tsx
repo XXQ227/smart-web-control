@@ -14,6 +14,9 @@ export const CustomizeIcon = createFromIconfontCN({
 export const LOCAL_LANGUAGE = false;
 // export const LOCAL_LANGUAGE = navigator.language === 'en-US';
 
+// TODO: 定义字符串 id <时间戳字符串>
+export const ID_STRING = Date.now().toString();
+
 // TODO: 栅格布局
 export const rowGrid = { xs: 8, sm: 16, md: 24, lg: 32 };
 export const colGrid = { span: 6, xs: 8, md: 8, lg: 6, xl: 6, xxl: 4 };
