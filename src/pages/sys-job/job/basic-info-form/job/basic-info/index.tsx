@@ -67,7 +67,6 @@ const BasicInfo: React.FC<Props> = (props) => {
         <ProCard
             title={title}
             bordered={true}
-            className={styles.proFormBasicInfo}
             headerBordered
             collapsible
         >
@@ -182,9 +181,10 @@ const BasicInfo: React.FC<Props> = (props) => {
                 </Col>*/}
                 <Col xs={24} sm={24} md={15} lg={15} xl={9} xxl={5}>
                     <SearchProFormSelect
+                        width={"lg"}
                         qty={5}
                         required={true}
-                        label="Customer"
+                        title="Customer"
                         id={'CustomerID'}
                         name={'CustomerID'}
                         url={'/api/MCommon/GetCTNameByStrOrType'}

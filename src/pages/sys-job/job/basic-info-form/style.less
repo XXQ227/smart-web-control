@@ -98,19 +98,7 @@
     }
   }
 
-  //region TODO: BasicInfo表单样式
-  .proFormBasicInfo {
-
-  }
-  //endregion TODO: BasicInfo表单样式
-
-  //region TODO: Cargo表单样式
-  .proFormCargo {
-
-  }
-  //endregion TODO: Cargo表单样式
-
-  //region TODO: Payment表单样式
+  //region TODO: Job Payment表单样式
   .proFormPayment {
     .siteSpace {
       display: inline-flex !important;
@@ -128,8 +116,34 @@
 
     }
   }
-  //endregion TODO: Payment表单样式
+  //endregion TODO: Job Payment表单样式
 
+  //region TODO: Sea (Export) Basic表单样式
+  .seaExportBasic {
+    .completeDate label {
+      font-weight: bold;
+      color: rgb(211, 158, 89) !important;;
+    }
+
+    .siteSpace {
+      display: inline-flex !important;
+      gap: 0 !important;
+
+      :global {
+        .ant-picker {
+          border: 1px dashed rgb(151, 157, 155);
+        }
+      }
+
+      .siteSpaceSpan {
+        margin-bottom: 18px;
+        display: inline-block;
+        border-top: #797979 dashed 1px;
+        width: 30px;
+      }
+    }
+  }
+  //endregion TODO: Sea (Export) Basic表单样式
 
   //region TODO: Local Delivery样式
   .localDelivery {

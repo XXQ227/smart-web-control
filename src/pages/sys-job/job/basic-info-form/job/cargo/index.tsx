@@ -45,7 +45,6 @@ const Cargo: React.FC<Props> = (props) => {
         <ProCard
             title={title}
             bordered={true}
-            className={styles.proFormCargo}
             headerBordered
             collapsible
         >

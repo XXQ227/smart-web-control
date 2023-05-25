@@ -2,7 +2,7 @@ import React, {Fragment, useEffect, useMemo, useState} from 'react';
 import {Input, Modal, Table} from 'antd';
 import {debounce} from 'lodash'
 import { IconFont } from '@/utils/units';
-import {fetchData} from '@/utils/fetch-utils'
+import { fetchData } from '@/utils/fetch-utils'
 interface Props {
     id: string,
     value?: any,             // ID 数据 / 其他字符
