@@ -8,6 +8,7 @@ import {fetchData} from '@/utils/fetch-utils'
 interface Props {
     id: any,
     name: string,
+    width?: any,
     title?: any,
     valueObj?: any,
     disabled?: boolean,
@@ -60,7 +61,7 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
 
     return (
         <ProFormSelect
-            width="lg"
+            width={props.width}
             showSearch
             label={title}
             name={props.name}

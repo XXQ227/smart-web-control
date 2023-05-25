@@ -140,7 +140,6 @@ const LocalDelivery: React.FC<Props> = (props) => {
             handleAddBatch()
         } else {
             remove(targetKey);
-            // setTabList(prevTabList => prevTabList.filter(tab => tab.key !== targetKey));
         }
     };
 

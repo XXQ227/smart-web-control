@@ -5,6 +5,7 @@ import {FooterToolbar, PageContainer, ProForm} from '@ant-design/pro-components'
 import {Button, message, Modal} from 'antd';
 import {getUserID} from '@/utils/auths';
 import Job from './job';
+import SeaExport from './sea-export';
 import SeaImport from './sea-import';
 import LocalDelivery from './local-delivery';
 import {HeaderInfo} from '@/utils/units'
@@ -22,6 +23,7 @@ type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 // 动态生成标签页信息
 const initialTabList = [
     { tab: 'Job', key: 'Job', closable: false },
+    { tab: 'Sea (Export)', key: 'Sea (Export)', closable: false },
     { tab: 'Local Delivery', key: 'Local Delivery', closable: false },
 ];
 
@@ -31,7 +33,7 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     //region TODO: 数据层
     const {
         CommonBasicInfo: {SalesManList, FinanceDates},
-        CJobInfo, CJobInfo: {NBasicInfo, NBasicInfo: {Principal}, LockDate, CTNPlanList},
+        CJobInfo, CJobInfo: {NBasicInfo, NBasicInfo: {Principal, Carrier}, LockDate, CTNPlanList, HouseBill},
         getCJobInfoByID
     } = useModel('job.job', (res: any) => ({
         CJobInfo: res.CJobInfo,
@@ -235,6 +237,13 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
                             CJobInfo={CJobInfo}
                             SalesManList={SalesManList}
                             FinanceDates={FinanceDates}
+                        />
+                    )}
+
+                    {activeKey === 'Sea (Export)' && (
+                        <SeaExport
+                            Carrier={Carrier}
+                            HouseBill={HouseBill}
                         />
                     )}
 
