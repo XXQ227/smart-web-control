@@ -277,7 +277,7 @@ const manager_route = {
         // TODO: 用户
         {
             name: 'user_list',
-            icon: 'icon-department-manager',
+            icon: 'icon-user-manager',
             path: '/manager/user/list',
             component: './sys-manager/user/user-list',
         },

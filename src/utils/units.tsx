@@ -4,7 +4,7 @@ import {createFromIconfontCN} from '@ant-design/icons';
 import {Descriptions} from "antd";
 import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 
-export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_0wm7e31kyjr.js';
+export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_hlb3viqqr4q.js';
 
 // TODO: 自定义图标使用 【For Example: <CustomizeIcon type={'icon-create'} />】
 export const CustomizeIcon = createFromIconfontCN({
