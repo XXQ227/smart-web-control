@@ -42,9 +42,9 @@ const Login: React.FC = () => {
         try {
             // 登录
             values.SystemID = 1;
-            const result = await users.login(values) || {Result: false};
+            const result: any = await users.login(values);
             // 登录成功
-            if (result.Result) {
+            if (result?.Result) {
                 message.success(intl.formatMessage({id: 'pages.login.success', defaultMessage: '登录成功！'}));
                 setStatus('');
 

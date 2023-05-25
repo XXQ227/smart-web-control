@@ -1,24 +1,20 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
-import type {ProFormInstance, ProColumns} from '@ant-design/pro-components';
+import type {ProFormInstance} from '@ant-design/pro-components';
 import {
     FooterToolbar,
     PageContainer,
     ProCard,
-    ProForm,
+    ProForm, ProFormSwitch,
     ProFormText,
-    ProFormTextArea, ProTable
+    ProFormTextArea
 } from '@ant-design/pro-components'
-import {Button, Col, Form, Row, Space} from 'antd'
+import {Button, Col, Form, message, Row, Space} from 'antd'
 import {useModel, history} from 'umi'
-import DepartmentForm from '@/pages/sys-manager/branch/branch-form/department'
-import {PlusOutlined} from '@ant-design/icons'
-import ls from 'lodash'
-import {getUserID} from '@/utils/auths'
-import {ID_STRING} from '@/utils/units'
+import {getFormErrorMsg} from '@/utils/units'
+
 
 type APIBranch = APIManager.Branch;
-type APIDepartment = APIManager.Department;
 const BranchForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}} = props;
@@ -34,14 +30,13 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
     }));
 
     const [BranchInfoVO, setBranchInfoVO] = useState<APIBranch>(BranchInfo);
-    const [DepartmentListVO, setDepartmentListVO] = useState<APIDepartment[]>(BranchInfo.DepartmentList || []);
     const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
 
 
     //endregion
 
-    useEffect(() => {
-    }, [])
+    // useEffect(() => {
+    // }, [])
 
 
     /**
@@ -57,34 +52,6 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
     }
 
     /**
-     * @Description: TODO: 添加部门
-     * @author XXQ
-     * @date 2023/5/24
-     * @param
-     * @returns
-     */
-    const handleAddDept = () => {
-        const newData: APIDepartment[] = ls.cloneDeep(DepartmentListVO);
-        const deptObj: APIDepartment = {
-            id: ID_STRING,
-            name: '',
-            parent_id: null,
-            level: null,
-            sort: null,
-            charge_person: '',
-            contact_phone: '',
-            address: '',
-            parent_ids: '',
-            delete_flag: false,
-            enable_flag: true,
-            create_user_id: getUserID(),
-            update_user_id: getUserID(),
-        }
-        newData.push(deptObj);
-        setDepartmentListVO(newData);
-    }
-
-    /**
      * @Description: TODO: 当 ProForm 表单修改时，调用此方法
      * @author XXQ
      * @date 2023/5/8
@@ -96,12 +63,32 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
         if (!isChangeValue) {
             setIsChangeValue(true);
         }
-        Object.keys(changeValues).map((item: any) => {
-            const setFieldVal: any = {};
-            current?.setFieldsValue(setFieldVal);
-        })
+        current?.getFieldValue('');
     }
 
+    /**
+     * @Description: TODO: 保存数据
+     * @author XXQ
+     * @date 2023/5/24
+     * @param val
+     * @returns
+     */
+    const onFinish = async (val: any) => {
+        console.log(val);
+    }
+
+    /**
+     * @Description: TODO: 验证错误信息
+     * @author XXQ
+     * @date 2023/5/24
+     * @param val
+     * @returns
+     */
+    const onFinishFailed = (val: any) => {
+        console.log(val);
+        const errInfo = getFormErrorMsg(val);
+        message.error(errInfo);
+    }
 
     //region TODO:
     //endregion
@@ -126,9 +113,8 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                 // TODO: 空间有改数据时触动
                 onValuesChange={handleProFormValueChange}
                 // TODO: 提交数据
-                onFinish={async (values) => {
-                    console.log(values);
-                }}
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
                 // TODO: 向后台请求数据
                 // request={async () => handleGetBranchInfo()}
             >
@@ -141,18 +127,18 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                                 name='name_full_en'
                                 placeholder=''
                                 tooltip='length: 100'
-                                label='Company'
-                                rules={[{required: true, message: 'is required'}]}
+                                label='Name'
+                                rules={[{required: true, message: 'Name'}]}
                             />
                         </Col>
                         <Col span={8}>
                             <ProFormText
                                 required
-                                name='name_full_local'
                                 placeholder=''
+                                label='Name Local'
                                 tooltip='length: 100'
-                                label='Company'
-                                rules={[{required: true, message: 'is required'}]}
+                                name='name_full_local'
+                                rules={[{required: true, message: 'Name Local'}]}
                             />
                         </Col>
                         <Col span={6}>
@@ -162,15 +148,18 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                                 placeholder=''
                                 label='Tax Num'
                                 tooltip='length: 30'
+                                rules={[{required: true, message: 'Tax Num'}]}
                             />
                         </Col>
                         <Col span={2}>
-                            <ProFormText
-                                required
-                                name='enable_flag'
+                            <ProFormSwitch
                                 placeholder=''
                                 label='Freezen'
-                                // tooltip='length: 30'
+                                name='enable_flag'
+                                fieldProps={{
+                                    checkedChildren: 'Yes',
+                                    unCheckedChildren: 'No',
+                                }}
                             />
                         </Col>
                     </Row>
@@ -178,10 +167,11 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                         <Col span={4}>
                             <ProFormText
                                 required
-                                name='org_create_id'
                                 placeholder=''
                                 label='AUC Num'
                                 tooltip='length: 30'
+                                name='org_create_id'
+                                rules={[{required: true, message: 'AUC Num'}]}
                             />
                         </Col>
                         <Col span={4}>
@@ -191,27 +181,11 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                                 placeholder=''
                                 label='Oracle ID'
                                 tooltip='length: 30'
+                                rules={[{required: true, message: 'Oracle ID'}]}
                             />
                         </Col>
                         <Col span={24}>
                             <ProFormTextArea name='Address' placeholder='' label='address'/>
-                        </Col>
-                    </Row>
-                </ProCard>
-
-                <ProCard
-                    title={'Department'} className={'ant-card ant-card-pro-table'}
-                    extra={
-                        <Button onClick={handleAddDept} type={'primary'} icon={<PlusOutlined/>}>
-                            Add Department
-                        </Button>
-                }
-                >
-                    <Row gutter={24}>
-                        <Col span={24}>
-                            <DepartmentForm
-                                DepartmentList={DepartmentListVO}
-                            />
                         </Col>
                     </Row>
                 </ProCard>

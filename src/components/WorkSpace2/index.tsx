@@ -174,7 +174,7 @@ const RightHeaderTags: React.FC<Props> = (props) => {
                         // 样式设置
                         style: {top: -95},
                         // 每次新增的时候需要Key
-                        record: () => ({ id: ID_STRING }),
+                        record: () => ({ id: ID_STRING() }),
                     }}
                     // 请求后台获取数据
                     request={async () => ({

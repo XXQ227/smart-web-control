@@ -48,7 +48,7 @@ export default (callback: T, deps: React.DependencyList) => {
      * @returns
      */
     const login = useCallback(async (params: API.LoginParams) => {
-        const response: API.APIResult = await loginSmart(params);
+        const response: API.APILoginResult = await loginSmart(params);
         if (!response) return;
         setResResult(response);
         if (response.Result) {

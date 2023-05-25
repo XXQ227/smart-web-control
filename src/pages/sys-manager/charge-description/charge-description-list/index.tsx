@@ -73,10 +73,11 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
      */
     const handleAddCGItem = () => {
         const newData: APICGItem[] = CGItemListVO?.map((item: APICGItem) => ({...item})) || [];
-        const rowKey = ID_STRING;
+        const rowKey = ID_STRING();
         newData.splice(0, 0, {
             CargoCGItemID: rowKey,
             ID: rowKey,
+            parent_id: '',
             Name: '',
             CGItemName: '',
             Biztype1ID: null,
@@ -85,7 +86,7 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
             CGUnitID: null,
             Code: '',
             Freezen: false,
-            isChange: true,
+            isChange: true
         });
         setCGItemListVO(newData);
     }
@@ -348,7 +349,7 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
                         params={searchParams}
                         rowKey={'CargoCGItemID'}
                         dataSource={CGItemListVO}
-                        className={'ant-pro-table-edit ant-pro-table-search'}
+                        className={'ant-pro-table-edit'}
                         pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
                         headerTitle={
                             <Search

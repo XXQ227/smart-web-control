@@ -119,14 +119,14 @@ const manager_route = {
         // TODO: 经营单位<branch>数据
         {
             name: 'branch_list',
-            icon: 'icon-charge-quotation',
+            icon: 'icon-company-manager',
             path: '/manager/branch/list',
             component: './sys-manager/branch/branch-list',
         },
         {
             hideInMenu: true,   // 隐藏不显示
             name: 'branch_info',
-            icon: 'icon-charge-quotation',
+            icon: 'icon-company-manager',
             path: '/manager/branch/form/:id',
             component: './sys-manager/branch/branch-form',
         },
@@ -266,6 +266,20 @@ const manager_route = {
             icon: 'icon-charge-quotation',
             path: '/manager/charge-quotation/form/:id',
             component: './sys-manager/charge-quotation/charge-quotation-form',
+        },
+        // TODO: 部门
+        {
+            name: 'department_list',
+            icon: 'icon-department-manager',
+            path: '/manager/department/list',
+            component: './sys-manager/department/department-list',
+        },
+        // TODO: 用户
+        {
+            name: 'user_list',
+            icon: 'icon-department-manager',
+            path: '/manager/user/list',
+            component: './sys-manager/user/user-list',
         },
     ],
 };

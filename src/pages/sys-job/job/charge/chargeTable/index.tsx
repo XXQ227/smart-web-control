@@ -244,7 +244,7 @@ const ChargeTable: React.FC<Props> = (props) => {
      */
     const handleAdd = () => {
         const currLocalObj: APICurrency = CurrencyOpts?.find((x: APICurrency) => x.Currency === getFuncCurrency()) || {};
-        const CGID = ID_STRING;
+        const CGID = ID_STRING();
         const newDataObj: APICGInfo = {
             CGID,
             CTID: null,

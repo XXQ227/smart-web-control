@@ -3,7 +3,6 @@ import { notification } from 'antd';
 import {history} from 'umi';
 
 
-
 const codeMessage = {
     200: '服务器成功返回请求的数据',
     201: '新建或修改数据成功。',
@@ -65,11 +64,12 @@ export function request(url: string, options: any) {
     }
     return fetch(url, newOptions)
         .then(checkStatus)
-        .then((response) => {
+        .then(async (response) => {
             if (response.status === 204) {
                 return response.text();
             }
-            return response.json();
+            const result: any = await response.json();
+            return setAPIResponse(result);
         })
         .catch((e) => {
             const status = e.name;
@@ -89,4 +89,40 @@ export function request(url: string, options: any) {
                 history.push('/exception/404');
             }
         });
+}
+
+/**
+ * @Description: TODO: 对接口返回的数据进行格式化，转成前台要用的数据结构
+ * @author XXQ
+ * @date 2023/5/25
+ * @param response  接口返回的数据
+ * @returns
+ */
+function setAPIResponse(response: any) {
+    let result: API.Result = {
+        code: '',
+        current: 0,
+        data: undefined,
+        message: '',
+        page: 0,
+        size: 0,
+        success: false,
+        total: 0
+    };
+    if (response) {
+        result = {
+            // TODO: 返回结果状态
+            code: response.code,
+            success: response.success,
+            message: response.message,
+            // TODO: 返回结果分页信息
+            current: response?.data?.current,
+            page: response?.data?.pages,
+            size: response?.data?.size,
+            total: response?.data?.total,
+            // TODO: 后台返回的结果数据
+            data: response?.data?.records,
+        }
+    }
+    return result;
 }

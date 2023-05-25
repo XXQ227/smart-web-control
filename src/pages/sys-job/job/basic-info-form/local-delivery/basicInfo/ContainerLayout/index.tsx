@@ -215,6 +215,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                                 <Button onClick={handleAdd}><PlusCircleOutlined />Add</Button>
                                 <Popconfirm
                                     title={'Sure to delete?'}
+                                    okText={'Yes'} cancelText={'No'}
                                     onConfirm={() => handleDelete()}
                                 >
                                     <Button disabled={selectedRowIDs.length === 0}><DeleteOutlined />Remove</Button>

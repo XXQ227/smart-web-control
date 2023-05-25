@@ -185,7 +185,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
      */
     const handleAdd = () => {
         const currLocalObj: APIValue$Label | undefined = CurrencyList?.find((x: APIValue$Label) => x.value === getFuncCurrency());
-        const CGID = ID_STRING;
+        const CGID = ID_STRING();
         const newDataObj: APICGTempItems = {
             ID: CGID,
             SettlementID: null,

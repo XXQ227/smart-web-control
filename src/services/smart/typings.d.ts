@@ -1,5 +1,17 @@
 
 declare namespace API {
+  // TODO: 所有接口的返回结果需要转成的数据结构
+  type Result = {
+    success: boolean;
+    code: string;
+    message: string,
+    page: number,
+    current: number,
+    total: number,
+    size: number,
+    data: any,
+  };
+
   type CurrentUser = {
     name?: string;
     avatar?: string;
@@ -117,7 +129,7 @@ declare namespace API {
   };
 
   // TODO: 接口返回结果
-  type APIResult = {
+  type APILoginResult = {
     status?: string;
     type?: string;
     currentAuthority?: string;
@@ -125,6 +137,8 @@ declare namespace API {
     Page?: object;
     Content?: any;
   };
+
+
 
   // TODO: 分页返回结果
   type APIPage = {

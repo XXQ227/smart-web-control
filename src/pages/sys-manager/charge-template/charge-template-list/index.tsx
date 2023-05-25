@@ -141,7 +141,7 @@ const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
                     columns={columns}
                     params={searchParams}
                     dataSource={CGTempListVO}
-                    className={'antd-pro-table-port-list ant-pro-table-search'}
+                    className={'antd-pro-table-port-list'}
                     headerTitle={
                         <Search
                             placeholder='' enterButton="Search" loading={loading}

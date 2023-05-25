@@ -228,7 +228,8 @@ declare namespace APIManager {
 
     type CGItem = {
         ID: number | string | null,
-        CargoCGItemID: number | string | null,
+        parent_id: number | string | null,
+        CargoCGItemID: number | string | null,  // TODO:
         Code: string,
         Freezen: boolean,
         Biztype1ID: number | null,
@@ -338,59 +339,102 @@ declare namespace APIManager {
     };
     type Branch = {
         /** 列表的内容总数 */
-        id: number | null;
-        /** 返回结果 */
-        contact_name?: string;
-        phone?: string;
-        address?: string;
-        city_name?: string;
-        code?: string;
-        default_port_id?: number | null;
-        func_currency_name?: string;
-        name_full_en?: string;
-        name_full_local?: string;
-        name_short_en?: string;
-        name_short_local?: string;
-        org_id?: number | null;
-        org_create_id?: number | null;
-        tax_num?: string;
-        bank_account_ids?: string;
-        enable_flag?: string;
-        delete_flag?: string;
-        create_user_id?: number | null;
-        create_user_name?: string;
-        create_time?: string;
-        update_user_id?: number | null;
-        update_user_name?: string;
-        update_time?: string;
+        id: number | null;                  // TODO: 主键 ID
+        contact_name?: string;              // TODO: 联系人
+        phone?: string;                     // TODO: 电话
+        address?: string;                   // TODO: 公司地址
+        city_name?: string;                 // TODO: 公司所在城市
+        code?: string;                      // TODO: 分公司编码
+        default_port_id?: number | null;    // TODO: 公司所在区域的默认港口
+        func_currency_name?: string;        // TODO: 本位币
+        name_full_en?: string;              // TODO: 公司全称(英文)
+        name_full_local?: string;           // TODO: 公司全称(当地)
+        name_short_en?: string;             // TODO: 公司简称(英文)
+        name_short_local?: string;          // TODO: 公司简称(当地)
+        org_id?: string;                    // TODO: 公司 oracle id
+        org_create_id?: string;             // TODO: AUC组织识别码
+        tax_num?: string;                   // TODO: 统一社会信用码，或税号
+        bank_account_ids?: string;          // TODO: 公司银行id集合
+        enable_flag?: string;               // TODO: 启用标识
+        delete_flag?: string;               // TODO: 删除标识
+        create_user_id?: number | null;     // TODO: 创建人ID
+        create_user_name?: string;          // TODO: 创建人名称
+        create_time?: string;               // TODO: 创建时间
+        update_user_id?: number | null;     // TODO: 修改人ID
+        update_user_name?: string;          // TODO: 修改人名称
+        update_time?: string;               // TODO: 修改时间
     };
+    //endregion
 
+    //region TODO: Department 部门
+    type SearchDeptParams = {
+        UserID: number,
+        Name: string,
+    }
+    type DepartmentResult = {
+        data: Department[];     // TODO: 部门数据 <Array>
+        /** 列表的内容总数 */
+        total: number | null;
+        /** 返回结果 */
+        success?: boolean;
+    };
     type Department = {
-        id: number | string | null,
-        name: string,
-        parent_id: number | null,
-        level: number | null,
-        sort: number | null,
-        charge_person: string,
-        contact_phone: string,
-        address: string,
-        parent_ids: string,
-        delete_flag: boolean,
-        enable_flag: boolean,
-        create_user_id: number | null,
-        create_user_name?: string,
-        create_time?: string,
-        update_user_id: number | null,
-        update_user_name?: string,
-        update_time?: string,
+        id: number | string | null,     // TODO: 主键 ID
+        name: string,                   // TODO: 组织名称
+        email: string,                  // TODO: 邮箱
+        parent_id: number | null,       // TODO: 父类组织ID
+        level: number | null,           // TODO: 级别
+        sort: number | null,            // TODO: 排序号
+        charge_person: string,          // TODO: 负责人
+        contact_phone: string,          // TODO: 联系电话
+        parent_ids: string,             // TODO: 父ID集合
+        enable_flag: number,           // TODO: 启用状态:0-不启用、1-启用
+        delete_flag: boolean,           // TODO: 删除标识
+        create_user_id: number | null,  // TODO: 创建人ID
+        create_user_name?: string,      // TODO: 创建人名称
+        create_time?: string,           // TODO: 创建时间
+        update_user_id: number | null,  // TODO: 修改人ID
+        update_user_name?: string,      // TODO: 修改人名称
+        update_time?: string,           // TODO: 修改人时间
+        isChange?: boolean,              // TODO: 编辑状态
     }
 
+    type SaveDepartment = {
+        id: number,
+        success?: boolean;
+    }
     //endregion
 
-    //region TODO:
-    //endregion
+    //region TODO: User 信息
+    type SearchUserParams = {
+        name: string,
+    }
 
-    //region TODO:
+    type UserResult = {
+        data: User[],
+        total: number | null;
+        success?: boolean;
+    }
+    type User = {
+        id: number | string | null,         // TODO:
+        name_display: string,               // TODO: 用户名
+        name_login: string,                 // TODO: 用户登录名
+        branch_id: number | null,           // TODO: 用户公司id
+        department_id: number | null,       // TODO: 部门id
+        oracle_id: string,                  // TODO: oracleid
+        password: string,                   // TODO: 密码
+        sale_flag: number | null,           // TODO: 销售标识：1-是0-不是
+        code_sino: string,                  // TODO: 中外运编号
+        code_f8: string,                    // TODO: F8唯一编码
+        enable_flag: number | null,         // TODO: 启用标识
+        delete_flag: number | null,         // TODO: 删除标识
+        create_user_id: number | null,      // TODO: 创建人ID
+        create_user_name?: string,          // TODO: 创建人名称
+        create_time?: string,               // TODO: 创建时间
+        update_user_id: number | null,      // TODO: 修改人ID
+        update_user_name?: string,          // TODO: 修改人名称
+        update_time?: string,               // TODO: 修改时间
+    }
     //endregion
 
     //region TODO:

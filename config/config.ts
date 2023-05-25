@@ -8,8 +8,6 @@ import routes from './routes';
 
 const { REACT_APP_ENV } = process.env;
 
-console.log(routes);
-
 export default defineConfig({
   hash: true,
   antd: {},

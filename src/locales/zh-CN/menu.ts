@@ -66,6 +66,10 @@ export default {
   // TODO: 经营单位公司
   'menu.manager.branch_list': 'Branch - Index',
   'menu.manager.branch_info': 'Branch - Information',
+  // TODO: 经营单位部门
+  'menu.manager.department_list': 'Department - Index',
+  // TODO: 经营单位员工用户
+  'menu.manager.user_list': 'User - Index',
   // TODO: 业务公司
   'menu.manager.cv_center.company_list': 'Company - Index',
   'menu.manager.cv_center.company_info': 'Company - Information',

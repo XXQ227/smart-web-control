@@ -1,11 +1,10 @@
 // @ts-ignore
-/* eslint-disable */
-import { request } from 'umi';
 import {stringify} from "querystring";
+import {request} from '@/utils/request'
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/api/login/account', {
+  return request('/api/login/account', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -15,7 +14,7 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
   });
 }
 export async function loginSmart(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>(`/api/User/Login?${stringify(body)}`, {
+  return request(`/api/User/Login?${stringify(body)}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -31,7 +30,7 @@ export async function getFakeCaptcha(
   params: API.getFakeCaptchaParams,
   options?: { [key: string]: any },
 ) {
-  return request<API.FakeCaptcha>('/api/login/captcha', {
+  return request('/api/login/captcha', {
     method: 'POST',
     params: {
       ...params,
@@ -42,7 +41,7 @@ export async function getFakeCaptcha(
 
 /** 登录接口 POST /api/login/outLogin */
 export async function outLogin(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/login/outLogin', {
+  return request('/api/login/outLogin', {
     method: 'POST',
     ...(options || {}),
   });
