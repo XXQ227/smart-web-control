@@ -70,13 +70,19 @@ export const ACCOUNT_PERIOD_STATE_ENUM = {
     3: {text: 'Closed', status: 'Closed', key: 4},
 };
 
-// TODO: 账期开启状态举值
+// TODO: 客商申请状态举值
 export const MDM_STATUS_ENUM = {
     1: {text: 'Pending', status: 'Pending', key: 1},
     2: {text: 'Approved', status: 'Approved', key: 2},
     3: {text: 'Closing', status: 'Closing', key: 3},
     4: {text: 'Closed', status: 'Closed', key: 4},
 };
+
+// TODO: 是否是销售
+export const SALES_ENUM = {
+    0: {text: 'No', status: 'No', key: 0},
+    1: {text: 'Yes', status: 'Yes', key: 1},
+}
 
 
 

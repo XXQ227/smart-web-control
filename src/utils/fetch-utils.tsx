@@ -1,5 +1,6 @@
 import {getBranchID, getUserID} from '@/utils/auths'
 import {stringify} from 'qs'
+import {message} from 'antd'
 
 /**
  * @Description: TODO: 远程获得数据。并重组后台返回的数据参数结构
@@ -14,13 +15,17 @@ import {stringify} from 'qs'
  * @returns
  */
 export async function fetchData(searchVal: any, url: string, query: any = {}, qty: number = 5, resValue: string, resLabel: string): Promise<API.APIValue$Label[]> {
-    const params = Object.assign({}, query, {value: searchVal, PageSize: qty});
-    const options: any = { headers: { Lang: 'en_EN', BranchID: getBranchID(), UserID: getUserID()} };
+    const params = Object.assign({}, query, {name: searchVal, PageSize: qty});
+    const options: any = { headers: { Lang: 'en_EN', BranchID: getBranchID(), UserID: getUserID()}, method: 'POST' };
     return fetch(`${url}?${stringify(params)}`, options)
         .then(response => response.json())
-        .then((result) => {
-            // TODO: 返回结果
-            return result.map((item: any) => ({value: item[resValue], label: item[resLabel], data: item}));
+        .then((result: API.Result) => {
+            if (result.success) {
+                // TODO: 返回结果
+                return result.data?.map((item: any) => ({value: item[resValue], label: item[resLabel], data: item}));
+            } else {
+                message.error(result.message);
+            }
         })
         .catch(e => {
             console.log(e);

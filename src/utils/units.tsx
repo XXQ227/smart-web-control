@@ -745,7 +745,7 @@ export function getFormErrorMsg(errorInfo: any = []) {
         // TODO: 去重
         const errArr: any = Array.from(new Set(errList));
         errInfo = errArr.toString().replace(/,/g, '  /  ');
-        errInfo += '  is required!';
+        // errInfo += '  is required!';
     }
     return errInfo;
 }

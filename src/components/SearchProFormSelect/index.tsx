@@ -8,8 +8,8 @@ import {fetchData} from '@/utils/fetch-utils'
 interface Props {
     id: any,
     name: string,
+    label: string,
     width?: any,
-    title?: any,
     valueObj?: any,
     disabled?: boolean,
     filedValue?: string,    // 用于显示返回结果 【value】 的返回参数
@@ -18,7 +18,7 @@ interface Props {
     qty?: number | 5,    // 搜索条数
     query?: any,     // 搜索参数
     placeholder?: string,   // 提示信息
-    required?: any,
+    required?: boolean,
     handleChangeData?: (val: any, option?: any) => void,   // 选中后，返回的结果
 }
 
@@ -26,9 +26,9 @@ interface Props {
 let isSearch: number = 0;
 
 const SearchProFormSelect: React.FC<Props> = (props) => {
-    const {title, url, qty, query, disabled, filedValue, filedLabel, required, placeholder} = props;
+    const {valueObj, label, url, qty, query, disabled, filedValue, filedLabel, required, placeholder} = props;
     // 设置是否是编辑
-    const [userInput, setUserInput] = useState<API.APIValue$Label>(props.valueObj || {});
+    const [valInput, setUserInput] = useState<API.APIValue$Label>(valueObj || {});
     // const [isSearch, setIsSearch] = useState<boolean>(false);
 
     // TODO: 返回结果的数据结构；默认 {Key: number, Value: string}，当有其他返回键值对时，在组件调用时定义
@@ -40,10 +40,10 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
     useEffect(()=> {
         // TODO: 1、当 value 有值且 props 没有值 时, 清空当前空间数据
         // TODO: 2、当 value 没有值 且 props 有值时, 当前是录入状态
-        if ((userInput?.value && !(props.valueObj?.value)) || !(userInput?.value) && props.valueObj?.value) {
-            setUserInput(props.valueObj);
+        if ((valInput?.value && !(valueObj?.value)) || !(valInput?.value) && valueObj?.value) {
+            setUserInput(valueObj);
         }
-    }, [props.valueObj, userInput])
+    }, [valueObj, valInput])
 
     /**
      * @Description: TODO: onChange、onSelect 方法，选中后返回结果
@@ -59,19 +59,23 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
         if (props.handleChangeData) props.handleChangeData(val, option);
     }
 
+    console.log(required);
+
     return (
         <ProFormSelect
-            width={props.width}
             showSearch
-            label={title}
+            label={label}
             name={props.name}
-            required={required}
+            required={!!required}
+            width={props.width}
             debounceTime={1000}
             disabled={disabled}
-            initialValue={userInput}
+            // initialValue={valInput}
+            initialValue={valueObj}
             className={styles.mySelect}
             placeholder={placeholder || ""}
             fieldProps={{
+                showArrow: false,
                 onSelect: handleChange,
                 onSearch: ()=> {
                     // TODO: isSearch === 0：变成搜索
@@ -84,7 +88,7 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
                     }
                 },
             }}
-            rules={[{ required: true, message: title }]}
+            rules={[{ required: true, message: label }]}
             // @ts-ignore
             request={(val: any) => {
                 // TODO: isSearch === 1：可搜索

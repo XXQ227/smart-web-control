@@ -1,32 +1,28 @@
-import type React from "react";
 import {useCallback, useState} from "react";
 import {queryUser} from '@/services/smart/manager/users'
 
-type APIDepartment = APIManager.Department;
+type APIUser = APIManager.User;
 
-interface T {
-    DepartmentList: APIDepartment[],
-    DepartmentInfo: APIDepartment,
-}
-
-
-export default (callback: T, deps: React.DependencyList) => {
+export default () => {
     // TODO: 基础数据
 
     //endregion
 
-    // TODO: Department List 数据
+    // TODO: 数据
+    const [UserList, setUserList] = useState<APIUser[]>([]);
     //region TODO: 接口
     // TODO: 获取部门列表<详细数据>请求
     const queryUserList = useCallback(async (params: APIManager.SearchUserParams) => {
         // TODO: 请求后台 API
-        const response = await queryUser(params);
+        const response: API.Result = await queryUser(params);
         if (!response) return;
+        setUserList(response.data);
         return response;
     }, []);
 
 
     return {
         queryUserList,
+        UserList,
     }
 }

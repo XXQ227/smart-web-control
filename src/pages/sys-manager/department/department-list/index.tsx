@@ -5,12 +5,12 @@ import {
     ProCard,
     ProFormSelect,
     ProFormText,
-    ProTable, EditableProTable
+    ProTable,
 } from '@ant-design/pro-components'
 import {Button, Divider, Input, message, Popconfirm, Form} from 'antd'
 import {DeleteOutlined, PlusOutlined} from '@ant-design/icons'
 import ls from 'lodash'
-import {CustomizeIcon, ID_STRING} from '@/utils/units'
+import {CustomizeIcon, getFormErrorMsg, ID_STRING} from '@/utils/units'
 import {getUserID} from '@/utils/auths'
 import type {RouteChildrenProps} from 'react-router'
 import {useModel} from 'umi'
@@ -55,8 +55,6 @@ const DepartmentIndex: React.FC<RouteChildrenProps> = (props) => {
     //region TODO:
     //endregion
 
-
-
     /**
      * @Description: TODO 获取单票数据集合
      * @author XXQ
@@ -70,10 +68,11 @@ const DepartmentIndex: React.FC<RouteChildrenProps> = (props) => {
         // params.PageNum = params.current || 1;
         // params.pageSize = params.PageSize || 15;
         // params.PageSize = params.PageSize || 15;
-        const result: APIManager.DepartmentResult = await getDepartmentList(params);
-        setDepartmentListVO(result.data);
+        // const result: APIManager.DepartmentResult = await getDepartmentList(params);
+        // setDepartmentListVO(result.data);
+        setDepartmentListVO([]);
         setLoading(false);
-        return result;
+        return [];
     }
 
     /**
@@ -86,22 +85,21 @@ const DepartmentIndex: React.FC<RouteChildrenProps> = (props) => {
         const newData: APIDepartment[] = ls.cloneDeep(DepartmentListVO);
         const deptObj: APIDepartment = {
             id: ID_STRING(),
-            name: '111',
+            name: '',
             parent_id: null,
             level: 1,
             sort: null,
             email: '',
-            charge_person: '222',
-            contact_phone: '333',
+            charge_person: '',
+            contact_phone: '',
             parent_ids: '',
             delete_flag: false,
-            isChange: false,
+            isChange: true,
             enable_flag: 1,
             create_user_id: getUserID(),
             update_user_id: getUserID()
         }
         newData.push(deptObj);
-        console.log(newData);
         setDepartmentListVO(newData);
     }
 
@@ -184,17 +182,18 @@ const DepartmentIndex: React.FC<RouteChildrenProps> = (props) => {
     const handleSave = async (record: APIDepartment, index: number) => {
         form.validateFields()
             .then((val)=> {
-                console.log(val);
+                console.log(val, record);
+                record.id = typeof record.id === 'string' ? 0 : record.id;
+                // const target: any = {};
+                // Object.keys(record).map((item: any) => {
+                //     const key = item.substring(0, item.indexOf(record.id) || item.length);
+                //     target[key] = record[item];
+                // });
+                console.log(record);
             })
-        // record.id = typeof record.id === 'string' ? 0 : record.id;
-        // const result = await saveDepartment(record);
-        // if (result.success) {
-        //     record.id = result.id;
-        //     delete record.isChange;
-        //     const newData: APIDepartment[] = ls.cloneDeep(DepartmentListVO);
-        //     newData.splice(index, 1, record);
-        //     setDepartmentListVO(newData);
-        // }
+            .catch((err: any) => {
+                message.error(getFormErrorMsg(err));
+            })
     }
 
     // TODO: 表单列
@@ -318,9 +317,9 @@ const DepartmentIndex: React.FC<RouteChildrenProps> = (props) => {
                             onConfirm={() => handleFreezenDept(record, index)}
                             title={`Are you sure to ${record.enable_flag ? 'unlock' : 'lock'}?`}
                         >
-                            <Divider type='vertical'/>
+                            {typeof record.id === 'number' ? <Divider type='vertical'/> : null}
                             <CustomizeIcon
-                                hidden={!(typeof record.id === 'number')}
+                                hidden={typeof record.id !== 'number'}
                                 type={record.enable_flag ? 'icon-unlock-2' : 'icon-lock-2'}
                             />
                         </Popconfirm>
@@ -337,7 +336,6 @@ const DepartmentIndex: React.FC<RouteChildrenProps> = (props) => {
         },
     ];
 
-    console.log(form, ref);
     return (
         <PageContainer
             loading={false}
@@ -350,7 +348,7 @@ const DepartmentIndex: React.FC<RouteChildrenProps> = (props) => {
                     form={form}
                     onValuesChange={onValuesChange}
                 >
-                    <EditableProTable<APIDepartment>
+                    <ProTable<APIDepartment>
                         // form={form}
                         // formRef={ref}
                         rowKey={'id'}
