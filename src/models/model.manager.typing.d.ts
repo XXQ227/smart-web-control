@@ -421,7 +421,7 @@ declare namespace APIManager {
         name_login: string,                 // TODO: 用户登录名
         branch_id: number | null,           // TODO: 用户公司id
         department_id: number | null,       // TODO: 部门id
-        oracle_id: string,                  // TODO: oracleid
+        oracle_id: string,                  // TODO: oracle id
         password: string,                   // TODO: 密码
         sale_flag: number | null,           // TODO: 销售标识：1-是0-不是
         code_sino: string,                  // TODO: 中外运编号
