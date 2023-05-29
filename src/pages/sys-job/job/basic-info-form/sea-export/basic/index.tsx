@@ -1,18 +1,15 @@
-import React, {Fragment, useEffect} from 'react';
+import React from 'react';
 import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 import {Col, Divider, Row, Space} from "antd";
-import {IconFont, rowGrid} from "@/utils/units";
+import {rowGrid} from "@/utils/units";
 import {
     ProCard,
     ProFormDatePicker,
-    ProFormRadio,
     ProFormSelect,
-    ProFormSwitch,
     ProFormText
 } from "@ant-design/pro-components";
 import {getUserID} from "@/utils/auths";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
-import SearchTable from "@/components/SearchTable";
 
 interface Props {
     title: string,
@@ -24,10 +21,6 @@ const Basic: React.FC<Props> = (props) => {
     const  {
         Carrier, HouseBill
     } = props;
-
-    useEffect(() => {
-
-    }, [])
     //endregion
 
     return (

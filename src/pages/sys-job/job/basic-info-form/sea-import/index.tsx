@@ -1,6 +1,4 @@
 import React, {Fragment, useEffect} from 'react';
-import BasicInfo from '../job/basic-info';
-import Cargo from '../job/cargo';
 import Payment from '../job/payment';
 
 // const FormItem = Form.Item;
@@ -12,19 +10,13 @@ interface Props {
 
 const SeaImport: React.FC<Props> = (props) => {
     const  {
-        CJobInfo,
-        CJobInfo: {NBasicInfo, CargoInfo},
-        SalesManList, FinanceDates
+        CJobInfo: {NBasicInfo}
     } = props;
 
     useEffect(() => {
 
     }, [])
     //endregion
-
-    // const baseParams: any = {form, FormItem};
-    const basicInfoParams: any = {CJobInfo, NBasicInfo, SalesManList, FinanceDates};
-    const cargoParams: any = {CargoInfo, NBasicInfo};
 
     return (
        <Fragment>

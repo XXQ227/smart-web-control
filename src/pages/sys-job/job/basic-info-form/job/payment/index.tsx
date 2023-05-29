@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo} from 'react';
 import {ProCard, ProFormSelect, ProFormTextArea} from '@ant-design/pro-components';
 import {Col, Row, Space} from 'antd';
-import {rowGrid} from '@/utils/units';
+import {IconFont, rowGrid} from '@/utils/units';
 import SearchModal from '@/components/SearchModal';
 import SearchTable from '@/components/SearchTable';
 import styles from "@/pages/sys-job/job/basic-info-form/style.less";
@@ -52,15 +52,6 @@ const Payment: React.FC<Props> = (props) => {
         value: option.IncotermsID, label: option.IncotermsName
     }));
 
-    const payAbleColumns = [
-        { title: 'Port', dataIndex: 'Name', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.Name},
-        { title: 'Code', align: 'center', width: 120, dataIndex: 'PortCode', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.PortCode},
-        { title: 'City', align: 'center', width: 260, dataIndex: 'City', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.City},
-        { title: 'Country', dataIndex: 'Country', width: 260, align: 'center', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.Country},
-        { title: 'Type', dataIndex: 'TypeCN', width: 60, align: 'center', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.TypeEN}
-    ];
-
-
     return (
         <ProCard
             title={title}
@@ -104,16 +95,16 @@ const Payment: React.FC<Props> = (props) => {
                                 <span className={styles.siteSpaceSpan}  />
                                 <SearchTable
                                     qty={10}
-                                    id={'PayableAtID'}
+                                    name="PayableAtID"
                                     title={'Payable AT'}
                                     modalWidth={950}
                                     rowKey={'ID'}
                                     showHeader={true}
-                                    columns={payAbleColumns}
                                     query={{ TransportTypeID }}
-                                    // value={NBasicInfo?.Terms?.PayableAtID}
                                     text={NBasicInfo?.Terms?.PayableAtName}
                                     url={"/api/MCommon/GetPortCityOrCountry"}
+                                    prefix={<IconFont type={'icon-search'} />}
+                                    className={'textRight'}
                                     handleChangeData={(val: any, option: any) => handleChange('ServiceTypeID', val, option)}
                                 />
                             </Space>

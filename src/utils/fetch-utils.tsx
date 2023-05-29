@@ -20,7 +20,15 @@ export async function fetchData(searchVal: any, url: string, query: any = {}, qt
         .then(response => response.json())
         .then((result) => {
             // TODO: 返回结果
-            return result.map((item: any) => ({value: item[resValue], label: item[resLabel], data: item}));
+            return result.map((item: any) => {
+                let labelValue = item[resLabel];
+                if (resLabel.length === 2) {
+                    const firstLabel = item[resLabel[0]]
+                    const secondLabel = item[resLabel[1]]
+                    labelValue = firstLabel + "(" + secondLabel + ")"
+                }
+                return {value: item[resValue], label: labelValue, data: item}
+            });
         })
         .catch(e => {
             console.log(e);
