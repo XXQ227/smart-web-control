@@ -180,7 +180,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                         width={"lg"}
                         qty={5}
                         required={true}
-                        title="Customer"
+                        label="Customer"
                         id={'CustomerID'}
                         name={'CustomerID'}
                         url={'/api/MCommon/GetCTNameByStrOrType'}

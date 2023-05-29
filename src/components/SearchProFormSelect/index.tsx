@@ -8,7 +8,7 @@ import {fetchData} from '@/utils/fetch-utils'
 interface Props {
     id: any,
     name: string,
-    label: string,
+    label?: string,
     width?: any,
     valueObj?: any,
     disabled?: boolean,
@@ -59,8 +59,6 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
         isSearch = 2;
         if (props.handleChangeData) props.handleChangeData(val, option);
     }
-
-    console.log(required);
 
     return (
         <ProFormSelect

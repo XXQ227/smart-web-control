@@ -52,7 +52,7 @@ const Basic: React.FC<Props> = (props) => {
                     <SearchProFormSelect
                         qty={5}
                         required={false}
-                        title="Booking Agent"
+                        label="Booking Agent"
                         id={'BookingAgentID'}
                         name={'BookingAgentID'}
                         url={'/api/MCommon/GetCTNameShortByStrOrType'}
@@ -68,7 +68,7 @@ const Basic: React.FC<Props> = (props) => {
                     <SearchProFormSelect
                         qty={5}
                         required={false}
-                        title="Destination Agent"
+                        label="Destination Agent"
                         id={'PODAgentID'}
                         name={'PODAgentID'}
                         url={'/api/MCommon/GetCTNameShortByStrOrType'}
@@ -87,7 +87,7 @@ const Basic: React.FC<Props> = (props) => {
                     <SearchProFormSelect
                         qty={5}
                         required={false}
-                        title="Shipping Line (Carrier)"
+                        label="Shipping Line (Carrier)"
                         id={'FreighterID'}
                         name={'FreighterID'}
                         url={'/api/MCommon/GetCTNameShortByStrOrType'}
@@ -103,7 +103,7 @@ const Basic: React.FC<Props> = (props) => {
                     <SearchProFormSelect
                         qty={5}
                         required={false}
-                        title="Shipping Agent"
+                        label="Shipping Agent"
                         id={'ShippingName'}
                         name={'ShippingName'}
                         url={'/api/MCommon/GetCTNameShortByStrOrType'}
