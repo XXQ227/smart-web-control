@@ -22,8 +22,16 @@ export async function fetchData(searchVal: any, url: string, query: any = {}, qt
         .then((result: API.Result) => {
             if (result.success) {
                 // TODO: 返回结果
-                return result.data?.map((item: any) => ({value: item[resValue], label: item[resLabel], data: item}));
-            } else {
+                return result.data?.map((item: any) => {
+                    let labelValue = item[resLabel];
+                    if (resLabel.length === 2) {
+                        const firstLabel = item[resLabel[0]]
+                        const secondLabel = item[resLabel[1]]
+                        labelValue = firstLabel + "(" + secondLabel + ")"
+                    }
+                    return {value: item[resValue], label: labelValue, data: item}
+                });
+            }else {
                 message.error(result.message);
             }
         })

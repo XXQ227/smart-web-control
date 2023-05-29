@@ -19,6 +19,7 @@ interface Props {
     query?: any,     // 搜索参数
     placeholder?: string,   // 提示信息
     required?: boolean,
+    allowClear?: boolean,
     handleChangeData?: (val: any, option?: any) => void,   // 选中后，返回的结果
 }
 
@@ -63,6 +64,7 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
 
     return (
         <ProFormSelect
+            allowClear={props.allowClear}
             showSearch
             label={label}
             name={props.name}

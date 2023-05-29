@@ -3,9 +3,11 @@ import {Input, Modal, Table} from 'antd';
 import {debounce} from 'lodash'
 import { IconFont } from '@/utils/units';
 import { fetchData } from '@/utils/fetch-utils'
+import type {ColumnsType} from 'antd/es/table';
+
 interface Props {
-    id: string,
-    value?: any,             // ID 数据 / 其他字符
+    name: string,
+    // value?: any,             // ID 数据 / 其他字符
     text?: string,           // 显示 【Name】 数据
     url: string,    // 搜索地址
     qty: number,    // 搜索条数
@@ -14,10 +16,11 @@ interface Props {
     disabled?: boolean,
     modalWidth?: number,
     rowKey?: string,
-    columns?: any,
     showHeader?: any,
     filedValue?: string,    // 用于显示返回结果 【value】 的返回参数
-    filedLabel?: string,    // 用于显示返回结果 【label】 的参数
+    filedLabel?: string[],    // 用于显示返回结果 【label】 的参数
+    prefix?: any,           // 显示前缀图标
+    className?: string,
     handleChangeData: (val: any, option?: any) => void,   // 选中后，返回的结果
 }
 
@@ -29,7 +32,7 @@ const SearchTable: React.FC<Props> = (props) => {
     const [visible, setVisible] = useState<boolean>(false);     // TODO: Modal 隐藏显示开关
     const [fetching, setFetching] = useState(false);            // TODO: 搜索 Loading 状态
     const [dataSourceList, setDataSourceList] = useState([]);   // TODO: 搜索返回数据
-    const [searchVal, setSearchVal] = useState<string>('');     // TODO: 搜索录入参数
+    // const [searchVal, setSearchVal] = useState<string>('');     // TODO: 搜索录入参数
     const [showText, setShowText] = useState<string>(props.text || '');     // TODO: 搜索录入参数
     const [debounceTimeout, setDebounceTimeout] = useState<number>(100);     // TODO: 防抖动时间
 
@@ -37,7 +40,7 @@ const SearchTable: React.FC<Props> = (props) => {
 
     // TODO: 接口返回的键值
     const resValue: string = filedValue || 'Key';
-    const resLabel: string = filedLabel || 'Value';
+    const resLabel: any = filedLabel || 'Value';
 
     useEffect(() => {
         // TODO: 当第一次加载完后<打开弹框时>，防抖动时间增到到 【1000】
@@ -52,6 +55,15 @@ const SearchTable: React.FC<Props> = (props) => {
             document?.getElementById('search-input')?.focus();
         }
     }, [debounceTimeout, visible])
+
+    useEffect(() => {
+        if (props.name === "PlaceOfReceiptID" && !visible && props.text !== showText) {
+            setShowText(props.text || '')
+        }
+        if (props.name === "PlaceOfDeliveryID" && !visible && props.text !== showText) {
+            setShowText(props.text || '')
+        }
+    }, [props.text])
 
     // TODO: 防抖动搜索
     const debounceFetcher = useMemo(() => {
@@ -84,18 +96,18 @@ const SearchTable: React.FC<Props> = (props) => {
      */
     function handleModal (val: any){
         // TODO: 当 【visible = true】 时。做关闭操作，否则做搜索
-        const searchValue = val?.target?.value || '';
+        // const searchValue = val?.target?.value || '';
         if (visible) {
-            setSearchVal('');
+            // setSearchVal('');
             setFetching(false);
             setDataSourceList([]);
             setActiveItem(-1);
-            document?.getElementById(props.id)?.focus();
+            // document?.getElementById(props.id)?.focus();
         } else {
             setFetching(true);
-            debounceFetcher(searchValue);
+            debounceFetcher('');
         }
-        setSearchVal(searchValue);
+        // setSearchVal(searchValue);
         setVisible(!visible);
     }
 
@@ -121,7 +133,7 @@ const SearchTable: React.FC<Props> = (props) => {
      */
     const handleChangeInput = (val: any) => {
         setFetching(true);
-        setSearchVal(val?.target?.value);
+        // setSearchVal(val?.target?.value);
         debounceFetcher(val?.target?.value);
     }
 
@@ -170,25 +182,26 @@ const SearchTable: React.FC<Props> = (props) => {
         }
     }
 
-    /*const columns = [{
-        title: '',
-        dataIndex: 'label',
-        key: 'Key',
-    }];*/
-    const columns = [{ dataIndex: 'label', className: 'columnsStyle', }];
-
+    const columns: ColumnsType<any> = [
+        { title: 'Port', dataIndex: 'Name', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.Name},
+        { title: 'Code', align: 'center', width: 120, dataIndex: 'PortCode', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.PortCode},
+        { title: 'City', align: 'center', width: 260, dataIndex: 'City', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.City},
+        { title: 'Country', dataIndex: 'Country', width: 260, align: 'center', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.Country},
+        { title: 'Type', dataIndex: 'TypeCN', width: 60, align: 'center', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.TypeEN}
+    ];
 
     return (
         <Fragment>
             <label style={{ display: 'block', marginBottom: 8 }}>{props.title}</label>
             <Input
+                name={props.name}
+                className={`searchTable-input ${props.className}`}
+                placeholder={'Click'}
                 readOnly={true}
-                id={props.id}
                 value={showText}
                 autoComplete={'off'}
-                className={'searchTable-input'}
                 prefix={<IconFont type={'icon-search'} />}
-                placeholder={'Click'}
+                // prefix={props.prefix}
                 onClick={handleModal}
             />
             {
@@ -205,7 +218,7 @@ const SearchTable: React.FC<Props> = (props) => {
                             id={'search-input'}
                             autoComplete={'off'}
                             autoFocus={true}
-                            value={searchVal}
+                            // value={searchVal}
                             placeholder={'Search'}
                             onChange={handleChangeInput}
                             onKeyDown={handleKeyDown}
@@ -216,7 +229,7 @@ const SearchTable: React.FC<Props> = (props) => {
                             loading={fetching}
                             pagination={false}
                             dataSource={dataSourceList}
-                            columns={props.columns || columns}
+                            columns={columns}
                             showHeader={props.showHeader || false}
                             rowClassName={(record: any, index) => {
                                 let className = '';

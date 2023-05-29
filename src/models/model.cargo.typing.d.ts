@@ -159,6 +159,7 @@ declare namespace APIModel {
         BizRemark: string,
         Principal?: Principal,
         Carrier?: Carrier,
+        Port?: Port,
         Terms?: Terms,
     }
     type CargoInfo = {
@@ -208,6 +209,26 @@ declare namespace APIModel {
         CutCustoms?: string,
         CutVGM?: string,
         CutSingle?: string,
+        PackAddress?: string,
+        DeliveryAddress?: string,
+        PODTerminalPickupDate?: string,
+        POLTerminalReceiptDate?: string,
+        PackDate?: string,
+    }
+    type Port = {
+        POLName?: string,
+        POLBill?: string,
+        PODName?: string,
+        PODBill?: string,
+        PlaceOfReceiptName?: string,
+        PlaceOfReceiptBill?: string,
+        PlaceOfDeliveryName?: string,
+        Destination?: string,
+        TranshipmentPortList?: TranshipmentPortList[],
+    }
+    type TranshipmentPortList = {
+        ID?: any,
+        PortName?: string,
     }
     type Terms = {
         IncotermsID: number,

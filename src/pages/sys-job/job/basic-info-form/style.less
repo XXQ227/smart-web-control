@@ -108,6 +108,12 @@
         margin-top: 24px;
       }
 
+      :global {
+        .ant-input-affix-wrapper {
+          border: 1px dashed rgb(151, 157, 155);
+        }
+      }
+
       .siteSpaceSpan {
         display: inline-block;
         border-top: #797979 dashed 1px;
@@ -144,6 +150,66 @@
     }
   }
   //endregion TODO: Sea (Export) Basic表单样式
+
+
+  //region TODO: Sea (Export) Port表单样式
+  .seaExportPort {
+    padding-bottom: 20px;
+
+    .siteSpace {
+      display: inline-flex !important;
+      gap: 0 !important;
+
+      :global {
+        .ant-form-item-control-input-content .ant-input {
+          border: 1px dashed rgb(151, 157, 155);
+        }
+
+        .ant-form-item-control-input-content .pro-field-sm {
+          @media (min-width: 1900px) {
+            width: 265px;
+          }
+
+          @media (min-width: 2200px) {
+            width: 310px;
+          }
+
+          @media (min-width: 2400px) {
+            width: 350px;
+          }
+        }
+      }
+
+      .siteSpaceSpan {
+        display: inline-block;
+        border-top: #797979 dashed 1px;
+        width: 25px;
+      }
+    }
+
+    .transhipmentPortTable {
+      :global {
+        .ant-table-tbody .ant-form-item {
+          margin: 0 !important;
+        }
+
+        .ant-table-tbody > tr > td {
+          padding: 0 !important;
+          border: none;
+        }
+
+        .ant-select-selector {
+          border-radius: 0 !important;
+        }
+
+        .ant-table-tbody tr:not(:first-child) td .ant-select-selector {
+          border-top: none !important;
+        }
+      }
+    }
+
+  }
+  //endregion TODO: Sea (Export) Port表单样式
 
   //region TODO: Local Delivery样式
   .localDelivery {
