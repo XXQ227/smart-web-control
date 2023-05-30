@@ -290,8 +290,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                             columns={columns}
                             dataSource={photoRemarkList}
                             locale={{emptyText: "NO DATA"}}
-                            // rowSelection={rowSelection}
-                            className={`${styles.tableStyle} ${styles.photoRemarkTable}`}
+                            className={`tableStyle ${styles.photoRemarkTable}`}
                         />
                     </Col>
                 </Row>

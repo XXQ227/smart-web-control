@@ -333,6 +333,48 @@ ol {
   }
 }
 
+// 表格样式
+.tableStyle {
+  .ant-table.ant-table-bordered > .ant-table-container {
+    border-left: 1px solid #fff !important;
+  }
+
+  .ant-table-thead > tr > th {
+    color: #fff;
+    background-color: @primary-color !important;
+    border-top: 1px solid #fff !important;
+    border-right: 1px solid #fff !important;
+    border-bottom: 1px solid #fff !important;
+  }
+
+  .ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table > tbody > tr > td {
+    padding: 0;
+    border-right: 1px solid #fff !important;
+    border-bottom: 1px solid #fff !important;
+  }
+
+  .ant-table-tbody .ant-form-item {
+    margin: 0 !important;
+  }
+
+  .ant-table-empty .ant-table-tbody > tr.ant-table-placeholder td {
+    padding: 10px !important;
+  }
+
+  .ant-input, .ant-input-affix-wrapper, .ant-picker {
+    border: none;
+  }
+
+  // 被选中
+  .ant-table-tbody > tr.ant-table-row-selected > td,
+  .ant-table-tbody > tr.ant-table-row-selected > td .ant-input,
+  .ant-table-tbody > tr.ant-table-row-selected > td .ant-input-affix-wrapper,
+  .ant-table-tbody > tr.ant-table-row-selected > td .ant-picker
+  {
+    background: #12394a;
+  }
+}
+
 .searchTable-input {
   margin-bottom: 24px;
   input {

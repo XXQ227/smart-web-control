@@ -114,8 +114,6 @@ const Ports: React.FC<Props> = (props) => {
             }
         },
     ];
-
-
     //endregion
 
     return (
@@ -275,8 +273,7 @@ const Ports: React.FC<Props> = (props) => {
                         columns={columns}
                         dataSource={transhipmentPortList}
                         locale={{emptyText: "NO DATA"}}
-                        className={`${styles.transhipmentPortTable} `}
-                        // className={`${styles.tableStyle} ${styles.containerTable}`}
+                        className={styles.transhipmentPortTable}
                     />
                 </Col>
             </Row>

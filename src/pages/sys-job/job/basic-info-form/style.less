@@ -211,6 +211,100 @@
   }
   //endregion TODO: Sea (Export) Port表单样式
 
+  //region TODO: Sea (Export) Containers表单样式
+  .seaExportContainers {
+    .tableHeaderContainer {
+      margin-bottom: 7px;
+      :global {
+        button {
+          border: none;
+          margin-right: 20px;
+        }
+
+        .ant-btn[disabled] {
+          background: transparent !important;
+        }
+      }
+    }
+
+    .summary {
+      :global {
+        .siteSpace {
+          display: inline-flex !important;
+          gap: 0 !important;
+
+          .siteSpaceSpan {
+            display: inline-block;
+            border-top: #797979 solid 1px;
+            width: 50px;
+          }
+
+          .loading, .cargo {
+            border: #797979 solid 1px;
+            border-radius: 6px;
+            padding: 3px 10px;
+
+            span {
+              display: inline-flex;
+              justify-content: center;
+              align-items: center;
+            }
+
+            span:not(:last-child) {
+              margin-right: 15px;
+            }
+
+            span b {
+              margin-left: 5px;
+              font-size: 18px;
+            }
+          }
+
+          .loading span b {
+            color: rgb(211, 158, 89) !important;
+          }
+        }
+
+        .iconfont {
+          margin-left: 15px;
+          margin-right: 15px;
+
+          svg {
+            width: 40px !important;
+            height: 40px !important;
+          }
+        }
+
+        @media (max-width: 1199px) {
+          .siteSpace {
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
+
+            .siteSpaceSpan {
+              display: inline-block;
+              border-top: #797979 solid 1px;
+              width: 50px;
+            }
+          }
+
+          .iconfont {
+            display: block;
+            margin: 5px 0;
+          }
+        }
+
+        @media (min-width: 1200px) {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+      }
+    }
+  }
+  //endregion TODO: Sea (Export) Containers表单样式
+
   //region TODO: Local Delivery样式
   .localDelivery {
     :global {
@@ -248,6 +342,10 @@
           button {
             border: none;
           }
+
+          .ant-btn[disabled] {
+            background: transparent !important;
+          }
         }
       }
 
@@ -257,15 +355,7 @@
         }
       }
 
-      // Container List 表格
-      .containerTable {
-        margin-bottom: 25px;
-        :global {
-          .textCenter .ant-input, .textCenter .ant-input-affix-wrapper {
-            text-align: center;
-          }
-        }
-      }
+
     }
 
     .nonContainerLayout {
@@ -284,7 +374,7 @@
       }
     }
 
-    .tableStyle {
+    /*.tableStyle {
       :global {
         .ant-table.ant-table-bordered > .ant-table-container {
           border-left: 1px solid #fff !important;
@@ -326,7 +416,7 @@
         }
 
       }
-    }
+    }*/
 
     .remark {
       .title {
@@ -367,6 +457,20 @@
     }
   }
   //endregion TODO: Local Delivery样式
+
+  // Container List 表格
+  .containerTable {
+    margin-bottom: 25px;
+    :global {
+      .textCenter .ant-input, .textCenter .ant-input-affix-wrapper {
+        text-align: center;
+      }
+
+      .textRight .ant-input{
+        text-align: right;
+      }
+    }
+  }
 
 }
 
