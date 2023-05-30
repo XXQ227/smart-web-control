@@ -136,6 +136,7 @@ declare namespace APIModel {
         PayCGList?: PRCGInfo[],
         ReceiveCGList?: PRCGInfo[],
         CTNPlanList?: ContainerList[],
+        CTNActualList?: CTNActualList[],
         HouseBill?: HouseBill,
     }
 
@@ -252,12 +253,26 @@ declare namespace APIModel {
     }
     type ContainerList = {
         ID: any,
-        CTNModelID: number,
-        CTNModelName: string,
-        QTY: number,
-        IsSOC: boolean,
-        Owner: string,
-        Remark: string,
+        CTNModelID?: number,
+        CTNModelName?: string,
+        QTY?: number,
+        IsSOC?: boolean,
+        IsFCL?: boolean,
+        Owner?: string,
+        Remark?: string,
+    }
+    type CTNActualList = {
+        ID: any,
+        CTNModelID?: number,
+        CTNModelName?: string,
+        CTNNum?: string,
+        SealNum?: string,
+        Pieces?: number,
+        VGM?: number,
+        GrossWeight?: number,
+        Measurement?: number,
+        PKGTypeID?: number,
+        PKGTypeNmae?: string,
     }
     type HouseBill = {
         SignMethodID?: number,

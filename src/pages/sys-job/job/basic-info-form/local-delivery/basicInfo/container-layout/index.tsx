@@ -214,6 +214,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                             <Space>
                                 <Button onClick={handleAdd}><PlusCircleOutlined />Add</Button>
                                 <Popconfirm
+                                    disabled={selectedRowIDs.length === 0}
                                     title={'Sure to delete?'}
                                     okText={'Yes'} cancelText={'No'}
                                     onConfirm={() => handleDelete()}
@@ -231,7 +232,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                         dataSource={containerList}
                         locale={{emptyText: "NO DATA"}}
                         rowSelection={rowSelection}
-                        className={`${styles.tableStyle} ${styles.containerTable}`}
+                        className={`tableStyle ${styles.containerTable}`}
                     />
                 </Col>
             </Row>

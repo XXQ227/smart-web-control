@@ -2,6 +2,7 @@ import React, {Fragment, useEffect} from 'react';
 import Basic from "./basic";
 import Pickup from "./pickup";
 import Ports from "./port";
+import Containers from "./containers";
 
 // const FormItem = Form.Item;
 interface Props {
@@ -9,12 +10,15 @@ interface Props {
     HouseBill?: APIModel.HouseBill,
     Port?: APIModel.Port,
     NBasicInfo: APIModel.NBasicInfo,
+    CTNPlanList?: APIModel.ContainerList[],
+    CTNActualList?: APIModel.CTNActualList[],
 }
 
 const SeaExport: React.FC<Props> = (props) => {
     const  {
         Carrier, HouseBill,
         Port, NBasicInfo,
+        CTNPlanList, CTNActualList
     } = props;
 
     useEffect(() => {
@@ -40,6 +44,12 @@ const SeaExport: React.FC<Props> = (props) => {
            <Ports
                title={'Port'}
                Port={Port}
+               NBasicInfo={NBasicInfo}
+           />
+
+           <Containers
+               CTNPlanList={CTNPlanList}
+               CTNActualList={CTNActualList}
                NBasicInfo={NBasicInfo}
            />
        </Fragment>
