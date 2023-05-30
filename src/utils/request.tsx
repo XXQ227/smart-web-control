@@ -68,8 +68,8 @@ export function request(url: string, options: any) {
             if (response.status === 204) {
                 return response.text();
             }
-            const result: any = await response.json();
-            return setAPIResponse(result);
+            return setAPIResponse(await response.json());
+            // return response.json();  // TODO: old vision
         })
         .catch((e) => {
             const status = e.name;
