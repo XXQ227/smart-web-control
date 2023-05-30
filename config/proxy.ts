@@ -20,17 +20,17 @@ export default {
         '^/api': '/',
       },
     },
-    // '/manager/': {
-    //   // 要代理的地址
-    //   target: 'http://106.52.125.82:8080/',
-    //   // target: 'http://localhost:52663/',
-    //   // 配置了这个可以从 http 代理到 https
-    //   // 依赖 origin 的功能可能需要这个，比如 cookie
-    //   changeOrigin: true,
-    //   pathRewrite: {
-    //     '^/manager': '/manager',
-    //   },
-    // },
+    '/apiLocal/': {
+      // 要代理的地址
+      target: 'http://localhost:52663/',
+      // 配置了这个可以从 http 代理到 https
+      // 依赖 origin 的功能可能需要这个，比如 cookie
+      changeOrigin: true,
+      pathRewrite: {
+        '^/apiLocal': '/api',
+      },
+    },
+    // TODO: 乾坤代理地址
     '/childapi/api/': {
       // 要代理的地址
       target: 'http://localhost:52663/',
@@ -39,18 +39,6 @@ export default {
       changeOrigin: true,
       pathRewrite: {
         '^/childapi/api': '/api',
-      },
-    },
-  },
-  local: {
-    '/api/': {
-      // 要代理的地址
-      target: 'http://106.52.125.82:8080/',
-      // 配置了这个可以从 http 代理到 https
-      // 依赖 origin 的功能可能需要这个，比如 cookie
-      changeOrigin: true,
-      pathRewrite: {
-        '^/api': '/api',
       },
     },
   },
