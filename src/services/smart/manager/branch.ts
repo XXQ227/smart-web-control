@@ -19,3 +19,13 @@ export async function GetBranchInfo(body: { ID: number }, options?: { [key: stri
   });
 }
 
+
+/** 获取 branch 详情 */
+export async function addBranchAPI(body: APIManager.Branch, options?: { [key: string]: any }) {
+  return request(`/apiBase/branch/addBranch`, {
+    method: 'POST',
+    body,
+    ...(options || {}),
+  });
+}
+

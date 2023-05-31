@@ -1,5 +1,4 @@
 import React, {Fragment, useState} from 'react';
-import type {RouteChildrenProps} from 'react-router';
 import type {ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
@@ -20,37 +19,20 @@ const searchParams: APISearchBranch = {
     UserID: getUserID()
 };
 
-const BranchListIndex: React.FC<RouteChildrenProps> = () => {
+interface Props {
+    BankList: any[],
+}
 
+const BankIndex: React.FC<Props> = (props) => {
+    const { BankList } = props;
     const {
-        BranchList, getBranchList
+        // BankList
     } = useModel('manager.branch', (res: any) => ({
-        BranchList: res.BranchList,
-        getBranchList: res.getBranchList,
+        // BankList: res.BankList,
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [BranchListVO, setBranchListVO] = useState<APIBranch[]>(BranchList || []);
-
-    /**
-     * @Description: TODO 获取单票数据集合
-     * @author XXQ
-     * @date 2023/2/13
-     * @param params    参数
-     * @returns
-     */
-    async function handleGetBranchList(params: APISearchBranch) {
-        setLoading(true);
-        // TODO: 分页查询【参数页】
-        // params.PageNum = params.current || 1;
-        // params.pageSize = params.PageSize || 15;
-        // params.PageSize = params.PageSize || 15;
-        // const result: APIManager.BranchResult = await getBranchList(params);
-        // setBranchListVO(result.data);
-        setBranchListVO([]);
-        setLoading(false);
-        return [];
-    }
+    const [BankListVO, setBankListVO] = useState<any[]>(BankList || []);
 
     /**
      * @Description: TODO: 编辑 CV 信息
@@ -121,45 +103,26 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
     ];
 
     return (
-        <PageContainer
-            loading={false}
-            header={{
-                breadcrumb: {},
+        <ProTable<APIBranch>
+            rowKey={'ID'}
+            search={false}
+            options={false}
+            bordered={true}
+            loading={loading}
+            columns={columns}
+            params={searchParams}
+            dataSource={BankListVO}
+            headerTitle={'Bank Information'}
+            locale={{ emptyText: 'No Data' }}
+            className={'antd-pro-table-port-list'}
+            toolbar={{
+                actions: [
+                    <Button key={'add'} onClick={handleOperateBranch} type={'primary'} icon={<PlusOutlined/>}>
+                        Add Branch
+                    </Button>
+                ]
             }}
-        >
-            <ProCard className={'ant-card-pro-table'}>
-                <ProTable<APIBranch>
-                    rowKey={'ID'}
-                    search={false}
-                    options={false}
-                    bordered={true}
-                    loading={loading}
-                    columns={columns}
-                    params={searchParams}
-                    dataSource={BranchListVO}
-                    locale={{ emptyText: 'No Data' }}
-                    className={'antd-pro-table-port-list'}
-                    headerTitle={
-                        <Search
-                            placeholder='' enterButton="Search" loading={loading}
-                            onSearch={async (val: any) => {
-                                searchParams.Name = val;
-                                await handleGetBranchList(searchParams);
-                            }}/>
-                    }
-                    toolbar={{
-                        actions: [
-                            <Button key={'add'} onClick={handleOperateBranch} type={'primary'} icon={<PlusOutlined/>}>
-                                Add Branch
-                            </Button>
-                        ]
-                    }}
-                    pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
-                    // @ts-ignore
-                    request={(params: APISearchBranch) => handleGetBranchList(params)}
-                />
-            </ProCard>
-        </PageContainer>
+        />
     )
 }
-export default BranchListIndex;
+export default BankIndex;

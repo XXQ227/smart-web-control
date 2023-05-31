@@ -12,6 +12,7 @@ import {
 import {Button, Col, Form, message, Row, Space} from 'antd'
 import {useModel, history} from 'umi'
 import {getFormErrorMsg} from '@/utils/units'
+import BankIndex from '@/pages/sys-manager/branch/branch-form/bank'
 
 
 type APIBranch = APIManager.Branch;
@@ -23,10 +24,11 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
     const {current} = formRef;
     //region TODO: 数据层
     const {
-        getBranchInfo, BranchInfo,
+        getBranchInfo, BranchInfo, addBranch,
     } = useModel('manager.branch', (res: any) => ({
         BranchInfo: res.BranchInfo,
         getBranchInfo: res.getBranchInfo,
+        addBranch: res.addBranch,
     }));
 
     const [BranchInfoVO, setBranchInfoVO] = useState<APIBranch>(BranchInfo);
@@ -75,6 +77,13 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
      */
     const onFinish = async (val: any) => {
         console.log(val);
+        const result: API.Result = await addBranch(val);
+        console.log(result);
+        if (result.success) {
+            message.success('success');
+        } else {
+            message.error(result.data)
+        }
     }
 
     /**
@@ -124,7 +133,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                         <Col span={8}>
                             <ProFormText
                                 required
-                                name='name_full_en'
+                                name='nameFullEn'
                                 placeholder=''
                                 tooltip='length: 100'
                                 label='Name'
@@ -137,14 +146,14 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                                 placeholder=''
                                 label='Name Local'
                                 tooltip='length: 100'
-                                name='name_full_local'
+                                name='nameFullLocal'
                                 rules={[{required: true, message: 'Name Local'}]}
                             />
                         </Col>
                         <Col span={6}>
                             <ProFormText
                                 required
-                                name='tax_num'
+                                name='taxNum'
                                 placeholder=''
                                 label='Tax Num'
                                 tooltip='length: 30'
@@ -155,7 +164,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                             <ProFormSwitch
                                 placeholder=''
                                 label='Freezen'
-                                name='enable_flag'
+                                name='enableFlag'
                                 fieldProps={{
                                     checkedChildren: 'Yes',
                                     unCheckedChildren: 'No',
@@ -168,18 +177,68 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                             <ProFormText
                                 required
                                 placeholder=''
-                                label='AUC Num'
+                                label='Short Name'
                                 tooltip='length: 30'
-                                name='org_create_id'
+                                name='nameShortEn'
                                 rules={[{required: true, message: 'AUC Num'}]}
                             />
                         </Col>
                         <Col span={4}>
                             <ProFormText
                                 required
-                                name='org_id'
+                                placeholder=''
+                                label='Short Name Local'
+                                tooltip='length: 30'
+                                name='nameShortLocal'
+                                rules={[{required: true, message: 'AUC Num'}]}
+                            />
+                        </Col>
+                        <Col span={4}>
+                            <ProFormText
+                                required
+                                placeholder=''
+                                label='AUC Num'
+                                tooltip='length: 30'
+                                name='orgCreateId'
+                                rules={[{required: true, message: 'AUC Num'}]}
+                            />
+                        </Col>
+                        <Col span={4}>
+                            <ProFormText
+                                required
+                                placeholder=''
+                                label='Contact'
+                                tooltip='length: 30'
+                                name='contactName'
+                                rules={[{required: true, message: 'AUC Num'}]}
+                            />
+                        </Col>
+                        <Col span={4}>
+                            <ProFormText
+                                required
+                                placeholder=''
+                                label='Phone'
+                                tooltip='length: 30'
+                                name='phone'
+                                rules={[{required: true, message: 'AUC Num'}]}
+                            />
+                        </Col>
+                        <Col span={4}>
+                            <ProFormText
+                                required
+                                name='orgId'
                                 placeholder=''
                                 label='Oracle ID'
+                                tooltip='length: 30'
+                                rules={[{required: true, message: 'Oracle ID'}]}
+                            />
+                        </Col>
+                        <Col span={4}>
+                            <ProFormText
+                                required
+                                name='code'
+                                placeholder=''
+                                label='Code'
                                 tooltip='length: 30'
                                 rules={[{required: true, message: 'Oracle ID'}]}
                             />
@@ -188,6 +247,9 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                             <ProFormTextArea name='Address' placeholder='' label='address'/>
                         </Col>
                     </Row>
+                </ProCard>
+                <ProCard className={'ant-card-pro-table'}>
+                    <BankIndex BankList={[]}/>
                 </ProCard>
 
                 <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/branch/list'})}>返回</Button>}>

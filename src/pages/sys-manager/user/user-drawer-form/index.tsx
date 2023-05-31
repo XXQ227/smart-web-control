@@ -166,7 +166,7 @@ const UserDrawerForm: React.FC<Props> = (props) => {
                                     label='Department'
                                     id='department_id'
                                     name='department_id'
-                                    url={'/api/manage/web/user/queryUser'}
+                                    url={'/apiBase/user/queryUser'}
                                 />
                             </Col>
                             <Col span={6}>

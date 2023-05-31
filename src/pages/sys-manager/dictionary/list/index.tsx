@@ -10,27 +10,27 @@ import {history} from '@@/core/history'
 
 const {Search} = Input;
 
-type APIBranch = APIManager.Branch;
-type APISearchBranch = APIManager.SearchBranchParams;
+type APIDictionary = APIManager.Dictionary;
+type APISearchDictionary = APIManager.SearchDictionaryParams;
 
 
 // TODO: 获取单票集的请求参数
-const searchParams: APISearchBranch = {
+const searchParams: APISearchDictionary = {
     Name: '',
     UserID: getUserID()
 };
 
-const BranchListIndex: React.FC<RouteChildrenProps> = () => {
+const DictionaryIndex: React.FC<RouteChildrenProps> = () => {
 
     const {
-        BranchList, getBranchList
-    } = useModel('manager.branch', (res: any) => ({
-        BranchList: res.BranchList,
-        getBranchList: res.getBranchList,
+        DictionaryList, getDictionaryList
+    } = useModel('manager.dictionary', (res: any) => ({
+        DictionaryList: res.DictionaryList,
+        getDictionaryList: res.getDictionaryList,
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [BranchListVO, setBranchListVO] = useState<APIBranch[]>(BranchList || []);
+    const [DictionaryListVO, setDictionaryListVO] = useState<APIDictionary[]>(DictionaryList || []);
 
     /**
      * @Description: TODO 获取单票数据集合
@@ -39,15 +39,15 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
      * @param params    参数
      * @returns
      */
-    async function handleGetBranchList(params: APISearchBranch) {
+    async function handleGetDictionaryList(params: APISearchDictionary) {
         setLoading(true);
         // TODO: 分页查询【参数页】
         // params.PageNum = params.current || 1;
         // params.pageSize = params.PageSize || 15;
         // params.PageSize = params.PageSize || 15;
-        // const result: APIManager.BranchResult = await getBranchList(params);
-        // setBranchListVO(result.data);
-        setBranchListVO([]);
+        // const result: APIManager.DictionaryResult = await getDictionaryList(params);
+        // setDictionaryListVO(result.data);
+        setDictionaryListVO([]);
         setLoading(false);
         return [];
     }
@@ -60,16 +60,16 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
      * @param state     操作状态
      * @returns
      */
-    const handleOperateBranch = async (record: any, state: string = 'form') => {
+    const handleOperateDictionary = async (record: any, state: string = 'form') => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        const url = `/manager/branch/${state}/${btoa(record?.ID || 0)}`;
+        const url = `/manager/Dictionary/${state}/${btoa(record?.ID || 0)}`;
         // TODO: 跳转页面<带参数>
         // @ts-ignore
         history.push({pathname: url})
     }
 
 
-    const columns: ProColumns<APIBranch>[] = [
+    const columns: ProColumns<APIDictionary>[] = [
         {
             title: 'Name',
             dataIndex: 'name_full_en',
@@ -106,9 +106,9 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
             render: (text, record) => {
                 return (
                     <Fragment>
-                        <EditOutlined color={'#1765AE'} onClick={() => handleOperateBranch(record)}/>
+                        <EditOutlined color={'#1765AE'} onClick={() => handleOperateDictionary(record)}/>
                         <Popconfirm
-                            onConfirm={() => handleOperateBranch(record, 'delete')}
+                            onConfirm={() => handleOperateDictionary(record, 'delete')}
                             title="Sure to delete?" okText={'Yes'} cancelText={'No'}
                         >
                             <Divider type='vertical'/>
@@ -128,7 +128,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
             }}
         >
             <ProCard className={'ant-card-pro-table'}>
-                <ProTable<APIBranch>
+                <ProTable<APIDictionary>
                     rowKey={'ID'}
                     search={false}
                     options={false}
@@ -136,7 +136,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
                     loading={loading}
                     columns={columns}
                     params={searchParams}
-                    dataSource={BranchListVO}
+                    dataSource={DictionaryListVO}
                     locale={{ emptyText: 'No Data' }}
                     className={'antd-pro-table-port-list'}
                     headerTitle={
@@ -144,22 +144,22 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
                             placeholder='' enterButton="Search" loading={loading}
                             onSearch={async (val: any) => {
                                 searchParams.Name = val;
-                                await handleGetBranchList(searchParams);
+                                await handleGetDictionaryList(searchParams);
                             }}/>
                     }
                     toolbar={{
                         actions: [
-                            <Button key={'add'} onClick={handleOperateBranch} type={'primary'} icon={<PlusOutlined/>}>
-                                Add Branch
+                            <Button key={'add'} onClick={handleOperateDictionary} type={'primary'} icon={<PlusOutlined/>}>
+                                Add Dictionary
                             </Button>
                         ]
                     }}
                     pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
                     // @ts-ignore
-                    request={(params: APISearchBranch) => handleGetBranchList(params)}
+                    request={(params: APISearchDictionary) => handleGetDictionaryList(params)}
                 />
             </ProCard>
         </PageContainer>
     )
 }
-export default BranchListIndex;
+export default DictionaryIndex;

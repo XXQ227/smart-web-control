@@ -340,29 +340,29 @@ declare namespace APIManager {
     type Branch = {
         /** 列表的内容总数 */
         id: number | null;                  // TODO: 主键 ID
-        contact_name?: string;              // TODO: 联系人
+        contactName?: string;              // TODO: 联系人
         phone?: string;                     // TODO: 电话
         address?: string;                   // TODO: 公司地址
-        city_name?: string;                 // TODO: 公司所在城市
+        cityName?: string;                 // TODO: 公司所在城市
         code?: string;                      // TODO: 分公司编码
-        default_port_id?: number | null;    // TODO: 公司所在区域的默认港口
-        func_currency_name?: string;        // TODO: 本位币
-        name_full_en?: string;              // TODO: 公司全称(英文)
-        name_full_local?: string;           // TODO: 公司全称(当地)
-        name_short_en?: string;             // TODO: 公司简称(英文)
-        name_short_local?: string;          // TODO: 公司简称(当地)
-        org_id?: string;                    // TODO: 公司 oracle id
-        org_create_id?: string;             // TODO: AUC组织识别码
-        tax_num?: string;                   // TODO: 统一社会信用码，或税号
-        bank_account_ids?: string;          // TODO: 公司银行id集合
-        enable_flag?: string;               // TODO: 启用标识
-        delete_flag?: string;               // TODO: 删除标识
-        create_user_id?: number | null;     // TODO: 创建人ID
-        create_user_name?: string;          // TODO: 创建人名称
-        create_time?: string;               // TODO: 创建时间
-        update_user_id?: number | null;     // TODO: 修改人ID
-        update_user_name?: string;          // TODO: 修改人名称
-        update_time?: string;               // TODO: 修改时间
+        defaultPortId?: number | null;    // TODO: 公司所在区域的默认港口
+        funcCurrencyName?: string;        // TODO: 本位币
+        nameFullEn?: string;              // TODO: 公司全称(英文)
+        nameFullLocal?: string;           // TODO: 公司全称(当地)
+        nameShortEn?: string;             // TODO: 公司简称(英文)
+        nameShortLocal?: string;          // TODO: 公司简称(当地)
+        orgId?: string;                    // TODO: 公司 oracle id
+        orgCreateId?: string;             // TODO: AUC组织识别码
+        taxNum?: string;                   // TODO: 统一社会信用码，或税号
+        bankAccountIds?: string;          // TODO: 公司银行id集合
+        enableFlag?: string;               // TODO: 启用标识
+        deleteFlag?: string;               // TODO: 删除标识
+        createUserId?: number | null;     // TODO: 创建人ID
+        createUserName?: string;          // TODO: 创建人名称
+        createTime?: string;               // TODO: 创建时间
+        updateUserId?: number | null;     // TODO: 修改人ID
+        updateUserName?: string;          // TODO: 修改人名称
+        updateTime?: string;               // TODO: 修改时间
     };
     //endregion
 
@@ -437,7 +437,45 @@ declare namespace APIManager {
     }
     //endregion
 
-    //region TODO:
+    //region TODO: 字典
+    type SearchDictionaryParams = {
+        UserID: number,
+        Name: string,
+    }
+    type DictionaryResult = {
+        data: Dictionary[];
+        /** 列表的内容总数 */
+        total: number | null;
+        /** 返回结果 */
+        success?: boolean;
+    };
+    type Dictionary = {
+        /** 列表的内容总数 */
+        id: number | null;                  // TODO: 主键 ID
+        contactName?: string;              // TODO: 联系人
+        phone?: string;                     // TODO: 电话
+        address?: string;                   // TODO: 公司地址
+        cityName?: string;                 // TODO: 公司所在城市
+        code?: string;                      // TODO: 分公司编码
+        defaultPortId?: number | null;    // TODO: 公司所在区域的默认港口
+        funcCurrencyName?: string;        // TODO: 本位币
+        nameFullEn?: string;              // TODO: 公司全称(英文)
+        nameFullLocal?: string;           // TODO: 公司全称(当地)
+        nameShortEn?: string;             // TODO: 公司简称(英文)
+        nameShortLocal?: string;          // TODO: 公司简称(当地)
+        orgId?: string;                    // TODO: 公司 oracle id
+        orgCreateId?: string;             // TODO: AUC组织识别码
+        taxNum?: string;                   // TODO: 统一社会信用码，或税号
+        bankAccountIds?: string;          // TODO: 公司银行id集合
+        enableFlag?: string;               // TODO: 启用标识
+        deleteFlag?: string;               // TODO: 删除标识
+        createUserId?: number | null;     // TODO: 创建人ID
+        createUserName?: string;          // TODO: 创建人名称
+        createTime?: string;               // TODO: 创建时间
+        updateUserId?: number | null;     // TODO: 修改人ID
+        updateUserName?: string;          // TODO: 修改人名称
+        updateTime?: string;               // TODO: 修改时间
+    };
     //endregion
 
     //region TODO:
