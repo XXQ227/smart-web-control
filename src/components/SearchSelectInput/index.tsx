@@ -6,6 +6,7 @@ import styles from './index.less';
 import classNames from 'classnames';
 import {LoadingOutlined} from '@ant-design/icons'
 import {fetchData} from '@/utils/fetch-utils'
+import {IconFont} from "@/utils/units";
 
 export interface DebounceSelectProps<ValueType = any>
     extends Omit<SelectProps<ValueType | ValueType[]>, 'options' | 'children'> {
@@ -43,7 +44,6 @@ function DebounceSelect<
          * @returns
          */
         const loadOptions = (val: string) => {
-            console.log(val);
             fetchRef.current += 1;
             const fetchId = fetchRef.current;
             // TODO: 初始数据，且做【loading】
@@ -163,7 +163,6 @@ function DebounceSelect<
         }
     }
 
-    console.log(valueObj);
     return (
         <Fragment>
             <Input
@@ -181,8 +180,9 @@ function DebounceSelect<
                 // TODO: 失去焦点
                 onBlur={()=> toggleOption('hide')}
                 // TODO: 获取焦点
+                // onFocus={handleFocus}
                 onFocus={()=> valueObj.value ? debounceFetcher(valueObj.value) : null}
-                prefix={fetching ? <LoadingOutlined color={'rgba(0,0,0,.25)'} /> : null}
+                prefix={fetching ? <LoadingOutlined color={'rgba(0,0,0,.25)'} /> : <IconFont type={'icon-search'} />}
             />
             <div className={classNames(wrapClass)} style={{ minHeight: '100%', top: 32, left: '0' }}>
                 <ul className="ant-select-dropdown-menu ant-select-dropdown-menu-customize">
@@ -272,7 +272,6 @@ const SearchInput: React.FC<Props> = (props) => {
      */
     const handleChange = (val: any, option?: any) => {
         setValue(val);
-        console.log(val, option);
         if (props.handleChangeData) props.handleChangeData(val, option);
     }
 

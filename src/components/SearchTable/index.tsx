@@ -201,7 +201,6 @@ const SearchTable: React.FC<Props> = (props) => {
                 value={showText}
                 autoComplete={'off'}
                 prefix={<IconFont type={'icon-search'} />}
-                // prefix={props.prefix}
                 onClick={handleModal}
             />
             {

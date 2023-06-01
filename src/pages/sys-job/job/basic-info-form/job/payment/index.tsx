@@ -103,7 +103,6 @@ const Payment: React.FC<Props> = (props) => {
                                     query={{ TransportTypeID }}
                                     text={NBasicInfo?.Terms?.PayableAtName}
                                     url={"/api/MCommon/GetPortCityOrCountry"}
-                                    prefix={<IconFont type={'icon-search'} />}
                                     className={'textRight'}
                                     handleChangeData={(val: any, option: any) => handleChange('ServiceTypeID', val, option)}
                                 />

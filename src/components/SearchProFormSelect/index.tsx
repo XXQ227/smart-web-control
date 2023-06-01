@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {ProFormSelect} from '@ant-design/pro-components'
-import styles from '@/pages/sys-job/job/basic-info-form/style.less'
 import {fetchData} from '@/utils/fetch-utils'
-
 
 // TODO: 父组件传回来的值
 interface Props {
@@ -72,7 +70,6 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
             disabled={disabled}
             // initialValue={valInput}
             initialValue={valueObj}
-            className={styles.mySelect}
             placeholder={placeholder || ""}
             fieldProps={{
                 showArrow: false,

@@ -3,6 +3,7 @@ import Basic from "./basic";
 import Pickup from "./pickup";
 import Ports from "./port";
 import Containers from "./containers";
+import BillOfLoading from "./bill-of-loading";
 
 // const FormItem = Form.Item;
 interface Props {
@@ -50,6 +51,13 @@ const SeaExport: React.FC<Props> = (props) => {
            <Containers
                CTNPlanList={CTNPlanList}
                CTNActualList={CTNActualList}
+               NBasicInfo={NBasicInfo}
+           />
+
+           {/* 收发通信息 */}
+           <BillOfLoading
+               title={'Bill Of Loading'}
+               Port={Port}
                NBasicInfo={NBasicInfo}
            />
        </Fragment>
