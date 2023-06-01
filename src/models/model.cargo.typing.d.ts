@@ -162,6 +162,8 @@ declare namespace APIModel {
         Carrier?: Carrier,
         Port?: Port,
         Terms?: Terms,
+        MBSCN?: MBSCN,
+        HBSCN?: HBSCN,
     }
     type CargoInfo = {
         HSCode?: string,
@@ -237,6 +239,15 @@ declare namespace APIModel {
         ServiceTypeName: string,
         PayableAtID: number,
         PayableAtName: string,
+    }
+    type MBSCN = {
+        Shipper?: string,
+        Consignee?: string,
+        NotifyParty?: string,
+        NotifyParty2?: string,
+    }
+    type HBSCN = {
+        PODAgent?: string,
     }
     type BatchData = {
         shipmentNo: string;
