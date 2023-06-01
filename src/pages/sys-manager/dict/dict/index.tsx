@@ -65,10 +65,10 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
     const handleAddDict = () => {
         const addDataObj: APIDict = {
             createUserId: getUserID(),
-            deleteFlag: false,
-            dict_code: '',
-            dict_name: '',
-            enableFlag: false,
+            deleteFlag: 0,
+            dictCode: '',
+            dictName: '',
+            enableFlag: 0,
             id: ID_STRING(),
             remark: '',
             updateUserId: getUserID(),
@@ -110,14 +110,16 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
             .then(async ()=> {
                 let result: API.Result;
                 const newData: APIDict[] = ls.cloneDeep(DictListVO);
+                // TODO: 保存、添加 公共参数
+                const params: any = {dictName: record.dictName, dictCode: record.dictCode, remark: record.remark};
+                // TODO: 添加
                 if (state === 'add') {
-                    // TODO: 添加
-                    record.id = '';
-                    result = await addDict(record);
+                    result = await addDict(params);
                     record.id = result.data;
                 } else {
                     // TODO: 编辑
-                    result = await editDict(record);
+                    params.id = record.id;
+                    result = await editDict(params);
                 }
                 record.isChange = false;
                 newData.splice(index, 1, record);
@@ -127,10 +129,10 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                 } else {
                     message.error(result.data);
                 }
-            }).catch((err: any)=>{
-            console.log(err);
-            message.error(getFormErrorMsg(err));
-        })
+            })
+            .catch((err: any) => {
+                message.error(getFormErrorMsg(err));
+            })
     }
     /**
      * @Description: TODO: 删除 / 冻结
@@ -171,6 +173,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
             title: 'Name',
             dataIndex: 'dictName',
             align: 'left',
+            width: 300,
             tooltip: 'Name is required',
             className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
@@ -190,7 +193,8 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
         {
             title: 'Code',
             dataIndex: 'dictCode',
-            align: 'center',
+            align: 'left',
+            width: 300,
             // TODO: 如果是必填字段，回下下面两个
             tooltip: 'Code is required',
             className: 'ant-columns-required',
@@ -205,6 +209,22 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                     rules={[{required: true, message: 'Code'}]}
                     fieldProps={{
                         onChange: (val: any) => handleOperateDict(index, record, 'dictCode', val)
+                    }}
+                />
+        },
+        {
+            title: 'Remark',
+            dataIndex: 'remark',
+            align: 'left',
+            render: (text: any, record: any, index) =>
+                <ProFormText
+                    placeholder=''
+                    disabled={record.enableFlag}
+                    id={`remark${record.id}`}
+                    name={`remark${record.id}`}
+                    initialValue={record.remark}
+                    fieldProps={{
+                        onChange: (val: any) => handleOperateDict(index, record, 'remark', val)
                     }}
                 />
         },
@@ -244,6 +264,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
         },
     ];
 
+    console.log(DictListVO);
     return (
         <PageContainer
             loading={false}

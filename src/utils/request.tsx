@@ -121,7 +121,7 @@ export function setAPIResponse(response: any) {
             size: response?.data?.size,
             total: response?.data?.total,
             // TODO: 后台返回的结果数据
-            data: response?.data?.records,
+            data: response?.data?.records || response?.data,
         }
     }
     return result;

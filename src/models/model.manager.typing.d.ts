@@ -452,18 +452,18 @@ declare namespace APIManager {
     };
     type Dict = {
         id: string,
-        dict_name: string,
-        dict_code: string,
+        dictName: string,
+        dictCode: string,
         remark: string,
-        deleteFlag: boolean,
-        enableFlag: boolean,
-        createUserId: number | null,
+        deleteFlag?: number,
+        enableFlag?: number,
+        createUserId?: number | null,
         createUserName?: string,
         createTime?: string,
-        updateUserId: number | null,
+        updateUserId?: number | null,
         updateUserName?: string,
         updateTime?: string,
-        isChange: boolean
+        isChange?: boolean
     };
     //endregion
 
