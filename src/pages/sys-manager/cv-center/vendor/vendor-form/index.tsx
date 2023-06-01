@@ -159,7 +159,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
     //region TODO: 显示隐藏：{SCAC, IATA}
     //endregion
     // TODO: 返回列表集合
-    const returnURL = pathname.substring(0, pathname.indexOf('/form')) + '/list';
+    const returnURL = pathname.substring(0, pathname.indexOf('/form')) + '/dict';
 
     return (
         <PageContainer

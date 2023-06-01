@@ -228,7 +228,7 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
 
                 <FooterToolbar
                     extra={<Button
-                        onClick={() => push({pathname: '/manager/charge-template/list'})}>返回</Button>}>
+                        onClick={() => push({pathname: '/manager/charge-template/dict'})}>返回</Button>}>
                     <Button type={'primary'} htmlType={'submit'}>提交</Button>
                 </FooterToolbar>
             </ProForm>

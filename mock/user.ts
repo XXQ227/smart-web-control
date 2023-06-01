@@ -168,7 +168,7 @@ export default {
       status: 500,
       error: 'error',
       message: 'error',
-      path: '/base/category/list',
+      path: '/base/category/dict',
     });
   },
   'GET /api/404': (req: Request, res: Response) => {
@@ -177,7 +177,7 @@ export default {
       status: 404,
       error: 'Not Found',
       message: 'No message available',
-      path: '/base/category/list/2121212',
+      path: '/base/category/dict/2121212',
     });
   },
   'GET /api/403': (req: Request, res: Response) => {
@@ -186,7 +186,7 @@ export default {
       status: 403,
       error: 'Forbidden',
       message: 'Forbidden',
-      path: '/base/category/list',
+      path: '/base/category/dict',
     });
   },
   'GET /api/401': (req: Request, res: Response) => {
@@ -195,7 +195,7 @@ export default {
       status: 401,
       error: 'Unauthorized',
       message: 'Unauthorized',
-      path: '/base/category/list',
+      path: '/base/category/dict',
     });
   },
 

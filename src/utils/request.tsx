@@ -98,7 +98,7 @@ export function request(url: string, options: any) {
  * @param response  接口返回的数据
  * @returns
  */
-function setAPIResponse(response: any) {
+export function setAPIResponse(response: any) {
     let result: API.Result = {
         code: '',
         current: 0,

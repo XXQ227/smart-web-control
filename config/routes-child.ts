@@ -130,20 +130,24 @@ const manager_route = {
             path: '/manager/branch/form/:id',
             component: './sys-manager/branch/branch-form',
         },
-        // TODO: 客户、供应商
-        // {
-        //     name: 'cv_center_list',
-        //     icon: 'icon-cv-center',
-        //     path: '/manager/cv-center/list',
-        //     component: './sys-manager/cv-center/customer-list',
-        // },
-        // {
-        //     hideInMenu: true,   // 隐藏不显示
-        //     name: 'cv_center_info',
-        //     icon: 'icon-cv-center',
-        //     path: '/manager/cv-center/form/:id',
-        //     component: './sys-manager/cv-center/vendor-form',
-        // },
+        // TODO: 字典表数据维护
+        {
+            name: 'dict',
+            icon: 'icon-dictionary',
+            path: '/manager/dict',
+            routes: [
+                {
+                    name: 'type',
+                    path: '/manager/dict/dict',
+                    component: './sys-manager/dict/dict',
+                },
+                {
+                    name: 'detail',
+                    path: '/manager/dict/detail',
+                    component: './sys-manager/dict/dict-detail',
+                },
+            ]
+        },
         {
             name: 'cv_center',
             icon: 'icon-cv-center',

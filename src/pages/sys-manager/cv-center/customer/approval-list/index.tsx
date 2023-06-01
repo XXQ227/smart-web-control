@@ -164,12 +164,8 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
     );
 
     const items: TabsProps['items'] = [
-        {key: '10', label: 'Draft', children: CVProTable('10')},
-        {key: '2', label: 'Approved', children: CVProTable('2')},
-        {key: '3', label: 'Rejected', children: CVProTable('3')},
-        {key: '4', label: 'Re-Submit', children: CVProTable('4')},
-        {key: '5', label: 'Approved', children: CVProTable('5')},
-        {key: '6', label: 'Update', children: CVProTable('6')},
+        {key: '10', label: 'Pending', children: CVProTable('10')},
+        {key: '2', label: 'Approval', children: CVProTable('2')},
     ];
 
 

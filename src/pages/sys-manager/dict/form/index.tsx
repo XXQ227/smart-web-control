@@ -12,11 +12,10 @@ import {
 import {Button, Col, Form, message, Row, Space} from 'antd'
 import {useModel, history} from 'umi'
 import {getFormErrorMsg} from '@/utils/units'
-import BankIndex from '@/pages/sys-manager/branch/branch-form/bank'
 
 
-type APIBranch = APIManager.Branch;
-const BranchForm: React.FC<RouteChildrenProps> = (props) => {
+type APIDictionary = APIManager.Dictionary;
+const DictionaryForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}} = props;
     const [form] = Form.useForm();
@@ -24,14 +23,14 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
     const {current} = formRef;
     //region TODO: 数据层
     const {
-        getBranchInfo, BranchInfo, addBranch,
-    } = useModel('manager.branch', (res: any) => ({
-        BranchInfo: res.BranchInfo,
-        getBranchInfo: res.getBranchInfo,
-        addBranch: res.addBranch,
+        getDictionaryInfo, DictionaryInfo, addDictionary,
+    } = useModel('manager.dict', (res: any) => ({
+        DictionaryInfo: res.DictionaryInfo,
+        getDictionaryInfo: res.getDictionaryInfo,
+        addDictionary: res.addDictionary,
     }));
 
-    const [BranchInfoVO, setBranchInfoVO] = useState<APIBranch>(BranchInfo);
+    const [DictionaryInfoVO, setDictionaryInfoVO] = useState<APIDictionary>(DictionaryInfo);
     const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
 
 
@@ -47,9 +46,9 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
      * @date 2023/5/5
      * @returns
      */
-    const handleGetBranchInfo = async () => {
-        const result: any = await getBranchInfo({ID: Number(atob(params?.id))});
-        setBranchInfoVO(result);
+    const handleGetDictionaryInfo = async () => {
+        const result: any = await getDictionaryInfo({ID: Number(atob(params?.id))});
+        setDictionaryInfoVO(result);
         return result;
     }
 
@@ -77,7 +76,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
      */
     const onFinish = async (val: any) => {
         console.log(val);
-        const result: API.Result = await addBranch(val);
+        const result: API.Result = await addDictionary(val);
         console.log(result);
         if (result.success) {
             message.success('success');
@@ -117,7 +116,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                 // TODO: 焦点给到第一个控件
                 autoFocusFirstInput
                 // TODO: 设置默认值
-                initialValues={BranchInfoVO}
+                initialValues={DictionaryInfoVO}
                 formKey={'cv-center-information'}
                 // TODO: 空间有改数据时触动
                 onValuesChange={handleProFormValueChange}
@@ -125,7 +124,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 // TODO: 向后台请求数据
-                // request={async () => handleGetBranchInfo()}
+                // request={async () => handleGetDictionaryInfo()}
             >
                 <ProCard title={'Name & Code'} className={'ant-card'}>
                     {/** // TODO: CV Name、CV Name (For Print)、Short Name、CV Identity */}
@@ -248,11 +247,8 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                         </Col>
                     </Row>
                 </ProCard>
-                <ProCard className={'ant-card-pro-table'}>
-                    <BankIndex BankList={[]}/>
-                </ProCard>
 
-                <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/branch/dict'})}>返回</Button>}>
+                <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/Dictionary/dict'})}>返回</Button>}>
                     <Space>
                         <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
                     </Space>
@@ -261,4 +257,4 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
         </PageContainer>
     )
 }
-export default BranchForm;
+export default DictionaryForm;

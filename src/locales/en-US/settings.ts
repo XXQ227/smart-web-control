@@ -54,7 +54,7 @@ export default {
     'System messages will be notified in the form of a station letter',
   'app.settings.notification.todo': 'To-do Notification',
   'app.settings.notification.todo-description':
-    'The to-do list will be notified in the form of a letter from the station',
+    'The to-do dict will be notified in the form of a letter from the station',
   'app.settings.open': 'Open',
   'app.settings.close': 'Close',
 };

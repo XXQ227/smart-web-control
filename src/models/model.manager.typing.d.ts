@@ -438,43 +438,32 @@ declare namespace APIManager {
     //endregion
 
     //region TODO: 字典
-    type SearchDictionaryParams = {
+    type SearchDictParams = {
         UserID: number,
-        Name: string,
+        dictName: string,
+        dictCode: string,
     }
-    type DictionaryResult = {
-        data: Dictionary[];
+    type DictResult = {
+        data: Dict[];
         /** 列表的内容总数 */
         total: number | null;
         /** 返回结果 */
         success?: boolean;
     };
-    type Dictionary = {
-        /** 列表的内容总数 */
-        id: number | null;                  // TODO: 主键 ID
-        contactName?: string;              // TODO: 联系人
-        phone?: string;                     // TODO: 电话
-        address?: string;                   // TODO: 公司地址
-        cityName?: string;                 // TODO: 公司所在城市
-        code?: string;                      // TODO: 分公司编码
-        defaultPortId?: number | null;    // TODO: 公司所在区域的默认港口
-        funcCurrencyName?: string;        // TODO: 本位币
-        nameFullEn?: string;              // TODO: 公司全称(英文)
-        nameFullLocal?: string;           // TODO: 公司全称(当地)
-        nameShortEn?: string;             // TODO: 公司简称(英文)
-        nameShortLocal?: string;          // TODO: 公司简称(当地)
-        orgId?: string;                    // TODO: 公司 oracle id
-        orgCreateId?: string;             // TODO: AUC组织识别码
-        taxNum?: string;                   // TODO: 统一社会信用码，或税号
-        bankAccountIds?: string;          // TODO: 公司银行id集合
-        enableFlag?: string;               // TODO: 启用标识
-        deleteFlag?: string;               // TODO: 删除标识
-        createUserId?: number | null;     // TODO: 创建人ID
-        createUserName?: string;          // TODO: 创建人名称
-        createTime?: string;               // TODO: 创建时间
-        updateUserId?: number | null;     // TODO: 修改人ID
-        updateUserName?: string;          // TODO: 修改人名称
-        updateTime?: string;               // TODO: 修改时间
+    type Dict = {
+        id: string,
+        dict_name: string,
+        dict_code: string,
+        remark: string,
+        deleteFlag: boolean,
+        enableFlag: boolean,
+        createUserId: number | null,
+        createUserName?: string,
+        createTime?: string,
+        updateUserId: number | null,
+        updateUserName?: string,
+        updateTime?: string,
+        isChange: boolean
     };
     //endregion
 

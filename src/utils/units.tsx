@@ -4,7 +4,7 @@ import {createFromIconfontCN} from '@ant-design/icons';
 import {Descriptions} from "antd";
 import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 
-export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_a0ihf104lns.js';
+export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_xqqiu30i83.js';
 
 // TODO: 自定义图标使用 【For Example: <CustomizeIcon type={'icon-create'} />】
 export const CustomizeIcon = createFromIconfontCN({
@@ -15,7 +15,7 @@ export const LOCAL_LANGUAGE = false;
 // export const LOCAL_LANGUAGE = navigator.language === 'en-US';
 
 // TODO: 定义字符串 id <时间戳字符串>
-export const ID_STRING = () => Date.now().toString();
+export const ID_STRING = () => 'ID_' + Date.now().toString();
 
 // TODO: 栅格布局
 export const rowGrid = { xs: 8, sm: 16, md: 24, lg: 32 };

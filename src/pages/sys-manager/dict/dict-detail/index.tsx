@@ -20,11 +20,11 @@ const searchParams: APISearchDictionary = {
     UserID: getUserID()
 };
 
-const DictionaryIndex: React.FC<RouteChildrenProps> = () => {
+const DictionaryDetailIndex: React.FC<RouteChildrenProps> = () => {
 
     const {
         DictionaryList, getDictionaryList
-    } = useModel('manager.dictionary', (res: any) => ({
+    } = useModel('manager.dict', (res: any) => ({
         DictionaryList: res.DictionaryList,
         getDictionaryList: res.getDictionaryList,
     }));
@@ -45,11 +45,11 @@ const DictionaryIndex: React.FC<RouteChildrenProps> = () => {
         // params.PageNum = params.current || 1;
         // params.pageSize = params.PageSize || 15;
         // params.PageSize = params.PageSize || 15;
-        // const result: APIManager.DictionaryResult = await getDictionaryList(params);
-        // setDictionaryListVO(result.data);
-        setDictionaryListVO([]);
+        // const result: API.Result = await getDictionaryList(params);
+        const result: any = {};
+        setDictionaryListVO(result.data || []);
         setLoading(false);
-        return [];
+        return result;
     }
 
     /**
@@ -162,4 +162,4 @@ const DictionaryIndex: React.FC<RouteChildrenProps> = () => {
         </PageContainer>
     )
 }
-export default DictionaryIndex;
+export default DictionaryDetailIndex;
