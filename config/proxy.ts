@@ -41,7 +41,8 @@ export default {
     // TODO: Smart 1.0 后台地址
     '/apiLocal/': {
       // 要代理的地址
-      target: 'http://localhost:52663/',
+      // target: 'http://localhost:52663/',
+      target: 'http://cargo2.sinotranshk.com/',
       // 配置了这个可以从 http 代理到 https
       // 依赖 origin 的功能可能需要这个，比如 cookie
       changeOrigin: true,

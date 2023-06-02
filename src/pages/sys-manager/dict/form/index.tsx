@@ -81,7 +81,7 @@ const DictionaryForm: React.FC<RouteChildrenProps> = (props) => {
         if (result.success) {
             message.success('success');
         } else {
-            message.error(result.data)
+            message.error(result.exceptionTip)
         }
     }
 

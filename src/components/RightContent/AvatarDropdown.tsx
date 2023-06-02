@@ -21,8 +21,8 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
     const onMenuClick = (key: string) => {
         // 退出登录，并且将当前的 url 保存
         if (key === 'logout') {
-            const logout = users.logout();
-            if (logout) {
+            // const logout = users.logout();
+            if (true) {
                 message.success('Success!');
                 history.push(`/user/login`);
             }

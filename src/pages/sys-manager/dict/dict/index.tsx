@@ -18,7 +18,6 @@ type APISearchDict = APIManager.SearchDictParams;
 
 // TODO: 获取单票集的请求参数
 const searchParams: APISearchDict = {
-    UserID: getUserID(),
     dictName: '',
     dictCode: '',
 };
@@ -127,7 +126,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                     message.success('success');
                     setDictListVO(newData);
                 } else {
-                    message.error(result.data);
+                    message.error(result.exceptionTip);
                 }
             })
             .catch((err: any) => {
@@ -153,17 +152,17 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
             result = await deleteDict(params);
             newData.splice(index, 1);
         } else {
-            params.operate = !record.enableFlag;
+            params.operate = record.enableFlag ? 0 : 1;
             result = await operateDict(params);
             // TODO: 冻结成功后，把当前行冻结状态调整
-            record.enableFlag = !record.enableFlag;
+            record.enableFlag = params.operate;
             newData.splice(index, 1, record);
         }
         if (result.success) {
             message.success('success');
             setDictListVO(newData);
         } else {
-            message.error(result.data);
+            message.error(result.exceptionTip);
         }
     }
 

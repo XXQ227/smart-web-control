@@ -14,7 +14,7 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
   });
 }
 export async function loginSmart(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request(`/api/User/Login?${stringify(body)}`, {
+  return request(`/apiLocal/User/Login?${stringify(body)}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

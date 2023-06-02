@@ -10,27 +10,30 @@ import {history} from '@@/core/history'
 
 const {Search} = Input;
 
-type APIDictionary = APIManager.Dictionary;
-type APISearchDictionary = APIManager.SearchDictionaryParams;
+type APIDictDetail = APIManager.DictDetail;
+type APISearchDictDetail = APIManager.SearchDictDetailParams;
 
 
 // TODO: 获取单票集的请求参数
-const searchParams: APISearchDictionary = {
-    Name: '',
+const searchParams: APISearchDictDetail = {
+    name: '',
     UserID: getUserID()
 };
 
-const DictionaryDetailIndex: React.FC<RouteChildrenProps> = () => {
+const DictDetailDetailIndex: React.FC<RouteChildrenProps> = () => {
 
     const {
-        DictionaryList, getDictionaryList
+        queryDictDetail, addDictDetail, editDictDetail, deleteDictDetail, operateDictDetail,
     } = useModel('manager.dict', (res: any) => ({
-        DictionaryList: res.DictionaryList,
-        getDictionaryList: res.getDictionaryList,
+        queryDictDetail: res.queryDictDetail,
+        addDictDetail: res.addDictDetail,
+        editDictDetail: res.editDictDetail,
+        deleteDictDetail: res.deleteDictDetail,
+        operateDictDetail: res.operateDictDetail,
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [DictionaryListVO, setDictionaryListVO] = useState<APIDictionary[]>(DictionaryList || []);
+    const [DictDetailListVO, setDictDetailListVO] = useState<APIDictDetail[]>([]);
 
     /**
      * @Description: TODO 获取单票数据集合
@@ -39,15 +42,14 @@ const DictionaryDetailIndex: React.FC<RouteChildrenProps> = () => {
      * @param params    参数
      * @returns
      */
-    async function handleGetDictionaryList(params: APISearchDictionary) {
+    async function handleGetDictDetailList(params: APISearchDictDetail) {
         setLoading(true);
         // TODO: 分页查询【参数页】
         // params.PageNum = params.current || 1;
         // params.pageSize = params.PageSize || 15;
         // params.PageSize = params.PageSize || 15;
-        // const result: API.Result = await getDictionaryList(params);
-        const result: any = {};
-        setDictionaryListVO(result.data || []);
+        const result: API.Result = await queryDictDetail(params);
+        setDictDetailListVO(result.data || []);
         setLoading(false);
         return result;
     }
@@ -60,30 +62,30 @@ const DictionaryDetailIndex: React.FC<RouteChildrenProps> = () => {
      * @param state     操作状态
      * @returns
      */
-    const handleOperateDictionary = async (record: any, state: string = 'form') => {
+    const handleOperateDictDetail = async (record: any, state: string = 'form') => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        const url = `/manager/Dictionary/${state}/${btoa(record?.ID || 0)}`;
+        const url = `/manager/DictDetail/${state}/${btoa(record?.ID || 0)}`;
         // TODO: 跳转页面<带参数>
         // @ts-ignore
         history.push({pathname: url})
     }
 
 
-    const columns: ProColumns<APIDictionary>[] = [
+    const columns: ProColumns<APIDictDetail>[] = [
         {
             title: 'Name',
-            dataIndex: 'name_full_en',
+            dataIndex: 'dictLabel',
             align: 'left',
         },
         {
             title: 'Short Name',
-            dataIndex: 'name_short_en',
+            dataIndex: 'dictName',
             width: 200,
             align: 'center',
         },
         {
             title: 'Currency',
-            dataIndex: 'func_currency_name',
+            dataIndex: 'remark',
             width: 100,
             align: 'center',
         },
@@ -106,9 +108,9 @@ const DictionaryDetailIndex: React.FC<RouteChildrenProps> = () => {
             render: (text, record) => {
                 return (
                     <Fragment>
-                        <EditOutlined color={'#1765AE'} onClick={() => handleOperateDictionary(record)}/>
+                        <EditOutlined color={'#1765AE'} onClick={() => handleOperateDictDetail(record)}/>
                         <Popconfirm
-                            onConfirm={() => handleOperateDictionary(record, 'delete')}
+                            onConfirm={() => handleOperateDictDetail(record, 'delete')}
                             title="Sure to delete?" okText={'Yes'} cancelText={'No'}
                         >
                             <Divider type='vertical'/>
@@ -128,7 +130,7 @@ const DictionaryDetailIndex: React.FC<RouteChildrenProps> = () => {
             }}
         >
             <ProCard className={'ant-card-pro-table'}>
-                <ProTable<APIDictionary>
+                <ProTable<APIDictDetail>
                     rowKey={'ID'}
                     search={false}
                     options={false}
@@ -136,7 +138,7 @@ const DictionaryDetailIndex: React.FC<RouteChildrenProps> = () => {
                     loading={loading}
                     columns={columns}
                     params={searchParams}
-                    dataSource={DictionaryListVO}
+                    dataSource={DictDetailListVO}
                     locale={{ emptyText: 'No Data' }}
                     className={'antd-pro-table-port-list'}
                     headerTitle={
@@ -144,22 +146,22 @@ const DictionaryDetailIndex: React.FC<RouteChildrenProps> = () => {
                             placeholder='' enterButton="Search" loading={loading}
                             onSearch={async (val: any) => {
                                 searchParams.Name = val;
-                                await handleGetDictionaryList(searchParams);
+                                await handleGetDictDetailList(searchParams);
                             }}/>
                     }
                     toolbar={{
                         actions: [
-                            <Button key={'add'} onClick={handleOperateDictionary} type={'primary'} icon={<PlusOutlined/>}>
-                                Add Dictionary
+                            <Button key={'add'} onClick={handleOperateDictDetail} type={'primary'} icon={<PlusOutlined/>}>
+                                Add DictDetail
                             </Button>
                         ]
                     }}
                     pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
                     // @ts-ignore
-                    request={(params: APISearchDictionary) => handleGetDictionaryList(params)}
+                    request={(params: APISearchDictDetail) => handleGetDictDetailList(params)}
                 />
             </ProCard>
         </PageContainer>
     )
 }
-export default DictionaryDetailIndex;
+export default DictDetailDetailIndex;

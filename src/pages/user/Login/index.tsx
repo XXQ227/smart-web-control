@@ -33,7 +33,7 @@ const Login: React.FC = () => {
     const [status, setStatus] = useState<string>('');
 
     // 使用 models/user
-    const users = useModel('users');
+    const login = useModel('login');
 
     // 初始化（或用于 message 提醒）
     const intl = useIntl();
@@ -42,7 +42,7 @@ const Login: React.FC = () => {
         try {
             // 登录
             values.SystemID = 1;
-            const result: any = await users.login(values);
+            const result: any = await login.login(values);
             // 登录成功
             if (result?.Result) {
                 message.success(intl.formatMessage({id: 'pages.login.success', defaultMessage: '登录成功！'}));

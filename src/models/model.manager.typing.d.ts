@@ -327,8 +327,7 @@ declare namespace APIManager {
 
     //region TODO: Branch
     type SearchBranchParams = {
-        UserID: number,
-        Name: string,
+        name: string,
     }
     type BranchResult = {
         data: Branch[];
@@ -339,7 +338,7 @@ declare namespace APIManager {
     };
     type Branch = {
         /** 列表的内容总数 */
-        id: number | null;                  // TODO: 主键 ID
+        id: string;                  // TODO: 主键 ID
         contactName?: string;              // TODO: 联系人
         phone?: string;                     // TODO: 电话
         address?: string;                   // TODO: 公司地址
@@ -354,14 +353,14 @@ declare namespace APIManager {
         orgId?: string;                    // TODO: 公司 oracle id
         orgCreateId?: string;             // TODO: AUC组织识别码
         taxNum?: string;                   // TODO: 统一社会信用码，或税号
-        bankAccountIds?: string;          // TODO: 公司银行id集合
-        enableFlag?: string;               // TODO: 启用标识
-        deleteFlag?: string;               // TODO: 删除标识
-        createUserId?: number | null;     // TODO: 创建人ID
-        createUserName?: string;          // TODO: 创建人名称
+        bankAccountIds?: string;           // TODO: 公司银行id集合
+        enableFlag?: number | null;         // TODO: 启用标识
+        deleteFlag?: number | null;         // TODO: 删除标识
+        createUserId?: string;              // TODO: 创建人ID
+        createUserName?: string;            // TODO: 创建人名称
         createTime?: string;               // TODO: 创建时间
-        updateUserId?: number | null;     // TODO: 修改人ID
-        updateUserName?: string;          // TODO: 修改人名称
+        updateUserId?: string;              // TODO: 修改人ID
+        updateUserName?: string;            // TODO: 修改人名称
         updateTime?: string;               // TODO: 修改时间
     };
     //endregion
@@ -410,11 +409,6 @@ declare namespace APIManager {
         name: string,
     }
 
-    type UserResult = {
-        data: User[],
-        total: number | null;
-        success?: boolean;
-    }
     type User = {
         id: number | string | null,         // TODO:
         name_display: string,               // TODO: 用户名
@@ -439,31 +433,50 @@ declare namespace APIManager {
 
     //region TODO: 字典
     type SearchDictParams = {
-        UserID: number,
-        dictName: string,
-        dictCode: string,
+        dictName: string,                   // TODO: 字典类型对应的名称
+        dictCode: string,                   // TODO: 字典类型对应的code码
     }
-    type DictResult = {
-        data: Dict[];
-        /** 列表的内容总数 */
-        total: number | null;
-        /** 返回结果 */
-        success?: boolean;
-    };
     type Dict = {
         id: string,
-        dictName: string,
-        dictCode: string,
-        remark: string,
-        deleteFlag?: number,
-        enableFlag?: number,
-        createUserId?: number | null,
+        dictName: string,               // TODO: 字典类型对应的名称
+        dictCode: string,               // TODO: 字典类型对应的code码
+        remark: string,                 // TODO: 备注信息
+        deleteFlag?: number,            // TODO: 删除标识:0不删除、1删除
+        enableFlag?: number,            // TODO: 启用标识:0不启用、1启用
+        createUserId?: number | null,   // TODO: 创建人
         createUserName?: string,
-        createTime?: string,
-        updateUserId?: number | null,
+        createTime?: string,            // TODO: 创建时间
+        updateUserId?: number | null,   // TODO: 更新人
         updateUserName?: string,
-        updateTime?: string,
-        isChange?: boolean
+        updateTime?: string,            // TODO: 更新时间
+        isChange?: boolean              // TODO: 是否编辑过
+    };
+    //endregion
+
+    //region TODO: 字典详情
+    type SearchDictDetailParams = {
+        dictId: string,                 // TODO: 字典类型
+        dictLabel: string,              // TODO: 字典的名称
+        currentPage: number,            // TODO: 当前页数
+        pageSize: number,               // TODO: 每页数
+    }
+    type DictDetail = {
+        id: string,
+        dictId: number,                 // TODO: 字典ID
+        dictLabel: string,              // TODO: 字典的名称
+        dictCode: string,               // TODO: 字典代码
+        dictValue: string,              // TODO: 字典的值
+        sort: number | null,            // TODO: 排序
+        remark: string,                 // TODO: 备注
+        deleteFlag?: number,            // TODO: 删除标识:0不删除、1删除
+        enableFlag?: number,            // TODO: 启用标识:0不启用、1启用
+        createUserId?: number | null,   // TODO: 创建人ID
+        createUserName?: string,        // TODO: 创建人名称
+        createTime?: string,            // TODO: 创建时间
+        updateUserId?: number | null,   // TODO: 更新人ID
+        updateUserName?: string,        // TODO: 更新人名称
+        updateTime?: string,            // TODO: 更新时间
+        isChange?: boolean              // TODO: 是否编辑过
     };
     //endregion
 

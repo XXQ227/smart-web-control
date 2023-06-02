@@ -5,6 +5,7 @@ declare namespace API {
     success: boolean;
     code: string;
     message: string,
+    exceptionTip: string,
     page: number,
     current: number,
     total: number,
