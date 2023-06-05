@@ -3,15 +3,15 @@ declare namespace API {
   // TODO: 所有接口的返回结果需要转成的数据结构
   type Result = {
     success: boolean;
-    code: string;
-    message: string,
-    exceptionTip: string,
-    page: number,
-    current: number,
-    total: number,
-    size: number,
-    data: any,
-    spacialData: any,
+    code?: string;
+    message?: string,
+    exceptionTip?: string,
+    page?: number,
+    current?: number,
+    total?: number,
+    size?: number,
+    data?: any,
+    spacialData?: any,
   };
 
   type CurrentUser = {

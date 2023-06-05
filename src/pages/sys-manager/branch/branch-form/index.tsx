@@ -78,7 +78,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
         if (result.success) {
             message.success('success');
         } else {
-            message.error(result.exceptionTip)
+            message.error(result.message)
         }
         setLoading(false);
     }

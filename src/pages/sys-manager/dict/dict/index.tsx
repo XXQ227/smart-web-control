@@ -132,7 +132,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                     message.success('success');
                     setDictListVO(newData);
                 } else {
-                    message.error(result.exceptionTip);
+                    message.error(result.message);
                 }
             })
             .catch((err: any) => {
@@ -169,7 +169,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
             message.success('success');
             setDictListVO(newData);
         } else {
-            message.error(result.exceptionTip);
+            message.error(result.message);
         }
     }
 

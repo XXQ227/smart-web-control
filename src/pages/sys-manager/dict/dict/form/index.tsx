@@ -66,7 +66,7 @@ const DictForm: React.FC<RouteChildrenProps> = (props) => {
         if (result.success) {
             message.success('success');
         } else {
-            message.error(result.exceptionTip)
+            message.error(result.message)
         }
     }
 

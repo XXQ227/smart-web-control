@@ -101,7 +101,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
             message.success('success!');
             setBranchListVO(newData);
         } else {
-            message.error(result.exceptionTip);
+            message.error(result.message);
         }
     }
 

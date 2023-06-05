@@ -116,7 +116,7 @@ export function setAPIResponse(response: any) {
             // TODO: 返回结果状态
             code: response.code,
             success: response.success,
-            message: response.message,
+            message: response.exceptionTip || response.message,
             // TODO: 异常
             exceptionTip: response.exceptionTip,
             // TODO: 返回结果分页信息

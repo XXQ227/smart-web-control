@@ -135,7 +135,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                     message.success('success');
                     setDictDetailListVO(newData);
                 } else {
-                    message.error(result.exceptionTip);
+                    message.error(result.message);
                 }
             })
             .catch((err: any) => {
@@ -159,7 +159,13 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
         const params: any = {id: record.id};
         // TODO: 删除
         if (state === 'delete') {
-            if (!(record.id.indexOf('ID_') > -1)) result = await deleteDictDetail(params);
+            if (!(record.id.indexOf('ID_') > -1)) {
+                result = await deleteDictDetail(params);
+            } else {
+                result = {
+                    success: true
+                };
+            }
             newData.splice(index, 1);
         } else {
             params.operate = record.enableFlag ? 0 : 1;
@@ -172,7 +178,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             message.success('success');
             setDictDetailListVO(newData);
         } else {
-            message.error(result.exceptionTip);
+            message.error(result.message);
         }
     }
 
