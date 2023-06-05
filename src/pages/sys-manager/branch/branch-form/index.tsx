@@ -19,7 +19,7 @@ import BankIndex from '@/pages/sys-manager/branch/branch-form/bank'
 type APIBranch = APIManager.Branch;
 const BranchForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
-    const {match: {params}} = props;
+    const {match, match: {params}} = props;
     const id = atob(params?.id);
     const [form] = Form.useForm();
     const formRef = useRef<ProFormInstance>();
@@ -77,6 +77,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
         }
         if (result.success) {
             message.success('success');
+            if (id === '0') history.push({pathname: `/manager/branch/form/${btoa(result.data)}`});
         } else {
             message.error(result.message)
         }
@@ -260,8 +261,8 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                         </Col>
                         <Col span={24}>
                             <ProFormTextArea
-                                name='address' placeholder='' label='address' tooltip='length: 300'
-                                rules={[{max: 300, message: 'length: 300'}]}
+                                name='address' placeholder='' label='Address' tooltip='length: 300'
+                                rules={[{required: true, message: 'Address'}, {max: 300, message: 'length: 300'}]}
                             />
                         </Col>
                     </Row>
