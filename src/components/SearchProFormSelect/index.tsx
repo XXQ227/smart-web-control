@@ -60,16 +60,16 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
 
     return (
         <ProFormSelect
-            allowClear={props.allowClear}
             showSearch
             label={label}
             name={props.name}
-            required={!!required}
             width={props.width}
             debounceTime={1000}
             disabled={disabled}
+            required={!!required}
             // initialValue={valInput}
             initialValue={valueObj}
+            allowClear={props.allowClear}
             placeholder={placeholder || ""}
             fieldProps={{
                 showArrow: false,
@@ -85,7 +85,7 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
                     }
                 },
             }}
-            rules={[{ required: true, message: label }]}
+            rules={[{ required: !!required, message: label }]}
             // @ts-ignore
             request={(val: any) => {
                 // TODO: isSearch === 1：可搜索

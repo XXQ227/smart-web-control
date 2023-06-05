@@ -162,9 +162,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             if (!(record.id.indexOf('ID_') > -1)) {
                 result = await deleteDictDetail(params);
             } else {
-                result = {
-                    success: true
-                };
+                result = {success: true};
             }
             newData.splice(index, 1);
         } else {

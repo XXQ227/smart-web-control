@@ -6,9 +6,9 @@ import {useModel} from 'umi';
 import {Divider, Input, message, Popconfirm} from 'antd'
 import {SALES_ENUM} from '@/utils/enum'
 import {CustomizeIcon} from '@/utils/units'
-import {getUserID} from '@/utils/auths'
 import UserDrawerForm from '@/pages/sys-manager/user/user-drawer-form'
 import {DeleteOutlined} from '@ant-design/icons'
+import ls from 'lodash'
 
 const {Search} = Input;
 
@@ -24,10 +24,11 @@ const searchParams: APISearchUser = {
 const UserListIndex: React.FC<RouteChildrenProps> = () => {
 
     const {
-        queryUserList, freezenUser
+        queryUser, deleteUser, operateUser
     } = useModel('manager.user', (res: any) => ({
-        queryUserList: res.queryUserList,
-        freezenUser: res.freezenUser,
+        queryUser: res.queryUser,
+        deleteUser: res.deleteUser,
+        operateUser: res.operateUser,
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -43,9 +44,8 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
     async function handleGetUserList(params: APISearchUser) {
         setLoading(true);
         // TODO: 分页查询【参数页】
-        const result: API.Result = await queryUserList(params);
+        const result: API.Result = await queryUser(params);
         setLoading(false);
-        console.log(result.data);
         if(result.success) {
             setUserListVO(result.data);
         } else {
@@ -55,9 +55,9 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
     }
 
     /**
-     * @Description: TODO: 冻结部门
+     * @Description: TODO: 冻结删除用户
      * @author XXQ
-     * @date 2023/5/15
+     * @date 2023/6/5
      * @param record    编辑行数据
      * @param index     编辑行序列
      * @param state     lock：解锁、锁定用户；delete：删除
@@ -65,26 +65,31 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
      */
     const handleOperateUser = async (record: APIUser, index: number, state: string) => {
         setLoading(true);
-        const params: any = {
-            UserID: getUserID(),
-            id: record.id,
-        }
+        let result: API.Result = {success: false};
+        const params: any = {id: record.id};
+        const newData: APIUser[] = ls.cloneDeep(UserListVO);
         // TODO: 【删除】 操作
         if (state === 'delete') {
-            params.delete_flag = record.delete_flag
+            result = await deleteUser(params);
+            // TODO: 删除当前行，更新本地数据
+            record.deleteFlag = record.deleteFlag ? 0 : 1;
+            newData.splice(index, 1);
         }
-        // TODO: 【锁定】 操作
+        // TODO: 【锁定/解锁】 操作
         else if (state === 'lock') {
-            params.enable_flag = record.enable_flag;
+            params.operate = record.enableFlag ? 0 : 1;
+            result = await operateUser(params);
+            // TODO: 更新本地数据
+            record.enableFlag = params.operate;
+            newData.splice(index, 1, record);
         }
-        const result: any = await freezenUser(params);
         if (result.success) {
             message.success('Success!');
             // TODO: 冻结成功后，当能行不能编辑，或者解冻成功后，当前行可编辑
-            // handleDeptChange(index, record.id, 'enable_flag', !record.enable_flag);
             setLoading(false);
+            setUserListVO(newData);
         } else {
-            message.error(result.Content);
+            message.error(result.message);
             setLoading(false);
         }
     }
@@ -93,11 +98,16 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
      * @Description: TODO: 编辑用户信息
      * @author XXQ
      * @date 2023/5/26
-     * @param record
-     * @returns
+     * @param index     序号
+     * @param record    user 信息
+     * @param state     操作状态
+     * @returns {}
      */
-    const handleEditUser = (record: APIUser) => {
-
+    const handleSaveUser = async (index: number, record: APIUser, state: string) => {
+        const newData: APIUser[] = ls.cloneDeep(UserListVO);
+        // TODO: 保存、添加
+        newData.splice(index, state === 'add' ? 0 : 1, record);
+        setUserListVO(newData);
     }
 
 
@@ -145,28 +155,25 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
         },
         {
             title: 'Action',
-            width: 100,
+            width: 110,
             disable: true,
             align: 'center',
             render: (text, record, index) => {
                 return (
                     <Fragment>
-                        <UserDrawerForm UserInfo={record} handleSave={handleEditUser}/>
+                        <UserDrawerForm UserInfo={record} handleSave={(val: any)=> handleSaveUser(index, val, 'edit')}/>
                         <Popconfirm
                             okText={'Yes'} cancelText={'No'}
                             onConfirm={() => handleOperateUser(record, index, 'lock')}
-                            title={`Are you sure to ${record.enable_flag ? 'unlock' : 'lock'}?`}
+                            title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                         >
                             <Divider type='vertical'/>
-                            <CustomizeIcon
-                                hidden={!(typeof record.id === 'number')}
-                                type={record.enable_flag ? 'icon-unlock-2' : 'icon-lock-2'}
-                            />
+                            <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
                         </Popconfirm>
                         <Popconfirm
                             okText={'Yes'} cancelText={'No'}
-                            onConfirm={() => handleOperateUser(record, index, 'delete')}
                             title={`Are you sure to delete?`}
+                            onConfirm={() => handleOperateUser(record, index, 'delete')}
                         >
                             <Divider type='vertical'/>
                             <DeleteOutlined color={'red'}/>
@@ -194,6 +201,7 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
                     columns={columns}
                     params={searchParams}
                     dataSource={UserListVO}
+                    rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
                     headerTitle={
                         <Search
                             placeholder='' enterButton="Search" loading={loading}
@@ -204,7 +212,10 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
                         />
                     }
                     toolbar={{actions: [
-                        <UserDrawerForm key={'edit'} isCreate={true} UserInfo={{}} handleSave={handleEditUser}/>]
+                        <UserDrawerForm
+                            key={'edit'} isCreate={true} UserInfo={{}}
+                            handleSave={(val: any)=> handleSaveUser(0, val, 'add')}
+                        />]
                     }}
                     pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
                     // @ts-ignore

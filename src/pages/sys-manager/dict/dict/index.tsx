@@ -81,7 +81,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
 
     const handleDetail = (record: APIDict) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        history.push({pathname: `/manager/dict/form/${btoa(record.id)}/${record.dictName}`});
+        history.push({pathname: `/manager/dict/form/${btoa(record.id)}`});
     }
 
     /**
@@ -156,7 +156,12 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
         const params: any = {id: record.id};
         // TODO: 删除
         if (state === 'delete') {
-            result = await deleteDict(params);
+            // TODO: 本地删除，不调接口 <未创建的数据>
+            if (record.id.indexOf('ID_') > -1) {
+                result = {success: true};
+            } else {
+                result = await deleteDict(params);
+            }
             newData.splice(index, 1);
         } else {
             params.operate = record.enableFlag ? 0 : 1;

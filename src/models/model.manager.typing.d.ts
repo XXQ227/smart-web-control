@@ -56,10 +56,10 @@ declare namespace APIManager {
         CTTypeItemListSupplier?: number | null,
         CTList?: any[],
         SCAC?: string,
-        city_id?: number,
-        city_name?: string,
-        parent_company_id?: number,
-        parent_company_name?: string,
+        cityId?: number,
+        cityName?: string,
+        parentCompanyId?: number,
+        parentCompanyName?: string,
     }
     // TODO: 行业
     type Industrys = {
@@ -228,7 +228,7 @@ declare namespace APIManager {
 
     type CGItem = {
         ID: number | string | null,
-        parent_id: number | string | null,
+        parentId: number | string | null,
         CargoCGItemID: number | string | null,  // TODO:
         Code: string,
         Freezen: boolean,
@@ -381,20 +381,20 @@ declare namespace APIManager {
         id: number | string | null,     // TODO: 主键 ID
         name: string,                   // TODO: 组织名称
         email: string,                  // TODO: 邮箱
-        parent_id: number | null,       // TODO: 父类组织ID
+        parentId: number | null,       // TODO: 父类组织ID
         level: number | null,           // TODO: 级别
         sort: number | null,            // TODO: 排序号
-        charge_person: string,          // TODO: 负责人
-        contact_phone: string,          // TODO: 联系电话
-        parent_ids: string,             // TODO: 父ID集合
-        enable_flag: number,           // TODO: 启用状态:0-不启用、1-启用
-        delete_flag: boolean,           // TODO: 删除标识
-        create_user_id: number | null,  // TODO: 创建人ID
-        create_user_name?: string,      // TODO: 创建人名称
-        create_time?: string,           // TODO: 创建时间
-        update_user_id: number | null,  // TODO: 修改人ID
-        update_user_name?: string,      // TODO: 修改人名称
-        update_time?: string,           // TODO: 修改人时间
+        chargePerson: string,          // TODO: 负责人
+        contactPhone: string,          // TODO: 联系电话
+        parentIds: string,             // TODO: 父ID集合
+        enableFlag: number,           // TODO: 启用状态:0-不启用、1-启用
+        deleteFlag: boolean,           // TODO: 删除标识
+        createUserId: number | null,  // TODO: 创建人ID
+        createUserName?: string,      // TODO: 创建人名称
+        createTime?: string,           // TODO: 创建时间
+        updateUserId: number | null,  // TODO: 修改人ID
+        updateUserName?: string,      // TODO: 修改人名称
+        updateTime?: string,           // TODO: 修改人时间
         isChange?: boolean,              // TODO: 编辑状态
     }
 
@@ -411,23 +411,25 @@ declare namespace APIManager {
 
     type User = {
         id: number | string | null,         // TODO:
-        name_display: string,               // TODO: 用户名
-        name_login: string,                 // TODO: 用户登录名
-        branch_id: number | null,           // TODO: 用户公司id
-        department_id: number | null,       // TODO: 部门id
-        oracle_id: string,                  // TODO: oracle id
+        nameDisplay: string,               // TODO: 用户名
+        nameLogin: string,                 // TODO: 用户登录名
+        leaderId: string,                   // TODO: 用户领导 id
+        leaderName: string,                 // TODO: 用户领导 name
+        branchId: number | null,           // TODO: 用户公司 id
+        departmentId: number | null,       // TODO: 部门 id
+        oracleId: string,                  // TODO: oracle id
         password: string,                   // TODO: 密码
-        sale_flag: number | null,           // TODO: 销售标识：1-是0-不是
-        code_sino: string,                  // TODO: 中外运编号
-        code_f8: string,                    // TODO: F8唯一编码
-        enable_flag: number | null,         // TODO: 启用标识
-        delete_flag: number | null,         // TODO: 删除标识
-        create_user_id: number | null,      // TODO: 创建人ID
-        create_user_name?: string,          // TODO: 创建人名称
-        create_time?: string,               // TODO: 创建时间
-        update_user_id: number | null,      // TODO: 修改人ID
-        update_user_name?: string,          // TODO: 修改人名称
-        update_time?: string,               // TODO: 修改时间
+        salesFlag: number | null,           // TODO: 销售标识：1-是0-不是
+        codeSino: string,                  // TODO: 中外运编号
+        codeF8: string,                    // TODO: F8唯一编码
+        enableFlag: number | null,         // TODO: 启用标识
+        deleteFlag: number | null,         // TODO: 删除标识
+        createUserId: number | null,      // TODO: 创建人ID
+        createUserName?: string,          // TODO: 创建人名称
+        createTime?: string,               // TODO: 创建时间
+        updateUserId: number | null,      // TODO: 修改人ID
+        updateUserName?: string,          // TODO: 修改人名称
+        updateTime?: string,               // TODO: 修改时间
     }
     //endregion
 

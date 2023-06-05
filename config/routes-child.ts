@@ -138,13 +138,13 @@ const manager_route = {
             routes: [
                 {
                     name: 'type',
-                    path: '/manager/dict/dict',
+                    path: '/manager/dict/list',
                     component: './sys-manager/dict/dict',
                 },
                 {
                     hideInMenu: true,   // 隐藏不显示
                     name: 'type',
-                    path: '/manager/dict/form/:id/:dictName',
+                    path: '/manager/dict/form/:id',
                     component: './sys-manager/dict/dict/form',
                 },
                 {
