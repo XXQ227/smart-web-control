@@ -68,8 +68,8 @@ export function request(url: string, options: any) {
             if (response.status === 204) {
                 return response.text();
             }
-            // return setAPIResponse(await response.json());
-            return response.json();  // TODO: old vision
+            return setAPIResponse(await response.json());
+            // return response.json();  // TODO: old vision
         })
         .catch((e) => {
             const status = e.name;
@@ -103,6 +103,7 @@ export function setAPIResponse(response: any) {
         code: '',
         current: 0,
         data: undefined,
+        spacialData: undefined,
         message: '',
         exceptionTip: '',
         page: 0,
@@ -125,6 +126,7 @@ export function setAPIResponse(response: any) {
             total: response?.data?.total,
             // TODO: 后台返回的结果数据
             data: response?.data?.records || response?.data,
+            spacialData: response?.data,
         }
     }
     return result;

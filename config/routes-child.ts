@@ -142,6 +142,12 @@ const manager_route = {
                     component: './sys-manager/dict/dict',
                 },
                 {
+                    hideInMenu: true,   // 隐藏不显示
+                    name: 'type',
+                    path: '/manager/dict/form/:id/:dictName',
+                    component: './sys-manager/dict/dict/form',
+                },
+                {
                     name: 'detail',
                     path: '/manager/dict/detail',
                     component: './sys-manager/dict/dict-detail',

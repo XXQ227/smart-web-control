@@ -51,7 +51,7 @@ export async function operateDictAPI(body: APIManager.Dict, options?: { [key: st
 //region 字典详情表
 /** 获取所有 Dictionary 数据 */
 export async function queryDictDetailAPI(body: APIManager.SearchDictDetailParams, options?: { [key: string]: any }) {
-  return request(`/apiBase/dict/queryDict`, {
+  return request(`/apiBase/dict/queryDictDetail`, {
     method: 'POST',
     body,
     ...(options || {}),

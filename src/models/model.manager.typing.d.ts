@@ -455,27 +455,27 @@ declare namespace APIManager {
 
     //region TODO: 字典详情
     type SearchDictDetailParams = {
-        dictId: string,                 // TODO: 字典类型
+        dictId: number,                 // TODO: 字典类型
         dictLabel: string,              // TODO: 字典的名称
         currentPage: number,            // TODO: 当前页数
         pageSize: number,               // TODO: 每页数
     }
     type DictDetail = {
-        id: string,
-        dictId: number,                 // TODO: 字典ID
-        dictLabel: string,              // TODO: 字典的名称
-        dictCode: string,               // TODO: 字典代码
-        dictValue: string,              // TODO: 字典的值
-        sort: number | null,            // TODO: 排序
-        remark: string,                 // TODO: 备注
-        deleteFlag?: number,            // TODO: 删除标识:0不删除、1删除
-        enableFlag?: number,            // TODO: 启用标识:0不启用、1启用
-        createUserId?: number | null,   // TODO: 创建人ID
-        createUserName?: string,        // TODO: 创建人名称
-        createTime?: string,            // TODO: 创建时间
-        updateUserId?: number | null,   // TODO: 更新人ID
-        updateUserName?: string,        // TODO: 更新人名称
-        updateTime?: string,            // TODO: 更新时间
+        id: string                      // TODO: 主键
+        dictId: string                 // TODO: 字典ID
+        dictLabel: string              // TODO: 字典的名称
+        dictCode: string               // TODO: 字典代码
+        dictValue: string              // TODO: 字典的值
+        sort?: number                    // TODO: 排序
+        remark: string                  // TODO: 备注
+        deleteFlag?: number             // TODO: 删除标识:0不删除、1删除
+        enableFlag?: number             // TODO: 启用标识:0不启用、1启用
+        createUserId?: string          // TODO: 创建人ID
+        createUserName?: string        // TODO: 创建人名称
+        createTime?: string             // TODO: 创建时间
+        updateUserId?: string          // TODO: 更新人ID
+        updateUserName?: string        // TODO: 更新人名称
+        updateTime?: string             // TODO: 更新时间
         isChange?: boolean              // TODO: 是否编辑过
     };
     //endregion

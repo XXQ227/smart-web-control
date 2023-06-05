@@ -9,6 +9,7 @@ import {getUserID} from '@/utils/auths'
 import ls from 'lodash'
 import {CustomizeIcon, getFormErrorMsg, ID_STRING} from '@/utils/units'
 import DividerCustomize from '@/components/Divider'
+import {history} from '@@/core/history'
 
 const {Search} = Input;
 
@@ -77,6 +78,12 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
         newData.splice(0, 0, addDataObj);
         setDictListVO(newData);
     }
+
+    const handleDetail = (record: APIDict) => {
+        // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
+        history.push({pathname: `/manager/dict/form/${btoa(record.id)}/${record.dictName}`});
+    }
+
     /**
      * @Description: TODO: 修改字典类型
      * @author XXQ
@@ -92,7 +99,6 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
         record[filedName] = val?.target?.value || val;
         record.isChange = true;
         newData.splice(index, 1, record);
-        console.log(newData);
         setDictListVO(newData);
     }
     /**
@@ -133,6 +139,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                 message.error(getFormErrorMsg(err));
             })
     }
+
     /**
      * @Description: TODO: 删除 / 冻结
      * @author XXQ
@@ -229,7 +236,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
         },
         {
             title: 'Action',
-            width: 100,
+            width: 120,
             align: 'center',
             render: (text, record, index) => {
                 const isAdd = record?.id?.indexOf('ID_') > -1;
@@ -247,9 +254,9 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                             <DeleteOutlined color={'red'}/>
                         </Popconfirm>
                         <Popconfirm
-                            onConfirm={() => handleDelFreezenDict(index, record, 'freezen')}
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
+                            onConfirm={() => handleDelFreezenDict(index, record, 'freezen')}
                         >
                             <DividerCustomize hidden={isAdd} />
                             <CustomizeIcon
@@ -257,13 +264,14 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                                 type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
                             />
                         </Popconfirm>
+                        <DividerCustomize hidden={isAdd} />
+                        <CustomizeIcon hidden={isAdd} type={'icon-details'} onClick={() => handleDetail(record)}/>
                     </Fragment>
                 )
             },
         },
     ];
 
-    console.log(DictListVO);
     return (
         <PageContainer
             loading={false}

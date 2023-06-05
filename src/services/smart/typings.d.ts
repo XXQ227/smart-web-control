@@ -11,6 +11,7 @@ declare namespace API {
     total: number,
     size: number,
     data: any,
+    spacialData: any,
   };
 
   type CurrentUser = {
