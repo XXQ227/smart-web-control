@@ -242,7 +242,7 @@ const manager_route = {
             path: '/manager/charge',
             routes: [
                 {
-                    name: 'Standard',
+                    name: 'standard',
                     path: '/manager/charge/Standard/list',
                     component: './sys-manager/charge/Standard',
                 },

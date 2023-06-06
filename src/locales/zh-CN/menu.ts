@@ -64,7 +64,7 @@ export default {
   // TODO: 费目
   'menu.manager.charge': 'Charge Description',
   'menu.manager.charge.description': 'Description - Index',
-  'menu.manager.charge.Standard': 'Standard - Index',
+  'menu.manager.charge.standard': 'Standard - Index',
   // TODO: 费用模板
   'menu.manager.charge_template_list': 'Charge Template - Index',
   'menu.manager.charge_template_info': 'Charge Template - Information',
