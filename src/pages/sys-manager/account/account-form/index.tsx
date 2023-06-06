@@ -23,11 +23,11 @@ const AccountDrawerForm: React.FC<Props> = (props) => {
 
     useEffect(() => {
         if (open) {
-            if (!(AccountPeriodVO?.ID) && !!(AccountPeriod?.ID)) {
+            if (!(AccountPeriodVO?.id) && !!(AccountPeriod?.id)) {
                 setAccountPeriodVO(AccountPeriod);
             }
         }
-    }, [open, AccountPeriod, AccountPeriodVO?.ID])
+    }, [open, AccountPeriod, AccountPeriodVO?.id])
 
     const handleValuesChange = (valueChange: any) => {
         console.log(valueChange);

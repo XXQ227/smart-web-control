@@ -136,8 +136,8 @@ declare namespace APIManager {
     type Port = {
         id: number | string | null,      // TODO:
         alias: string,                   // TODO: 港口别名
-        cityId: number,                  // TODO: 城市id
-        cityName: string,                // TODO: 城市名称
+        cityId?: number,                  // TODO: 城市id
+        cityName?: string,                // TODO: 城市名称
         code: string,                    // TODO: 港口的五字编码
         name: string,                    // TODO: 港口名世界通用
         tradePlaceCod: string,           // TODO: 主数据代码
