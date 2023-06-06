@@ -55,7 +55,7 @@ const Basic: React.FC<Props> = (props) => {
                         label="Booking Agent"
                         id={'BookingAgentID'}
                         name={'BookingAgentID'}
-                        url={'/api/MCommon/GetCTNameShortByStrOrType'}
+                        url={'/apiLocal/MCommon/GetCTNameShortByStrOrType'}
                         valueObj={{value: Carrier?.BookingAgentID, label: Carrier?.BookingAgentName}}
                         query={{
                             UserID: getUserID(),

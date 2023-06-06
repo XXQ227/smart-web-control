@@ -4,7 +4,7 @@ import {stringify} from 'querystring';
 
 
 export async function GetCJobByKeyAPI(body: APIModel.GetCJobListInfo, options?: Record<string, any>) {
-    return request(`/api/CargoJob/GetCJobByKey?${stringify(body)}`, {
+    return request(`/apiLocal/CargoJob/GetCJobByKey?${stringify(body)}`, {
         method: 'GET',
         ...(options || {}),
     });
