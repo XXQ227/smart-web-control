@@ -34,6 +34,7 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
     const [PortListVO, setPortListVO] = useState<APIPort[]>(PortList || []);
     const [tab, setTab] = useState('Sea');
     const ref = useRef<ActionType>();
+
     /**
      * @Description: TODO 获取单票数据集合
      * @author LLS
@@ -56,9 +57,8 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
      * @Description: TODO:  删除、冻结操作
      * @author LLS
      * @date 2023/6/6
-     * @param index     当前行序号
      * @param record    当前行数据
-     * @param state     操作状态：delete：删除；freezen：冻结
+     * @param state     操作状态：delete：删除；freeze：冻结
      * @returns
      */
     const handleDelFreezePort = async (record: APIPort, state: string) => {
@@ -163,7 +163,6 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
             header={{
                 breadcrumb: {},
             }}
-            className={styles.port}
         >
             <ProCard
                 tabs={{

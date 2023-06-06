@@ -40,6 +40,8 @@ export default {
   // 'menu.manager.dictionary_info': 'Branch - Information',
   // TODO: 经营单位部门
   'menu.manager.department_list': 'Department - Index',
+  // TODO: 项目
+  'menu.manager.project': 'Project - Index',
   // TODO: 经营单位员工用户
   'menu.manager.user_list': 'User - Index',
   // TODO: 业务公司

@@ -295,6 +295,13 @@ const manager_route = {
             path: '/manager/department/list',
             component: './sys-manager/department/department-list',
         },
+        // TODO: 项目
+        {
+            name: 'project',
+            icon: 'icon-project',
+            path: '/manager/project/list',
+            component: './sys-manager/project/project-list',
+        },
         // TODO: 用户
         {
             name: 'user_list',
