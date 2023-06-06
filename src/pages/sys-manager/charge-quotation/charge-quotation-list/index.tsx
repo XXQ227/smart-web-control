@@ -5,7 +5,6 @@ import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
 import {DeleteOutlined} from '@ant-design/icons'
 import {Divider} from 'antd'
-import PortDrawerForm from '@/pages/sys-manager/port/port-drawer-form'
 
 type APIPort = APIManager.Port;
 type APISearchPort = APIManager.SearchPortParams;
@@ -98,7 +97,6 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
             render: (text, record) => {
                 return (
                     <Fragment>
-                        <PortDrawerForm PortInfo={record}/>
                         <Divider type='vertical'/>
                         <DeleteOutlined color={'red'}/>
                     </Fragment>
@@ -113,7 +111,7 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
             header={{
                 breadcrumb: {},
             }}
-            extra={<PortDrawerForm PortInfo={{}} isCreate={true}/>}
+            // extra={<PortDrawerForm PortInfo={{}} isCreate={true}/>}
         >
             <ProCard>
                 <ProTable<APIPort>
