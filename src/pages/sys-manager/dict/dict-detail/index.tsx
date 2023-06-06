@@ -14,18 +14,9 @@ type APIDictDetail = APIManager.DictDetail;
 type APISearchDictDetail = APIManager.SearchDictDetailParams;
 
 interface Props {
-    DictDetailList: APIDictDetail[]
 }
 
-// TODO: 获取单票集的请求参数
-const searchParams: APISearchDictDetail = {
-    dictId: 0,
-    dictLabel: '',
-    currentPage: 1,            // TODO: 当前页数
-    pageSize: 15,               // TODO: 每页数
-};
-
-const DictDetailDetailIndex: React.FC<Props> = (props) => {
+const DictDetailDetailIndex: React.FC<Props> = () => {
     const [form] = Form.useForm();
     const urlParams = useParams();
     // @ts-ignore
@@ -41,7 +32,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [DictDetailListVO, setDictDetailListVO] = useState<APIDictDetail[]>(props.DictDetailList || []);
+    const [DictDetailListVO, setDictDetailListVO] = useState<APIDictDetail[]>([]);
 
     /**
      * @Description: TODO: 获取字典类型类型详情
@@ -50,13 +41,10 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
      * @param params
      * @returns
      */
-    async function handleGetDictDetailList(params: APISearchDictDetail) {
+    const handleSearchDictDetail = async (params: APISearchDictDetail) => {
         setLoading(true);
-        // TODO: 分页查询【参数页】
-        // params.currentPage = params.current || 1;
-        // params.pageSize = params.PageSize || 15;
-        const result: API.Result = await queryDictDetail(params);
-        setDictDetailListVO(result.data || []);
+        const result: any = await queryDictDetail(params);
+        setDictDetailListVO(result?.data);
         setLoading(false);
         return result;
     }
@@ -92,7 +80,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
      * @param val       编辑值
      * @returns
      */
-    const handleOperateDictDetail = async (index: number, record: APIDictDetail, filedName: string, val: any) => {
+    const handleChangeDictDetail = async (index: number, record: APIDictDetail, filedName: string, val: any) => {
         const newData: APIDictDetail[] = ls.cloneDeep(DictDetailListVO);
         record[filedName] = val?.target?.value || val;
         record.isChange = true;
@@ -115,19 +103,19 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                 let result: API.Result;
                 const newData: APIDictDetail[] = ls.cloneDeep(DictDetailListVO);
                 // TODO: 保存、添加 公共参数
-                const param: any = {
+                const params: any = {
                     dictLabel: record.dictLabel, dictCode: record.dictCode,
-                    dictValue: record.dictValue, remark: record.remark, sort: record.sort,
+                    dictValue: record.dictValue, remark: record.remark, sort: record.sort || 0,
                 };
                 // TODO: 添加
                 if (state === 'add') {
-                    param.dictId = id;
-                    result = await addDictDetail(param);
+                    params.dictId = id;
+                    result = await addDictDetail(params);
                     record.id = result.data;
                 } else {
                     // TODO: 编辑
-                    param.id = record.id;
-                    result = await editDictDetail(param);
+                    params.id = record.id;
+                    result = await editDictDetail(params);
                 }
                 record.isChange = false;
                 newData.splice(index, 1, record);
@@ -152,13 +140,13 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
      * @param state     操作状态：delete：删除；freezen：冻结
      * @returns
      */
-    const handleDelFreezenDictDetail = async (index: number, record: APIDictDetail, state: string) => {
+    const handleOperateDictDetail = async (index: number, record: APIDictDetail, state: string) => {
         let result: API.Result;
         const newData: APIDictDetail[] = ls.cloneDeep(DictDetailListVO);
         // TODO: 删除 / 冻结 参数
         const params: any = {id: record.id};
         // TODO: 删除
-        if (state === 'delete') {
+        if (state === 'deleteFlag') {
             if (!(record.id.indexOf('ID_') > -1)) {
                 result = await deleteDictDetail(params);
             } else {
@@ -196,7 +184,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                     name={`dictLabel${record.id}`}
                     initialValue={record.dictLabel}
                     fieldProps={{
-                        onChange: (val: any) => handleOperateDictDetail(index, record, 'dictLabel', val)
+                        onChange: (val: any) => handleChangeDictDetail(index, record, 'dictLabel', val)
                     }}
                 />
         },
@@ -215,7 +203,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                     name={`dictName${record.id}`}
                     initialValue={record.remark}
                     fieldProps={{
-                        onChange: (val: any) => handleOperateDictDetail(index, record, 'dictName', val)
+                        onChange: (val: any) => handleChangeDictDetail(index, record, 'dictName', val)
                     }}
                 />
         },
@@ -230,11 +218,11 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                 <ProFormText
                     placeholder=''
                     disabled={record.enableFlag}
-                    id={`dictName${record.id}`}
-                    name={`dictName${record.id}`}
-                    initialValue={record.remark}
+                    id={`dictCode${record.id}`}
+                    name={`dictCode${record.id}`}
+                    initialValue={record.dictCode}
                     fieldProps={{
-                        onChange: (val: any) => handleOperateDictDetail(index, record, 'dictName', val)
+                        onChange: (val: any) => handleChangeDictDetail(index, record, 'dictCode', val)
                     }}
                 />
         },
@@ -250,7 +238,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                     name={`remark${record.id}`}
                     initialValue={record.remark}
                     fieldProps={{
-                        onChange: (val: any) => handleOperateDictDetail(index, record, 'remark', val)
+                        onChange: (val: any) => handleChangeDictDetail(index, record, 'remark', val)
                     }}
                 />
         },
@@ -267,7 +255,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                             onClick={() => handleSaveDictDetail(index, record, isAdd ? 'add' : 'edit')}
                         />
                         <Popconfirm
-                            onConfirm={() => handleDelFreezenDictDetail(index, record, 'delete')}
+                            onConfirm={() => handleOperateDictDetail(index, record, 'deleteFlag')}
                             title="Sure to delete?" okText={'Yes'} cancelText={'No'}
                         >
                             <DividerCustomize hidden={!record.isChange}/>
@@ -276,7 +264,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                         <Popconfirm
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
-                            onConfirm={() => handleDelFreezenDictDetail(index, record, 'freezen')}
+                            onConfirm={() => handleOperateDictDetail(index, record, 'enableFlag')}
                         >
                             <DividerCustomize hidden={isAdd} />
                             <CustomizeIcon
@@ -289,16 +277,16 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             },
         },
     ];
+    console.log(DictDetailListVO);
 
     return (
         <ProTable<APIDictDetail>
-            rowKey={'ID'}
+            rowKey={'id'}
             search={false}
             options={false}
             bordered={true}
             loading={loading}
             columns={columns}
-            params={searchParams}
             dataSource={DictDetailListVO}
             locale={{ emptyText: 'No Data' }}
             className={'ant-pro-table-edit'}
@@ -306,8 +294,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                 <Search
                     placeholder='' enterButton="Search" loading={loading}
                     onSearch={async (val: any) => {
-                        searchParams.dictLabel = val;
-                        await handleGetDictDetailList(searchParams);
+                        await handleSearchDictDetail({dictLabel: val});
                     }}/>
             }
             toolbar={{
@@ -319,7 +306,8 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             }}
             pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
             // @ts-ignore
-            request={(params: APISearchDictDetail) => handleGetDictDetailList(params)}
+            // request={(params: APISearchDictDetail) => handleGetDictDetailList(params)}
+            request={() => DictDetailListVO}
         />
     )
 }

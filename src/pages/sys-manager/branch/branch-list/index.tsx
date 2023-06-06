@@ -174,7 +174,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
         >
             <ProCard className={'ant-card-pro-table'}>
                 <ProTable<APIBranch>
-                    rowKey={'ID'}
+                    rowKey={'id'}
                     search={false}
                     options={false}
                     bordered={true}

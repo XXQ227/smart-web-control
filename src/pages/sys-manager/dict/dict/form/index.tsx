@@ -1,44 +1,28 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProFormInstance} from '@ant-design/pro-components';
-import {
-    FooterToolbar,
-    PageContainer,
-    ProCard,
-    ProForm,
-    ProFormText,
-} from '@ant-design/pro-components'
+import {FooterToolbar, PageContainer, ProCard, ProForm, ProFormText,} from '@ant-design/pro-components'
 import {Button, Col, Form, message, Row, Space} from 'antd'
-import {useModel, history} from 'umi'
+import {history, useModel, useParams} from 'umi'
 import {getFormErrorMsg} from '@/utils/units'
 import DictDetailDetailIndex from '@/pages/sys-manager/dict/dict-detail'
 
 
-type APIDictDetail = APIManager.DictDetail;
-type APISearchDictDetail = APIManager.SearchDictDetailParams;
-const DictForm: React.FC<RouteChildrenProps> = (props) => {
+const DictForm: React.FC<RouteChildrenProps> = () => {
+    const urlParams = useParams();
     // @ts-ignore
-    const {match: {params}} = props;
-    const id = atob(params?.id);
+    const id = atob(urlParams.id);
     const [form] = Form.useForm();
     const formRef = useRef<ProFormInstance>();
     //region TODO: 数据层
     const {
-        queryDictDetail, DictInfo, addDict,
+        queryDictInfo, addDict,
     } = useModel('manager.dict', (res: any) => ({
-        DictInfo: res.DictInfo,
-        queryDictDetail: res.queryDictDetail,
+        queryDictInfo: res.queryDictInfo,
         addDict: res.addDict,
     }));
 
-    const [DictDetailListVO, setDictDetailListVO] = useState<APIDictDetail[]>(DictInfo);
-
-
     //endregion
-
-    // useEffect(() => {
-    // }, [])
-
 
     /**
      * @Description: TODO: 获取 CV 详情
@@ -47,9 +31,7 @@ const DictForm: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const handleGetDictInfo = async () => {
-        const param: APISearchDictDetail = {dictId: Number(id), dictLabel: '', currentPage: 1, pageSize: 10,};
-        const result: API.Result = await queryDictDetail(param);
-        setDictDetailListVO(result.data);
+        const result: API.Result = await queryDictInfo({id});
         return result.data;
     }
 
@@ -61,7 +43,6 @@ const DictForm: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const onFinish = async (val: any) => {
-        console.log(val);
         const result: API.Result = await addDict(val);
         if (result.success) {
             message.success('success');
@@ -93,15 +74,15 @@ const DictForm: React.FC<RouteChildrenProps> = (props) => {
             }}
         >
             <ProForm
-                layout={'inline'}
                 form={form}
                 formRef={formRef}
+                layout={'vertical'}
                 // TODO: 不显示提交、重置按键
                 submitter={false}
                 // TODO: 焦点给到第一个控件
                 autoFocusFirstInput
                 // TODO: 设置默认值
-                initialValues={DictDetailListVO}
+                // initialValues={DictVO}
                 formKey={'cv-center-information'}
                 // TODO: 提交数据
                 onFinish={onFinish}
@@ -109,48 +90,50 @@ const DictForm: React.FC<RouteChildrenProps> = (props) => {
                 // TODO: 向后台请求数据
                 request={async () => handleGetDictInfo()}
             >
-                <ProCard title={'Name & Code'} className={'ant-card'}>
+                <ProCard title={'Name & Code'} className={'ant-card ant-card-pro-table'}>
                     {/** // TODO: CV Name、CV Name (For Print)、Short Name、CV Identity */}
                     <Row gutter={24}>
-                        <Col span={8}>
+                        <Col span={5}>
                             <ProFormText
                                 required
-                                name='nameFullEn'
-                                placeholder=''
-                                tooltip='length: 100'
                                 label='Name'
-                                rules={[{required: true, message: 'Name'}]}
+                                placeholder=''
+                                name='dictName'
+                                tooltip='length: 64'
+                                rules={[{required: true, message: 'Name'}, {max: 64, message: 'length: 64'}]}
                             />
                         </Col>
-                        <Col span={8}>
+                        <Col span={5}>
                             <ProFormText
                                 required
                                 placeholder=''
+                                name='dictCode'
                                 label='Name Local'
-                                tooltip='length: 100'
-                                name='nameFullLocal'
-                                rules={[{required: true, message: 'Name Local'}]}
+                                tooltip='length: 64'
+                                rules={[{required: true, message: 'Name Local'}, {max: 64, message: 'length: 64'}]}
                             />
                         </Col>
-                        <Col span={6}>
+                        <Col span={14}>
                             <ProFormText
                                 required
-                                name='taxNum'
+                                name='remark'
                                 placeholder=''
-                                label='Tax Num'
-                                tooltip='length: 30'
-                                rules={[{required: true, message: 'Tax Num'}]}
+                                label='Remark'
+                                tooltip='length: 512'
+                                rules={[{required: true, message: 'Tax Num'}, {max: 512, message: 'length: 512'}]}
                             />
                         </Col>
                     </Row>
+                </ProCard>
+                <ProCard title={'Dict Detail'} className={'ant-card ant-card-pro-table'}>
                     <Row gutter={24}>
                         <Col span={24}>
-                            <DictDetailDetailIndex DictDetailList={DictDetailListVO}/>
+                            <DictDetailDetailIndex />
                         </Col>
                     </Row>
                 </ProCard>
 
-                <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/Dict/dict'})}>返回</Button>}>
+                <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/Dict/list'})}>返回</Button>}>
                     <Space>
                         <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
                     </Space>

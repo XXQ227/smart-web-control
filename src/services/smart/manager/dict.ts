@@ -21,6 +21,15 @@ export async function addDictAPI(body: APIManager.Dict, options?: { [key: string
   });
 }
 
+/** Get Dict Information  */
+export async function queryDictInfoAPI(body: APIManager.Dict, options?: { [key: string]: any }) {
+  return request(`/apiBase/dict/queryDictInfo`, {
+    method: 'POST',
+    body,
+    ...(options || {}),
+  });
+}
+
 /** Edit Dict */
 export async function editDictAPI(body: APIManager.Dict, options?: { [key: string]: any }) {
   return request(`/apiBase/dict/editDict`, {

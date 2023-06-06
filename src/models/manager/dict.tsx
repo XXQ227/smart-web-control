@@ -1,7 +1,16 @@
-import {useCallback, useState} from "react";
+import {useCallback} from "react";
 import {
-    addDictAPI, deleteDictAPI, editDictAPI, operateDictAPI, queryDictAPI,
-    addDictDetailAPI, deleteDictDetailAPI, editDictDetailAPI, operateDictDetailAPI, queryDictDetailAPI,
+    addDictAPI,
+    deleteDictAPI,
+    editDictAPI,
+    operateDictAPI,
+    queryDictAPI,
+    addDictDetailAPI,
+    deleteDictDetailAPI,
+    editDictDetailAPI,
+    operateDictDetailAPI,
+    queryDictDetailAPI,
+    queryDictInfoAPI,
 } from '@/services/smart/manager/dict'
 
 type APIDict = APIManager.Dict;
@@ -13,22 +22,23 @@ export default () => {
 
     //endregion
 
-    // TODO: Dict List 数据
-    const [DictList, setDictList] = useState<APIDict[]>([]);
-
     //region TODO: Dict 接口
     // TODO: 获取字典类型列表
     const queryDict = useCallback(async (params: APIManager.SearchDictParams) => {
         // TODO: 请求后台 API
         const response: API.Result = await queryDictAPI(params);
         if (!response) return;
-        setDictList(response.data);
         return response;
     }, []);
 
     // TODO: 添加
     const addDict = useCallback(async (params: APIDict)=> {
         return await addDictAPI(params);
+    }, []);
+
+    // TODO: 获取字典详情
+    const queryDictInfo = useCallback(async (params: APIDict)=> {
+        return await queryDictInfoAPI(params);
     }, []);
 
     // TODO: 编辑
@@ -53,7 +63,6 @@ export default () => {
         // TODO: 请求后台 API
         const response: API.Result = await queryDictDetailAPI(params);
         if (!response) return;
-        setDictList(response.data);
         return response;
     }, []);
 
@@ -80,8 +89,8 @@ export default () => {
 
     return {
         queryDict,
-        DictList,
         addDict,
+        queryDictInfo,
         editDict,
         deleteDict,
         operateDict,

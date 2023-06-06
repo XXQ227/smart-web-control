@@ -19,7 +19,7 @@ import BankIndex from '@/pages/sys-manager/branch/branch-form/bank'
 type APIBranch = APIManager.Branch;
 const BranchForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
-    const {match, match: {params}} = props;
+    const {match: {params}} = props;
     const id = atob(params?.id);
     const [form] = Form.useForm();
     const formRef = useRef<ProFormInstance>();
@@ -154,17 +154,6 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                                 rules={[{required: true, message: 'Tax Num'}, {max: 50, message: 'length: 50'}]}
                             />
                         </Col>
-                        {/*<Col span={2}>
-                            <ProFormSwitch
-                                placeholder=''
-                                label='Freezen'
-                                name='enableFlag'
-                                fieldProps={{
-                                    checkedChildren: 'Yes',
-                                    unCheckedChildren: 'No',
-                                }}
-                            />
-                        </Col>*/}
                     </Row>
                     <Row gutter={24}>
                         <Col span={4}>

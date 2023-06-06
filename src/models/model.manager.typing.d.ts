@@ -208,51 +208,59 @@ declare namespace APIManager {
     //endregion
 
     //region TODO: 费目管理
-    type SearchCGItemParams = {
-        value?: string,
-        UserID: number,
-        SystemID: number,
-        current?: number | null,
+    // TODO: 标准费目
+    type SearchStandardCGItemParams = {
+        name?: string,
+        code?: string,
+        currentPage?: number | null,
         pageSize?: number | 15 | null,
-        PageSize?: number | 15 | null,
-        PageNum?: number | 1 | null,
     }
-
-    type CGItemResult = {
-        data: CGItem[];
-        /** 列表的内容总数 */
-        total: number | null;
-        /** 返回结果 */
-        success?: boolean;
-    };
+    type StandardCGItem = {
+        id: string,
+        branchId?: string,              // TODO: 公司ID
+        code?: string,                  // TODO: 费目名称编码
+        name?: string,                  // TODO: 费目名称
+        chargeStandardName?: string,    // TODO: 标准费目ID
+        subjectCodeAr?: string,         // TODO: 科目代码-收
+        subjectCodeAp?: string,         // TODO: 科目代码-付
+        subjectCodeAd?: string,         // TODO: 科目代码-代收代付
+        enableFlag?: number,            // TODO: 启用标识 0＝停用，1＝啟用
+        deleteFlag?: number,            // TODO: 删除标识
+        createUserId?: string,          // TODO: 创建人ID
+        createUserName?: string,        // TODO: 创建人名称
+        createTime?: string,            // TODO: 创建时间
+        updateUserId?: string,          // TODO: 修改人ID
+        updateUserName?: string,        // TODO: 修改人名称
+        updateTime?: string,            // TODO: 修改时间
+        isChange?: boolean,              // TODO: 编辑状态
+    }
+    // TODO: 费目
+    type SearchCGItemParams = {
+        name?: string,
+        code?: string,
+        currentPage?: number | null,
+        pageSize?: number | 15 | null,
+    }
 
     type CGItem = {
-        ID: number | string | null,
-        parentId: number | string | null,
-        CargoCGItemID: number | string | null,  // TODO:
-        Code: string,
-        Freezen: boolean,
-        Biztype1ID: number | null,
-        Name: string,
-        CGItemName: string,
-        CGUnitID?: number | null,
-        CGUnitName?: string,
-        StandardCGItemID?: number | null,
-        StandardCGItemName?: string,
-        UBSCode?: string,
-        UBSCodeAPNoVat?: string,
-        UBSCodeAPVat?: string,
-        UBSCodeARNoVat?: string,
-        UBSCodeARVat?: string,
-        isChange?: boolean,
-        UserID?: number,
-    }
-    type DeleteFreezenCGItem = {
-        SystemID: number,
-        UserID: number,
-        CGItemID: number,
-        CGItemName: string,
-        IsFreezen?: boolean,
+        id: string,
+        branchId?: string,              // TODO: 公司ID
+        code?: string,                  // TODO: 费目名称编码
+        name?: string,                  // TODO: 费目名称
+        chargeStandardId?: string,      // TODO: 标准费目ID
+        chargeStandardName?: string,    // TODO: 标准费目ID
+        subjectCodeAr?: string,         // TODO: 科目代码-收
+        subjectCodeAp?: string,         // TODO: 科目代码-付
+        subjectCodeAd?: string,         // TODO: 科目代码-代收代付
+        enableFlag?: number,            // TODO: 启用标识 0＝停用，1＝啟用
+        deleteFlag?: number,            // TODO: 删除标识
+        createUserId?: string,          // TODO: 创建人ID
+        createUserName?: string,        // TODO: 创建人名称
+        createTime?: string,            // TODO: 创建时间
+        updateUserId?: string,          // TODO: 修改人ID
+        updateUserName?: string,        // TODO: 修改人名称
+        updateTime?: string,            // TODO: 修改时间
+        isChange?: boolean,              // TODO: 编辑状态
     }
     //endregion
 
@@ -457,10 +465,10 @@ declare namespace APIManager {
 
     //region TODO: 字典详情
     type SearchDictDetailParams = {
-        dictId: number,                 // TODO: 字典类型
-        dictLabel: string,              // TODO: 字典的名称
-        currentPage: number,            // TODO: 当前页数
-        pageSize: number,               // TODO: 每页数
+        dictId?: number | string,        // TODO: 字典类型
+        dictLabel?: string,              // TODO: 字典的名称
+        currentPage?: number,            // TODO: 当前页数
+        pageSize?: number,               // TODO: 每页数
     }
     type DictDetail = {
         id: string                      // TODO: 主键

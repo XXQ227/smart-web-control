@@ -137,20 +137,20 @@ const manager_route = {
             path: '/manager/dict',
             routes: [
                 {
+                    path: '/manager/dict',
+                    redirect: '/manager/dict/list',
+                },
+                {
                     name: 'type',
                     path: '/manager/dict/list',
                     component: './sys-manager/dict/dict',
                 },
                 {
-                    hideInMenu: true,   // 隐藏不显示
                     name: 'type',
+                    hideInMenu: true,   // 隐藏不显示
+                    // access: 'isDictEdit',
                     path: '/manager/dict/form/:id',
                     component: './sys-manager/dict/dict/form',
-                },
-                {
-                    name: 'detail',
-                    path: '/manager/dict/detail',
-                    component: './sys-manager/dict/dict-detail',
                 },
             ]
         },
@@ -237,10 +237,21 @@ const manager_route = {
         },
         // TODO: 费用名称数据
         {
-            name: 'charge_description_list',
+            name: 'charge',
             icon: 'icon-charge-subject',
-            path: '/manager/charge-description/list',
-            component: './sys-manager/charge-description/charge-description-list',
+            path: '/manager/charge',
+            routes: [
+                {
+                    name: 'Standard',
+                    path: '/manager/charge/Standard/list',
+                    component: './sys-manager/charge/Standard',
+                },
+                {
+                    name: 'description',
+                    path: '/manager/charge/description/list',
+                    component: './sys-manager/charge/description',
+                },
+            ],
         },
         // TODO: 费用模板数据
         {

@@ -5,7 +5,6 @@ import {PageContainer, ProCard, ProFormText, ProTable} from '@ant-design/pro-com
 import {useModel} from 'umi';
 import {DeleteOutlined, PlusOutlined, SaveOutlined} from '@ant-design/icons'
 import {Button, Form, Input, message, Popconfirm} from 'antd'
-import {getUserID} from '@/utils/auths'
 import ls from 'lodash'
 import {CustomizeIcon, getFormErrorMsg, ID_STRING} from '@/utils/units'
 import DividerCustomize from '@/components/Divider'
@@ -27,9 +26,8 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
 
     const {
-        DictList, queryDict, addDict, editDict, deleteDict, operateDict
+        queryDict, addDict, editDict, deleteDict, operateDict
     } = useModel('manager.dict', (res: any) => ({
-        DictList: res.DictList,
         queryDict: res.queryDict,
         addDict: res.addDict,
         editDict: res.editDict,
@@ -38,7 +36,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [DictListVO, setDictListVO] = useState<APIDict[]>(DictList || []);
+    const [DictListVO, setDictListVO] = useState<APIDict[]>([]);
 
     /**
      * @Description: TODO 获取单票数据集合
@@ -63,17 +61,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     const handleAddDict = () => {
-        const addDataObj: APIDict = {
-            createUserId: getUserID(),
-            deleteFlag: 0,
-            dictCode: '',
-            dictName: '',
-            enableFlag: 0,
-            id: ID_STRING(),
-            remark: '',
-            updateUserId: getUserID(),
-            isChange: true,
-        };
+        const addDataObj: APIDict = {dictCode: '', dictName: '', id: ID_STRING(), remark: ''};
         const newData: APIDict[] = ls.cloneDeep(DictListVO) || [];
         newData.splice(0, 0, addDataObj);
         setDictListVO(newData);
@@ -287,7 +275,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
             <ProCard className={'ant-card-pro-table'}>
                 <Form form={form}>
                     <ProTable<APIDict>
-                        rowKey={'ID'}
+                        rowKey={'id'}
                         search={false}
                         options={false}
                         bordered={true}
