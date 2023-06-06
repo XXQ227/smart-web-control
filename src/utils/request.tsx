@@ -46,6 +46,13 @@ export function request(url: string, options: any) {
     const defaultOptions = {
         credentials: 'include'
     };
+    // TODO: 处理 body 分页参数
+    if (options?.body) {
+        if (options.body?.current) {
+            options.body.currentPage = options.body.current;
+            delete options?.body.current;
+        }
+    }
     const newOptions = {
         ...defaultOptions,
         ...options
