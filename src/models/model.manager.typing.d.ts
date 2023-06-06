@@ -119,32 +119,36 @@ declare namespace APIManager {
 
     //region TODO: 港口
     type SearchPortParams = {
-        Key?: string,
-        Type?: number | null,
-        current?: number | null,
-        pageSize?: number | 15 | null,
-        PageSize?: number | 15 | null,
-        PageNum?: number | 1 | null,
+        current?: number;
+        name?: string,
+        currentPage?: number,
+        pageSize?: number,
+        // total: number;
     }
 
     type PortResult = {
         data: Port[];
         /** 列表的内容总数 */
-        total: number | null;
+        total?: number;
         success?: boolean;
     };
 
     type Port = {
-        ID: number | string | null,
-        Name: string,
-        Code: string,
-        CityID?: number | null,
-        CityName?: string,
-        CountryID?: number | null,
-        CountryName?: string,
-        Freezen: boolean,
-        TransportTypeID?: number | null,
-        TransportTypeName?: string,
+        id: number | string | null,      // TODO:
+        alias: string,                   // TODO: 港口别名
+        cityId: number,                  // TODO: 城市id
+        cityName: string,                // TODO: 城市名称
+        code: string,                    // TODO: 港口的五字编码
+        name: string,                    // TODO: 港口名世界通用
+        tradePlaceCod: string,           // TODO: 主数据代码
+        enableFlag?: number,             // TODO: 启用标识
+        deleteFlag?: number,             // TODO: 删除标识
+        createUserId?: number,           // TODO: 创建人ID
+        createUserName?: string,         // TODO: 创建人名称
+        createTime?: string,             // TODO: 创建时间
+        updateUserId?: number,           // TODO: 修改人ID
+        updateUserName?: string,         // TODO: 修改人名称
+        updateTime?: string,             // TODO: 修改时间
     }
     //endregion
 

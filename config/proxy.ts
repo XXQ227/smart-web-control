@@ -26,7 +26,7 @@ export default {
       target: 'http://106.52.125.82:8080/',
       changeOrigin: true,
       pathRewrite: {
-        '^/api': '/engine/web',
+        '^/apiEngine': '/engine/web',
       },
     },
     // TODO: accounting
@@ -35,7 +35,7 @@ export default {
       target: 'http://106.52.125.82:8080/',
       changeOrigin: true,
       pathRewrite: {
-        '^/api': '/accounting/web',
+        '^/apiAccounting': '/accounting/web',
       },
     },
     // TODO: Smart 1.0 后台地址
