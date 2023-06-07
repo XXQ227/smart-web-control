@@ -1,10 +1,12 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, Fragment} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
-import {useModel} from 'umi';
-import {PlusOutlined} from '@ant-design/icons'
-import {Button, Input} from 'antd'
+import {useModel, history} from 'umi';
+import {DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons'
+import {Button, Input, Popconfirm} from 'antd'
+import DividerCustomize from "@/components/Divider";
+import {CustomizeIcon} from "@/utils/units";
 
 const {Search} = Input;
 
@@ -13,21 +15,36 @@ type APISearchProject = APIManager.SearchProjectParams;
 
 // TODO: 获取单票集的请求参数
 const searchParams: APISearchProject = {
-    // name: '',
+    code: '',
 };
 
 const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
 
     const {
-        PortList, querySea,
-    } = useModel('manager.port', (res: any) => ({
-        PortList: res.PortList,
-        querySea: res.querySea,
+        ProjectList, queryProject,
+    } = useModel('manager.project', (res: any) => ({
+        ProjectList: res.ProjectList,
+        queryProject: res.queryProject,
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
-    // const [PortListVO, setPortListVO] = useState<APIProject[]>(PortList || []);
+    const [ProjectListVO, setProjectListVO] = useState<APIProject[]>(ProjectList || []);
     const ref = useRef<ActionType>();
+
+    /**
+     * @Description: TODO: 编辑 CV 信息
+     * @author XXQ
+     * @date 2023/5/5
+     * @param record    操作当前 行
+     * @returns
+     */
+    const handleEditProject = (record: APIProject) => {
+        // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
+        const url = `/manager/project/form/${btoa(record.id)}`;
+        // TODO: 跳转页面<带参数>
+        history.push({pathname: url})
+    }
+
     /**
      * @Description: TODO 获取单票数据集合
      * @author LLS
@@ -40,7 +57,8 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
         // TODO: 分页查询【参数页】
         // params.currentPage = params.current || 1;
         // params.pageSize = params.pageSize || 20;
-        const result: APIManager.PortResult = await querySea(params);
+        const result: API.Result = await queryProject(params);
+        // const result: APIManager.PortResult = await queryProject(params);
         // setPortListVO(result.data || []);
         setLoading(false);
         return result;
@@ -77,31 +95,69 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
 
     const columns: ProColumns<APIProject>[] = [
         {
+            title: 'Full Name',
+            dataIndex: 'nameFull',
+            ellipsis: true,
+        },
+        {
+            title: 'Short Name',
+            dataIndex: 'nameShort',
+            width: 150,
+            ellipsis: true,
+        },
+        {
             title: 'Code',
             dataIndex: 'code',
-            width: 120,
-            disable: true,
-            align: 'center',
-        },
-        {
-            title: 'Name',
-            dataIndex: 'name',
-            disable: true,
-            align: 'center',
-        },
-        {
-            title: 'Alias',
-            dataIndex: 'alias',
-            disable: true,
-            align: 'center',
-        },/*
-        {
-            title: 'City',
-            dataIndex: 'cityName',
             width: 150,
-            disable: true,
-            align: 'center',
+            ellipsis: true,
         },
+        {
+            title: 'Industry',
+            dataIndex: 'industryType',
+            width: 150,
+            ellipsis: true,
+        },
+        {
+            title: 'Manager',
+            dataIndex: 'industryType',
+            width: 150,
+            ellipsis: true,
+        },
+        {
+            title: 'Oracle ID',
+            dataIndex: 'oracleId',
+            width: 150,
+            ellipsis: true,
+        },
+        {
+            title: 'Action',
+            width: 100,
+            align: 'center',
+            render: (text, record, index) => {
+                return (
+                    <Fragment>
+                        <EditOutlined color={'#1765AE'} onClick={() => handleEditProject(record)}/>
+                        <Popconfirm
+                            // onConfirm={() => handleOperateBranch(index, record, 'freezen')}
+                            okText={'Yes'} cancelText={'No'} placement={'topRight'}
+                            title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
+                        >
+                            <DividerCustomize />
+                            <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                        </Popconfirm>
+                        <Popconfirm
+                            // onConfirm={() => handleOperateBranch(index, record, 'delete')}
+                            title="Sure to delete?" okText={'Yes'} cancelText={'No'}
+                        >
+                            <DividerCustomize />
+                            <DeleteOutlined color={'red'}/>
+                        </Popconfirm>
+                    </Fragment>
+                )
+            },
+        }
+        /*
+
         {
             title: 'Action',
             width: 110,
@@ -173,7 +229,7 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                     // dataSource={BranchListVO}
                     locale={{ emptyText: 'No Data' }}
                     // className={'antd-pro-table-port-sea ant-pro-table-search'}
-                    // rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
+                    rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
                     headerTitle={
                         <Search
                             placeholder='' enterButton="Search" loading={loading}
@@ -188,10 +244,8 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                     toolbar={{
                         actions: [
                             // <PortDrawerForm key={'add'} PortInfo={{}} isCreate={true} actionRef={ref}/>
-                            <Button key={'add'}
-                                    // onClick={()=> handleEditBranch({id: '0'})}
-                                    type={'primary'} icon={<PlusOutlined/>}>
-                                Add Branch
+                            <Button key={'add'} onClick={()=> handleEditProject({id: '0'})} type={'primary'} icon={<PlusOutlined/>}>
+                                Add Project
                             </Button>
                         ]
                     }}

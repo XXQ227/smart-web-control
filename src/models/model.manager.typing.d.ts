@@ -434,30 +434,31 @@ declare namespace APIManager {
 
     //region TODO: 项目
     type SearchProjectParams = {
+        code?: string,
         current?: number;
         currentPage?: number,
         pageSize?: number,
     }
 
     type Project = {
-        id: number | string | null,         // TODO: 主键ID
-        code: string,                       // TODO: 编号
-        nameFull: string,                   // TODO: 项目全称
-        nameShort: string,                  // TODO: 项目简称
-        managerId: number,                  // TODO: 项目经理
-        oracleId: string,                   // TODO: oracleID
-        branchId: number,                   // TODO: 公司ID
-        industryType: number,               // TODO: 行业类型
-        contractId: number,                 // TODO: 合同方（业务单位）
-        pmsCode: string,                    // TODO: 项目管理代码
-        portionAFlag: number,               // TODO: 业务段A标识 0-未开启 1-已开启
-        portionBFlag: number,               // TODO: 业务段B标识 0-未开启 1-已开启
-        portionCFlag: number,               // TODO: 业务段C标识 0-未开启 1-已开启
-        startDate: string,                  // TODO: 项目开始时间
-        endDate: string,                    // TODO: 项目结束时间
-        remark: string,                     // TODO: 备注
-        enableFlag: number,                 // TODO: 启用标识
-        deleteFlag: number,                 // TODO: 删除标识
+        id: string,                          // TODO: 主键ID
+        code?: string,                       // TODO: 编号
+        nameFull?: string,                   // TODO: 项目全称
+        nameShort?: string,                  // TODO: 项目简称
+        managerId?: number,                  // TODO: 项目经理
+        oracleId?: string,                   // TODO: oracleID
+        branchId?: number,                   // TODO: 公司ID
+        industryType?: number,               // TODO: 行业类型
+        contractId?: number,                 // TODO: 合同方（业务单位）
+        pmsCode?: string,                    // TODO: 项目管理代码
+        portionAFlag?: number,               // TODO: 业务段A标识 0-未开启 1-已开启
+        portionBFlag?: number,               // TODO: 业务段B标识 0-未开启 1-已开启
+        portionCFlag?: number,               // TODO: 业务段C标识 0-未开启 1-已开启
+        startDate?: string,                  // TODO: 项目开始时间
+        endDate?: string,                    // TODO: 项目结束时间
+        remark?: string,                     // TODO: 备注
+        enableFlag?: number,                 // TODO: 启用标识
+        deleteFlag?: number,                 // TODO: 删除标识
     }
     //endregion
 
