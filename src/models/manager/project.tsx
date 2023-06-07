@@ -1,5 +1,5 @@
 import {useCallback, useState} from "react";
-import {queryProjectAPI} from "@/services/smart/manager/project";
+import {queryProjectAPI, queryProjectInfoAPI} from "@/services/smart/manager/project";
 
 type APIProject = APIManager.Project;
 
@@ -11,18 +11,24 @@ export default () => {
     const [ProjectList, setProjectList] = useState<APIProject[]>([]);
 
     //region TODO: 接口
-    // TODO: 查询项目列表
+    // TODO: 获取 项目 列表
     const queryProject = useCallback(async (params: APIManager.SearchPortParams) => {
-        // TODO: 请求后台 API
         const response: API.Result = await queryProjectAPI(params);
         if (!response) return;
         setProjectList(response.data);
         return response;
     }, []);
 
+    // TODO: 获取 项目 详情
+    const queryProjectInfo = useCallback(async (params: {id: string})=> {
+        return await queryProjectInfoAPI(params);
+    }, [])
+
 
     return {
         ProjectList,
         queryProject,
+
+        queryProjectInfo,
     }
 }

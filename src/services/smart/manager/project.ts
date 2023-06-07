@@ -1,12 +1,20 @@
-// @ts-ignore
-/* eslint-disable */
 import { request } from '@/utils/request';
+import {stringify} from "querystring";
 
-/** 获取港口列表 */
+/** TODO: 获取 项目 列表 */
 export async function queryProjectAPI(body: APIManager.SearchPortParams, options?: { [key: string]: any }) {
     return request(`/apiBase/project/queryProject`, {
         method: 'POST',
         body,
+        ...(options || {}),
+    });
+}
+
+
+/** TODO: 获取 项目 详情 */
+export async function queryProjectInfoAPI(body: {id: string}, options?: { [key: string]: any }) {
+    return request(`/apiBase/project/queryProjectInfo?${stringify(body)}`, {
+        method: 'POST',
         ...(options || {}),
     });
 }

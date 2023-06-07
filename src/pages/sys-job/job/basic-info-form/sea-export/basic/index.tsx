@@ -51,6 +51,7 @@ const Basic: React.FC<Props> = (props) => {
                 <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={6}>
                     <SearchProFormSelect
                         qty={5}
+                        isShowLabel={true}
                         required={false}
                         label="Booking Agent"
                         id={'BookingAgentID'}
@@ -67,6 +68,7 @@ const Basic: React.FC<Props> = (props) => {
                     />
                     <SearchProFormSelect
                         qty={5}
+                        isShowLabel={true}
                         required={false}
                         label="Destination Agent"
                         id={'PODAgentID'}
@@ -86,6 +88,7 @@ const Basic: React.FC<Props> = (props) => {
                 <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={6}>
                     <SearchProFormSelect
                         qty={5}
+                        isShowLabel={true}
                         required={false}
                         label="Shipping Line (Carrier)"
                         id={'FreighterID'}
@@ -102,6 +105,7 @@ const Basic: React.FC<Props> = (props) => {
                     />
                     <SearchProFormSelect
                         qty={5}
+                        isShowLabel={true}
                         required={false}
                         label="Shipping Agent"
                         id={'ShippingName'}
@@ -248,6 +252,7 @@ const Basic: React.FC<Props> = (props) => {
                     <Space direction="horizontal" align="center" className={styles.siteSpace}>
                         <SearchProFormSelect
                             qty={5}
+                            isShowLabel={true}
                             required={false}
                             id={'IssuePlaceID'}
                             name={'IssuePlaceID'}
