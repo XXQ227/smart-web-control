@@ -65,7 +65,6 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
         const url = `/manager/branch/form/${btoa(record.id)}`;
         // TODO: 跳转页面<带参数>
-        // @ts-ignore
         history.push({pathname: url})
     }
 

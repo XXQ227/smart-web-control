@@ -41,7 +41,8 @@ export default {
   // TODO: 经营单位部门
   'menu.manager.department_list': 'Department - Index',
   // TODO: 项目
-  'menu.manager.project': 'Project - Index',
+  'menu.manager.project_list': 'Project - Index',
+  'menu.manager.project_info': 'Project - Information',
   // TODO: 经营单位员工用户
   'menu.manager.user_list': 'User - Index',
   // TODO: 业务公司
