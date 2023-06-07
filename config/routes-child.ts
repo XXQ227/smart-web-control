@@ -135,24 +135,7 @@ const manager_route = {
             name: 'dict',
             icon: 'icon-dictionary',
             path: '/manager/dict',
-            routes: [
-                {
-                    path: '/manager/dict',
-                    redirect: '/manager/dict/list',
-                },
-                {
-                    name: 'type',
-                    path: '/manager/dict/list',
-                    component: './sys-manager/dict/dict',
-                },
-                {
-                    name: 'type',
-                    hideInMenu: true,   // 隐藏不显示
-                    // access: 'isDictEdit',
-                    path: '/manager/dict/form/:id',
-                    component: './sys-manager/dict/dict/form',
-                },
-            ]
+            component: './sys-manager/dict/dict',
         },
         {
             name: 'cv_center',

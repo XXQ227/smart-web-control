@@ -239,13 +239,8 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                             color={'#1765AE'} hidden={!record.isChange}
                             onClick={() => handleSaveDict(index, record, isAdd ? 'add' : 'edit')}
                         />
-                        <Popconfirm
-                            onConfirm={() => handleDelFreezenDict(index, record, 'delete')}
-                            title="Sure to delete?" okText={'Yes'} cancelText={'No'}
-                        >
-                            <DividerCustomize hidden={!record.isChange}/>
-                            <DeleteOutlined color={'red'}/>
-                        </Popconfirm>
+                        <DividerCustomize hidden={!record.isChange}/>
+                        <CustomizeIcon hidden={isAdd} type={'icon-details'} onClick={() => handleDetail(record)}/>
                         <Popconfirm
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
@@ -257,8 +252,13 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                                 type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
                             />
                         </Popconfirm>
-                        <DividerCustomize hidden={isAdd} />
-                        <CustomizeIcon hidden={isAdd} type={'icon-details'} onClick={() => handleDetail(record)}/>
+                        <Popconfirm
+                            onConfirm={() => handleDelFreezenDict(index, record, 'delete')}
+                            title="Sure to delete?" okText={'Yes'} cancelText={'No'}
+                        >
+                            <DividerCustomize hidden={isAdd} />
+                            <DeleteOutlined color={'red'}/>
+                        </Popconfirm>
                     </Fragment>
                 )
             },

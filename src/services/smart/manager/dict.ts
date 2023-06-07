@@ -23,9 +23,8 @@ export async function addDictAPI(body: APIManager.Dict, options?: { [key: string
 
 /** Get Dict Information  */
 export async function queryDictInfoAPI(body: APIManager.Dict, options?: { [key: string]: any }) {
-  return request(`/apiBase/dict/queryDictInfo`, {
+  return request(`/apiBase/dict/queryDictInfo?${stringify(body)}`, {
     method: 'POST',
-    body,
     ...(options || {}),
   });
 }

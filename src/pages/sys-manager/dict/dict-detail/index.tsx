@@ -31,8 +31,16 @@ const DictDetailDetailIndex: React.FC<Props> = () => {
         operateDictDetail: res.operateDictDetail,
     }));
 
+    const searchParams: APISearchDictDetail = {
+        dictId: id,
+        dictLabel: '',
+        currentPage: 1,
+        pageSize: 20,
+    };
+
     const [loading, setLoading] = useState<boolean>(false);
     const [DictDetailListVO, setDictDetailListVO] = useState<APIDictDetail[]>([]);
+
 
     /**
      * @Description: TODO: 获取字典类型类型详情
@@ -170,7 +178,7 @@ const DictDetailDetailIndex: React.FC<Props> = () => {
 
     const columns: ProColumns<APIDictDetail>[] = [
         {
-            title: 'Name',
+            title: 'Label',
             dataIndex: 'dictLabel',
             width: 200,
             align: 'left',
@@ -189,8 +197,8 @@ const DictDetailDetailIndex: React.FC<Props> = () => {
                 />
         },
         {
-            title: 'Short Name',
-            dataIndex: 'dictName',
+            title: 'Name',
+            dataIndex: 'dictValue',
             width: 200,
             align: 'center',
             tooltip: 'Code is required',
@@ -199,11 +207,11 @@ const DictDetailDetailIndex: React.FC<Props> = () => {
                 <ProFormText
                     placeholder=''
                     disabled={record.enableFlag}
-                    id={`dictName${record.id}`}
-                    name={`dictName${record.id}`}
-                    initialValue={record.remark}
+                    id={`dictValue${record.id}`}
+                    name={`dictValue${record.id}`}
+                    initialValue={record.dictValue}
                     fieldProps={{
-                        onChange: (val: any) => handleChangeDictDetail(index, record, 'dictName', val)
+                        onChange: (val: any) => handleChangeDictDetail(index, record, 'dictValue', val)
                     }}
                 />
         },
@@ -255,22 +263,22 @@ const DictDetailDetailIndex: React.FC<Props> = () => {
                             onClick={() => handleSaveDictDetail(index, record, isAdd ? 'add' : 'edit')}
                         />
                         <Popconfirm
-                            onConfirm={() => handleOperateDictDetail(index, record, 'deleteFlag')}
-                            title="Sure to delete?" okText={'Yes'} cancelText={'No'}
-                        >
-                            <DividerCustomize hidden={!record.isChange}/>
-                            <DeleteOutlined color={'red'}/>
-                        </Popconfirm>
-                        <Popconfirm
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                             onConfirm={() => handleOperateDictDetail(index, record, 'enableFlag')}
                         >
-                            <DividerCustomize hidden={isAdd} />
+                            <DividerCustomize hidden={isAdd || !record.isChange} />
                             <CustomizeIcon
                                 hidden={isAdd}
                                 type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
                             />
+                        </Popconfirm>
+                        <Popconfirm
+                            onConfirm={() => handleOperateDictDetail(index, record, 'deleteFlag')}
+                            title="Sure to delete?" okText={'Yes'} cancelText={'No'}
+                        >
+                            <DividerCustomize />
+                            <DeleteOutlined color={'red'}/>
                         </Popconfirm>
                     </Fragment>
                 )
@@ -290,11 +298,13 @@ const DictDetailDetailIndex: React.FC<Props> = () => {
             dataSource={DictDetailListVO}
             locale={{ emptyText: 'No Data' }}
             className={'ant-pro-table-edit'}
+            params={searchParams}
             headerTitle={
                 <Search
                     placeholder='' enterButton="Search" loading={loading}
                     onSearch={async (val: any) => {
-                        await handleSearchDictDetail({dictLabel: val});
+                        searchParams.dictLabel = val;
+                        await handleSearchDictDetail(searchParams);
                     }}/>
             }
             toolbar={{
@@ -306,8 +316,7 @@ const DictDetailDetailIndex: React.FC<Props> = () => {
             }}
             pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
             // @ts-ignore
-            // request={(params: APISearchDictDetail) => handleGetDictDetailList(params)}
-            request={() => DictDetailListVO}
+            request={(params: APISearchDictDetail) => handleSearchDictDetail(params)}
         />
     )
 }
