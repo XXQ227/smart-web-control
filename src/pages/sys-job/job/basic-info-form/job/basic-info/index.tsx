@@ -177,6 +177,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                 </Col>*/}
                 <Col xs={24} sm={24} md={15} lg={15} xl={9} xxl={5}>
                     <SearchProFormSelect
+                        isShowLabel={true}
                         width={"lg"}
                         qty={5}
                         required={true}

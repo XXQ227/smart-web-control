@@ -32,10 +32,10 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
     const ref = useRef<ActionType>();
 
     /**
-     * @Description: TODO: 编辑 CV 信息
-     * @author XXQ
-     * @date 2023/5/5
-     * @param record    操作当前 行
+     * @Description: TODO: 编辑 项目 信息
+     * @author LLS
+     * @date 2023/6/7
+     * @param record    操作当前行
      * @returns
      */
     const handleEditProject = (record: APIProject) => {
@@ -48,7 +48,7 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
     /**
      * @Description: TODO 获取单票数据集合
      * @author LLS
-     * @date 2023/6/5
+     * @date 2023/6/7
      * @param params    参数
      * @returns
      */
@@ -67,7 +67,7 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
     /**
      * @Description: TODO:  删除、冻结操作
      * @author LLS
-     * @date 2023/6/6
+     * @date 2023/6/7
      * @param index     当前行序号
      * @param record    当前行数据
      * @param state     操作状态：delete：删除；freeze：冻结
