@@ -247,35 +247,35 @@ const manager_route = {
             name: 'charge_template_list',
             icon: 'icon-charge-manage',
             path: '/manager/charge-template/list',
-            component: './sys-manager/charge-template/charge-template-list',
+            component: './sys-manager/charge-template/list',
         },
         {
             hideInMenu: true,   // 隐藏不显示
             name: 'charge_template_info',
             icon: 'icon-charge-manage',
             path: '/manager/charge-template/form/:id',
-            component: './sys-manager/charge-template/charge-template-form',
+            component: './sys-manager/charge-template/form',
         },
         {
             hideInMenu: true,   // 隐藏不显示
             name: 'charge_template_info',
             icon: 'icon-charge-manage',
             path: '/manager/charge-template/copy/:id',
-            component: './sys-manager/charge-template/charge-template-form',
+            component: './sys-manager/charge-template/form',
         },
         // TODO: 报价数据
         {
             name: 'charge_quotation_list',
             icon: 'icon-charge-quotation',
             path: '/manager/charge-quotation/list',
-            component: './sys-manager/charge-quotation/charge-quotation-list',
+            component: './sys-manager/charge-quotation/list',
         },
         {
             hideInMenu: true,   // 隐藏不显示
             name: 'charge_quotation_info',
             icon: 'icon-charge-quotation',
             path: '/manager/charge-quotation/form/:id',
-            component: './sys-manager/charge-quotation/charge-quotation-form',
+            component: './sys-manager/charge-quotation/form',
         },
         // TODO: 部门
         {

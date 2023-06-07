@@ -12,9 +12,9 @@ type APISearchPort = APIManager.SearchPortParams;
 
 // TODO: 获取单票集的请求参数
 const searchParams: APISearchPort = {
-    Key: '',
-    Type: null,
-    PageSize: 15,
+    name: '',
+    pageSize: 15,
+    currentPage: 1,
 };
 
 const PortListIndex: React.FC<RouteChildrenProps> = () => {
@@ -39,9 +39,6 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
     async function handleGetPortList(params: APISearchPort) {
         setLoading(true);
         // TODO: 分页查询【参数页】
-        params.PageNum = params.current || 1;
-        params.pageSize = params.PageSize || 15;
-        params.PageSize = params.PageSize || 15;
         const result: API.Result = await getGetPortList(params);
         setPortListVO(result.data);
         setLoading(false);

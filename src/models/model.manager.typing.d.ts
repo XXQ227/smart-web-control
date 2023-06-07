@@ -119,7 +119,6 @@ declare namespace APIManager {
 
     //region TODO: 港口
     type SearchPortParams = {
-        current?: number;
         name?: string,
         currentPage?: number,
         pageSize?: number,
