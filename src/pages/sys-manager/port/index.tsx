@@ -23,6 +23,8 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
                     activeKey: activeKey,
                     tabPosition: 'left',
                     onChange: setActiveKey,
+                    // TODO: 被隐藏时销毁 DOM 结构，这样就会重新加载数据
+                    destroyInactiveTabPane: true,
                     items: [
                         {
                             label: 'Sea',

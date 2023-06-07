@@ -42,7 +42,7 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
         params.PageNum = params.current || 1;
         params.pageSize = params.PageSize || 15;
         params.PageSize = params.PageSize || 15;
-        const result: APIManager.PortResult = await getGetPortList(params);
+        const result: API.Result = await getGetPortList(params);
         setPortListVO(result.data);
         setLoading(false);
         return result;

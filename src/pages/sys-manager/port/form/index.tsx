@@ -1,10 +1,9 @@
 import React, {useState} from 'react';
 import {FooterToolbar, ProForm, ProFormText} from '@ant-design/pro-components'
 import {Button, Col, Drawer, Form, message, Row, Space} from 'antd'
-import SearchInput from '@/components/SearchInput'
 import {getFormErrorMsg} from '@/utils/units'
-import {useModel} from "@@/plugin-model/useModel";
 import styles from "@/pages/sys-manager/style.less";
+import SearchInput from '@/components/SearchInput'
 
 
 interface Props {
@@ -13,19 +12,21 @@ interface Props {
     handleSavePort: any,    // TODO: 保存修改信息
     actionRef?: any,
     setOpen?: any,
+    addAPI: any,
+    editAPI: any,
 }
 
 const PortDrawerForm: React.FC<Props> = (props) => {
 
-    const {
-        addSea, editSea,
-    } = useModel('manager.port', (res: any) => ({
-        addSea: res.addSea,
-        editSea: res.editSea,
-    }));
+    // const {
+    //     addSea, editSea,
+    // } = useModel('manager.port', (res: any) => ({
+    //     addSea: res.addSea,
+    //     editSea: res.editSea,
+    // }));
 
     const [form] = Form.useForm();
-    const {open, PortInfo, handleSavePort} = props;
+    const {open, PortInfo, handleSavePort, addAPI, editAPI,} = props;
     const [CityObj, setCityObj] = useState<any>({value: PortInfo?.cityId || null, label: PortInfo?.cityName});
 
     /**
@@ -68,10 +69,10 @@ const PortDrawerForm: React.FC<Props> = (props) => {
                 // TODO: !!PortInfo.id === true => edit
                 if (PortInfo.id) {
                     params.id = PortInfo.id
-                    result = await editSea(params);
+                    result = await editAPI(params);
                 } else {
                     // TODO: add
-                    result = await addSea(params);
+                    result = await addAPI(params);
                     params.id = result.data;
                 }
                 if (result.success) {
@@ -89,6 +90,8 @@ const PortDrawerForm: React.FC<Props> = (props) => {
                 message.error(getFormErrorMsg(errorInfo));
             });
     }
+
+
 
     return (
         !open ? null :
@@ -123,6 +126,7 @@ const PortDrawerForm: React.FC<Props> = (props) => {
                                     name='code'
                                     label='Code'
                                     placeholder=''
+                                    fieldProps={{autoFocus: true}}
                                     rules={[{required: true, message: 'Code is required'}]}
                                 />
                             </Col>
@@ -145,8 +149,9 @@ const PortDrawerForm: React.FC<Props> = (props) => {
                                 />
                             </Col>
                             <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={8}>
-                                <Form.Item label={'City'} name={'cityId'}
-                                           // rules={[{required: true, message: `City is required`}]}
+                                <Form.Item
+                                    label={'City'} name={'cityId'}
+                                    // rules={[{required: true, message: `City is required`}]}
                                 >
                                     <SearchInput
                                         qty={5}

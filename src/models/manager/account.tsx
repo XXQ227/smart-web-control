@@ -39,14 +39,9 @@ export default (callback: T, deps: React.DependencyList) => {
         // TODO: 请求后台 API
         const response = await GetAPList(params);
         if (!response) return;
-        const result: APIManager.AccountResult = {
-            success: response.Result,
-            total: response.Page?.ItemTotal,
-            data: response.Content?.AccountPriodList,
-        }
         setCurrencyList(response.Content?.Currencys);
         setAccountList(response.Content?.AccountPriodList);
-        return result;
+        return response;
     }, []);
 
     // TODO: 获取账期详情请求

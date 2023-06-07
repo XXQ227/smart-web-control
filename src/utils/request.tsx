@@ -75,8 +75,11 @@ export function request(url: string, options: any) {
             if (response.status === 204) {
                 return response.text();
             }
-            return setAPIResponse(await response.json());
-            // return response.json();  // TODO: old vision
+            if (url.indexOf('/apiLocal') > -1) {
+                return response.json();  // TODO: old vision
+            } else {
+                return setAPIResponse(await response.json());
+            }
         })
         .catch((e) => {
             const status = e.name;

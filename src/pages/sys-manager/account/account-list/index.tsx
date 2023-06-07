@@ -43,7 +43,7 @@ const AccountIndex: React.FC<RouteChildrenProps> = () => {
      */
     async function handleGetAccountList(params: APISearchAccount) {
         setLoading(true);
-        const result: APIManager.AccountResult = await getAPList(params);
+        const result: API.Result = await getAPList(params);
         setAccountListVO(result.data);
         setLoading(false);
         return result;

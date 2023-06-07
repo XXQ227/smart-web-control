@@ -285,7 +285,6 @@ const DictDetailDetailIndex: React.FC<Props> = () => {
             },
         },
     ];
-    console.log(DictDetailListVO);
 
     return (
         <ProTable<APIDictDetail>

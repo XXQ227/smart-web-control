@@ -126,13 +126,6 @@ declare namespace APIManager {
         // total: number;
     }
 
-    type PortResult = {
-        data: Port[];
-        /** 列表的内容总数 */
-        total?: number;
-        success?: boolean;
-    };
-
     type Port = {
         id: number | string | null,      // TODO:
         alias: string,                   // TODO: 港口别名
@@ -157,12 +150,6 @@ declare namespace APIManager {
         UserID: number,
         Year: string | undefined,
     }
-    type AccountResult = {
-        data: AccountList[];
-        /** 列表的内容总数 */
-        total: number | null;
-        success?: boolean;
-    };
     type AccountList = {
         AccountState: number,
         DFStatus: number | null,

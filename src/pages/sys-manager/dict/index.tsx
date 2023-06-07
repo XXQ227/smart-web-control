@@ -82,7 +82,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
      * @param val       编辑值
      * @returns
      */
-    const handleOperateDict = async (index: number, record: APIDict, filedName: string, val: any) => {
+    const handleChangeDict = async (index: number, record: APIDict, filedName: string, val: any) => {
         const newData: APIDict[] = ls.cloneDeep(DictListVO);
         record[filedName] = val?.target?.value || val;
         record.isChange = true;
@@ -137,7 +137,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
      * @param state     操作动作：TODO: {delete: 删除, freezen: 冻结}
      * @returns
      */
-    const handleDelFreezenDict = async (index: number, record: APIDict, state: string) => {
+    const handleOperateDict = async (index: number, record: APIDict, state: string) => {
         let result: API.Result;
         const newData: APIDict[] = ls.cloneDeep(DictListVO);
         // TODO: 删除 / 冻结 参数
@@ -185,7 +185,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                     initialValue={record.dictName}
                     rules={[{required: true, message: 'Name'}]}
                     fieldProps={{
-                        onChange: (val: any) => handleOperateDict(index, record, 'dictName', val)
+                        onChange: (val: any) => handleChangeDict(index, record, 'dictName', val)
                     }}
                 />
         },
@@ -207,7 +207,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                     initialValue={record.dictCode}
                     rules={[{required: true, message: 'Code'}]}
                     fieldProps={{
-                        onChange: (val: any) => handleOperateDict(index, record, 'dictCode', val)
+                        onChange: (val: any) => handleChangeDict(index, record, 'dictCode', val)
                     }}
                 />
         },
@@ -223,7 +223,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                     name={`remark${record.id}`}
                     initialValue={record.remark}
                     fieldProps={{
-                        onChange: (val: any) => handleOperateDict(index, record, 'remark', val)
+                        onChange: (val: any) => handleChangeDict(index, record, 'remark', val)
                     }}
                 />
         },
@@ -244,7 +244,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                         <Popconfirm
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
-                            onConfirm={() => handleDelFreezenDict(index, record, 'freezen')}
+                            onConfirm={() => handleOperateDict(index, record, 'freezen')}
                         >
                             <DividerCustomize hidden={isAdd} />
                             <CustomizeIcon
@@ -253,7 +253,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                             />
                         </Popconfirm>
                         <Popconfirm
-                            onConfirm={() => handleDelFreezenDict(index, record, 'delete')}
+                            onConfirm={() => handleOperateDict(index, record, 'delete')}
                             title="Sure to delete?" okText={'Yes'} cancelText={'No'}
                         >
                             <DividerCustomize hidden={isAdd} />

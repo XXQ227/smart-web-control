@@ -135,13 +135,13 @@ const manager_route = {
             name: 'dict',
             icon: 'icon-dictionary',
             path: '/manager/dict',
-            component: './sys-manager/dict/dict',
+            component: './sys-manager/dict',
         },
         {
             name: 'dict_type',
             hideInMenu: true,   // 隐藏不显示
             path: '/manager/dict/form/:id',
-            component: './sys-manager/dict/dict/form',
+            component: './sys-manager/dict/form',
         },
         {
             name: 'cv_center',

@@ -47,7 +47,7 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
      */
     async function handleGetPortList(params: APISearchPort) {
         setLoading(true);
-        const result: APIManager.PortResult = await querySea(params);
+        const result: API.Result = await querySea(params);
         setPortListVO(result.data || []);
         setLoading(false);
         return result;
