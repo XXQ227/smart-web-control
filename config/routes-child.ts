@@ -138,6 +138,12 @@ const manager_route = {
             component: './sys-manager/dict/dict',
         },
         {
+            name: 'dict_type',
+            hideInMenu: true,   // 隐藏不显示
+            path: '/manager/dict/form/:id',
+            component: './sys-manager/dict/dict/form',
+        },
+        {
             name: 'cv_center',
             icon: 'icon-cv-center',
             path: '/manager/cv-center',

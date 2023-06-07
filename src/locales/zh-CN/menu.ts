@@ -37,8 +37,7 @@ export default {
   'menu.manager.branch_info': 'Branch - Information',
   // TODO: 字典类型
   'menu.manager.dict': 'Dictionary',
-  'menu.manager.dict.type': 'Dictionary',
-  'menu.manager.dict.detail': 'Dictionary - Detail',
+  'menu.manager.dict_type': 'Dictionary - Detail',
   // 'menu.manager.dictionary_info': 'Branch - Information',
   // TODO: 经营单位部门
   'menu.manager.department_list': 'Department - Index',
