@@ -286,10 +286,17 @@ const manager_route = {
         },
         // TODO: 项目
         {
-            name: 'project',
+            name: 'project_list',
             icon: 'icon-project',
             path: '/manager/project/list',
             component: './sys-manager/project/project-list',
+        },
+        {
+            hideInMenu: true,   // 隐藏不显示
+            name: 'project_info',
+            icon: 'icon-project',
+            path: '/manager/project/form/:id',
+            component: './sys-manager/project/project-form',
         },
         // TODO: 用户
         {
