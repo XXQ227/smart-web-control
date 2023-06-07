@@ -7,6 +7,7 @@ interface Props {
     id: any,
     name: string,
     label?: string,
+    isShowLabel?: boolean,
     width?: any,
     valueObj?: any,
     disabled?: boolean,
@@ -25,14 +26,16 @@ interface Props {
 let isSearch: number = 0;
 
 const SearchProFormSelect: React.FC<Props> = (props) => {
-    const {valueObj, label, url, qty, query, disabled, filedValue, filedLabel, required, placeholder} = props;
+    const {
+        valueObj, label, url, qty, query, disabled, filedValue, filedLabel, required, placeholder, isShowLabel
+    } = props;
     // 设置是否是编辑
     const [valInput, setUserInput] = useState<API.APIValue$Label>(valueObj || {});
     // const [isSearch, setIsSearch] = useState<boolean>(false);
 
     // TODO: 返回结果的数据结构；默认 {Key: number, Value: string}，当有其他返回键值对时，在组件调用时定义
-    const resValue: string = filedValue || 'Key';
-    const resLabel: string = filedLabel || 'Value';
+    const resValue: string = filedValue || 'id';
+    const resLabel: string = filedLabel || 'name';
     // const [resValue, setResValue] = useState<string>('Key');
     // const [resLabel, setResLabel] = useState<string>('Value');
 
@@ -61,7 +64,6 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
     return (
         <ProFormSelect
             showSearch
-            label={label}
             name={props.name}
             width={props.width}
             debounceTime={1000}
@@ -69,6 +71,7 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
             required={!!required}
             // initialValue={valInput}
             initialValue={valueObj}
+            label={isShowLabel ? label : ''}
             allowClear={props.allowClear}
             placeholder={placeholder || ""}
             fieldProps={{

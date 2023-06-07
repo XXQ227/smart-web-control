@@ -226,7 +226,7 @@ const manager_route = {
             name: 'port_list',
             icon: 'icon-port',
             path: '/manager/port/list',
-            component: './sys-manager/port/port-list',
+            component: './sys-manager/port',
         },
         // TODO: 账期数据
         {

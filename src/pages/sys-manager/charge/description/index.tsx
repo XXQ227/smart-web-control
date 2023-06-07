@@ -8,6 +8,7 @@ import {Button, Divider, Form, Input, message, Popconfirm} from 'antd'
 import {CustomizeIcon, getFormErrorMsg, ID_STRING} from '@/utils/units'
 import DividerCustomize from '@/components/Divider'
 import ls from 'lodash'
+import SearchProFormSelect from '@/components/SearchProFormSelect'
 
 const {Search} = Input;
 
@@ -86,7 +87,7 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
             newData.splice(index, 1);
         } else {
             record[filedName] = val?.target ? val.target.value : val;
-            if (filedName === 'chargeItemId') {
+            if (filedName === 'chargeStandardId') {
                 record.chargeStandardName = option.label;
                 form.setFieldsValue({[filedName + record.id]: val});
             }
@@ -110,11 +111,10 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
             .then(async () => {
                 let result: API.Result;
                 const params: any = {
-                    name: record.name, code: record.code, branchId: 0, subjectCodeAr: record.subjectCodeAr,
-                    subjectCodeAp: record.subjectCodeAp, subjectCodeAd: record.subjectCodeAd
+                    name: record.name, code: record.code, branchId: 0, chargeStandardId: record.chargeStandardId,
                 };
                 // TODO: 添加
-                if (!(record.id.indexOf('ID_') > -1)) {
+                if (record.id.indexOf('ID_') > -1) {
                     result = await addChargeItem(params);
                     record.id = result.data;
                 }
@@ -155,7 +155,7 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
         let operate: number;
         // TODO: 删除
         if (state === 'deleteFlag') {
-            if (record.id.indexOf('ID_') > -1) result = await deleteChargeItem(params);
+            if (!(record.id.indexOf('ID_') > -1)) result = await deleteChargeItem(params);
             operate = record.deleteFlag ? 0 : 1;
         }
         // TODO: 冻结
@@ -176,7 +176,7 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
 
     const columns: ProColumns<APICGItem>[] = [
         {
-            title: 'Description',
+            title: 'Name',
             dataIndex: 'name',
             align: 'center',
             tooltip: 'Name is required',
@@ -196,7 +196,7 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
                 />
         },
         {
-            title: 'Short Name',
+            title: 'Code',
             dataIndex: 'code',
             align: 'center',
             tooltip: 'Name is required',
@@ -213,6 +213,27 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
                     fieldProps={{
                         onChange: (val: any) => handleRowChange(index, record, 'code', val)
                     }}
+                />
+        },
+        {
+            title: 'Standard',
+            dataIndex: 'chargeStandardId',
+            align: 'left',
+            tooltip: 'Standard is required',
+            className: 'ant-columns-required',
+            render: (text: any, record: any, index) =>
+                <SearchProFormSelect
+                    qty={8}
+                    required
+                    placeholder=''
+                    label={'Standard Name'}
+                    disabled={record.enableFlag}
+                    query={{currentPage: 1, code: ''}}
+                    id={`chargeStandardId${record.id}`}
+                    name={`chargeStandardId${record.id}`}
+                    url={'/apiBase/chargeStandard/queryChargeStandard'}
+                    valueObj={{value: record.chargeStandardId, label: record.chargeStandardName}}
+                    handleChangeData={(val: any, option: any)=> handleRowChange(index, record, 'chargeStandardId', val, option)}
                 />
         },
         {
@@ -254,9 +275,7 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
                 breadcrumb: {},
             }}
         >
-            <Form
-                form={form}
-            >
+            <Form form={form}>
                 <ProCard className={'ant-card-pro-table'}>
                     <ProTable<APICGItem>
                         rowKey={'id'}

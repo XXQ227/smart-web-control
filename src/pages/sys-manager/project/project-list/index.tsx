@@ -172,7 +172,7 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                     params={searchParams}
                     // dataSource={BranchListVO}
                     locale={{ emptyText: 'No Data' }}
-                    // className={'antd-pro-table-port-list ant-pro-table-search'}
+                    // className={'antd-pro-table-port-sea ant-pro-table-search'}
                     // rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
                     headerTitle={
                         <Search
@@ -208,7 +208,7 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                     params={searchParams}
                     dataSource={BranchListVO}
                     locale={{ emptyText: 'No Data' }}
-                    className={'antd-pro-table-port-list'}
+                    className={'antd-pro-table-port-sea'}
                     rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
                     headerTitle={
                         <Search

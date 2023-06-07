@@ -5,7 +5,7 @@ import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
 import {DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons'
 import {Button, Divider, Input, message} from 'antd'
-import PortDrawerForm from '@/pages/sys-manager/port/port-form'
+import PortDrawerForm from '@/pages/sys-manager/port/form'
 import {CustomizeIcon} from "@/utils/units";
 import ls from 'lodash'
 
