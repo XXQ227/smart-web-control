@@ -212,8 +212,9 @@ const PortTable: React.FC<Props> = (props) => {
                 pagination={{
                     showSizeChanger: true,
                     pageSizeOptions: [20, 30, 50, 100],
-                    onChange: (page) => {
+                    onChange: (page, pageSize) => {
                         searchParams.currentPage = page;
+                        searchParams.pageSize = pageSize;
                         setSearchParams(searchParams);
                     },
                 }}

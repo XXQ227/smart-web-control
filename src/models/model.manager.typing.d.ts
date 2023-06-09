@@ -434,7 +434,6 @@ declare namespace APIManager {
     //region TODO: 项目
     type SearchProjectParams = {
         code?: string,
-        current?: number;
         currentPage?: number,
         pageSize?: number,
     }

@@ -1,6 +1,6 @@
-import React, {useState, useRef, Fragment} from 'react';
+import React, {useState, Fragment} from 'react';
 import type {RouteChildrenProps} from 'react-router';
-import type {ProColumns, ActionType} from '@ant-design/pro-table';
+import type {ProColumns} from '@ant-design/pro-table';
 import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel, history} from 'umi';
 import {DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons'
@@ -14,10 +14,8 @@ const {Search} = Input;
 type APIProject = APIManager.Project;
 type APISearchProject = APIManager.SearchProjectParams;
 
-// TODO: 获取单票集的请求参数
-const searchParams: APISearchProject = {
-    code: '',
-};
+// TODO: 获取项目列表的请求参数
+const initSearchParam = {code: '', currentPage: 1, pageSize: 20,};
 
 const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
 
@@ -32,7 +30,7 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [ProjectListVO, setProjectListVO] = useState<APIProject[]>(ProjectList || []);
-    const ref = useRef<ActionType>();
+    const [searchParams, setSearchParams] = useState<APISearchProject>(initSearchParam);
 
     /**
      * @Description: TODO: 编辑 项目 信息
@@ -210,7 +208,6 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
             <ProCard className={'ant-card-pro-table'}>
                 <ProTable<APIProject>
                     rowKey={'id'}
-                    actionRef={ref}
                     search={false}
                     options={false}
                     bordered={true}
@@ -225,10 +222,8 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                         <Search
                             placeholder='' enterButton="Search" loading={loading}
                             onSearch={async (val: any) => {
-                                // searchParams.name = val;
+                                searchParams.code = val;
                                 await handleQueryProject(searchParams);
-                                // 刷新
-                                // ref.current?.reload();
                             }}
                         />
                     }
@@ -240,7 +235,15 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                             </Button>
                         ]
                     }}
-                    pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
+                    pagination={{
+                        showSizeChanger: true,
+                        pageSizeOptions: [20, 30, 50, 100],
+                        onChange: (page, pageSize) => {
+                            searchParams.currentPage = page;
+                            searchParams.pageSize = pageSize;
+                            setSearchParams(searchParams);
+                        },
+                    }}
                     request={handleQueryProject}
                 />
                 {/*<ProTable<APIBranch>
