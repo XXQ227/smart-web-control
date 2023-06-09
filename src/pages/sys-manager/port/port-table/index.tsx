@@ -149,6 +149,7 @@ const PortTable: React.FC<Props> = (props) => {
             width: 110,
             disable: true,
             align: 'center',
+            className: 'cursorStyle',
             render: (text, record, index) => {
                 return (
                     <Fragment>

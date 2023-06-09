@@ -18,3 +18,39 @@ export async function queryProjectInfoAPI(body: {id: string}, options?: { [key: 
         ...(options || {}),
     });
 }
+
+/** TODO: 新增项目 */
+export async function addProjectAPI(body: APIManager.Project, options?: { [key: string]: any }) {
+    return request(`/apiBase/project/addProject`, {
+        method: 'POST',
+        body,
+        ...(options || {}),
+    });
+}
+
+/** TODO: 编辑项目 */
+export async function editProjectAPI(body: APIManager.Project, options?: { [key: string]: any }) {
+    return request(`/apiBase/project/editProject`, {
+        method: 'POST',
+        body,
+        ...(options || {}),
+    });
+}
+
+
+/** TODO: 删除项目 */
+export async function deleteProjectAPI(body: APIManager.Project, options?: { [key: string]: any }) {
+    return request(`/apiBase/project/deleteProject?${stringify(body)}`, {
+        method: 'POST',
+        ...(options || {}),
+    });
+}
+
+/** TODO: 启用禁用项目 */
+export async function operateProjectAPI(body: APIManager.Project, options?: { [key: string]: any }) {
+    return request(`/apiBase/project/OperateProject`, {
+        method: 'POST',
+        body,
+        ...(options || {}),
+    });
+}

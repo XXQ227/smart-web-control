@@ -231,6 +231,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
             title: 'Action',
             width: 120,
             align: 'center',
+            className: 'cursorStyle',
             render: (text, record, index) => {
                 const isAdd = record?.id?.indexOf('ID_') > -1;
                 return (

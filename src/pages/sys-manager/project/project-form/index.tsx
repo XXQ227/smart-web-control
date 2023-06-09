@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProFormInstance} from '@ant-design/pro-components';
 import {
@@ -6,8 +6,10 @@ import {
     PageContainer,
     ProCard,
     ProForm,
+    ProFormDatePicker,
+    ProFormCheckbox,
     ProFormSelect,
-    ProFormText,
+    ProFormText, ProFormTextArea,
 } from '@ant-design/pro-components'
 import {Button, Col, Form, message, Row, Space} from 'antd'
 import {history, useModel} from 'umi'
@@ -15,7 +17,8 @@ import {getFormErrorMsg} from '@/utils/units'
 import SearchProFormSelect from "@/components/SearchProFormSelect";
 
 
-type APIBranch = APIManager.Branch;
+type APIProject = APIManager.Project;
+
 const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}} = props;
@@ -24,11 +27,11 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
     const formRef = useRef<ProFormInstance>();
     //region TODO: 数据层
     const {
-        queryProjectInfo, addBranch, editBranch
+        queryProjectInfo, addProject, editProject
     } = useModel('manager.project', (res: any) => ({
         queryProjectInfo: res.queryProjectInfo,
-        addBranch: res.addBranch,
-        editBranch: res.editBranch,
+        addProject: res.addProject,
+        editProject: res.editProject,
     }));
 
     const {
@@ -55,22 +58,11 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
     const [Branch, setBranch] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    useEffect(() => {
-        if (params?.id) {
-            getData().then()
-        }
-    }, [params?.id])
-    //endregion
-
     async function getData() {
-        setLoading(true);
         // TODO: 分页查询【参数页】
-        // const param: any = {currentPage: 1};
         const managersResult: API.Result = await queryUser({currentPage: 1});
         const industryResult: API.Result = await queryDictDetail({dictId: "1666281726138064897"});
         const branchResult: API.Result = await queryBranch({currentPage: 1});
-        setLoading(false);
         if (managersResult.success) {
             setManager(managersResult.data);
         } else {
@@ -86,18 +78,18 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
         } else {
             message.error(branchResult.message);
         }
-        return managersResult;
     }
 
     /**
      * @Description: TODO: 获取 项目 详情
      * @author LLS
-     * @date 2023/6/7
+     * @date 2023/6/8
      * @returns
      */
     const handleGetProjectInfo = async () => {
         setLoading(true);
         const result: any = await queryProjectInfo({id});
+        await getData()
         setProjectInfoVO(result.data);
         setLoading(false);
         return result;
@@ -106,25 +98,44 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
     /**
      * @Description: TODO: 保存数据
      * @author LLS
-     * @date 2023/6/7
+     * @date 2023/6/8
      * @param val
      * @returns
      */
-    const onFinish = async (val: APIBranch) => {
+    const onFinish = async (val: APIProject) => {
         setLoading(true);
-        val.defaultPortId = 0;
         let result: API.Result;
-        // TODO: add 添加
+        const portion = val.portion;
+        const param: any = {
+            code: val.code,
+            nameFull: val.nameFull,
+            nameShort: val.nameShort,
+            managerId: val.managerId,
+            oracleId: val.oracleId,
+            branchId: val.branchId,
+            industryType: 1,
+            contractId: 0,
+            pmsCode: val.pmsCode,
+            portionAFlag: portion?.includes('A') ? 1 : 0,
+            portionBFlag: portion?.includes('B') ? 1 : 0,
+            portionCFlag: portion?.includes('C') ? 1 : 0,
+            startDate: val.startDate,
+            endDate: val.endDate,
+            remark: val.remark,
+        };
         if (id === '0') {
-            result = await addBranch(val);
+            // TODO: 新增项目
+            result = await addProject(param);
         } else {
-            // TODO: 保存
-            val.id = id;
-            result = await editBranch(val);
+            // TODO: 编辑项目
+            param.id = id;
+            console.log(param)
+            result = await editProject(param);
         }
         if (result.success) {
             message.success('success');
-            if (id === '0') history.push({pathname: `/manager/branch/form/${btoa(result.data)}`});
+            console.log(result.data)
+            if (id === '0') history.push({pathname: `/manager/project/form/${btoa(result.data)}`});
         } else {
             message.error(result.message)
         }
@@ -134,7 +145,7 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
     /**
      * @Description: TODO: 验证错误信息
      * @author LLS
-     * @date 2023/6/7
+     * @date 2023/6/8
      * @param val
      * @returns
      */
@@ -149,7 +160,7 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
     }));
 
     const industryOption = Industry?.map((option: any) => ({
-        value: option.dictId, label: option.dictLabel
+        value: option.id, label: option.dictLabel
     }));
 
     const branchOption = Branch?.map((option: any) => ({
@@ -210,9 +221,10 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
                         <Col span={6}>
                             <ProFormSelect
                                 required
+                                placeholder=''
                                 name="managerId"
                                 label="Manager"
-                                initialValue={{ value: ProjectInfoVO?.managerId }}
+                                initialValue={ProjectInfoVO?.managerId}
                                 options={managerOption}
                             />
                         </Col>
@@ -228,26 +240,29 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
                         <Col span={6}>
                             <ProFormSelect
                                 required
+                                placeholder=''
                                 name="industryType"
                                 label="Industry"
-                                initialValue={{ value: ProjectInfoVO?.industryType }}
+                                initialValue={ProjectInfoVO?.industryType}
                                 options={industryOption}
                             />
                         </Col>
                         <Col span={8}>
                             <ProFormSelect
                                 required
+                                placeholder=''
                                 name="branchId"
                                 label="Company"
-                                initialValue={{ value: ProjectInfoVO?.branchId }}
+                                initialValue={ProjectInfoVO?.branchId}
                                 options={branchOption}
                             />
                         </Col>
                         <Col span={6}>
                             <SearchProFormSelect
                                 qty={5}
+                                disabled={true}
                                 isShowLabel={true}
-                                required={true}
+                                // required={true}
                                 label="Contract"
                                 id={'contractId'}
                                 name={'contractId'}
@@ -257,12 +272,51 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
                                 // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
                             />
                         </Col>
+                        <Col span={6}>
+                            <ProFormText
+                                placeholder=''
+                                label='PMS Code'
+                                name='pmsCode'
+                            />
+                        </Col>
+                        <Col span={4}>
+                            <ProFormDatePicker
+                                required
+                                placeholder=''
+                                name="startDate"
+                                label="Start Date"
+                            />
+                        </Col>
+                        <Col span={4}>
+                            <ProFormDatePicker
+                                required
+                                placeholder=''
+                                name="endDate"
+                                label="End Date"
+                            />
+                        </Col>
+                        <Col span={10}>
+                            <ProFormCheckbox.Group
+                                required
+                                name="portion"
+                                label="Portion"
+                                options={['A', 'B', 'C']}
+                            />
+                        </Col>
+                        <Col span={24}>
+                            <ProFormTextArea
+                                placeholder=''
+                                fieldProps={{rows: 5}}
+                                name="remark"
+                                label="Remark"
+                            />
+                        </Col>
                     </Row>
 
                 </ProCard>
 
                 <FooterToolbar
-                    extra={<Button onClick={() => history.push({pathname: '/manager/project/list'})}>返回</Button>}>
+                    extra={<Button onClick={() => history.push({pathname: '/manager/project/list'})}>Back</Button>}>
                     <Space>
                         <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
                     </Space>

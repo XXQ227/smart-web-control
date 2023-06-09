@@ -240,6 +240,7 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
             title: 'Action',
             width: 100,
             align: 'center',
+            className: 'cursorStyle',
             render: (text, record, index) =>
                 <Fragment>
                     <CustomizeIcon

@@ -158,6 +158,7 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
             width: 110,
             disable: true,
             align: 'center',
+            className: 'cursorStyle',
             render: (text, record, index) => {
                 return (
                     <Fragment>

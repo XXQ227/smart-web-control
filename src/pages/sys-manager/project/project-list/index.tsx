@@ -4,9 +4,10 @@ import type {ProColumns, ActionType} from '@ant-design/pro-table';
 import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel, history} from 'umi';
 import {DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons'
-import {Button, Input, Popconfirm} from 'antd'
+import {Button, Input, message, Popconfirm} from 'antd'
 import DividerCustomize from "@/components/Divider";
 import {CustomizeIcon} from "@/utils/units";
+import ls from "lodash";
 
 const {Search} = Input;
 
@@ -21,10 +22,12 @@ const searchParams: APISearchProject = {
 const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
 
     const {
-        ProjectList, queryProject,
+        ProjectList, queryProject, deleteProject, operateProject
     } = useModel('manager.project', (res: any) => ({
         ProjectList: res.ProjectList,
         queryProject: res.queryProject,
+        deleteProject: res.deleteProject,
+        operateProject: res.operateProject,
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -46,6 +49,43 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
     }
 
     /**
+     * @Description: TODO:
+     * @author LLS
+     * @date 2023/6/8
+     * @param index     编辑行的序号
+     * @param record    当前行的数据
+     * @param state     状态
+     * @returns
+     */
+    const handleOperateProject = async (index: number, record: APIProject, state: string) => {
+        setLoading(true);
+        let result: API.Result;
+        const params: any = {id: record.id};
+        const newData: APIProject[] = ls.cloneDeep(ProjectListVO);
+        if (state === 'freeze') {
+            // TODO: 冻结取反上传数据
+            params.operate = record.enableFlag ? 0 : 1;
+            result = await operateProject(params);
+            // TODO: 并更新当前数据
+            record.enableFlag = params.operate;
+            newData.splice(index, 1, record);
+        } else {
+            // TODO: 删除
+            result = await deleteProject(params);
+            // TODO: 删除当前行
+            newData.splice(index, 1);
+        }
+        if (result.success) {
+            message.success('Success');
+            setProjectListVO(newData);
+        } else {
+            message.error(result.message);
+        }
+        setLoading(false);
+    }
+
+
+    /**
      * @Description: TODO 获取单票数据集合
      * @author LLS
      * @date 2023/6/7
@@ -58,40 +98,10 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
         // params.currentPage = params.current || 1;
         // params.pageSize = params.pageSize || 20;
         const result: API.Result = await queryProject(params);
-        // const result: APIManager.PortResult = await queryProject(params);
-        // setPortListVO(result.data || []);
+        setProjectListVO(result.data || []);
         setLoading(false);
         return result;
     }
-
-    /**
-     * @Description: TODO:  删除、冻结操作
-     * @author LLS
-     * @date 2023/6/7
-     * @param index     当前行序号
-     * @param record    当前行数据
-     * @param state     操作状态：delete：删除；freeze：冻结
-     * @returns
-     */
-    /*const handleDelFreezePort = async (record: APIProject, state: string) => {
-        let result: API.Result;
-        // TODO: 删除 / 冻结 参数
-        const params: any = {id: record.id};
-        // TODO: 删除
-        if (state === 'delete') {
-            result = await deleteSea(params);
-        } else {
-            params.operate = record.enableFlag ? 0 : 1;
-            result = await operateSea(params);
-        }
-        if (result.success) {
-            message.success('Success');
-            // 刷新
-            ref.current?.reload();
-        } else {
-            message.error(result.message);
-        }
-    }*/
 
     const columns: ProColumns<APIProject>[] = [
         {
@@ -119,7 +129,7 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
         },
         {
             title: 'Manager',
-            dataIndex: 'industryType',
+            dataIndex: 'managerId',
             width: 150,
             ellipsis: true,
         },
@@ -133,12 +143,13 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
             title: 'Action',
             width: 100,
             align: 'center',
+            className: 'cursorStyle',
             render: (text, record, index) => {
                 return (
                     <Fragment>
                         <EditOutlined color={'#1765AE'} onClick={() => handleEditProject(record)}/>
                         <Popconfirm
-                            // onConfirm={() => handleOperateBranch(index, record, 'freezen')}
+                            onConfirm={() => handleOperateProject(index, record, 'freeze')}
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                         >
@@ -146,7 +157,7 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                             <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
                         </Popconfirm>
                         <Popconfirm
-                            // onConfirm={() => handleOperateBranch(index, record, 'delete')}
+                            onConfirm={() => handleOperateProject(index, record, 'delete')}
                             title="Sure to delete?" okText={'Yes'} cancelText={'No'}
                         >
                             <DividerCustomize />
@@ -156,26 +167,6 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                 )
             },
         }
-        /*
-
-        {
-            title: 'Action',
-            width: 110,
-            disable: true,
-            align: 'center',
-            render: (text, record) => {
-                return (
-                    <Fragment>
-                        <PortDrawerForm PortInfo={record} actionRef={ref}/>
-                        <Divider type='vertical'/>
-                        <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'} onClick={() => handleDelFreezePort(record, 'freeze')}/>
-                        <Divider type='vertical'/>
-                        <DeleteOutlined color={'red'} onClick={() => handleDelFreezePort(record, 'delete')}/>
-
-                    </Fragment>
-                )
-            },
-        },*/
     ];
 
     return (
@@ -218,7 +209,7 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
             />*/}
             <ProCard className={'ant-card-pro-table'}>
                 <ProTable<APIProject>
-                    rowKey={'ID'}
+                    rowKey={'id'}
                     actionRef={ref}
                     search={false}
                     options={false}
@@ -226,9 +217,9 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                     loading={loading}
                     columns={columns}
                     params={searchParams}
-                    // dataSource={BranchListVO}
+                    dataSource={ProjectListVO}
                     locale={{ emptyText: 'No Data' }}
-                    // className={'antd-pro-table-port-sea ant-pro-table-search'}
+                    className={'antd-pro-table-port-sea ant-pro-table-search'}
                     rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
                     headerTitle={
                         <Search

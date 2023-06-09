@@ -453,6 +453,7 @@ declare namespace APIManager {
         portionAFlag?: number,               // TODO: 业务段A标识 0-未开启 1-已开启
         portionBFlag?: number,               // TODO: 业务段B标识 0-未开启 1-已开启
         portionCFlag?: number,               // TODO: 业务段C标识 0-未开启 1-已开启
+        portion?: string[],                  // TODO: 业务段
         startDate?: string,                  // TODO: 项目开始时间
         endDate?: string,                    // TODO: 项目结束时间
         remark?: string,                     // TODO: 备注
