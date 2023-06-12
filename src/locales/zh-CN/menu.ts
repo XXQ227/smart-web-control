@@ -45,7 +45,10 @@ export default {
   'menu.manager.project_list': 'Project - Index',
     'menu.manager.project_info': 'Project - Information',
   // TODO: 经营单位员工用户
-  'menu.manager.user_list': 'User - Index',
+  'menu.manager.user': 'User - Index',
+  // TODO: 经营单位员工用户
+  'menu.manager.auth': 'Authority - Index',
+  'menu.manager.auth_form': 'Authority - Information',
   // TODO: 业务公司
   'menu.manager.cv_center.company_list': 'Company - Index',
   'menu.manager.cv_center.company_info': 'Company - Information',

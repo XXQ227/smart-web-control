@@ -147,7 +147,7 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
         },
         {
             title: 'Sales',
-            dataIndex: 'saleFlag',
+            dataIndex: 'salesFlag',
             width: 160,
             disable: true,
             align: 'center',
