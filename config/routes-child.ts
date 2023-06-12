@@ -300,10 +300,24 @@ const manager_route = {
         },
         // TODO: 用户
         {
-            name: 'user_list',
+            name: 'user',
             icon: 'icon-user-manager',
-            path: '/manager/user/list',
+            path: '/manager/user',
             component: './sys-manager/user/user-list',
+        },
+        // TODO: 用户
+        {
+            name: 'auth',
+            icon: 'icon-auth',
+            path: '/manager/auth',
+            component: './sys-manager/authority',
+        },
+        {
+            name: 'auth_form',
+            hideInMenu: true,
+            icon: 'icon-auth',
+            path: '/manager/auth',
+            component: './sys-manager/authority/form',
         },
     ],
 };

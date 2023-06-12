@@ -82,7 +82,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
      * @param val       编辑值
      * @returns
      */
-    const handleChangeDict = async (index: number, record: APIDict, filedName: string, val: any) => {
+    const handleChangeDict = (index: number, record: APIDict, filedName: string, val: any) => {
         const newData: APIDict[] = ls.cloneDeep(DictListVO);
         record[filedName] = val?.target?.value || val;
         record.isChange = true;
