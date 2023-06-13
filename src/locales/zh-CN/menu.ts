@@ -66,6 +66,9 @@ export default {
   // TODO: 港口
   'menu.manager.port_list': 'Port - Index',
   'menu.manager.port_info': 'Port - Information',
+  // TODO: 船代
+  'menu.manager.shipping_list': 'Shipping - Index',
+  'menu.manager.shipping_info': 'Shipping - Information',
   // TODO: 账期
   'menu.manager.account_list': 'Account - Index',
   'menu.manager.account_info': 'Account - Information',
