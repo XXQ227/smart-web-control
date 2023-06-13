@@ -1,4 +1,3 @@
-
 declare namespace APIManager {
     //region TODO:  结算对象
     // TODO: 结算对象搜索参数
@@ -141,6 +140,68 @@ declare namespace APIManager {
         updateUserId?: number,           // TODO: 修改人ID
         updateUserName?: string,         // TODO: 修改人名称
         updateTime?: string,             // TODO: 修改时间
+    }
+    //endregion
+
+
+    // region TODO: 船代
+    type SearchShippingParams = {
+        name?: string,
+        currentPage?: number,
+        pageSize?: number,
+    }
+
+    type Shipping = {
+        id: string,                       // TODO:
+        name?: string,                    // TODO: 名称
+        etd?: string,                     // TODO: 预计离港日
+        type?: number,                    // TODO: 类型 1-出境 2-入境
+        lineId?: number,                  // TODO: 航线ID
+        lineName?: string,                // TODO: 航线名称
+        vesselId?: number,                // TODO: 船ID
+        vesselName?: string,              // TODO: 船名称
+        branchId?: number,                // TODO: 公司ID
+        remark?: string,                  // TODO: 备注
+        enableFlag?: number,              // TODO: 启用标识
+        deleteFlag?: number,              // TODO: 删除标识
+    }
+
+    type Voyage = {
+        id: string,                       // TODO:
+        name?: string,                    // TODO: 名称
+        etd?: string,                     // TODO: 预计离港日
+        type?: number,                    // TODO: 类型 1-出境 2-入境
+        lineId?: number,                  // TODO: 航线ID
+        lineName?: string,                // TODO: 航线名称
+        vesselId?: number,                // TODO: 船ID
+        vesselName?: string,              // TODO: 船名称
+        branchId?: number,                // TODO: 公司ID
+        remark?: string,                  // TODO: 备注
+        enableFlag?: number,              // TODO: 启用标识
+        deleteFlag?: number,              // TODO: 删除标识
+    }
+
+    type Vessel = {
+        id: string,                       // TODO:
+        name?: string,                    // TODO: 名称
+        code?: string,                    // TODO: 编码
+        callSign?: string,                // TODO: 船舶呼号
+        imoNum?: string,                  // TODO: 国际海事组织编号
+        branchId?: number,                // TODO: 公司ID
+        carrierId?: number,               // TODO: 承运人（BU中类型为客户&船公司类型才可被选到）
+        enableFlag?: number,              // TODO: 启用标识
+        deleteFlag?: number,              // TODO: 删除标识
+    }
+
+    type Line = {
+        id: string,                       // TODO:
+        name?: string,                    // TODO: 名称
+        areaCode?: string,                // TODO: 船公司区域编码 例如：KVT-1
+        serverId?: string,                // TODO: 股份公司Oracle系统所需的统计维度，每一个航线，需要在Oracle中申请此编号后填入
+        branchId?: number,                // TODO: 公司ID
+        carrierId?: number,               // TODO: 承运人（BU中类型为客户&船公司类型才可被选到）
+        enableFlag?: number,              // TODO: 启用标识
+        deleteFlag?: number,              // TODO: 删除标识
     }
     //endregion
 

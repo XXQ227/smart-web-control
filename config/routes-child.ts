@@ -217,6 +217,20 @@ const manager_route = {
             path: '/manager/port/list',
             component: './sys-manager/port',
         },
+        // TODO: 船代
+        {
+            name: 'shipping_list',
+            icon: 'icon-shipping',
+            path: '/manager/shipping/list',
+            component: './sys-manager/shipping',
+        },
+        {
+            hideInMenu: true,   // 隐藏不显示
+            name: 'shipping_info',
+            icon: 'icon-shipping',
+            path: '/manager/shipping/form/:id',
+            component: './sys-manager/shipping/voyage-form',
+        },
         // TODO: 账期数据
         {
             name: 'account_list',
