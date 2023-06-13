@@ -225,6 +225,7 @@ const PortTable: React.FC<Props> = (props) => {
                 }}
             />
             {open ? <PortDrawerForm
+                type={type}
                 addAPI={addAPI}
                 editAPI={editAPI}
                 handleSavePort={handleSavePort}

@@ -23,7 +23,6 @@ const PortTradePlaceIndex: React.FC<Props> = () => {
             queryAPI={queryTradePlace}
             deleteAPI={deleteTradePlace}
             operateAPI={operateTradePlace}
-
         />
     )
 }

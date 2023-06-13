@@ -310,14 +310,32 @@ const manager_route = {
             name: 'auth',
             icon: 'icon-auth',
             path: '/manager/auth',
-            component: './sys-manager/authority',
-        },
-        {
-            name: 'auth_form',
-            hideInMenu: true,
-            icon: 'icon-auth',
-            path: '/manager/auth',
-            component: './sys-manager/authority/form',
+            routes: [
+                {
+                    name: 'auth_resource',
+                    path: '/manager/auth/auth-resource',
+                    component: './sys-manager/authority',
+                },
+                {
+                    name: 'auth_form',
+                    hideInMenu: true,
+                    icon: 'icon-auth',
+                    path: '/manager/auth/auth-resource/form/:id',
+                    component: './sys-manager/authority/form',
+                },
+                {
+                    name: 'role',
+                    path: '/manager/auth/role',
+                    component: './sys-manager/authority/role',
+                },
+                {
+                    name: 'auth_form',
+                    hideInMenu: true,
+                    icon: 'icon-auth',
+                    path: '/manager/auth/role/form/:id',
+                    component: './sys-manager/authority/role/form',
+                },
+            ],
         },
     ],
 };

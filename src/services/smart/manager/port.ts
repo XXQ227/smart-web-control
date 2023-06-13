@@ -145,7 +145,7 @@ export async function operateLandAPI(body: APIManager.Port, options?: { [key: st
 //region TODO: 贸易站点
 /** 获取港口列表 */
 export async function queryTradePlaceAPI(body: APIManager.SearchPortParams, options?: { [key: string]: any }) {
-    return request(`/apiBase/tradePlace/queryTradePlace`, {
+    return request(`/apiBase/trade/queryTradePlace`, {
         method: 'POST',
         body,
         ...(options || {}),
@@ -154,7 +154,7 @@ export async function queryTradePlaceAPI(body: APIManager.SearchPortParams, opti
 
 /** 新增港口  */
 export async function addTradePlaceAPI(body: APIManager.Port, options?: { [key: string]: any }) {
-    return request(`/apiBase/tradePlace/addTradePlace`, {
+    return request(`/apiBase/trade/addTradePlace`, {
         method: 'POST',
         body,
         ...(options || {}),
@@ -163,7 +163,7 @@ export async function addTradePlaceAPI(body: APIManager.Port, options?: { [key: 
 
 /** 编辑港口  */
 export async function editTradePlaceAPI(body: APIManager.Port, options?: { [key: string]: any }) {
-    return request(`/apiBase/tradePlace/editTradePlace`, {
+    return request(`/apiBase/trade/editTradePlace`, {
         method: 'POST',
         body,
         ...(options || {}),
@@ -172,7 +172,7 @@ export async function editTradePlaceAPI(body: APIManager.Port, options?: { [key:
 
 /** 删除港口  */
 export async function deleteTradePlaceAPI(body: APIManager.Port, options?: { [key: string]: any }) {
-    return request(`/apiBase/tradePlace/deleteTradePlace?${stringify(body)}`, {
+    return request(`/apiBase/trade/deleteTradePlace?${stringify(body)}`, {
         method: 'POST',
         ...(options || {}),
     });
@@ -180,7 +180,7 @@ export async function deleteTradePlaceAPI(body: APIManager.Port, options?: { [ke
 
 /** 启用禁用港口  */
 export async function operateTradePlaceAPI(body: APIManager.Port, options?: { [key: string]: any }) {
-    return request(`/apiBase/tradePlace/operateTradePlace`, {
+    return request(`/apiBase/trade/operateTradePlace`, {
         method: 'POST',
         body,
         ...(options || {}),

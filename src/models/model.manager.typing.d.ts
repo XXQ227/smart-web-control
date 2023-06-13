@@ -461,7 +461,7 @@ declare namespace APIManager {
 
   //region TODO: 权限
   type SearchAuthResourceParams = {
-    name: string;
+    id: any;
   };
   type AuthResource = {
     id: string;// TODO:主键ID
@@ -483,6 +483,30 @@ declare namespace APIManager {
     updateTime?: string;// TODO:修改人时间
     children?: any[],// TODO:子集信息
     isChange?: boolean,// TODO:编辑状态
+  };
+  //endregion
+
+  //region TODO: 角色
+  type SearchRoleParams = {
+    keyword: string;
+    currentPage: number;
+    pageSize: number;
+  };
+  type Role = {
+    id: string; // TODO: 主键ID
+    roleName?: string; // TODO: 角色名称
+    roleCode?: string; // TODO: 角色编码
+    remark?: string; // TODO: 备注信息
+    enableFlag?: string; // TODO: 启用标识
+    readOnly?: number; // TODO: 只读标识
+    deleteFlag?: string; // TODO: 删除标识
+    createUserId?: string; // TODO: 创建人ID
+    createUserName?: string; // TODO: 创建人名称
+    createTime?: string; // TODO: 创建时间
+    updateUserId?: string; // TODO: 修改人ID
+    updateUserName?: string; // TODO: 修改人名称
+    updateTime?: string; // TODO: 修改时间
+    isChange?: boolean; // TODO:编辑状态
   };
   //endregion
 

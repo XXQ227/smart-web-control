@@ -1,11 +1,11 @@
 import { request } from '@/utils/request';
 import {stringify} from 'qs'
 
-/** 获取部门数据 */
+/** 获取权限数据 */
 export async function queryAuthResourceTreeAPI(body: APIManager.SearchAuthResourceParams, options?: { [key: string]: any }) {
-  return request(`/apiBase/authResource/queryAuthResourceTree`, {
+  return request(`/apiBase/authResource/queryAuthResourceTree?${stringify(body)}`, {
     method: 'POST',
-    body,
+    // body,
     ...(options || {}),
   });
 }
@@ -36,11 +36,36 @@ export async function deleteAuthResourceAPI(body: APIManager.AuthResource, optio
   });
 }
 
-/** freezen authResource */
-export async function addRoleAPI(body: APIManager.AuthResource, options?: { [key: string]: any }) {
+/** 获取部门数据 */
+export async function queryRoleAPI(body: APIManager.SearchRoleParams, options?: { [key: string]: any }) {
+  return request(`/apiBase/role/queryRole`, {
+    method: 'POST',
+    body,
+    ...(options || {}),
+  });
+}
+
+/** add role */
+export async function addRoleAPI(body: APIManager.Role, options?: { [key: string]: any }) {
   return request(`/apiBase/role/addRole`, {
     method: 'POST',
     body,
+    ...(options || {}),
+  });
+}
+/** edit authResource */
+export async function editRoleAPI(body: APIManager.Role, options?: { [key: string]: any }) {
+  return request(`/apiBase/role/editRole`, {
+    method: 'POST',
+    body,
+    ...(options || {}),
+  });
+}
+
+/** delete authResource */
+export async function deleteRoleAPI(body: APIManager.Role, options?: { [key: string]: any }) {
+  return request(`/apiBase/role/deleteRole?${stringify(body)}`, {
+    method: 'POST',
     ...(options || {}),
   });
 }

@@ -1,15 +1,14 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProFormInstance} from '@ant-design/pro-components';
 import {FooterToolbar, PageContainer, ProCard, ProForm, ProFormText,} from '@ant-design/pro-components'
 import {Button, Col, Form, message, Row, Space} from 'antd'
 import {history, useModel, useParams} from 'umi'
 import {getFormErrorMsg} from '@/utils/units'
-import AuthListIndex from '@/pages/sys-manager/authority/components'
+import DictDetailDetailIndex from '@/pages/sys-manager/dict/dict-detail'
 
-type APIAuthResource = APIManager.AuthResource;
 
-const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
+const DictForm: React.FC<RouteChildrenProps> = () => {
     const urlParams = useParams();
     // @ts-ignore
     const id = atob(urlParams.id);
@@ -17,22 +16,13 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
     const formRef = useRef<ProFormInstance>();
     //region TODO: 数据层
     const {
-        queryAuthResourceTree,
-    } = useModel('manager.auth', (res: any) => ({
-        queryAuthResourceTree: res.queryAuthResourceTree,
+        queryDictInfo, addDict,
+    } = useModel('manager.dict', (res: any) => ({
+        queryDictInfo: res.queryDictInfo,
+        addDict: res.addDict,
     }));
 
-    const [localId, setLocalId] = useState<string>('');
-    const [AuthListVO, setAuthListVO] = useState<APIAuthResource[]>([]);
-    const [AuthInvoVO, setAuthInvoVO] = useState<APIAuthResource>({id});
     //endregion
-
-    useEffect(()=> {
-        console.log(localId, id, localId !== id);
-        if (localId && id && localId !== id) {
-            handleGetAuthResourceInfo({id});
-        }
-    }, [])
 
     /**
      * @Description: TODO: 获取 CV 详情
@@ -40,16 +30,9 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
      * @date 2023/5/5
      * @returns
      */
-    const handleGetAuthResourceInfo = async () => {
-        console.log(id);
-        const result: any = await queryAuthResourceTree({id});
-        // TODO: 保存子集权限数据
-        setAuthListVO(result.children);
-        // TODO: 删除子集权限数据
-        delete result.children;
-        // TODO: 存下当前数据详情
-        setAuthInvoVO(result);
-        return result;
+    const handleGetDictInfo = async () => {
+        const result: API.Result = await queryDictInfo({id});
+        return result.data;
     }
 
     /**
@@ -60,17 +43,12 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     const onFinish = async (val: any) => {
-        console.log(val);
-        const params: any = {
-            id, name: val.name, icon: val.icon, url: val.url,
-            parentId: AuthInvoVO.parentId, parentIds: AuthInvoVO.parentIds
-        };
-        // const result: API.Result = await AuthResource(val);
-        // if (result.success) {
-        //     message.success('success');
-        // } else {
-        //     message.error(result.message);
-        // }
+        const result: API.Result = await addDict(val);
+        if (result.success) {
+            message.success('success');
+        } else {
+            message.error(result.message)
+        }
     }
 
     /**
@@ -104,13 +82,13 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
                 // TODO: 焦点给到第一个控件
                 autoFocusFirstInput
                 // TODO: 设置默认值
-                // initialValues={AuthResourceVO}
+                // initialValues={DictVO}
                 formKey={'cv-center-information'}
                 // TODO: 提交数据
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 // TODO: 向后台请求数据
-                request={async () => handleGetAuthResourceInfo()}
+                request={async () => handleGetDictInfo()}
             >
                 <ProCard title={'Name & Code'} className={'ant-card ant-card-pro-table'}>
                     {/** // TODO: CV Name、CV Name (For Print)、Short Name、CV Identity */}
@@ -120,7 +98,7 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
                                 required
                                 label='Name'
                                 placeholder=''
-                                name='name'
+                                name='dictName'
                                 tooltip='length: 64'
                                 rules={[{required: true, message: 'Name'}, {max: 64, message: 'length: 64'}]}
                             />
@@ -129,36 +107,33 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
                             <ProFormText
                                 required
                                 placeholder=''
-                                name='url'
-                                label='Url'
-                                tooltip='length: 128'
-                                rules={[{required: true, message: 'Url'}, {max: 128, message: 'length: 128'}]}
+                                name='dictCode'
+                                label='Name Local'
+                                tooltip='length: 64'
+                                rules={[{required: true, message: 'Name Local'}, {max: 64, message: 'length: 64'}]}
                             />
                         </Col>
                         <Col span={14}>
                             <ProFormText
                                 required
-                                name='icon'
+                                name='remark'
                                 placeholder=''
-                                label='Icon'
-                                tooltip='length: 256'
-                                rules={[{required: true, message: 'Icon'}, {max: 256, message: 'length: 256'}]}
+                                label='Remark'
+                                tooltip='length: 512'
+                                rules={[{required: true, message: 'Tax Num'}, {max: 512, message: 'length: 512'}]}
                             />
                         </Col>
                     </Row>
                 </ProCard>
-                <ProCard title={'Authority'} className={'ant-card ant-card-pro-table'}>
+                <ProCard title={'Dict Detail'} className={'ant-card ant-card-pro-table'}>
                     <Row gutter={24}>
                         <Col span={24}>
-                            <AuthListIndex
-                                AuthList={AuthListVO}
-                                AuthInvoVO={AuthInvoVO}
-                            />
+                            <DictDetailDetailIndex />
                         </Col>
                     </Row>
                 </ProCard>
 
-                <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/auth/auth-resource'})}>返回</Button>}>
+                <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/dict'})}>返回</Button>}>
                     <Space>
                         <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
                     </Space>
@@ -167,4 +142,4 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
         </PageContainer>
     )
 }
-export default AuthResourceForm;
+export default DictForm;

@@ -7,6 +7,7 @@ import SearchInput from '@/components/SearchInput'
 
 
 interface Props {
+    type: string,
     open: boolean,
     PortInfo: any,
     handleSavePort: any,    // TODO: 保存修改信息
@@ -26,7 +27,7 @@ const PortDrawerForm: React.FC<Props> = (props) => {
     // }));
 
     const [form] = Form.useForm();
-    const {open, PortInfo, handleSavePort, addAPI, editAPI,} = props;
+    const {open, PortInfo, handleSavePort, addAPI, editAPI, type} = props;
     const [CityObj, setCityObj] = useState<any>({value: PortInfo?.cityId || null, label: PortInfo?.cityName});
 
     /**
@@ -139,15 +140,17 @@ const PortDrawerForm: React.FC<Props> = (props) => {
                                     rules={[{required: true, message: 'Name is required'}]}
                                 />
                             </Col>
-                            <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={8}>
-                                <ProFormText
-                                    required
-                                    name='alias'
-                                    label='Alias'
-                                    placeholder=''
-                                    rules={[{required: true, message: 'Alias is required'}]}
-                                />
-                            </Col>
+                            {type !== 'sea' ? null :
+                                <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={8}>
+                                    <ProFormText
+                                        required
+                                        name='alias'
+                                        label='Alias'
+                                        placeholder=''
+                                        rules={[{required: true, message: 'Alias is required'}]}
+                                    />
+                                </Col>
+                            }
                             <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={8}>
                                 <Form.Item
                                     label={'City'} name={'cityId'}
