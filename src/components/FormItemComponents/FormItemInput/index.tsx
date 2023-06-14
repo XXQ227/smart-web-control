@@ -21,11 +21,10 @@ const FormItemInput: React.FC<Props> = (props) => {
             name={name}
             rules={rules}
             required={required}
-            disabled={disabled}
             initialValue={initialValue}
             placeholder={placeholder || ''}
         >
-            <Input onChange={onChange}/>
+            <Input disabled={disabled} onChange={onChange}/>
         </FormItem>
     )
 }

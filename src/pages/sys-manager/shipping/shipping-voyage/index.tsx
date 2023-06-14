@@ -6,20 +6,16 @@ interface Props {}
 const ShippingVoyageIndex: React.FC<Props> = () => {
 
     const {
-        queryVoyage, deleteVoyage, operateVoyage, addVoyage, editVoyage
+        queryVoyage, deleteVoyage, operateVoyage
     } = useModel('manager.shipping', (res: any) => ({
         queryVoyage: res.queryVoyage,
         deleteVoyage: res.deleteVoyage,
         operateVoyage: res.operateVoyage,
-        addVoyage: res.addVoyage,
-        editVoyage: res.editVoyage,
     }));
 
     return (
         <ShippingTable
             type={'Voyage'}
-            addAPI={addVoyage}
-            editAPI={editVoyage}
             queryAPI={queryVoyage}
             deleteAPI={deleteVoyage}
             operateAPI={operateVoyage}

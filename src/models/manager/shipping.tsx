@@ -10,7 +10,8 @@ import {
 } from "@/services/smart/manager/shipping";
 
 type APIVoyage = APIManager.Voyage;
-type APIShipping = APIManager.Shipping;
+type APIVessel = APIManager.Vessel;
+type APILine = APIManager.Line;
 
 export default () => {
 
@@ -57,22 +58,22 @@ export default () => {
     }, []);
 
     // TODO: 新增船舶
-    const addVessel = useCallback(async (params: APIShipping)=> {
+    const addVessel = useCallback(async (params: APIVessel)=> {
         return await addVesselAPI(params);
     }, []);
 
     // TODO: 编辑船舶
-    const editVessel = useCallback(async (params: APIShipping)=> {
+    const editVessel = useCallback(async (params: APIVessel)=> {
         return await editVesselAPI(params);
     }, []);
 
     // TODO: 删除船舶
-    const deleteVessel = useCallback(async (params: APIShipping)=> {
+    const deleteVessel = useCallback(async (params: APIVessel)=> {
         return await deleteVesselAPI(params);
     }, []);
 
     // TODO: 启用禁用船舶
-    const operateVessel = useCallback(async (params: APIShipping)=> {
+    const operateVessel = useCallback(async (params: APIVessel)=> {
         return await operateVesselAPI(params);
     }, []);
     //endregion
@@ -86,22 +87,22 @@ export default () => {
     }, []);
 
     // TODO: 新增航线
-    const addLine = useCallback(async (params: APIShipping)=> {
+    const addLine = useCallback(async (params: APILine)=> {
         return await addLineAPI(params);
     }, []);
 
     // TODO: 编辑航线
-    const editLine = useCallback(async (params: APIShipping)=> {
+    const editLine = useCallback(async (params: APILine)=> {
         return await editLineAPI(params);
     }, []);
 
     // TODO: 删除航线
-    const deleteLine = useCallback(async (params: APIShipping)=> {
+    const deleteLine = useCallback(async (params: APILine)=> {
         return await deleteLineAPI(params);
     }, []);
 
     // TODO: 启用禁用航线
-    const operateLine = useCallback(async (params: APIShipping)=> {
+    const operateLine = useCallback(async (params: APILine)=> {
         return await operateLineAPI(params);
     }, []);
     //endregion

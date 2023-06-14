@@ -7,7 +7,6 @@ import {
     ProCard,
     ProForm,
     ProFormDatePicker,
-    ProFormCheckbox,
     ProFormSelect,
     ProFormText, ProFormTextArea,
 } from '@ant-design/pro-components'
@@ -15,12 +14,10 @@ import {Button, Col, Form, message, Row, Space} from 'antd'
 import {history, useModel} from 'umi'
 import {getFormErrorMsg} from '@/utils/units'
 import SearchProFormSelect from "@/components/SearchProFormSelect";
-import {getUserID} from "@/utils/auths";
-
 
 type APIVoyage = APIManager.Voyage;
 
-const ShippingForm: React.FC<RouteChildrenProps> = (props) => {
+const VoyageForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}} = props;
     const id = atob(params?.id);
@@ -28,40 +25,15 @@ const ShippingForm: React.FC<RouteChildrenProps> = (props) => {
     const formRef = useRef<ProFormInstance>();
     //region TODO: 数据层
     const {
-        queryVoyageInfo, addVoyage, editVoyage, queryVessel
+        queryVoyageInfo, addVoyage, editVoyage
     } = useModel('manager.shipping', (res: any) => ({
         queryVoyageInfo: res.queryVoyageInfo,
         addVoyage: res.addVoyage,
         editVoyage: res.editVoyage,
-        queryVessel: res.queryVessel,
     }));
 
-    const {
-        queryBranch,
-    } = useModel('manager.branch', (res: any) => ({
-        queryBranch: res.queryBranch,
-    }));
-
-    const [ShippingInfoVO, setShippingInfoVO] = useState<any>({});
-    const [Branch, setBranch] = useState<any>([]);
-    // const [Vessel, setVessel] = useState<any>([]);
+    const [VoyageInfoVO, setVoyageInfoVO] = useState<any>({});
     const [loading, setLoading] = useState<boolean>(false);
-
-    async function getData() {
-        // TODO: 分页查询【参数页】
-        const branchResult: API.Result = await queryBranch({currentPage: 1});
-        // const vesselResult: API.Result = await queryVessel({currentPage: 1});
-        if (branchResult.success) {
-            setBranch(branchResult.data);
-        } else {
-            message.error(branchResult.message);
-        }
-        /*if (vesselResult.success) {
-            setVessel(vesselResult.data);
-        } else {
-            message.error(vesselResult.message);
-        }*/
-    }
 
     /**
      * @Description: TODO: 获取 航次 详情
@@ -69,11 +41,10 @@ const ShippingForm: React.FC<RouteChildrenProps> = (props) => {
      * @date 2023/6/12
      * @returns
      */
-    const handleGetShippingInfo = async () => {
+    const handleGetVoyageInfo = async () => {
         setLoading(true);
         const result: any = await queryVoyageInfo({id});
-        await getData()
-        setShippingInfoVO(result.data);
+        setVoyageInfoVO(result.data);
         setLoading(false);
         return result;
     }
@@ -95,7 +66,7 @@ const ShippingForm: React.FC<RouteChildrenProps> = (props) => {
             type: val.type,
             lineId: val.lineId,
             vesselId: val.vesselId,
-            branchId: val.branchId,
+            branchId: "1665596906844135426",
             remark: val.remark,
         };
         if (id === '0') {
@@ -104,13 +75,11 @@ const ShippingForm: React.FC<RouteChildrenProps> = (props) => {
         } else {
             // TODO: 编辑航次
             param.id = id;
-            console.log(param)
             result = await editVoyage(param);
         }
         if (result.success) {
             message.success('success');
-            console.log(result.data)
-            if (id === '0') history.push({pathname: `/manager/shipping/form/${btoa(result.data)}`});
+            if (id === '0') history.push({pathname: `/manager/shipping/voyage/form/${btoa(result.data)}`});
         } else {
             message.error(result.message)
         }
@@ -130,14 +99,6 @@ const ShippingForm: React.FC<RouteChildrenProps> = (props) => {
         message.error(errInfo);
     }
 
-    const branchOption = Branch?.map((option: any) => ({
-        value: option.id, label: option.nameFullEn
-    }));
-
-    /*const vesselOption = Vessel?.map((option: any) => ({
-        value: option.id, label: option.name
-    }));*/
-
     return (
         <PageContainer
             loading={loading}
@@ -151,13 +112,13 @@ const ShippingForm: React.FC<RouteChildrenProps> = (props) => {
                 // TODO: 焦点给到第一个控件
                 autoFocusFirstInput
                 // TODO: 设置默认值
-                initialValues={ShippingInfoVO}
+                initialValues={VoyageInfoVO}
                 formKey={'cv-center-information'}
                 // TODO: 提交数据
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 // TODO: 向后台请求数据
-                request={async () => handleGetShippingInfo()}
+                request={async () => handleGetVoyageInfo()}
             >
                 <ProCard title={'Basic Information'}>
                     {/* TODO: Full Name、Short Name、Code、Manager */}
@@ -177,7 +138,7 @@ const ShippingForm: React.FC<RouteChildrenProps> = (props) => {
                                 placeholder=''
                                 name="vesselId"
                                 label="Vessel Name"
-                                initialValue={ShippingInfoVO?.vesselId}
+                                initialValue={VoyageInfoVO?.vesselId}
                                 options={vesselOption}
                                 rules={[{required: true, message: 'Vessel Name is required'}]}
                             />*/}
@@ -189,9 +150,7 @@ const ShippingForm: React.FC<RouteChildrenProps> = (props) => {
                                 id={'vesselId'}
                                 name={'vesselId'}
                                 url={'/apiBase/vessel/queryVessel'}
-                                valueObj={ShippingInfoVO?.vesselId}
-                                // query={{IsJobCustomer: true, BusinessLineID: null, UserID: getUserID(), CTType: 1, SystemID: 4}}
-                                // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
+                                // valueObj={{value: VoyageInfoVO?.vesselId, label: VoyageInfoVO?.vesselName}}
                             />
                         </Col>
                         <Col span={9}>
@@ -200,7 +159,7 @@ const ShippingForm: React.FC<RouteChildrenProps> = (props) => {
                                 placeholder=''
                                 name="lineId"
                                 label="Shipping Line"
-                                initialValue={ShippingInfoVO?.lineId}
+                                initialValue={VoyageInfoVO?.lineId}
                                 options={vesselOption}
                                 rules={[{required: true, message: 'Vessel Name is required'}]}
                             />*/}
@@ -212,8 +171,7 @@ const ShippingForm: React.FC<RouteChildrenProps> = (props) => {
                                 id={'lineId'}
                                 name={'lineId'}
                                 url={'/apiBase/line/queryLine'}
-                                valueObj={ShippingInfoVO?.lineId}
-                                // query={{IsJobCustomer: true, BusinessLineID: null, UserID: getUserID(), CTType: 1, SystemID: 4}}
+                                // valueObj={VoyageInfoVO?.lineId}
                                 // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
                             />
                         </Col>
@@ -260,4 +218,4 @@ const ShippingForm: React.FC<RouteChildrenProps> = (props) => {
         </PageContainer>
     )
 }
-export default ShippingForm;
+export default VoyageForm;

@@ -226,9 +226,9 @@ const manager_route = {
         },
         {
             hideInMenu: true,   // 隐藏不显示
-            name: 'shipping_info',
+            name: 'voyage_info',
             icon: 'icon-shipping',
-            path: '/manager/shipping/form/:id',
+            path: '/manager/shipping/voyage/form/:id',
             component: './sys-manager/shipping/voyage-form',
         },
         // TODO: 账期数据

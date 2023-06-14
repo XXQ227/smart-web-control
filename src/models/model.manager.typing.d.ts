@@ -204,21 +204,6 @@ declare namespace APIManager {
         pageSize?: number,
     }
 
-    type Shipping = {
-        id: string,                       // TODO:
-        name?: string,                    // TODO: 名称
-        etd?: string,                     // TODO: 预计离港日
-        type?: number,                    // TODO: 类型 1-出境 2-入境
-        lineId?: number,                  // TODO: 航线ID
-        lineName?: string,                // TODO: 航线名称
-        vesselId?: number,                // TODO: 船ID
-        vesselName?: string,              // TODO: 船名称
-        branchId?: number,                // TODO: 公司ID
-        remark?: string,                  // TODO: 备注
-        enableFlag?: number,              // TODO: 启用标识
-        deleteFlag?: number,              // TODO: 删除标识
-    }
-
     type Voyage = {
         id: string,                       // TODO:
         name?: string,                    // TODO: 名称
@@ -242,8 +227,10 @@ declare namespace APIManager {
         imoNum?: string,                  // TODO: 国际海事组织编号
         branchId?: number,                // TODO: 公司ID
         carrierId?: number,               // TODO: 承运人（BU中类型为客户&船公司类型才可被选到）
+        carrierName?: string,             // TODO: 承运人（BU中类型为客户&船公司类型才可被选到）
         enableFlag?: number,              // TODO: 启用标识
         deleteFlag?: number,              // TODO: 删除标识
+        isChange?: boolean;               // TODO: 是否编辑过
     }
 
     type Line = {
@@ -255,6 +242,7 @@ declare namespace APIManager {
         carrierId?: number,               // TODO: 承运人（BU中类型为客户&船公司类型才可被选到）
         enableFlag?: number,              // TODO: 启用标识
         deleteFlag?: number,              // TODO: 删除标识
+        isChange?: boolean;               // TODO: 是否编辑过
     }
     //endregion
 

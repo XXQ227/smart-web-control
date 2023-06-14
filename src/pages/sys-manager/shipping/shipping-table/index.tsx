@@ -1,12 +1,14 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import type {ProColumns} from '@ant-design/pro-table';
 import {ProTable} from '@ant-design/pro-components'
-import {DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons'
-import {Button, Divider, Input, message, Popconfirm} from 'antd'
-import {CustomizeIcon} from "@/utils/units";
-import PortDrawerForm from '@/pages/sys-manager/port/form'
+import {DeleteOutlined, EditOutlined, PlusOutlined, SaveOutlined} from '@ant-design/icons'
+import {Button, Divider, Form, Input, message, Popconfirm} from 'antd'
+import {CustomizeIcon, getFormErrorMsg, ID_STRING} from "@/utils/units";
 import ls from 'lodash'
 import {history} from "@@/core/history";
+import FormItemInput from "@/components/FormItemComponents/FormItemInput";
+import SearchModal from "@/components/SearchModal";
+import DividerCustomize from "@/components/Divider";
 
 const {Search} = Input;
 
@@ -20,21 +22,25 @@ const initSearchParam = {name: '', currentPage: 1, pageSize: 20,};
 interface Props {
     type: string,
     queryAPI: any,
-    deleteAPI: any,
-    operateAPI: any,
-    addAPI: any,
-    editAPI: any,
+    deleteAPI?: any,
+    operateAPI?: any,
+    addAPI?: any,
+    editAPI?: any,
 }
 
 const ShippingTable: React.FC<Props> = (props) => {
+    const [form] = Form.useForm();
     const {type, queryAPI, deleteAPI, operateAPI, addAPI, editAPI,} = props;
 
-    const [open, setOpen] = useState<boolean>(false);
-    const [shippingIndex, setShippingIndex] = useState<number>(-2);
-    const [ShippingInfoVO, setShippingInfoVO] = useState<any>({});
     const [searchParams, setSearchParams] = useState<APISearchShipping>(initSearchParam);
     const [loading, setLoading] = useState<boolean>(false);
-    const [ShippingListVO, setShippingListVO] = useState<APIVoyage[]>([]);
+    const [ShippingListVO, setShippingListVO] = useState<any[]>([]);
+
+    useEffect(()=> {
+        if (searchParams?.name) {
+            searchParams.name = ''
+        }
+    }, [type])
 
     /**
      * @Description: TODO 获取港口列表
@@ -52,29 +58,115 @@ const ShippingTable: React.FC<Props> = (props) => {
     }
 
     /**
-     * @Description: TODO:  删除、冻结操作
+     * @Description: TODO: 编辑 船代 信息
      * @author LLS
-     * @date 2023/6/6
-     * @param index     当前行序号
-     * @param record    当前行数据
-     * @param state     操作状态：delete：删除；freeze：冻结
+     * @date 2023/6/12
+     * @param record    操作当前行
      * @returns
      */
-    const handleOperateShipping = async (index: number, record: APIVoyage, state: string) => {
+    const handleEditShipping = (record: any) => {
+        if (type === 'Voyage') {
+            // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
+            const url = `/manager/shipping/voyage/form/${btoa(record.id)}`;
+            // TODO: 跳转页面<带参数>
+            history.push({pathname: url})
+        } else {
+            const newData: any[] = ls.cloneDeep(ShippingListVO) || [];
+            const rowKey = ID_STRING();
+            newData.splice(0, 0, {id: rowKey,});
+            setShippingListVO(newData);
+        }
+    }
+
+    /**
+     * @Description: TODO: 编辑当前行
+     * @author LLS
+     * @date 2023/6/13
+     * @param index     当前行序号
+     * @param record    操作行数据
+     * @param filedName 编辑字段
+     * @param val       编辑值
+     * @returns
+     */
+    const handleChangeShipping = (index: number, record: any, filedName: string, val: any) => {
+        const newData: any[] = ls.cloneDeep(ShippingListVO);
+        record[filedName] = val?.target?.value || val;
+        record.isChange = true;
+        newData.splice(index, 1, record);
+        setShippingListVO(newData);
+    }
+
+    const handleSaveShipping = async (index: number, record: any, state?: string) => {
+        form.validateFields()
+            .then(async ()=> {
+                setLoading(true);
+                let result: API.Result;
+                const newData: any[] = ls.cloneDeep(ShippingListVO);
+                // TODO: 保存、添加 公共参数
+                let params: any;
+                if (type === 'Vessel') {
+                    // 新增船舶参数
+                    params = {
+                        name: record.name,
+                        code: record.code,
+                        callSign: record.callSign,
+                        imoNum: record.imoNum,
+                        branchId: "1665596906844135426",
+                        carrierId: 0,
+                    };
+                } else {
+                    // 新增航线参数
+                    params = {
+                        name: record.name,
+                        areaCode: record.areaCode,
+                        serverId: record.serverId,
+                        branchId: "1665596906844135426",
+                        carrierId: 0,
+                    };
+                }
+                // TODO: 添加
+                if (state === 'add') {
+                    result = await addAPI(params);
+                    record.id = result.data;
+                } else {
+                    // TODO: 编辑
+                    params.id = record.id;
+                    result = await editAPI(params);
+                }
+                record.isChange = false;
+                newData.splice(index, 1, record);
+                if (result.success) {
+                    message.success('Success');
+                    setShippingListVO(newData);
+                } else {
+                    message.error(result.message);
+                }
+                setLoading(false);
+            })
+            .catch((err: any) => {
+                message.error(getFormErrorMsg(err));
+            })
+    }
+
+    const handleOperateShipping = async (index: number, record: any, state: string) => {
         setLoading(true);
         let result: API.Result;
+        const newData: any[] = ls.cloneDeep(ShippingListVO);
         // TODO: 删除 / 冻结 参数
         const params: any = {id: record.id};
-        const newData = ls.cloneDeep(ShippingListVO);
         // TODO: 删除
-        if (state === 'deleteFlag') {
-            result = await deleteAPI(params);
-            // TODO: 过滤删除行
+        if (state === 'delete') {
+            // TODO: 本地删除，不调接口 <未创建的数据>
+            if (record.id.indexOf('ID_') > -1) {
+                result = {success: true};
+            } else {
+                result = await deleteAPI(params);
+            }
             newData.splice(index, 1);
         } else {
             params.operate = record.enableFlag ? 0 : 1;
             result = await operateAPI(params);
-            // TODO: 更新删除行
+            // TODO: 冻结成功后，把当前行冻结状态调整
             record.enableFlag = params.operate;
             newData.splice(index, 1, record);
         }
@@ -85,57 +177,7 @@ const ShippingTable: React.FC<Props> = (props) => {
             message.error(result.message);
         }
         setLoading(false);
-    }
 
-    /**
-     * @Description: TODO: 编辑页面 打开/关闭 状态
-     * @author XXQ
-     * @date 2023/6/6
-     * @param state     编辑页打开状态
-     * @param index     编辑行序号
-     * @param record    编辑行信息
-     * @returns
-     */
-    const handleSetOpen = (state: boolean, index: number, record?: APIVoyage) => {
-        setOpen(state);
-        setShippingInfoVO(record || {});
-        if (state) {
-            // TODO: 当是打开编辑时，记录下当前行的序列虚；否则为编辑
-            setShippingIndex(index);
-        } else {
-            // TODO: 关闭时，重置初始化
-            setShippingIndex(-2);
-        }
-    }
-
-
-    /**
-     * @Description: TODO: 编辑 船代 信息
-     * @author LLS
-     * @date 2023/6/12
-     * @param record    操作当前行
-     * @returns
-     */
-    const handleEditShipping = (record: APIVoyage) => {
-        // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        const url = `/manager/shipping/form/${btoa(record.id)}`;
-        // TODO: 跳转页面<带参数>
-        history.push({pathname: url})
-    }
-
-    /**
-     * @Description: TODO: 更新本地数据
-     * @author XXQ
-     * @date 2023/6/6
-     * @param record    编辑行信息
-     * @returns
-     */
-    const handleSaveShipping = (record: APIVoyage) => {
-        const newData: APIVoyage[] = ls.cloneDeep(ShippingListVO);
-        // TODO: shippingIndex === -1 ==> 添加；否则为 1，修改
-        newData.splice(shippingIndex === -1 ? 0 : shippingIndex, shippingIndex === -1 ? 0 : 1, record);
-        handleSetOpen(false, -2);
-        setShippingListVO(newData);
     }
 
     const voyageColumns: ProColumns<APIVoyage>[] = [
@@ -175,13 +217,13 @@ const ShippingTable: React.FC<Props> = (props) => {
                         <Popconfirm
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
-                            onConfirm={() => handleOperateShipping(index, record, 'enableFlag')}
+                            onConfirm={() => handleOperateShipping(index, record, 'freeze')}
                         >
                             <Divider type='vertical'/>
                             <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
                         </Popconfirm>
                         <Popconfirm
-                            onConfirm={() => handleOperateShipping(index, record, 'deleteFlag')}
+                            onConfirm={() => handleOperateShipping(index, record, 'delete')}
                             title="Sure to delete?" okText={'Yes'} cancelText={'No'} placement={'topRight'}
                         >
                             <Divider type='vertical'/>
@@ -198,30 +240,101 @@ const ShippingTable: React.FC<Props> = (props) => {
             title: 'Vessel Name',
             dataIndex: 'name',
             width: 180,
-            ellipsis: true,
+            tooltip: 'Vessel Name is required',
+            className: 'ant-columns-required',
+            render: (text: any, record: any, index) =>
+                <FormItemInput
+                    required
+                    placeholder=''
+                    FormItem={Form.Item}
+                    id={`name${record.id}`}
+                    name={`name${record.id}`}
+                    initialValue={record.name}
+                    disabled={record.enableFlag}
+                    rules={[{required: true, message: 'Vessel Name'}]}
+                    onChange={(val: any) => handleChangeShipping(index, record, 'name', val)}
+                />
         },
         {
             title: 'Code',
             dataIndex: 'code',
             width: 120,
-            ellipsis: true,
+            tooltip: 'Code is required',
+            className: 'ant-columns-required',
+            render: (text: any, record: any, index) =>
+                <FormItemInput
+                    required
+                    placeholder=''
+                    FormItem={Form.Item}
+                    id={`code${record.id}`}
+                    name={`code${record.id}`}
+                    initialValue={record.code}
+                    disabled={record.enableFlag}
+                    rules={[{required: true, message: 'Code'}]}
+                    onChange={(val: any) => handleChangeShipping(index, record, 'code', val)}
+                />
         },
         {
             title: 'Call Sign',
             dataIndex: 'callSign',
             width: 120,
-            ellipsis: true,
+            render: (text: any, record: any, index) =>
+                <FormItemInput
+                    required
+                    placeholder=''
+                    FormItem={Form.Item}
+                    id={`callSign${record.id}`}
+                    name={`callSign${record.id}`}
+                    initialValue={record.callSign}
+                    disabled={record.enableFlag}
+                    onChange={(val: any) => handleChangeShipping(index, record, 'callSign', val)}
+                />
         },
         {
             title: 'IMO No.',
             dataIndex: 'imoNum',
             width: 120,
-            ellipsis: true,
+            render: (text: any, record: any, index) =>
+                <FormItemInput
+                    required
+                    placeholder=''
+                    FormItem={Form.Item}
+                    id={`imoNum${record.id}`}
+                    name={`imoNum${record.id}`}
+                    initialValue={record.imoNum}
+                    disabled={record.enableFlag}
+                    onChange={(val: any) => handleChangeShipping(index, record, 'imoNum', val)}
+                />
         },
         {
             title: 'Carrier',
-            dataIndex: 'carrierName',
-            ellipsis: true,
+            dataIndex: 'carrierId',
+            tooltip: 'Code is required',
+            className: 'ant-columns-required',
+            render: (text: any, record: any, index) =>
+                /*<FormItemInput
+                    required
+                    placeholder=''
+                    FormItem={Form.Item}
+                    id={`code${record.id}`}
+                    name={`code${record.id}`}
+                    initialValue={record.code}
+                    disabled={record.enableFlag}
+                    rules={[{required: true, message: 'Code'}]}
+                    onChange={(val: any) => handleChangeShipping(index, record, 'code', val)}
+                />*/
+                <SearchModal
+                    qty={20}
+                    id={'carrierId'}
+                    title={'Shipment Term'}
+                    modalWidth={500}
+                    value={record.carrierId}
+                    text={record.carrierName}
+                    // disabled={record.enableFlag}
+                    disabled={true}
+                    url={"/api/MCommon/GetServiceType"}
+                    handleChangeData={(val: any, option: any) => handleChangeShipping(index, record, 'carrierId', val)}
+                />
         },
         {
             title: 'Action',
@@ -229,27 +342,35 @@ const ShippingTable: React.FC<Props> = (props) => {
             align: 'center',
             className: 'cursorStyle',
             render: (text, record, index) => {
+                const isAdd = record?.id?.indexOf('ID_') > -1;
                 return (
                     <Fragment>
-                        <EditOutlined color={'#1765AE'} onClick={() => handleEditShipping(record)}/>
+                        <SaveOutlined
+                            color={'#1765AE'} hidden={!record.isChange}
+                            onClick={() => handleSaveShipping(index, record, isAdd ? 'add' : 'edit')}
+                        />
                         <Popconfirm
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
-                            onConfirm={() => handleOperateShipping(index, record, 'enableFlag')}
+                            onConfirm={() => handleOperateShipping(index, record, 'freeze')}
                         >
-                            <Divider type='vertical'/>
-                            <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <DividerCustomize hidden={!record.isChange} />
+                            <CustomizeIcon
+                                hidden={isAdd}
+                                type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
+                            />
                         </Popconfirm>
                         <Popconfirm
-                            onConfirm={() => handleOperateShipping(index, record, 'deleteFlag')}
-                            title="Sure to delete?" okText={'Yes'} cancelText={'No'} placement={'topRight'}
+                            okText={'Yes'} cancelText={'No'}
+                            title={`Sure to delete?`}
+                            onConfirm={() => handleOperateShipping(index, record, 'delete')}
                         >
-                            <Divider type='vertical'/>
+                            <DividerCustomize hidden={isAdd}/>
                             <DeleteOutlined color={'red'}/>
                         </Popconfirm>
                     </Fragment>
                 )
-            },
+            }
         },
     ];
 
@@ -257,25 +378,86 @@ const ShippingTable: React.FC<Props> = (props) => {
         {
             title: 'Name',
             dataIndex: 'name',
-            width: 180,
-            ellipsis: true,
+            width: 200,
+            tooltip: 'Name is required',
+            className: 'ant-columns-required',
+            render: (text: any, record: any, index) =>
+                <FormItemInput
+                    required
+                    placeholder=''
+                    FormItem={Form.Item}
+                    id={`name${record.id}`}
+                    name={`name${record.id}`}
+                    initialValue={record.name}
+                    disabled={record.enableFlag}
+                    rules={[{required: true, message: 'Name'}]}
+                    onChange={(val: any) => handleChangeShipping(index, record, 'name', val)}
+                />
         },
         {
             title: 'Area Code',
             dataIndex: 'areaCode',
             width: 120,
-            ellipsis: true,
+            tooltip: 'Area Code is required',
+            className: 'ant-columns-required',
+            render: (text: any, record: any, index) =>
+                <FormItemInput
+                    required
+                    placeholder=''
+                    FormItem={Form.Item}
+                    id={`areaCode${record.id}`}
+                    name={`areaCode${record.id}`}
+                    initialValue={record.areaCode}
+                    disabled={record.enableFlag}
+                    rules={[{required: true, message: 'Area Code'}]}
+                    onChange={(val: any) => handleChangeShipping(index, record, 'areaCode', val)}
+                />
         },
         {
             title: 'Service ID',
             dataIndex: 'serverId',
             width: 120,
-            ellipsis: true,
+            render: (text: any, record: any, index) =>
+                <FormItemInput
+                    required
+                    placeholder=''
+                    FormItem={Form.Item}
+                    id={`serverId${record.id}`}
+                    name={`serverId${record.id}`}
+                    initialValue={record.serverId}
+                    disabled={record.enableFlag}
+                    onChange={(val: any) => handleChangeShipping(index, record, 'serverId', val)}
+                />
         },
         {
             title: 'Carrier',
-            dataIndex: 'carrierName',
-            ellipsis: true,
+            dataIndex: 'carrierId',
+            tooltip: 'Code is required',
+            className: 'ant-columns-required',
+            render: (text: any, record: any, index) =>
+                /*<FormItemInput
+                    required
+                    placeholder=''
+                    FormItem={Form.Item}
+                    id={`code${record.id}`}
+                    name={`code${record.id}`}
+                    initialValue={record.code}
+                    disabled={record.enableFlag}
+                    rules={[{required: true, message: 'Code'}]}
+                    onChange={(val: any) => handleChangeShipping(index, record, 'code', val)}
+                />*/
+                <SearchModal
+                    qty={20}
+                    id={'carrierId'}
+                    title={'Shipment Term'}
+                    modalWidth={500}
+                    value={record.carrierId}
+                    text={record.carrierName}
+                    // disabled={record.enableFlag}
+                    disabled={true}
+                    url={"/api/MCommon/GetServiceType"}
+                    handleChangeData={(val: any, option: any) => handleChangeShipping(index, record, 'carrierId', val)}
+                />
         },
         {
             title: 'Action',
@@ -283,34 +465,43 @@ const ShippingTable: React.FC<Props> = (props) => {
             align: 'center',
             className: 'cursorStyle',
             render: (text, record, index) => {
+                const isAdd = record?.id?.indexOf('ID_') > -1;
                 return (
                     <Fragment>
-                        <EditOutlined color={'#1765AE'} onClick={() => handleEditShipping(record)}/>
+                        <SaveOutlined
+                            color={'#1765AE'} hidden={!record.isChange}
+                            onClick={() => handleSaveShipping(index, record, isAdd ? 'add' : 'edit')}
+                        />
                         <Popconfirm
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
-                            onConfirm={() => handleOperateShipping(index, record, 'enableFlag')}
+                            onConfirm={() => handleOperateShipping(index, record, 'freeze')}
                         >
-                            <Divider type='vertical'/>
-                            <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <DividerCustomize hidden={!record.isChange} />
+                            <CustomizeIcon
+                                hidden={isAdd}
+                                type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
+                            />
                         </Popconfirm>
                         <Popconfirm
-                            onConfirm={() => handleOperateShipping(index, record, 'deleteFlag')}
-                            title="Sure to delete?" okText={'Yes'} cancelText={'No'} placement={'topRight'}
+                            okText={'Yes'} cancelText={'No'}
+                            title={`Sure to delete?`}
+                            onConfirm={() => handleOperateShipping(index, record, 'delete')}
                         >
-                            <Divider type='vertical'/>
+                            <DividerCustomize hidden={isAdd}/>
                             <DeleteOutlined color={'red'}/>
                         </Popconfirm>
                     </Fragment>
                 )
-            },
-        },
+            }
+        }
     ];
 
     let columns: any[] = []
-    // TODO: 海运类型加一个显示列
+    let className = 'ant-pro-table-edit';
     if (type === 'Voyage') {
         columns = voyageColumns
+        className = 'antd-pro-table-port-list';
     } else if (type === 'Vessel') {
         columns = vesselColumns
     } else if (type === 'Line') {
@@ -318,8 +509,8 @@ const ShippingTable: React.FC<Props> = (props) => {
     }
 
     return (
-        <Fragment>
-            <ProTable<APIVoyage>
+        <Form form={form}>
+            <ProTable
                 rowKey={'id'}
                 search={false}
                 options={false}
@@ -328,7 +519,7 @@ const ShippingTable: React.FC<Props> = (props) => {
                 columns={columns}
                 params={searchParams}
                 dataSource={ShippingListVO}
-                // className={'antd-pro-table-port-list ant-pro-table-search'}
+                className={className}
                 headerTitle={
                     <Search
                         placeholder='' enterButton="Search" loading={loading}
@@ -361,13 +552,7 @@ const ShippingTable: React.FC<Props> = (props) => {
                     return handleGetShippingList(params)
                 }}
             />
-            {open ? <PortDrawerForm
-                addAPI={addAPI}
-                editAPI={editAPI}
-                handleSavePort={handleSaveShipping}
-                open={open} PortInfo={ShippingInfoVO} setOpen={handleSetOpen}
-            /> : null}
-        </Fragment>
+        </Form>
     )
 }
 export default ShippingTable;

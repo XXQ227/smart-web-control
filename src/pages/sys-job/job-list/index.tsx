@@ -96,7 +96,6 @@ const JobList: React.FC<RouteChildrenProps> = () => {
         let result: APIModel.RuleCJobList = {};
         setLoading(true);
         if (isLoading) {
-            console.log(params);
             // TODO: 分页查询【参数页】
             params.PageNum = params.current || 1;
             result = (await joblist.getCJobList(params as APIModel.GetCJobListInfo)) || {};
