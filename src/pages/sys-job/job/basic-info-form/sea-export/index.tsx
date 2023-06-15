@@ -4,6 +4,7 @@ import Pickup from "./pickup";
 import Ports from "./port";
 import Containers from "./containers";
 import BillOfLoading from "./bill-of-loading";
+import Remark from "./remark";
 
 // const FormItem = Form.Item;
 interface Props {
@@ -57,6 +58,12 @@ const SeaExport: React.FC<Props> = (props) => {
            {/* 收发通信息 */}
            <BillOfLoading
                title={'Bill Of Loading'}
+               Port={Port}
+               NBasicInfo={NBasicInfo}
+           />
+
+           <Remark
+               title={'Remark'}
                Port={Port}
                NBasicInfo={NBasicInfo}
            />

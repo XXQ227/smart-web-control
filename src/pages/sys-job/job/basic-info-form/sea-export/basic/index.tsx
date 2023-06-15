@@ -73,7 +73,7 @@ const Basic: React.FC<Props> = (props) => {
                         label="Destination Agent"
                         id={'PODAgentID'}
                         name={'PODAgentID'}
-                        url={'/api/MCommon/GetCTNameShortByStrOrType'}
+                        url={'/apiLocal/MCommon/GetCTNameShortByStrOrType'}
                         valueObj={{value: Carrier?.PODAgentID, label: Carrier?.PODAgentName}}
                         query={{
                             UserID: getUserID(),
@@ -93,7 +93,7 @@ const Basic: React.FC<Props> = (props) => {
                         label="Shipping Line (Carrier)"
                         id={'FreighterID'}
                         name={'FreighterID'}
-                        url={'/api/MCommon/GetCTNameShortByStrOrType'}
+                        url={'/apiLocal/MCommon/GetCTNameShortByStrOrType'}
                         valueObj={{value: Carrier?.FreighterID, label: Carrier?.FreighterName}}
                         query={{
                             UserID: getUserID(),
@@ -110,7 +110,7 @@ const Basic: React.FC<Props> = (props) => {
                         label="Shipping Agent"
                         id={'ShippingName'}
                         name={'ShippingName'}
-                        url={'/api/MCommon/GetCTNameShortByStrOrType'}
+                        url={'/apiLocal/MCommon/GetCTNameShortByStrOrType'}
                         // valueObj={{value: Carrier?.ShippingName, label: Carrier?.ShippingName}}
                         /*query={{
                             UserID: getUserID(),
@@ -256,7 +256,7 @@ const Basic: React.FC<Props> = (props) => {
                             required={false}
                             id={'IssuePlaceID'}
                             name={'IssuePlaceID'}
-                            url={'/api/MCommon/GetCityByStr/'}
+                            url={'/apiLocal/MCommon/GetCityByStr/'}
                             valueObj={{value: HouseBill?.IssuePlaceID, label: HouseBill?.IssuePlaceName}}
                             // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
                         />

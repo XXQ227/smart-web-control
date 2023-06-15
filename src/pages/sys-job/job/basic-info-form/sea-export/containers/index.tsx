@@ -76,7 +76,7 @@ const Containers: React.FC<Props> = (props) => {
                             // value={record.CTNModelName}
                             text={record.CTNModelName}
                             query={{ Type: [6, 7].includes(NBasicInfo.OceanTransportTypeID) ? 5 : null, BranchID: getBranchID(), BizType1ID: NBasicInfo.BizType1ID }}
-                            url={"/api/MCommon/GetCTNModelByStr"}
+                            url={"/apiLocal/MCommon/GetCTNModelByStr"}
                             handleChangeData={(val: any, option: any)=> handleRowChange(index, record.ID, 'CTNModelID', val, option)}
                         />
                     </FormItem>
@@ -307,7 +307,7 @@ const Containers: React.FC<Props> = (props) => {
                             modalWidth={500}
                             text={record.PKGTypeNmae}
                             query={{ SystemID: 4 }}
-                            url={"/api/MCommon/GetPKGTypeByStr"}
+                            url={"/apiLocal/MCommon/GetPKGTypeByStr"}
                             handleChangeData={(val: any, option: any)=> handleCTNEdit(index, record.ID, 'PKGTypeID', val, option)}
                         />
                     </FormItem>

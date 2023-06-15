@@ -31,7 +31,7 @@ const BillOfLoading: React.FC<Props> = (props) => {
                     label={label}
                     id={domID}
                     name={domID}
-                    url={'/api/CT/GetCTByStrNoPage'}
+                    url={'/apiLocal/CT/GetCTByStrNoPage'}
                     query={{ UserID: getUserID() }}
                     // prefix={<IconFont type={'icon-search'} />}
                     // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
@@ -45,7 +45,7 @@ const BillOfLoading: React.FC<Props> = (props) => {
                         filedLabel={'NameFull'}
                         // valueObj={companyNameEN}
                         query={{ UserID: getUserID() }}
-                        url={'/api/CT/GetCTByStrNoPage'}
+                        url={'/apiLocal/CT/GetCTByStrNoPage'}
                         // handleChangeData={(val: any)=> handleChangeData(val, 'name_full_en')}
                     />
                 </div>

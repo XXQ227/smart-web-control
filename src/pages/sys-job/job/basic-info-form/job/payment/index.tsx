@@ -65,6 +65,7 @@ const Payment: React.FC<Props> = (props) => {
                     <Row gutter={rowGrid}>
                         <Col xs={24} sm={24} md={12} lg={12} xl={9} xxl={6}>
                             <ProFormSelect
+                                placeholder=''
                                 name="Incoterms"
                                 label="Incoterms"
                                 initialValue={{ value: NBasicInfo?.Terms?.IncotermsID }}
@@ -80,17 +81,28 @@ const Payment: React.FC<Props> = (props) => {
                                 modalWidth={500}
                                 value={NBasicInfo?.Terms?.ServiceTypeID}
                                 text={NBasicInfo?.Terms?.ServiceTypeName}
-                                url={"/api/MCommon/GetServiceType"}
+                                url={"/apiLocal/MCommon/GetServiceType"}
                                 handleChangeData={(val: any, option: any) => handleChange('ServiceTypeID', val, option)}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={12}>
                             <Space direction="horizontal" align="center" className={styles.siteSpace}>
                                 <ProFormSelect
+                                    placeholder=''
                                     name="PayMethod"
                                     label="Payment Term"
-                                    initialValue={{ value: 1, label: "CFR - COST AND FREIGHT" }}
-                                    options={IncotermsOption}
+                                    initialValue={{label: '(CP) Freight payable as per charter party', value: 6}}
+                                    options={[
+                                        {label: '(PP) Freight Prepaid', value: 1},
+                                        {label: '(CC) Freight Collect', value: 2},
+                                        {label: '(AA) Freight as arranged', value: 3},
+                                        {label: '(FF) Freight Free', value: 4},
+                                        {label: '(OT) Other', value: 5},
+                                        {label: '(CP) Freight payable as per charter party', value: 6},
+                                        {label: '(MM) Montyly payment in the third place', value: 7},
+                                        {label: '(PT) Freight prepaid at the third place', value: 8},
+                                        {label: '(CT) Freight Collect at the third place', value: 9},
+                                    ]}
                                 />
                                 <span className={styles.siteSpaceSpan}  />
                                 <SearchTable
@@ -102,7 +114,7 @@ const Payment: React.FC<Props> = (props) => {
                                     showHeader={true}
                                     query={{ TransportTypeID }}
                                     text={NBasicInfo?.Terms?.PayableAtName}
-                                    url={"/api/MCommon/GetPortCityOrCountry"}
+                                    url={"/apiLocal/MCommon/GetPortCityOrCountry"}
                                     className={'textRight'}
                                     handleChangeData={(val: any, option: any) => handleChange('ServiceTypeID', val, option)}
                                 />
@@ -113,6 +125,7 @@ const Payment: React.FC<Props> = (props) => {
                     <Row gutter={rowGrid}>
                         <Col span={24}>
                             <ProFormTextArea
+                                placeholder=''
                                 name="BizRemark"
                                 label="Job Remark"
                                 initialValue={NBasicInfo?.BizRemark}

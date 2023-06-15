@@ -43,20 +43,12 @@ const BasicInfo: React.FC<Props> = (props) => {
 
     const [isContainer, setIsContainer] = useState(data?.vehicleType === '集装箱运输货车');
     const [photoRemarkList, setPhotoRemarkList] = useState<APIModel.PhotoRemarkList[]>(PhotoRemarkList || initialPhotoRemarkList);
-    // const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
 
     const selectAfter = (
         <Select defaultValue="KG" style={{ width: 70 }}>
             <Option value="KG">KG</Option>
         </Select>
     );
-
-    /*const rowSelection = {
-        columnWidth: 30,
-        onChange: (selectedRowKeys: React.Key[]) => {
-            setSelectedRowIDs(selectedRowKeys)
-        },
-    };*/
 
     function handleRowChange(index: number, rowID: any, filedName: string, val: any, option?: any) {
         console.log(index)
@@ -153,6 +145,7 @@ const BasicInfo: React.FC<Props> = (props) => {
             <Row gutter={rowGrid}>
                 <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5} className={'custom-input'}>
                     <ProFormText
+                        placeholder=''
                         name={`shipmentNo${batchNo}`}
                         initialValue={data?.shipmentNo}
                         label="Shipment No."
@@ -169,6 +162,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                 </Col>
                 <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5}>
                     <ProFormSelect
+                        placeholder=''
                         name={`truckingCompany${batchNo}`}
                         label="Trucking Company"
                         initialValue={data?.truckingCompany}
@@ -180,11 +174,13 @@ const BasicInfo: React.FC<Props> = (props) => {
                     />
                     <div className={'proFormTextContainer'}>
                         <ProFormText
+                            placeholder=''
                             name={`Measurement${batchNo}`}
                             initialValue={data?.measurement}
                             label="Meas. (cbm)"
                         />
                         <ProFormText
+                            placeholder=''
                             name={`Pieces${batchNo}`}
                             initialValue={data?.pieces}
                             label="QTY."
@@ -193,6 +189,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                 </Col>
                 <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5}>
                     <ProFormSelect
+                        placeholder=''
                         name={`TransportVehicleType${batchNo}`}
                         label="Transport Vehicle Type"
                         // initialValue={data?.vehicleType}
@@ -209,11 +206,13 @@ const BasicInfo: React.FC<Props> = (props) => {
                     />
                     <div className={'proFormTextContainer'}>
                         <ProFormText
+                            placeholder=''
                             name={`plateNo${batchNo}`}
                             initialValue={data?.plateNo}
                             label="License Plate No."
                         />
                         <ProFormText
+                            placeholder=''
                             name={`driverName${batchNo}`}
                             initialValue={data?.driverName}
                             label="Driver Name"
@@ -228,11 +227,13 @@ const BasicInfo: React.FC<Props> = (props) => {
                             </Col>
                             <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5}>
                                 <ProFormText
+                                    placeholder=''
                                     name={`receivingContac${batchNo}`}
                                     initialValue={data?.receivingContac}
                                     label="Receiving Contac"
                                 />
                                 <ProFormText
+                                    placeholder=''
                                     name={`phone${batchNo}`}
                                     initialValue={data?.phone}
                                     label="Telephone"
@@ -269,7 +270,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                             name={`OperationRemark${batchNo}`}
                             fieldProps={{rows: 5}}
                             label="Operation Remark"
-                            placeholder={''}
+                            placeholder=''
                         />
                     </Col>
                     <Col xs={24} sm={24} md={24} lg={24} xl={17} xxl={15}>
@@ -294,64 +295,8 @@ const BasicInfo: React.FC<Props> = (props) => {
                         />
                     </Col>
                 </Row>
-
-
             </ProCard>
-
         </div>
-        /*<ProCard
-            title={title}
-            bordered={true}
-            className={styles.proFormBasicInfo}
-            headerBordered
-            collapsible
-        >
-            {/!*<Tabs
-                type="editable-card"
-                activeKey={tabList.length > 0 ? tabList[0].key : undefined}
-                onChange={handleTabChange}
-                onEdit={onEdit}
-            >
-                {tabList.map(tab => (
-                    <Tabs.TabPane key={tab.key} tab={tab.label} closable={tab.closable}>
-                        {tab.content}
-                    </Tabs.TabPane>
-                ))}
-            </Tabs>*!/}
-            {/!*<Tabs
-                type="editable-card"
-                onChange={handleTabChange}
-                activeKey={activeKey}
-                onEdit={onEdit}
-                items={tabList}
-            />*!/}
-            {/!*<Tabs
-                type="editable-card"
-                onEdit={onEdit}
-            >
-                {batchData.map((batch, index) => (
-                    <TabPane tab={`Batch ${index + 1}`} key={index}>
-                        <ProFormText
-                            name="ShipmentNo"
-                            initialValue={batch.shipmentNo}
-                            label="Shipment No."
-                        />
-
-                    </TabPane>
-                ))}
-            </Tabs>*!/}
-            {/!*<Row gutter={rowGrid}>
-                <Col>
-                    <Tabs
-                        type="editable-card"
-                        onChange={handleTabChange}
-                        activeKey={activeKey}
-                        onEdit={onEdit}
-                        items={tabList}
-                    />
-                </Col>
-            </Row>*!/}
-        </ProCard>*/
     )
 }
 export default BasicInfo;

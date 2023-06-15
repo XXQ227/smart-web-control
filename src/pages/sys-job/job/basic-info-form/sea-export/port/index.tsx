@@ -95,7 +95,7 @@ const Ports: React.FC<Props> = (props) => {
                         allowClear={false}
                         id={`PortName${record.ID}`}
                         name={`PortName${record.ID}`}
-                        url={'/api/MCommon/GetPortOrCityByStr'}
+                        url={'/apiLocal/MCommon/GetPortOrCityByStr'}
                         valueObj={{label: record.PortName}}
                         // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
                     />
@@ -137,7 +137,7 @@ const Ports: React.FC<Props> = (props) => {
                             showHeader={true}
                             query={{ TransportTypeID }}
                             text={Port?.POLName}
-                            url={"/api/MCommon/GetPortCityOrCountry"}
+                            url={"/apiLocal/MCommon/GetPortCityOrCountry"}
                             filedValue={'ID'}
                             filedLabel={['Name', 'Country']}
                             className={'input-container'}
@@ -166,7 +166,7 @@ const Ports: React.FC<Props> = (props) => {
                             showHeader={true}
                             query={{ TransportTypeID }}
                             text={Port?.PODName}
-                            url={"/api/MCommon/GetPortCityOrCountry"}
+                            url={"/apiLocal/MCommon/GetPortCityOrCountry"}
                             filedValue={'ID'}
                             filedLabel={['Name', 'Country']}
                             className={'input-container'}
@@ -201,7 +201,7 @@ const Ports: React.FC<Props> = (props) => {
                             showHeader={true}
                             query={{ TransportTypeID }}
                             text={PlaceOfReceiptName}
-                            url={"/api/MCommon/GetPortCityOrCountry"}
+                            url={"/apiLocal/MCommon/GetPortCityOrCountry"}
                             filedValue={'ID'}
                             filedLabel={['Name', 'Country']}
                             className={'input-container'}
@@ -230,7 +230,7 @@ const Ports: React.FC<Props> = (props) => {
                             showHeader={true}
                             query={{ TransportTypeID }}
                             text={PlaceOfDeliveryName}
-                            url={"/api/MCommon/GetPortCityOrCountry"}
+                            url={"/apiLocal/MCommon/GetPortCityOrCountry"}
                             filedValue={'ID'}
                             filedLabel={['Name', 'Country']}
                             className={'input-container'}

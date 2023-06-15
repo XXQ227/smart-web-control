@@ -69,6 +69,7 @@ const Cargo: React.FC<Props> = (props) => {
                         ]}
                     />
                     <ProFormText
+                        placeholder=''
                         name="HSCode"
                         initialValue={cargoInfo?.HSCode}
                         label="HS Code"
@@ -76,6 +77,7 @@ const Cargo: React.FC<Props> = (props) => {
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={6}>
                     <ProFormTextArea
+                        placeholder=''
                         fieldProps={{rows: 5}}
                         name="DescriptionEN"
                         label="Description of Goods"
@@ -84,6 +86,7 @@ const Cargo: React.FC<Props> = (props) => {
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={6}>
                     <ProFormTextArea
+                        placeholder=''
                         fieldProps={{rows: 5}}
                         name="DescriptionCN"
                         label="Description of Goods (CN)"
@@ -92,6 +95,7 @@ const Cargo: React.FC<Props> = (props) => {
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={6}>
                     <ProFormTextArea
+                        placeholder=''
                         fieldProps={{rows: 5}}
                         name="Mark"
                         label="Shipping Mark"
@@ -127,17 +131,20 @@ const Cargo: React.FC<Props> = (props) => {
                 <Col xs={13} sm={13} md={8} lg={7} xl={6} xxl={4}>
                     <div className={'proFormTextContainer'}>
                         <ProFormText
+                            placeholder=''
                             name="Measurement"
                             initialValue={cargoInfo?.Measurement}
                             label="Meas. (cbm)"
                         />
                         <ProFormText
+                            placeholder=''
                             name="Pieces"
                             initialValue={cargoInfo?.Pieces}
                             label="QTY."
                         />
                     </div>
                     <ProFormSelect
+                        placeholder=''
                         name="PackagingMethods"
                         label="Packaging Methods"
                         initialValue={{label: 'Wooden Boxes', value: 'Measurement'}}

@@ -22,7 +22,6 @@ const Job: React.FC<Props> = (props) => {
     }, [])
     //endregion
 
-    // const baseParams: any = {form, FormItem};
     const basicInfoParams: any = {CJobInfo, NBasicInfo, SalesManList, FinanceDates};
     const cargoParams: any = {CargoInfo, NBasicInfo};
 
