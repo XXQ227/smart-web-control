@@ -1,5 +1,4 @@
 import React, {Fragment, useState} from 'react';
-import type {RouteChildrenProps} from 'react-router';
 import type {ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProCard, ProFormText, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
@@ -24,7 +23,9 @@ const searchParams: APISearchCGItem = {
     pageSize: 15,
 };
 
-const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
+interface Props {}
+
+const CGItemListIndex: React.FC<Props> = () => {
     const [form] = Form.useForm();
 
     const {
@@ -216,17 +217,17 @@ const CGItemListIndex: React.FC<RouteChildrenProps> = () => {
                 />
         },
         {
-            title: 'Standard',
+            title: 'standard',
             dataIndex: 'chargeStandardId',
             align: 'left',
-            tooltip: 'Standard is required',
+            tooltip: 'standard is required',
             className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <SearchProFormSelect
                     qty={8}
                     required
                     placeholder=''
-                    label={'Standard Name'}
+                    label={'standard Name'}
                     disabled={record.enableFlag}
                     query={{currentPage: 1, code: ''}}
                     id={`chargeStandardId${record.id}`}

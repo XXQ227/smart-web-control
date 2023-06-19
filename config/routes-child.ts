@@ -243,11 +243,29 @@ const manager_route = {
             name: 'charge',
             icon: 'icon-charge-subject',
             path: '/manager/charge',
+            component: './sys-manager/charge',
+            // routes: [
+            //     {
+            //         name: 'standard',
+            //         path: '/manager/charge/standard/list',
+            //         component: './sys-manager/charge/standard',
+            //     },
+            //     {
+            //         name: 'description',
+            //         path: '/manager/charge/description/list',
+            //         component: './sys-manager/charge/description',
+            //     },
+            // ],
+        },
+        /*{
+            name: 'charge',
+            icon: 'icon-charge-subject',
+            path: '/manager/charge',
             routes: [
                 {
                     name: 'standard',
-                    path: '/manager/charge/Standard/list',
-                    component: './sys-manager/charge/Standard',
+                    path: '/manager/charge/standard/list',
+                    component: './sys-manager/charge/standard',
                 },
                 {
                     name: 'description',
@@ -255,13 +273,13 @@ const manager_route = {
                     component: './sys-manager/charge/description',
                 },
             ],
-        },
+        },*/
         // TODO: 费用模板数据
         {
             name: 'charge_template_list',
             icon: 'icon-charge-manage',
-            path: '/manager/charge-template/list',
-            component: './sys-manager/charge-template/list',
+            path: '/manager/charge-template',
+            component: './sys-manager/charge-template',
         },
         {
             hideInMenu: true,   // 隐藏不显示
@@ -295,8 +313,15 @@ const manager_route = {
         {
             name: 'department_list',
             icon: 'icon-department-manager',
-            path: '/manager/department/list',
-            component: './sys-manager/department/department-list',
+            path: '/manager/department',
+            component: './sys-manager/department',
+        },
+        {
+            hideInMenu: true,   // 隐藏不显示
+            name: 'department_form',
+            icon: 'icon-department-manager',
+            path: '/manager/department/form/:id',
+            component: './sys-manager/department/form',
         },
         // TODO: 项目
         {
@@ -318,6 +343,20 @@ const manager_route = {
             icon: 'icon-user-manager',
             path: '/manager/user',
             component: './sys-manager/user/user-list',
+        },
+        // TODO: edi
+        {
+            name: 'edi',
+            icon: 'icon-project',
+            path: '/manager/edi/list',
+            component: './sys-manager/edi',
+        },
+        {
+            hideInMenu: true,   // 隐藏不显示
+            name: 'edi_info',
+            icon: 'icon-project',
+            path: '/manager/edi/form/:id',
+            component: './sys-manager/edi/form',
         },
         // TODO: 用户
         {

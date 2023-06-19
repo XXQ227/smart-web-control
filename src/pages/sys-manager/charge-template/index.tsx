@@ -5,7 +5,6 @@ import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
 import {DeleteOutlined, EditOutlined, PlusOutlined, CopyOutlined} from '@ant-design/icons'
 import {Divider, message, Popconfirm, Input, Button} from 'antd'
-import {getUserID} from '@/utils/auths'
 import {history} from '@@/core/history'
 
 const {Search} = Input;
@@ -16,22 +15,20 @@ type APISearchCGTemp = APIManager.SearchCGTempParams;
 
 // TODO: 获取单票集的请求参数
 const searchParams: APISearchCGTemp = {
-    Name: '',
-    UserID: getUserID()
+    name: '', branchId: 1, currentPage: 1, pageSize: 20, servicesType: ''
 };
 
 const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
 
     const {
-        CGTempList, getCGTempList, delTempByID
+        queryChargeTemplate, deleteChargeTemplate,
     } = useModel('manager.charge-template', (res: any) => ({
-        CGTempList: res.CGTempList,
-        getCGTempList: res.getCGTempList,
-        delTempByID: res.delTempByID,
+        queryChargeTemplate: res.queryChargeTemplate,
+        deleteChargeTemplate: res.deleteChargeTemplate,
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [CGTempListVO, setCGTempListVO] = useState<APICGTemp[]>(CGTempList || []);
+    const [CGTempListVO, setCGTempListVO] = useState<APICGTemp[]>([]);
 
     /**
      * @Description: TODO 获取单票数据集合
@@ -43,10 +40,7 @@ const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
     async function handleGetCGTempList(params: APISearchCGTemp) {
         setLoading(true);
         // TODO: 分页查询【参数页】
-        // params.PageNum = params.current || 1;
-        // params.pageSize = params.PageSize || 15;
-        // params.PageSize = params.PageSize || 15;
-        const result: APIManager.CGTempResult = await getCGTempList(params);
+        const result: API.Result = await queryChargeTemplate(params);
         setCGTempListVO(result.data);
         setLoading(false);
         return result;
@@ -64,9 +58,9 @@ const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
         if (state === 'delete') {
             setLoading(true);
             // TODO: 删除费用模板
-            const result: any = await delTempByID({ID: record.ID});
+            const result: any = await deleteChargeTemplate({id: record.id});
             if (result.Result) {
-                const newData: APICGTemp[] = CGTempListVO.filter((item: APICGTemp) => item.ID !== record.ID);
+                const newData: APICGTemp[] = CGTempListVO.filter((item: APICGTemp) => item.id !== record.id);
                 setCGTempListVO(newData);
                 message.success('Success!');
             } else {
@@ -75,7 +69,7 @@ const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
             setLoading(false);
         } else {
             // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-            const url = `/manager/charge-template/${state}/${btoa(record?.ID || 0)}`;
+            const url = `/manager/charge-template/${state}/${btoa(record?.id || 0)}`;
             // TODO: 跳转页面<带参数>
             // @ts-ignore
             history.push({pathname: url})
@@ -133,7 +127,7 @@ const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
         >
             <ProCard className={'ant-card-pro-table'}>
                 <ProTable<APICGTemp>
-                    rowKey={'ID'}
+                    rowKey={'id'}
                     search={false}
                     options={false}
                     bordered={true}
@@ -141,12 +135,13 @@ const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
                     columns={columns}
                     params={searchParams}
                     dataSource={CGTempListVO}
+                    locale={{emptyText: 'No Data'}}
                     className={'antd-pro-table-port-list'}
                     headerTitle={
                         <Search
                             placeholder='' enterButton="Search" loading={loading}
                             onSearch={async (val: any) => {
-                                searchParams.Name = val;
+                                searchParams.name = val;
                                 await handleGetCGTempList(searchParams);
                             }}/>
                     }

@@ -160,7 +160,7 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
     }));
 
     const industryOption = Industry?.map((option: any) => ({
-        value: option.id, label: option.dictLabel
+        value: option.id, label: option.name
     }));
 
     const branchOption = Branch?.map((option: any) => ({

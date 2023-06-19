@@ -1,54 +1,59 @@
-import type React from "react";
-import {useCallback, useState} from "react";
-import {GetDepartmentList, SaveDepartment} from '@/services/smart/manager/department'
+import {useCallback} from "react";
+import {
+    queryDepartmentAPI, queryDepartmentInfoAPI, addDepartmentAPI,
+    editDepartmentAPI, deleteDepartmentAPI, operateDepartmentAPI
+} from '@/services/smart/manager/department'
 
 type APIDepartment = APIManager.Department;
 
-interface T {
-    DepartmentList: APIDepartment[],
-    DepartmentInfo: APIDepartment,
-}
 
-
-export default (callback: T, deps: React.DependencyList) => {
+export default () => {
     // TODO: 基础数据
 
     //endregion
 
-    // TODO: Department List 数据
-    const [DepartmentList, setDepartmentList] = useState<APIDepartment[]>([]);
-
     //region TODO: 接口
-    // TODO: 获取部门列表<详细数据>请求
-    const getDepartmentList = useCallback(async (params: APIManager.SearchDeptParams) => {
+    // TODO: 获取费用模板列表
+    const queryDepartment = useCallback(async (params: {name: string})=> {
         // TODO: 请求后台 API
-        const response = await GetDepartmentList(params);
+        const response = await queryDepartmentAPI(params);
         if (!response) return;
-        const data: any = response.Content?.map((x: any)=> ({...x, id: x.ID}));
-        const result: APIManager.DepartmentResult = {
-            data: data,
-            success: response.Result,
-            total: response.Page?.ItemTotal
-        }
-        setDepartmentList(response.Content);
-        return result;
+        return response;
     }, []);
 
-    // TODO: 保存部门信息
-    const saveDepartment = useCallback(async (params: APIManager.Department) => {
+    // TODO: 删除费用模板
+    const addDepartment = useCallback(async (params: APIDepartment)=> {
         // TODO: 请求后台 API
-        const response = await SaveDepartment(params);
-        if (!response) return;
-        const result: APIManager.SaveDepartment = {
-            id: response.Content,
-            success: response.Result,
-        }
-        return result;
+        return await addDepartmentAPI(params);
     }, []);
+
+    // TODO: 删除费用模板
+    const queryDepartmentInfo = useCallback(async (params: APIDepartment)=> {
+        // TODO: 请求后台 API
+        return await queryDepartmentInfoAPI(params);
+    }, []);
+
+    // TODO: 删除费用模板
+    const editDepartment = useCallback(async (params: APIDepartment)=> {
+        // TODO: 请求后台 API
+        return await editDepartmentAPI(params);
+    }, []);
+
+    // TODO: 删除费用模板
+    const deleteDepartment = useCallback(async (params: APIDepartment)=> {
+        // TODO: 请求后台 API
+        return await deleteDepartmentAPI(params);
+    }, []);
+
+    // TODO: 删除费用模板
+    const operateDepartment = useCallback(async (params: APIDepartment)=> {
+        // TODO: 请求后台 API
+        return await operateDepartmentAPI(params);
+    }, []);
+    //endregion
 
     return {
-        getDepartmentList,
-        DepartmentList,
-        saveDepartment,
+        queryDepartment, queryDepartmentInfo, addDepartment,
+        editDepartment, deleteDepartment, operateDepartment
     }
 }

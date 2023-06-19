@@ -23,33 +23,18 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
     const id = Number(atob(params?.id));
 
     const {
-        CGTempInfo, getVOByID, PurposeOfCallList, ServicesList, saveCGTemp, CurrencyList,
-        PayMethodList, ARInvoTypeList, APInvoTypeList
+        addChargeTemplate, queryChargeTemplateInfo, editChargeTemplate,  operateChargeTemplate
     } = useModel('manager.charge-template', (res: any) => ({
-        getVOByID: res.getVOByID,
-        CGTempInfo: res.CGTempInfo,
-        CurrencyList: res.CurrencyList,
-        PayMethodList: res.PayMethodList,
-        ARInvoTypeList: res.ARInvoTypeList,
-        APInvoTypeList: res.APInvoTypeList,
-        PurposeOfCallList: res.PurposeOfCallList,
-        ServicesList: res.ServicesList,
-        saveCGTemp: res.saveCGTemp,
+        addChargeTemplate: res.addChargeTemplate,
+        queryChargeTemplateInfo: res.queryChargeTemplateInfo,
+        editChargeTemplate: res.editChargeTemplate,
+        operateChargeTemplate: res.operateChargeTemplate,
     }));
 
-    const [CGTempInfoVO, setCGTempInfoVO] = useState<APICGTemp>(CGTempInfo);
-    const [ARListVO, setARListVO] = useState<CGTempItems[]>(CGTempInfo.ARList || []);
-    const [APListVO, setAPListVO] = useState<CGTempItems[]>(CGTempInfo.APList || []);
     const [loading, setLoading] = useState<boolean>(false);
-    const [saveState, setSaveState] = useState<boolean>(true);
-
-    useEffect(() => {
-        if (!(CGTempInfoVO?.ID) && !!(CGTempInfo.ID)) {
-            setCGTempInfoVO(CGTempInfo);
-            setARListVO(CGTempInfo.ARList);
-            setAPListVO(CGTempInfo.APList);
-        }
-    }, [CGTempInfo, CGTempInfoVO?.ID])
+    const [CGTempInfoVO, setCGTempInfoVO] = useState<any>({});
+    const [ARListVO, setARListVO] = useState<CGTempItems[]>([]);
+    const [APListVO, setAPListVO] = useState<CGTempItems[]>([]);
 
     /**
      * @Description: TODO: 获取 港口 详情
@@ -57,14 +42,11 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
      * @date 2023/5/5
      * @returns
      */
-    async function handleGetCGTempByID(paramsVal: APIManager.CGTempByIDParams) {
+    async function handleGetCGTempByID(paramsVal: APICGTemp) {
         setLoading(true);
-        const result: any = await getVOByID(paramsVal);
-        setCGTempInfoVO(result.CGTempVO);
-        setARListVO(result.ARList);
-        setAPListVO(result.APList);
+        const result: API.Result = await queryChargeTemplateInfo(paramsVal);
         setLoading(false);
-        return result.CGTempVO;
+        return result;
     }
 
     /**
@@ -115,7 +97,6 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
     // TODO: 传给子组件的参数
     const baseCGDON: any = {
         form, formRef, FormItem, handleCGTempChange,
-        CurrencyList, PayMethodList, ARInvoTypeList, APInvoTypeList
     };
 
     return (
@@ -162,7 +143,7 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
                                 rules={[{required: true, message: 'Template Name is required'}]}
                             />
                         </Col>
-                        <Col span={3}>
+                        {/*<Col span={3}>
                             <ProFormText
                                 required
                                 placeholder=''
@@ -179,13 +160,13 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
                                 label='AR USD Rate'
                                 rules={[{required: true, message: 'AP USD Rate is required'}]}
                             />
-                        </Col>
+                        </Col>*/}
                         <Col span={5}>
                             <ProFormSelect
                                 placeholder=''
                                 name='ServicesID'
                                 label='Services'
-                                options={ServicesList}
+                                // options={ServicesList}
                             />
                         </Col>
                         <Col span={5}>
@@ -193,7 +174,7 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
                                 placeholder=''
                                 name='PurposeofCallID'
                                 label='Purpose of call'
-                                options={PurposeOfCallList}
+                                // options={PurposeOfCallList}
                             />
                         </Col>
                     </Row>
@@ -207,7 +188,7 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
                                 label={'AR'}
                                 {...baseCGDON}
                                 CGList={ARListVO}
-                                InvoTypeList={ARInvoTypeList}
+                                // InvoTypeList={ARInvoTypeList}
                             />
                         </Col>
                     </Row>
@@ -219,7 +200,7 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
                                     label={'AP'}
                                     {...baseCGDON}
                                     CGList={APListVO}
-                                    InvoTypeList={APInvoTypeList}
+                                    // InvoTypeList={APInvoTypeList}
                                 />
                             </FormItem>
                         </Col>
@@ -228,7 +209,7 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
 
                 <FooterToolbar
                     extra={<Button
-                        onClick={() => push({pathname: '/manager/charge-template/dict'})}>返回</Button>}>
+                        onClick={() => push({pathname: '/manager/charge-template'})}>返回</Button>}>
                     <Button type={'primary'} htmlType={'submit'}>提交</Button>
                 </FooterToolbar>
             </ProForm>

@@ -1,53 +1,55 @@
-// @ts-ignore
-/* eslint-disable */
 import { request } from '@/utils/request';
-import {stringify} from 'querystring'
 
 /** 获取费用模板数据 */
-export async function GetCGTempList(body: APIManager.SearchCGTempParams, options?: { [key: string]: any }) {
-  return request(`/api/CGTemp/GetCGTempList?${stringify(body)}`, {
-    method: 'GET',
-    ...(options || {}),
-  });
-}
-
-
-/**
- * 获得明细
- * @param params
- * @param options
- */
-export async function GetVOByID(params: APIManager.CGTempByIDParams, options?: { [key: string]: any }) {
-  return request(`/api/CGTemp/GetVOByID?${stringify(params)}`, {
-    method: 'GET',
-    ...(options || {}),
-  });
-}
-
-/**
- * 获得明细
- * @param params
- * @param options
- */
-export async function DelTempByID(params: {ID: number}, options?: { [key: string]: any }) {
-  return request(`/api/CGTemp/DelTempByID?${stringify(params)}`, {
+export async function queryChargeTemplateAPI(body: APIManager.SearchCGTempParams, options?: { [key: string]: any }) {
+  return request(`/apiBase/chargeTemplate/queryChargeTemplate/`, {
     method: 'POST',
+    body,
     ...(options || {}),
   });
 }
 
-/**
- * 获得明细
- * @param params
- * @param options
- */
-export async function SaveCGTemp(params: APIManager.SaveCGItem, options?: { [key: string]: any }) {
-  return request(`/api/CGTemp/SaveCGTemp`, {
+/** 新增费目模板*/
+export async function addChargeTemplateAPI(body: APIManager.CGTemp, options?: { [key: string]: any }) {
+  return request(`/apiBase/chargeTemplate/addChargeTemplate/`, {
     method: 'POST',
-    body: {
-      ...params,
-    },
+    body,
     ...(options || {}),
   });
 }
 
+/** 查询费目模板详细信息*/
+export async function queryChargeTemplateInfoAPI(body: APIManager.CGTemp, options?: { [key: string]: any }) {
+  return request(`/apiBase/chargeTemplate/queryChargeTemplateInfo/`, {
+    method: 'POST',
+    body,
+    ...(options || {}),
+  });
+}
+
+/** 获取费用模板数据 */
+export async function editChargeTemplateAPI(body: APIManager.CGTemp, options?: { [key: string]: any }) {
+  return request(`/apiBase/chargeTemplate/editChargeTemplate/`, {
+    method: 'POST',
+    body,
+    ...(options || {}),
+  });
+}
+
+/** 获取费用模板数据 */
+export async function deleteChargeTemplateAPI(body: APIManager.CGTemp, options?: { [key: string]: any }) {
+  return request(`/apiBase/chargeTemplate/deleteChargeTemplate/`, {
+    method: 'POST',
+    body,
+    ...(options || {}),
+  });
+}
+
+/** 获取费用模板数据 */
+export async function OperateChargeTemplateAPI(body: APIManager.CGTemp, options?: { [key: string]: any }) {
+  return request(`/apiBase/chargeTemplate/operateChargeTemplate/`, {
+    method: 'POST',
+    body,
+    ...(options || {}),
+  });
+}

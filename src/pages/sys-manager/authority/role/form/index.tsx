@@ -98,7 +98,7 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
                                 required
                                 label='Name'
                                 placeholder=''
-                                name='dictName'
+                                name='name'
                                 tooltip='length: 64'
                                 rules={[{required: true, message: 'Name'}, {max: 64, message: 'length: 64'}]}
                             />
@@ -107,7 +107,7 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
                             <ProFormText
                                 required
                                 placeholder=''
-                                name='dictCode'
+                                name='code'
                                 label='Name Local'
                                 tooltip='length: 64'
                                 rules={[{required: true, message: 'Name Local'}, {max: 64, message: 'length: 64'}]}

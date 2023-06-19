@@ -186,7 +186,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             title: 'Name',
             dataIndex: 'name',
             width: 200,
-            align: 'center',
+            align: 'left',
             tooltip: 'Code is required',
             className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
@@ -203,7 +203,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
         },
         {
             title: 'Code',
-            dataIndex: 'relatedCode',
+            dataIndex: 'relatedName',
             width: 200,
             align: 'center',
             tooltip: 'Code is required',
@@ -212,11 +212,11 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                 <ProFormText
                     placeholder=''
                     disabled={record.enableFlag}
-                    id={`relatedCode${record.id}`}
-                    name={`relatedCode${record.id}`}
-                    initialValue={record.relatedCode}
+                    id={`relatedName${record.id}`}
+                    name={`relatedName${record.id}`}
+                    initialValue={record.relatedName}
                     fieldProps={{
-                        onChange: (val: any) => handleChangeDictDetail(index, record, 'relatedCode', val)
+                        onChange: (val: any) => handleChangeDictDetail(index, record, 'relatedName', val)
                     }}
                 />
         },

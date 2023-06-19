@@ -98,6 +98,8 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
                                 label='Name'
                                 placeholder=''
                                 name='name'
+                                tooltip='length: 64'
+                                rules={[{required: true, message: 'Name'}, {max: 64, message: 'length: 64'}]}
                             />
                         </Col>
                         <Col span={5}>
@@ -106,6 +108,8 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
                                 placeholder=''
                                 name='code'
                                 label='Code'
+                                tooltip='length: 64'
+                                rules={[{required: true, message: 'Name Local'}, {max: 64, message: 'length: 64'}]}
                             />
                         </Col>
                         <Col span={14}>

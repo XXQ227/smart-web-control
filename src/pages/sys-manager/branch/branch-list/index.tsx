@@ -90,7 +90,6 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
             newData.splice(index, 1, record);
         } else {
             // TODO: 删除
-            params.id = Number(params.id);
             result = await deleteBranch(params);
             // TODO: 删除当前行
             newData.splice(index, 1);

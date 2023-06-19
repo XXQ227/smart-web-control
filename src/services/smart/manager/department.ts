@@ -4,18 +4,50 @@ import { request } from '@/utils/request';
 import {stringify} from 'querystring'
 
 /** 获取所有 branch 数据 */
-export async function GetDepartmentList(body: APIManager.SearchDeptParams, options?: { [key: string]: any }) {
-  return request(`/api/CT/GetCTPByStr?${stringify(body)}`, {
-    method: 'GET',
-    ...(options || {}),
+export async function queryDepartmentAPI(body: {name: string}) {
+  return request(`/apiBase/department/queryDepartment`, {
+    method: 'POST',
+    body,
   });
 }
 
-/** 获取部门数据 */
-export async function SaveDepartment(body: APIManager.Department, options?: { [key: string]: any }) {
-  return request(`/api/department/SaveDepartment`, {
+
+/** 获取所有 branch 数据 */
+export async function queryDepartmentInfoAPI(body: APIManager.Department) {
+  return request(`/apiBase/department/queryDepartmentInfo?${stringify(body)}`, {
+    method: 'POST',
+  });
+}
+
+
+/** add department */
+export async function addDepartmentAPI(body: APIManager.Department) {
+  return request(`/apiBase/department/addDepartment`, {
     method: 'POST',
     body,
-    ...(options || {}),
+  });
+}
+
+/** edit department */
+export async function editDepartmentAPI(body: APIManager.Department) {
+  return request(`/apiBase/department/editDepartment`, {
+    method: 'POST',
+    body,
+  });
+}
+
+/** edit department */
+export async function deleteDepartmentAPI(body: APIManager.Department) {
+  return request(`/apiBase/department/deleteDepartment`, {
+    method: 'POST',
+    body,
+  });
+}
+
+/** edit department */
+export async function operateDepartmentAPI(body: APIManager.Department) {
+  return request(`/apiBase/department/operateDepartment`, {
+    method: 'POST',
+    body,
   });
 }

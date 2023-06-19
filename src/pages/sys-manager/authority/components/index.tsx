@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {Fragment, useState} from 'react';
 import type { ProColumns} from '@ant-design/pro-components';
 import {ProTable} from '@ant-design/pro-components'
 import {useModel, useParams} from 'umi';
@@ -38,19 +38,8 @@ const AuthListIndex: React.FC<Props> = (props) => {
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [localId, setLocalId] = useState<string>('');
     const [AuthResourceListVO, setAuthResourceListVO] = useState<APIAuthResource[]>(AuthList);
     const [AuthParentVO, setAuthParentVO] = useState<APIAuthResource>(AuthInvoVO);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    // useEffect(() => {
-    //     if (localId && id && localId !== id) {
-    //         setLocalId(id);
-    //         useCallback(async ()=> {
-    //             await handleGetAuthResourceList({id})
-    //         }, []);
-    //     }
-    // }, [id, localId])
 
     /**
      * @Description: TODO 获取单票数据集合

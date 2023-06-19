@@ -358,68 +358,49 @@ declare namespace APIManager {
 
   //region TODO: 费用模板
   type SearchCGTempParams = {
-    UserID: number;
-    Name: string;
-  };
-
-  type CGTempResult = {
-    data: CGTemp[];
-    /** 列表的内容总数 */
-    total: number | null;
-    /** 返回结果 */
-    success?: boolean;
+    name: string;
+    branchId: string | number;
+    servicesType: string;
+    currentPage: number;
+    pageSize: number;
   };
 
   type CGTemp = {
-    ID: number | string;
-    Name: string;
-    BizType1Name: string;
-    BizType1NameEN: string;
-    CreateDate: string;
-    CreatorName: string;
+    id: string; // TODO:
+    name?: string; // TODO:名称
+    branchId?: string; // TODO:公司ID
+    servicesType?: string; // TODO:服务类型
+    purposeOfCallType?: string; // TODO:调用类型的目的
+    enableFlag?: string; // TODO:启用状态:0-不启用、1-启用
+    deleteFlag?: string; // TODO:删除标识
+    createUserId?: string; // TODO:创建人ID
+    createUserName?: string; // TODO:创建人名称
+    createTime?: string; // TODO:创建时间
+    updateUserId?: string; // TODO:修改人ID
+    updateUserName?: string; // TODO:修改人名称
+    updateTime?: string; // TODO:修改人时间
+    isChange?: boolean; // TODO: 编辑状态
   };
 
-  type CGTempByIDParams = {
-    UserID: number;
-    ID: number | string;
-  };
-
-  type CGTempByIDResult = {
-    UserID: number;
-    Name: string;
-  };
-
-  type SaveCGItem = {
-    Name: string;
-    APUSDRate: string;
-    ARUSDRate: string;
-    ServicesID?: number | null;
-    PurposeofCallID?: number | null;
-    ID: number | string;
-    CGTempItems?: CGTempItems[];
-    BizType1ID?: number | null;
-  };
 
   type CGTempItems = {
-    ID: number | string;
-    SettlementID: number | null;
-    SettlementName?: string;
-    SettlementNameEN?: string;
-    CTName: string;
-    CGUnitID: number | null;
-    CGUnitName: string | null;
-    CGItemID: number | null;
-    CGItemName?: string;
-    SettlementType?: string;
-    SettlementTypeName?: string;
-    CGTypeID: number;
-    UnitPrice: number | null;
-    CurrencyID: number | null;
-    InvoTypeID: number | null;
-
-    PayMethodID: number | null;
-    ctCheck?: boolean;
-    TaxFree?: boolean;
+    id: string; // TODO: 主键
+    chargeTemplateId?: string; // TODO: 费目模版ID
+    chargeItemId?: string; // TODO:费目ID
+    unitType?: string; // TODO:单位类型
+    type?: string; // TODO:费用类型:1-收2-付
+    unitPrice?: string; // TODO:单价
+    branchId?: string; // TODO:公司ID
+    payMethod?: string; // TODO:付款方式
+    currencyName?: string; // TODO:币种名称
+    enableFlag?: string; // TODO:启用状态:0-不启用、1-启用
+    deleteFlag?: string; // TODO:删除标识
+    createUserId?: string; // TODO:创建人ID
+    createUserName?: string; // TODO:创建人名称
+    createTime?: string; // TODO:创建时间
+    updateUserId?: string; // TODO:修改人ID
+    updateUserName?: string; // TODO:修改人名称
+    updateTime?: string; // TODO:修改人时间
   };
 
   //endregion
@@ -466,8 +447,7 @@ declare namespace APIManager {
 
   //region TODO: Department 部门
   type SearchDeptParams = {
-    UserID: number;
-    Name: string;
+    name: string;
   };
   type DepartmentResult = {
     data: Department[]; // TODO: 部门数据 <Array>
@@ -477,24 +457,24 @@ declare namespace APIManager {
     success?: boolean;
   };
   type Department = {
-    id: number | string | null; // TODO: 主键 ID
-    name: string; // TODO: 组织名称
-    email: string; // TODO: 邮箱
-    parentId: number | null; // TODO: 父类组织ID
-    level: number | null; // TODO: 级别
-    sort: number | null; // TODO: 排序号
-    chargePerson: string; // TODO: 负责人
-    contactPhone: string; // TODO: 联系电话
-    parentIds: string; // TODO: 父ID集合
-    enableFlag: number; // TODO: 启用状态:0-不启用、1-启用
-    deleteFlag: boolean; // TODO: 删除标识
-    createUserId: number | null; // TODO: 创建人ID
-    createUserName?: string; // TODO: 创建人名称
-    createTime?: string; // TODO: 创建时间
-    updateUserId: number | null; // TODO: 修改人ID
-    updateUserName?: string; // TODO: 修改人名称
-    updateTime?: string; // TODO: 修改人时间
-    isChange?: boolean; // TODO: 编辑状态
+    id: string; // TODO: 主键 ID
+    name?: string; // TODO: 组织名称
+    email?: string; // TODO: 邮箱
+    parentId?: number | null; // TODO?: 父ID集合
+    level?: number | null; // TODO?: 级别
+    sort?: number | null; // TODO?: 排序号
+    chargePerson?: string; // TODO?: 负责人
+    contactPhone?: string; // TODO?: 联系电话
+    parentIds?: string; // TODO?: 父类组织ID
+    enableFlag?: number; // TODO?: 启用状态?:0-不启用、1-启用
+    deleteFlag?: boolean; // TODO?: 删除标识
+    createUserId?: number | null; // TODO?: 创建人ID
+    createUserName?: string; // TODO?: 创建人名称
+    createTime?: string; // TODO?: 创建时间
+    updateUserId?: number | null; // TODO?: 修改人ID
+    updateUserName?: string; // TODO?: 修改人名称
+    updateTime?: string; // TODO?: 修改人时间
+    isChange?: boolean; // TODO?: 编辑状态
   };
 
   type SaveDepartment = {
@@ -648,7 +628,7 @@ declare namespace APIManager {
     dictCode?: string; // TODO: 字典代码
     name?: string; // TODO: 字典的名称
     relatedCode?: string; // TODO: 字典代码
-    sort?: number; // TODO: 排序
+    sort?: number | string; // TODO: 排序
     remark?: string; // TODO: 备注
     deleteFlag?: number; // TODO: 删除标识:0不删除、1删除
     enableFlag?: number; // TODO: 启用标识:0不启用、1启用
@@ -660,6 +640,57 @@ declare namespace APIManager {
     updateTime?: string; // TODO: 更新时间
     isChange?: boolean; // TODO: 是否编辑过
   };
+  //endregion
+
+  //region TODO: EDI 配置
+  type SearchEDIParams = {
+    name: string;
+    branchId?: string;
+    currentPage: number;
+    pageSize: number;
+  }
+
+  type EDI = {
+    id: string; // TODO: 主键
+    name?: string; // TODO:名称
+    senderCode?: string; // TODO:发送方代码
+    receiverCode?: string; // TODO:接受方代码
+    signerCode?: string; // TODO:签单人代码
+    bookingNoPrefixes?: string; // TODO:bookingNo前缀
+    cutNum?: number; // TODO:切割长度，用于箱管切割铅封号多少位字符川，各个船公司不一样
+    branchId?: string; // TODO:公司ID
+    receiverId?: string; // TODO:接受方（数据源BU表）
+    ctnModelMapper?: string; // TODO:箱型规则映射{["20GP","22G1"]}
+    pkgTypeMapper?: string; // TODO:包装方式映射{["BAG","BG"]}
+    serviceTypeMapper?: string; // TODO:服务类型映射{["CY/CY","CY"]}
+    portMapper?: string; // TODO:港口映射{["HKHKG","HKHIT"]}
+    enableFlag?: number; // TODO:启用状态:0-不启用、1-启用
+    deleteFlag?: number; // TODO:删除标识
+    createUserId?: string; // TODO:创建人ID
+    createUserName?: string; // TODO:创建人名称
+    createTime?: string; // TODO:创建时间
+    updateUserId?: string; // TODO:修改人ID
+    updateUserName?: string; // TODO:修改人名称
+    updateTime?: string; // TODO:修改人时间
+  }
+  //endregion
+
+  //region TODO:
+  //endregion
+
+  //region TODO:
+  //endregion
+
+  //region TODO:
+  //endregion
+
+  //region TODO:
+  //endregion
+
+  //region TODO:
+  //endregion
+
+  //region TODO:
   //endregion
 
   //region TODO:

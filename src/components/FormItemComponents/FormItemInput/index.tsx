@@ -5,16 +5,20 @@ interface Props {
     id: string,
     name: string,
     initialValue: any
-    rules?: any,
+    FormItem: any,
     disabled?: boolean,
     required?: boolean,
+    rules?: any,
+    autoFocus?: boolean,
     placeholder?: string,
-    FormItem?: any,
     onChange: (val: any) => void,
 }
 
 const FormItemInput: React.FC<Props> = (props) => {
-    const {id, name, initialValue, required, rules, onChange, FormItem, disabled, placeholder} = props;
+    const {
+        id, name, initialValue, onChange, FormItem,
+        disabled, placeholder, autoFocus, required, rules,
+    } = props;
     return (
         <FormItem
             id={id}
@@ -24,7 +28,7 @@ const FormItemInput: React.FC<Props> = (props) => {
             initialValue={initialValue}
             placeholder={placeholder || ''}
         >
-            <Input disabled={disabled} onChange={onChange}/>
+            <Input autoFocus={autoFocus} disabled={disabled} autoComplete={'off'} onChange={onChange}/>
         </FormItem>
     )
 }

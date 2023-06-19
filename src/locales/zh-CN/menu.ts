@@ -41,9 +41,10 @@ export default {
   // 'menu.manager.dictionary_info': 'Branch - Information',
   // TODO: 经营单位部门
   'menu.manager.department_list': 'Department - Index',
+  'menu.manager.department_form': 'Department - Information',
   // TODO: 项目
   'menu.manager.project_list': 'Project - Index',
-    'menu.manager.project_info': 'Project - Information',
+  'menu.manager.project_info': 'Project - Information',
   // TODO: 经营单位员工用户
   'menu.manager.user': 'User - Index',
   // TODO: 经营单位员工用户
@@ -72,10 +73,13 @@ export default {
   // TODO: 账期
   'menu.manager.account_list': 'Account - Index',
   'menu.manager.account_info': 'Account - Information',
+  // TODO: 账期
+  'menu.manager.edi': 'EDI - Index',
+  'menu.manager.edi_info': 'EDI - Information',
   // TODO: 费目
   'menu.manager.charge': 'Charge Description',
   'menu.manager.charge.description': 'Description - Index',
-  'menu.manager.charge.standard': 'Standard - Index',
+  'menu.manager.charge.standard': 'standard - Index',
   // TODO: 费用模板
   'menu.manager.charge_template_list': 'Charge Template - Index',
   'menu.manager.charge_template_info': 'Charge Template - Information',

@@ -13,7 +13,7 @@ interface Props {
     onChange: (val: any) => void,
 }
 
-const FormItemInput: React.FC<Props> = (props) => {
+const FormItemSelect: React.FC<Props> = (props) => {
     const {id, name, initialValue, required, rules, onChange, FormItem, disabled, placeholder} = props;
     return (
         <FormItem
@@ -29,4 +29,4 @@ const FormItemInput: React.FC<Props> = (props) => {
         </FormItem>
     )
 }
-export default FormItemInput;
+export default FormItemSelect;

@@ -1,0 +1,48 @@
+import { request } from '@/utils/request';
+import {stringify} from 'qs'
+
+/** 获取部门数据 */
+export async function queryEDIAPI(body: APIManager.SearchEDIParams) {
+  return request(`/apiBase/edi/queryEDI`, {
+    method: 'POST',
+    body,
+  });
+}
+
+/** add edi */
+export async function addEDIAPI(body: APIManager.EDI) {
+  return request(`/apiBase/edi/addEDI`, {
+    method: 'POST',
+    body,
+  });
+}
+
+/** add edi */
+export async function queryEDIInfoAPI(body: APIManager.EDI) {
+  return request(`/apiBase/edi/queryEDIInfo?${stringify(body)}`, {
+    method: 'POST',
+  });
+}
+
+/** edit edi */
+export async function editEDIAPI(body: APIManager.EDI) {
+  return request(`/apiBase/edi/editEDI`, {
+    method: 'POST',
+    body,
+  });
+}
+
+/** delete edi */
+export async function deleteEDIAPI(body: APIManager.EDI) {
+  return request(`/apiBase/edi/deleteEDI?${stringify(body)}`, {
+    method: 'POST',
+  });
+}
+
+/** freezen edi */
+export async function operateEDIAPI(body: APIManager.EDI) {
+  return request(`/apiBase/edi/operateEDI`, {
+    method: 'POST',
+    body,
+  });
+}
