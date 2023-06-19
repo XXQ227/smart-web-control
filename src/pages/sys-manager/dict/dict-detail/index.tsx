@@ -34,7 +34,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
 
     const searchParams: APISearchDictDetail = {
         dictId: id,
-        dictLabel: '',
+        name: '',
         currentPage: 1,
         pageSize: 20,
     };
@@ -288,7 +288,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                 <Search
                     placeholder='' enterButton="Search" loading={loading}
                     onSearch={async (val: any) => {
-                        searchParams.dictLabel = val;
+                        searchParams.name = val;
                         await handleSearchDictDetail(searchParams);
                     }}/>
             }

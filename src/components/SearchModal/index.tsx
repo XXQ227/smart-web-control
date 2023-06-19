@@ -38,8 +38,8 @@ const SearchModal: React.FC<Props> = (props) => {
     const [activeItem, setActiveItem] = useState(-1);           // TODO: 激活的元素 序号
 
     // TODO: 接口返回的键值
-    const resValue: string = filedValue || 'Key';
-    const resLabel: string = filedLabel || 'Value';
+    const resValue: string = filedValue || 'value';
+    const resLabel: string = filedLabel || 'label';
 
     useEffect(() => {
         // TODO: 当第一次加载完后<打开弹框时>，防抖动时间增到到 【1000】

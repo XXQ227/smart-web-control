@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment} from 'react';
 import Basic from "./basic";
 import Pickup from "./pickup";
 import Ports from "./port";
@@ -22,10 +22,6 @@ const SeaExport: React.FC<Props> = (props) => {
         Port, NBasicInfo,
         CTNPlanList, CTNActualList
     } = props;
-
-    useEffect(() => {
-
-    }, [])
     //endregion
 
     return (

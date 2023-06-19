@@ -306,7 +306,31 @@ const Containers: React.FC<Props> = (props) => {
     ];
 
     if (type === 'import') {
-        containersLoadingColumns.splice(1, 0, {
+        containersLoadingColumns.splice(0, 1, {
+            title: 'SIZE',
+            dataIndex: 'CTNModelID',
+            width: '10%',
+            className: "textCenter",
+            render: (text: any, record, index) => {
+                return (
+                    <FormItem
+                        name={`CTNModelID${record.ID}`}
+                        initialValue={record.CTNModelName}>
+                        <SearchModal
+                            qty={30}
+                            id={`CTNModelID${record.ID}`}
+                            title={'SIZE'}
+                            modalWidth={500}
+                            text={record.CTNModelName}
+                            query={{ dictCode: "ctn_model" }}
+                            url={"/apiBase/dict/queryDictDetailCommon"}
+                            handleChangeData={(val: any, option: any)=> handleRowChange(index, record.ID, 'CTNModelID', val, option)}
+                        />
+                    </FormItem>
+                );
+            },
+        },
+        {
             title: 'Yard Container No.',
             dataIndex: "YardCTNNum",
             className: "textCenter",

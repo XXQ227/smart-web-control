@@ -2,11 +2,10 @@ import React, {useRef} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProFormInstance} from '@ant-design/pro-components';
 import {FooterToolbar, PageContainer, ProCard, ProForm, ProFormText,} from '@ant-design/pro-components'
-import {Button, Col, Form, message, Row, Space} from 'antd'
+import {Button, Col, Form, message, Row} from 'antd'
 import {history, useModel, useParams} from 'umi'
 import {getFormErrorMsg} from '@/utils/units'
 import DictDetailDetailIndex from '@/pages/sys-manager/dict/dict-detail'
-
 
 const DictForm: React.FC<RouteChildrenProps> = () => {
     const urlParams = useParams();

@@ -638,7 +638,7 @@ declare namespace APIManager {
   //region TODO: 字典详情
   type SearchDictDetailParams = {
     dictId?: number | string; // TODO: 字典类型
-    dictLabel?: string; // TODO: 字典的名称
+    name?: string; // TODO: 字典的名称
     currentPage?: number; // TODO: 当前页数
     pageSize?: number; // TODO: 每页数
   };
