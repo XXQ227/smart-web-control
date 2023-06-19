@@ -6,6 +6,7 @@ import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 import {PlusCircleOutlined, DeleteOutlined} from "@ant-design/icons";
 import type { ColumnsType } from 'antd/es/table';
 import SearchModal from "@/components/SearchModal";
+import {ID_STRING} from "@/utils/units";
 
 interface Props {
     // FormItem: any,
@@ -181,7 +182,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
 
     const handleAdd = () => {
         const newData: APIModel.ContainerList = {
-            ID: `ID${(new Date().getTime())}`,
+            ID: ID_STRING(),
             CTNModelID: 0,
             CTNModelName: "",
             QTY: 1,

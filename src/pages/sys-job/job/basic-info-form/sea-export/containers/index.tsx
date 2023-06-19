@@ -6,9 +6,10 @@ import {DeleteOutlined, PlusCircleOutlined, DownloadOutlined, SyncOutlined, Swap
 import type {ColumnsType} from "antd/es/table";
 import SearchModal from "@/components/SearchModal";
 import {getBranchID} from "@/utils/auths";
-import {IconFont} from "@/utils/units";
+import {IconFont, ID_STRING} from "@/utils/units";
 
 interface Props {
+    type?: string,
     CTNPlanList?: APIModel.ContainerList[],
     CTNActualList?: APIModel.CTNActualList[],
     NBasicInfo: APIModel.NBasicInfo,
@@ -48,19 +49,19 @@ const initialContainerList: APIModel.ContainerList[] = [
 
 const Containers: React.FC<Props> = (props) => {
     const  {
+        type,
         CTNPlanList, NBasicInfo,
         CTNActualList
     } = props;
 
     const [containerList, setContainerList] = useState<APIModel.ContainerList[]>(CTNPlanList || initialContainerList);
-    const [cTNActualList, setCTNActualList] = useState<APIModel.CTNActualList[]>(CTNActualList);
+    const [cTNActualList, setCTNActualList] = useState<APIModel.CTNActualList[]>(CTNActualList || []);
     const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
 
     const preBookingColumns: ColumnsType<APIModel.ContainerList> = [
         {
             title: 'SIZE',
             dataIndex: 'CTNModelID',
-            key: 'CTNModelID',
             width: '10%',
             className: "textCenter",
             render: (text: any, record, index) => {
@@ -86,7 +87,6 @@ const Containers: React.FC<Props> = (props) => {
         {
             title: 'QTY',
             dataIndex: 'QTY',
-            key: 'QTY',
             width: '10%',
             className: "textCenter",
             render: (text: any, record, index) => {
@@ -106,7 +106,6 @@ const Containers: React.FC<Props> = (props) => {
         {
             title: 'FCL/LCL',
             dataIndex: 'IsFCL',
-            key: 'IsFCL',
             align: 'center',
             width: '10%',
             render: (text: any, record, index) => {
@@ -126,7 +125,6 @@ const Containers: React.FC<Props> = (props) => {
         {
             title: 'SOC/COC',
             dataIndex: 'IsSOC',
-            key: 'IsSOC',
             align: 'center',
             width: '10%',
             render: (text: any, record, index) => {
@@ -146,7 +144,6 @@ const Containers: React.FC<Props> = (props) => {
         {
             title: 'Remark',
             dataIndex: 'Remark',
-            key: 'Remark',
             render: (text: any, record, index) => {
                 return (
                     <ProFormText
@@ -166,14 +163,12 @@ const Containers: React.FC<Props> = (props) => {
         {
             title: 'SIZE',
             dataIndex: 'CTNModelName',
-            key: 'CTNModelName',
             width: '8%',
             align: "center",
         },
         {
             title: 'Container No.',
             dataIndex: "CTNNum",
-            key: "CTNNum",
             width: '15%',
             className: "textCenter",
             render: (text: any, record, index) => {
@@ -193,7 +188,6 @@ const Containers: React.FC<Props> = (props) => {
         {
             title: 'Seal No.',
             dataIndex: "SealNum",
-            key: "SealNum",
             width: '15%',
             className: "textCenter",
             render: (text: any, record, index) => {
@@ -213,7 +207,6 @@ const Containers: React.FC<Props> = (props) => {
         {
             title: 'QTY',
             dataIndex: "Pieces",
-            key: "Pieces",
             width: '8%',
             className: "textCenter",
             render: (text: any, record, index) => {
@@ -233,7 +226,6 @@ const Containers: React.FC<Props> = (props) => {
         {
             title: 'VGM (kg)',
             dataIndex: "VGM",
-            key: "VGM",
             width: '10%',
             className: "textRight",
             render: (text: any, record, index) => {
@@ -253,7 +245,6 @@ const Containers: React.FC<Props> = (props) => {
         {
             title: 'G.W. (kg)',
             dataIndex: "GrossWeight",
-            key: "GrossWeight",
             width: '10%',
             className: "textRight",
             render: (text: any, record, index) => {
@@ -273,7 +264,6 @@ const Containers: React.FC<Props> = (props) => {
         {
             title: 'Meas. (cbm)',
             dataIndex: "Measurement",
-            key: "Measurement",
             width: '10%',
             className: "textRight",
             render: (text: any, record, index) => {
@@ -293,7 +283,6 @@ const Containers: React.FC<Props> = (props) => {
         {
             title: 'Packaging Methods',
             dataIndex: "PKGTypeID",
-            key: "PKGTypeID",
             className: "textCenter",
             render: (text: any, record, index) => {
                 return (
@@ -316,6 +305,47 @@ const Containers: React.FC<Props> = (props) => {
         }
     ];
 
+    if (type === 'import') {
+        containersLoadingColumns.splice(1, 0, {
+            title: 'Yard Container No.',
+            dataIndex: "YardCTNNum",
+            className: "textCenter",
+            render: (text: any, record, index) => {
+                return (
+                    <ProFormText
+                        name={`YardCTNNum${record.ID}`}
+                        initialValue={text}
+                        placeholder={''}
+                        fieldProps={{
+                            onChange: (e) => handleCTNEdit(index, record.ID, 'YardCTNNum', e)
+                        }}
+                        allowClear={false}
+                    />
+                );
+            },
+        });
+        containersLoadingColumns.splice(5, 1);
+        containersLoadingColumns.splice(7, 1, {
+            title: 'Tare Weight',
+            dataIndex: "TareWeight",
+            width: '10%',
+            className: "textRight",
+            render: (text: any, record, index) => {
+                return (
+                    <ProFormText
+                        name={`TareWeight${record.ID}`}
+                        initialValue={text}
+                        placeholder={''}
+                        fieldProps={{
+                            onChange: (e) => handleCTNEdit(index, record.ID, 'TareWeight', e)
+                        }}
+                        allowClear={false}
+                    />
+                );
+            },
+        });
+    }
+
     const rowSelection = {
         columnWidth: 30,
         onChange: (selectedRowKeys: React.Key[]) => {
@@ -336,61 +366,87 @@ const Containers: React.FC<Props> = (props) => {
     }
 
     const handleAdd = () => {
-        const newData: APIModel.ContainerList = {
-            ID: `ID${(new Date().getTime())}`,
-            CTNModelID: 0,
-            CTNModelName: "",
-            QTY: 1,
-            IsSOC: false,
-            Owner: "",
-            Remark: "",
-        };
-        setContainerList([...containerList, newData]);
+        if (type !== 'import') {
+            const newData: APIModel.ContainerList = {
+                ID: ID_STRING(),
+                CTNModelID: 0,
+                CTNModelName: "",
+                QTY: 1,
+                IsSOC: false,
+                Owner: "",
+                Remark: "",
+            };
+            setContainerList([...containerList, newData]);
+        } else {
+            const newData: APIModel.CTNActualList = {
+                ID: ID_STRING(),
+                CTNModelID: 0,
+                CTNModelName: "",
+                YardCTNNum: "",
+                CTNNum: "",
+                SealNum: "",
+                Pieces: 0,
+                VGM: 0,
+                GrossWeight: 0,
+                Measurement: 0,
+                PKGTypeID: 0,
+                PKGTypeNmae: "",
+                TareWeight: "",
+            };
+            setCTNActualList([...cTNActualList, newData]);
+        }
     };
 
     const handleDelete = () => {
-        const newData = containerList.filter(item => !selectedRowIDs.includes(item.ID));
-        setContainerList(newData);
+        if (type !== 'import') {
+            const newData = containerList.filter(item => !selectedRowIDs.includes(item.ID));
+            setContainerList(newData);
+        } else {
+            const newData = cTNActualList.filter(item => !selectedRowIDs.includes(item.ID));
+            setCTNActualList(newData);
+        }
     };
-
     //endregion
 
     return (
         <div className={styles.seaExportContainers}>
-            <ProCard
-                title={'Pre-booking Containers'}
-                bordered={true}
-                headerBordered
-                collapsible
-            >
-                <Row gutter={24}>
-                    <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={20}>
-                        <div className={styles.tableHeaderContainer}>
-                            <Button onClick={handleAdd}><PlusCircleOutlined />Add</Button>
-                            <Popconfirm
-                                disabled={selectedRowIDs.length === 0}
-                                title={'Sure to delete?'}
-                                okText={'Yes'} cancelText={'No'}
-                                onConfirm={() => handleDelete()}
-                            >
-                                <Button disabled={selectedRowIDs.length === 0}><DeleteOutlined />Remove</Button>
-                            </Popconfirm>
-                            <Button><DownloadOutlined />Export Manifest</Button>
-                        </div>
-                        <Table
-                            rowKey={'ID'}
-                            bordered
-                            pagination={false}
-                            columns={preBookingColumns}
-                            dataSource={containerList}
-                            locale={{emptyText: "NO DATA"}}
-                            rowSelection={rowSelection}
-                            className={`tableStyle ${styles.containerTable}`}
-                        />
-                    </Col>
-                </Row>
-
-            </ProCard>
+            {
+                type !== 'import' ?
+                    <ProCard
+                        title={'Pre-booking Containers'}
+                        bordered={true}
+                        headerBordered
+                        collapsible
+                    >
+                        <Row gutter={24}>
+                            <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={20}>
+                                <div className={styles.tableHeaderContainer}>
+                                    <Button onClick={handleAdd}><PlusCircleOutlined />Add</Button>
+                                    <Popconfirm
+                                        disabled={selectedRowIDs.length === 0}
+                                        title={'Sure to delete?'}
+                                        okText={'Yes'} cancelText={'No'}
+                                        onConfirm={() => handleDelete()}
+                                    >
+                                        <Button disabled={selectedRowIDs.length === 0}><DeleteOutlined />Remove</Button>
+                                    </Popconfirm>
+                                    <Button><DownloadOutlined />Export Manifest</Button>
+                                </div>
+                                <Table
+                                    rowKey={'ID'}
+                                    bordered
+                                    pagination={false}
+                                    columns={preBookingColumns}
+                                    dataSource={containerList}
+                                    locale={{emptyText: "NO DATA"}}
+                                    rowSelection={rowSelection}
+                                    className={`tableStyle ${styles.containerTable}`}
+                                />
+                            </Col>
+                        </Row>
+                    </ProCard>
+                    : null
+            }
 
             <ProCard
                 title={'Containers Loading Detail'}
@@ -400,11 +456,27 @@ const Containers: React.FC<Props> = (props) => {
             >
                 <Row gutter={24}>
                     <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={20}>
-                        <div className={styles.tableHeaderContainer}>
-                            <Button><SyncOutlined />Generate by Pre-booking</Button>
-                            <Button><SwapOutlined />Devide Equally</Button>
-                            <Button><CloudUploadOutlined />Subscribe Tracking & Tracing</Button>
-                        </div>
+                        {
+                            type !== 'import' ?
+                                <div className={styles.tableHeaderContainer}>
+                                    <Button><SyncOutlined />Generate by Pre-booking</Button>
+                                    <Button><SwapOutlined />Devide Equally</Button>
+                                    <Button><CloudUploadOutlined />Subscribe Tracking & Tracing</Button>
+                                </div>
+                                :
+                                <div className={styles.tableHeaderContainer}>
+                                    <Button onClick={handleAdd}><PlusCircleOutlined />Add</Button>
+                                    <Popconfirm
+                                        disabled={selectedRowIDs.length === 0}
+                                        title={'Sure to delete?'}
+                                        okText={'Yes'} cancelText={'No'}
+                                        onConfirm={() => handleDelete()}
+                                    >
+                                        <Button disabled={selectedRowIDs.length === 0}><DeleteOutlined />Remove</Button>
+                                    </Popconfirm>
+                                    <Button><DownloadOutlined />Export Manifest</Button>
+                                </div>
+                        }
                         <Table
                             rowKey={'ID'}
                             bordered
@@ -441,9 +513,7 @@ const Containers: React.FC<Props> = (props) => {
                     </Col>
                 </Row>
             </ProCard>
-
         </div>
-
     )
 }
 export default Containers;

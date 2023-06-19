@@ -95,32 +95,26 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
                     <Row gutter={24}>
                         <Col span={5}>
                             <ProFormText
-                                required
+                                readonly
                                 label='Name'
                                 placeholder=''
-                                name='dictName'
-                                tooltip='length: 64'
-                                rules={[{required: true, message: 'Name'}, {max: 64, message: 'length: 64'}]}
+                                name='name'
                             />
                         </Col>
                         <Col span={5}>
                             <ProFormText
-                                required
+                                readonly
                                 placeholder=''
-                                name='dictCode'
-                                label='Name Local'
-                                tooltip='length: 64'
-                                rules={[{required: true, message: 'Name Local'}, {max: 64, message: 'length: 64'}]}
+                                name='code'
+                                label='Code'
                             />
                         </Col>
                         <Col span={14}>
                             <ProFormText
-                                required
+                                readonly
                                 name='remark'
                                 placeholder=''
                                 label='Remark'
-                                tooltip='length: 512'
-                                rules={[{required: true, message: 'Tax Num'}, {max: 512, message: 'length: 512'}]}
                             />
                         </Col>
                     </Row>
@@ -128,16 +122,12 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
                 <ProCard title={'Dict Detail'} className={'ant-card ant-card-pro-table'}>
                     <Row gutter={24}>
                         <Col span={24}>
-                            <DictDetailDetailIndex />
+                            <DictDetailDetailIndex form={form}/>
                         </Col>
                     </Row>
                 </ProCard>
 
-                <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/dict'})}>返回</Button>}>
-                    <Space>
-                        <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
-                    </Space>
-                </FooterToolbar>
+                <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/dict'})}>返回</Button>}/>
             </ProForm>
         </PageContainer>
     )

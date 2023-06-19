@@ -14,9 +14,10 @@ type APIDictDetail = APIManager.DictDetail;
 type APISearchDictDetail = APIManager.SearchDictDetailParams;
 
 interface Props {
+    form: any,
 }
 
-const DictDetailDetailIndex: React.FC<Props> = () => {
+const DictDetailDetailIndex: React.FC<Props> = (props) => {
     const [form] = Form.useForm();
     const urlParams = useParams();
     // @ts-ignore
@@ -65,11 +66,11 @@ const DictDetailDetailIndex: React.FC<Props> = () => {
      */
     const handleAddDictDetail = () => {
         const addDataDetailObj: APIDictDetail = {
-            dictCode: '',
-            dictId: '',
-            dictLabel: '',
-            dictValue: '',
             id: ID_STRING(),
+            dictId: '',
+            dictCode: '',
+            name: '',
+            relatedCode: '',
             remark: '',
             isChange: true
         };
@@ -108,12 +109,16 @@ const DictDetailDetailIndex: React.FC<Props> = () => {
     const handleSaveDictDetail = (index: number, record: APIDictDetail, state: string) => {
         form.validateFields()
             .then(async ()=> {
+                const dictCode = props?.form?.getFieldValue('code')
                 let result: API.Result;
                 const newData: APIDictDetail[] = ls.cloneDeep(DictDetailListVO);
                 // TODO: 保存、添加 公共参数
                 const params: any = {
-                    dictLabel: record.dictLabel, dictCode: record.dictCode,
-                    dictValue: record.dictValue, remark: record.remark, sort: record.sort || 0,
+                    dictCode: dictCode,
+                    name: record.name,
+                    relatedCode: record.relatedCode,
+                    sort: record.sort || 0,
+                    remark: record.remark,
                 };
                 // TODO: 添加
                 if (state === 'add') {
@@ -178,27 +183,8 @@ const DictDetailDetailIndex: React.FC<Props> = () => {
 
     const columns: ProColumns<APIDictDetail>[] = [
         {
-            title: 'Label',
-            dataIndex: 'dictLabel',
-            width: 200,
-            align: 'left',
-            tooltip: 'Code is required',
-            className: 'ant-columns-required',
-            render: (text: any, record: any, index) =>
-                <ProFormText
-                    placeholder=''
-                    disabled={record.enableFlag}
-                    id={`dictLabel${record.id}`}
-                    name={`dictLabel${record.id}`}
-                    initialValue={record.dictLabel}
-                    fieldProps={{
-                        onChange: (val: any) => handleChangeDictDetail(index, record, 'dictLabel', val)
-                    }}
-                />
-        },
-        {
             title: 'Name',
-            dataIndex: 'dictValue',
+            dataIndex: 'name',
             width: 200,
             align: 'center',
             tooltip: 'Code is required',
@@ -207,17 +193,17 @@ const DictDetailDetailIndex: React.FC<Props> = () => {
                 <ProFormText
                     placeholder=''
                     disabled={record.enableFlag}
-                    id={`dictValue${record.id}`}
-                    name={`dictValue${record.id}`}
-                    initialValue={record.dictValue}
+                    id={`name${record.id}`}
+                    name={`name${record.id}`}
+                    initialValue={record.name}
                     fieldProps={{
-                        onChange: (val: any) => handleChangeDictDetail(index, record, 'dictValue', val)
+                        onChange: (val: any) => handleChangeDictDetail(index, record, 'name', val)
                     }}
                 />
         },
         {
             title: 'Code',
-            dataIndex: 'dictCode',
+            dataIndex: 'relatedCode',
             width: 200,
             align: 'center',
             tooltip: 'Code is required',
@@ -226,11 +212,11 @@ const DictDetailDetailIndex: React.FC<Props> = () => {
                 <ProFormText
                     placeholder=''
                     disabled={record.enableFlag}
-                    id={`dictCode${record.id}`}
-                    name={`dictCode${record.id}`}
-                    initialValue={record.dictCode}
+                    id={`relatedCode${record.id}`}
+                    name={`relatedCode${record.id}`}
+                    initialValue={record.relatedCode}
                     fieldProps={{
-                        onChange: (val: any) => handleChangeDictDetail(index, record, 'dictCode', val)
+                        onChange: (val: any) => handleChangeDictDetail(index, record, 'relatedCode', val)
                     }}
                 />
         },

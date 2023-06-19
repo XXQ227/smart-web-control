@@ -1,16 +1,23 @@
 import React, {Fragment, useEffect} from 'react';
-import Payment from '../job/payment';
+import Basic from "./basic";
+import Ports from "./port";
+import Remark from "@/pages/sys-job/job/basic-info-form/sea-export/remark";
+import Containers from "@/pages/sys-job/job/basic-info-form/sea-export/containers";
 
-// const FormItem = Form.Item;
 interface Props {
-    CJobInfo: APIModel.NJobDetailDto,
-    SalesManList: API.APIValue$Label[],
-    FinanceDates: string[],
+    Carrier?: APIModel.Carrier,
+    HouseBill?: APIModel.HouseBill,
+    Port?: APIModel.Port,
+    NBasicInfo: APIModel.NBasicInfo,
+    CTNPlanList?: APIModel.ContainerList[],
+    CTNActualList?: APIModel.CTNActualList[],
 }
 
 const SeaImport: React.FC<Props> = (props) => {
     const  {
-        CJobInfo: {NBasicInfo}
+        Carrier, HouseBill,
+        Port, NBasicInfo,
+        CTNPlanList, CTNActualList
     } = props;
 
     useEffect(() => {
@@ -20,8 +27,31 @@ const SeaImport: React.FC<Props> = (props) => {
 
     return (
        <Fragment>
-           <Payment
+           <Basic
+               title={'Basic'}
+               Carrier={Carrier}
+               HouseBill={HouseBill}
+           />
+
+           {/* 港口信息 */}
+           <Ports
+               title={'Port'}
+               Port={Port}
+               NBasicInfo={NBasicInfo}
+               Carrier={Carrier}
+           />
+
+           <Containers
+               type={'import'}
+               CTNPlanList={CTNPlanList}
+               CTNActualList={CTNActualList}
+               NBasicInfo={NBasicInfo}
+           />
+
+           <Remark
+               type={'import'}
                title={'Remark'}
+               Port={Port}
                NBasicInfo={NBasicInfo}
            />
        </Fragment>

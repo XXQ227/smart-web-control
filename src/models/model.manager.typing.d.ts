@@ -615,13 +615,13 @@ declare namespace APIManager {
 
   //region TODO: 字典
   type SearchDictParams = {
-    dictName: string; // TODO: 字典类型对应的名称
-    dictCode: string; // TODO: 字典类型对应的code码
+    name: string; // TODO: 字典类型对应的名称
+    code: string; // TODO: 字典类型对应的code码
   };
   type Dict = {
     id: string;
-    dictName: string; // TODO: 字典类型对应的名称
-    dictCode: string; // TODO: 字典类型对应的code码
+    name: string; // TODO: 字典类型对应的名称
+    code: string; // TODO: 字典类型对应的code码
     remark: string; // TODO: 备注信息
     deleteFlag?: number; // TODO: 删除标识:0不删除、1删除
     enableFlag?: number; // TODO: 启用标识:0不启用、1启用
@@ -645,11 +645,11 @@ declare namespace APIManager {
   type DictDetail = {
     id: string; // TODO: 主键
     dictId: string; // TODO: 字典ID
-    dictLabel: string; // TODO: 字典的名称
-    dictCode: string; // TODO: 字典代码
-    dictValue: string; // TODO: 字典的值
+    dictCode?: string; // TODO: 字典代码
+    name?: string; // TODO: 字典的名称
+    relatedCode?: string; // TODO: 字典代码
     sort?: number; // TODO: 排序
-    remark: string; // TODO: 备注
+    remark?: string; // TODO: 备注
     deleteFlag?: number; // TODO: 删除标识:0不删除、1删除
     enableFlag?: number; // TODO: 启用标识:0不启用、1启用
     createUserId?: string; // TODO: 创建人ID

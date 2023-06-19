@@ -276,6 +276,7 @@ declare namespace APIModel {
         ID: any,
         CTNModelID?: number,
         CTNModelName?: string,
+        YardCTNNum?: string,
         CTNNum?: string,
         SealNum?: string,
         Pieces?: number,
@@ -284,6 +285,7 @@ declare namespace APIModel {
         Measurement?: number,
         PKGTypeID?: number,
         PKGTypeNmae?: string,
+        TareWeight?: string,
     }
     type HouseBill = {
         SignMethodID?: number,

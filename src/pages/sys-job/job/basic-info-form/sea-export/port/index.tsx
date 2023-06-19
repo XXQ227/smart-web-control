@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Col, Divider, Row, Space, Table} from "antd";
-import {IconFont, rowGrid} from "@/utils/units";
+import {IconFont, ID_STRING, rowGrid} from "@/utils/units";
 import {ProCard, ProFormText} from "@ant-design/pro-components";
 import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 import SearchTable from "@/components/SearchTable";
@@ -72,7 +72,7 @@ const Ports: React.FC<Props> = (props) => {
 
     const handleAdd = () => {
         const newData: APIModel.TranshipmentPortList = {
-            ID: `ID${(new Date().getTime())}`,
+            ID: ID_STRING(),
             PortName: "",
         };
         setTranshipmentPortList([...transhipmentPortList, newData]);

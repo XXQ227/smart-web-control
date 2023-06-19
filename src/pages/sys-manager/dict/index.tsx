@@ -18,8 +18,8 @@ type APISearchDict = APIManager.SearchDictParams;
 
 // TODO: 获取单票集的请求参数
 const searchParams: APISearchDict = {
-    dictName: '',
-    dictCode: '',
+    name: '',
+    code: '',
 };
 
 const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
@@ -61,7 +61,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     const handleAddDict = () => {
-        const addDataObj: APIDict = {dictCode: '', dictName: '', id: ID_STRING(), remark: ''};
+        const addDataObj: APIDict = {code: '', name: '', id: ID_STRING(), remark: ''};
         const newData: APIDict[] = ls.cloneDeep(DictListVO) || [];
         newData.splice(0, 0, addDataObj);
         setDictListVO(newData);
@@ -104,7 +104,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                 let result: API.Result;
                 const newData: APIDict[] = ls.cloneDeep(DictListVO);
                 // TODO: 保存、添加 公共参数
-                const params: any = {dictName: record.dictName, dictCode: record.dictCode, remark: record.remark};
+                const params: any = {name: record.name, code: record.code, remark: record.remark};
                 // TODO: 添加
                 if (state === 'add') {
                     result = await addDict(params);
@@ -170,7 +170,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
     const columns: ProColumns<APIDict>[] = [
         {
             title: 'Name',
-            dataIndex: 'dictName',
+            dataIndex: 'name',
             align: 'left',
             width: 300,
             tooltip: 'Name is required',
@@ -180,18 +180,18 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                     required
                     placeholder=''
                     disabled={record.enableFlag}
-                    id={`dictName${record.id}`}
-                    name={`dictName${record.id}`}
-                    initialValue={record.dictName}
+                    id={`name${record.id}`}
+                    name={`name${record.id}`}
+                    initialValue={record.name}
                     rules={[{required: true, message: 'Name'}]}
                     fieldProps={{
-                        onChange: (val: any) => handleChangeDict(index, record, 'dictName', val)
+                        onChange: (val: any) => handleChangeDict(index, record, 'name', val)
                     }}
                 />
         },
         {
             title: 'Code',
-            dataIndex: 'dictCode',
+            dataIndex: 'code',
             align: 'left',
             width: 300,
             // TODO: 如果是必填字段，回下下面两个
@@ -202,12 +202,12 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                     required
                     placeholder=''
                     disabled={record.enableFlag}
-                    id={`dictCode${record.id}`}
-                    name={`dictCode${record.id}`}
-                    initialValue={record.dictCode}
+                    id={`code${record.id}`}
+                    name={`code${record.id}`}
+                    initialValue={record.code}
                     rules={[{required: true, message: 'Code'}]}
                     fieldProps={{
-                        onChange: (val: any) => handleChangeDict(index, record, 'dictCode', val)
+                        onChange: (val: any) => handleChangeDict(index, record, 'code', val)
                     }}
                 />
         },
@@ -290,8 +290,8 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                             <Search
                                 placeholder='' enterButton="Search" loading={loading}
                                 onSearch={async (val: any) => {
-                                    searchParams.dictName = val;
-                                    searchParams.dictCode = val;
+                                    searchParams.name = val;
+                                    searchParams.code = val;
                                     await handleQueryDict(searchParams);
                                 }}/>
                         }

@@ -24,6 +24,7 @@ type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 const initialTabList = [
     { tab: 'Job', key: 'Job', closable: false },
     { tab: 'Sea (Export)', key: 'Sea (Export)', closable: false },
+    { tab: 'Sea (Import)', key: 'Sea (Import)', closable: false },
     { tab: 'Local Delivery', key: 'Local Delivery', closable: false },
 ];
 
@@ -254,11 +255,14 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
                         />
                     )}
 
-                    {activeKey === 'Sea Import' && (
+                    {activeKey === 'Sea (Import)' && (
                         <SeaImport
-                            CJobInfo={CJobInfo}
-                            SalesManList={SalesManList}
-                            FinanceDates={FinanceDates}
+                            Carrier={Carrier}
+                            HouseBill={HouseBill}
+                            Port={Port}
+                            NBasicInfo={NBasicInfo}
+                            CTNPlanList={CTNPlanList}
+                            CTNActualList={CTNActualList}
                         />
                     )}
 

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {ProCard, ProFormDateTimePicker, ProFormSelect, ProFormText, ProFormTextArea} from '@ant-design/pro-components';
 import {Col, Row, InputNumber, Select, Divider, Space, Button, Popconfirm, Table} from 'antd';
-import {rowGrid} from '@/utils/units';
+import {ID_STRING, rowGrid} from '@/utils/units';
 import {PlusCircleOutlined} from "@ant-design/icons";
 import type {ColumnsType} from "antd/es/table";
 import NonContainerLayout from "./non-container-layout";
@@ -57,7 +57,7 @@ const BasicInfo: React.FC<Props> = (props) => {
 
     const handleAdd = () => {
         const newData: APIModel.PhotoRemarkList = {
-            ID: `ID${(new Date().getTime())}`,
+            ID: ID_STRING(),
             Description: "",
             Time: new Date().toString(),
         };

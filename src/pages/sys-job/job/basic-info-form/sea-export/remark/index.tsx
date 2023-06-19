@@ -3,10 +3,9 @@ import {Col, Row} from "antd";
 import {rowGrid} from "@/utils/units";
 import {ProCard, ProFormTextArea} from "@ant-design/pro-components";
 import styles from "@/pages/sys-job/job/basic-info-form/style.less";
-import {getUserID} from "@/utils/auths";
-import SearchSelectInput from "@/components/SearchSelectInput";
 
 interface Props {
+    type?: string,
     title: string,
     Port?: APIModel.Port,
     NBasicInfo: APIModel.NBasicInfo,
@@ -23,22 +22,28 @@ const Remark: React.FC<Props> = (props) => {
             collapsible
         >
             <Row gutter={rowGrid}>
-                <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
-                    <ProFormTextArea
-                        placeholder=''
-                        name="bookingRemarkForAgent"
-                        label="Booking Remark (for Agent)"
-                        fieldProps={{rows: 4}}
-                    />
-                </Col>
-                <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
-                    <ProFormTextArea
-                        placeholder=''
-                        name="bookingRemarkForCustomer"
-                        label="Booking Remark (for Customer)"
-                        fieldProps={{rows: 4}}
-                    />
-                </Col>
+                {
+                    props.type !== 'import' ?
+                        <>
+                            <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
+                                <ProFormTextArea
+                                    placeholder=''
+                                    name="bookingRemarkForAgent"
+                                    label="Booking Remark (for Agent)"
+                                    fieldProps={{rows: 4}}
+                                />
+                            </Col>
+                            <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
+                                <ProFormTextArea
+                                    placeholder=''
+                                    name="bookingRemarkForCustomer"
+                                    label="Booking Remark (for Customer)"
+                                    fieldProps={{rows: 4}}
+                                />
+                            </Col>
+                        </>
+                        : null
+                }
                 <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
                     <ProFormTextArea
                         placeholder=''
