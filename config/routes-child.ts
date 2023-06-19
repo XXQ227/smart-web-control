@@ -244,36 +244,7 @@ const manager_route = {
             icon: 'icon-charge-subject',
             path: '/manager/charge',
             component: './sys-manager/charge',
-            // routes: [
-            //     {
-            //         name: 'standard',
-            //         path: '/manager/charge/standard/list',
-            //         component: './sys-manager/charge/standard',
-            //     },
-            //     {
-            //         name: 'description',
-            //         path: '/manager/charge/description/list',
-            //         component: './sys-manager/charge/description',
-            //     },
-            // ],
         },
-        /*{
-            name: 'charge',
-            icon: 'icon-charge-subject',
-            path: '/manager/charge',
-            routes: [
-                {
-                    name: 'standard',
-                    path: '/manager/charge/standard/list',
-                    component: './sys-manager/charge/standard',
-                },
-                {
-                    name: 'description',
-                    path: '/manager/charge/description/list',
-                    component: './sys-manager/charge/description',
-                },
-            ],
-        },*/
         // TODO: 费用模板数据
         {
             name: 'charge_template_list',

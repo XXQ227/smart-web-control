@@ -25,7 +25,7 @@ const searchParams: APISearchCGItem = {
 
 interface Props {}
 
-const CGItemListIndex: React.FC<Props> = () => {
+const DescriptionIndex: React.FC<Props> = () => {
     const [form] = Form.useForm();
 
     const {
@@ -220,14 +220,14 @@ const CGItemListIndex: React.FC<Props> = () => {
             title: 'standard',
             dataIndex: 'chargeStandardId',
             align: 'left',
-            tooltip: 'standard is required',
+            tooltip: 'subject is required',
             className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <SearchProFormSelect
                     qty={8}
                     required
                     placeholder=''
-                    label={'standard Name'}
+                    label={'subject Name'}
                     disabled={record.enableFlag}
                     query={{currentPage: 1, code: ''}}
                     id={`chargeStandardId${record.id}`}
@@ -314,4 +314,4 @@ const CGItemListIndex: React.FC<Props> = () => {
         </PageContainer>
     )
 }
-export default CGItemListIndex;
+export default DescriptionIndex;

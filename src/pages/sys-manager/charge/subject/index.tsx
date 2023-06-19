@@ -24,7 +24,7 @@ const searchParams: APISearchStandardCGItem = {
 
 interface Props {}
 
-const StandardIndex: React.FC<Props> = () => {
+const SubjectIndex: React.FC<Props> = () => {
 
     const [form] = Form.useForm();
     const {
@@ -339,4 +339,4 @@ const StandardIndex: React.FC<Props> = () => {
         </PageContainer>
     )
 }
-export default StandardIndex;
+export default SubjectIndex;

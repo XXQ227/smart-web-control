@@ -1,8 +1,8 @@
 import React, {useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import {PageContainer, ProCard} from '@ant-design/pro-components'
-import CGItemListIndex from '@/pages/sys-manager/charge/description'
-import StandardIndex from '@/pages/sys-manager/charge/standard'
+import DescriptionIndex from '@/pages/sys-manager/charge/description'
+import SubjectIndex from '@/pages/sys-manager/charge/subject'
 
 
 const PortListIndex: React.FC<RouteChildrenProps> = () => {
@@ -28,12 +28,12 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
                         {
                             label: 'Description',
                             key: 'Description',
-                            children: <CGItemListIndex />,
+                            children: <DescriptionIndex />,
                         },
                         {
-                            label: 'Standard',
-                            key: 'standard',
-                            children: <StandardIndex />,
+                            label: 'Subject',
+                            key: 'Subject',
+                            children: <SubjectIndex />,
                         },
                     ],
                 }}
