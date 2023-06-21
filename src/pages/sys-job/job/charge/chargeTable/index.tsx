@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Button, Col, Popconfirm, Row, Select, Space, Table} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import {PlusOutlined} from '@ant-design/icons';
@@ -25,7 +25,6 @@ interface Props {
     handleChangeData: (data: any, CGType: number) => void,
 }
 
-
 // TODO: 获取原币到账单币种、账单币种到本位币的汇率数据
 type ABillRateResult = {
     CurrencyOrig?: number,
@@ -40,7 +39,6 @@ const ChargeTable: React.FC<Props> = (props) => {
     const {
         ChargeBaseInfo: {CurrencyOpts}
     } = useModel('job.jobCharge', (res: any) => ({ChargeBaseInfo: res.ChargeBaseInfo}));
-
 
     const [cgList, setCGList] = useState<APICGInfo[]>(CGList || []);
     const [currRateList, setCurrRateList] = useState<ABillRateResult[]>([]);
@@ -226,10 +224,6 @@ const ChargeTable: React.FC<Props> = (props) => {
                 </Popconfirm>,
         },
     ];
-
-    useEffect(() => {
-
-    })
 
     const handleChangeData = (data: any) => {
         props.handleChangeData(data, CGType);
@@ -461,6 +455,5 @@ const ChargeTable: React.FC<Props> = (props) => {
             </Col>
         </Row>
     )
-
 }
 export default ChargeTable;

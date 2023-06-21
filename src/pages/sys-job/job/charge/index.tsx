@@ -2,10 +2,9 @@ import React, {useEffect, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components';
 import {Button, Col, Form, message, Row} from 'antd';
-import {history, useModel, useIntl} from 'umi';
-import {colGrid, getFormErrorMsg, getTitleInfo, rowGrid} from '@/utils/units';
+import {history, useModel} from 'umi';
+import {getFormErrorMsg} from '@/utils/units';
 import ChargeTable from '@/pages/sys-job/job/charge/chargeTable';
-
 
 const FormItem = Form.Item;
 
@@ -18,7 +17,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
     const {match: {params}} = props;
     //region TODO: 数据层
     const {
-        JobChargeInfo: {NBasicInfo, PayCGList, ReceiveCGList}, getCJobCGByID
+        JobChargeInfo: {PayCGList, ReceiveCGList}, getCJobCGByID
     } = useModel('job.jobCharge', (res: any) => ({
         JobChargeInfo: res.JobChargeInfo,
         getCJobCGByID: res.getCJobCGByID,
@@ -40,19 +39,19 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
         // TODO: 当【没有 ID && isLoadingData == false】时调用接口获取数据
         if (!jobID && !isLoadingData && params?.id !== ':id') {
             isLoadingData = true;
+            setLoading(true);
             getCJobCGByID({CJobID: Number(atob(params?.id))})
                 // @ts-ignore
                 .then((res: API.NJobDetailDto) => {
                     // TODO: 设置 ID 且初始化数据
                     setJobID(res?.ID);
-                    setLoading(false);
                     setPayCGList(res.PayCGList || []);
                     setReceiveCGList(res.PayCGList || []);
                     isLoadingData = false;
+                    setLoading(false);
                 })
         }
     }, [getCJobCGByID, jobID, params?.id])
-
 
     /**
      * @Description: TODO: 操作数据
@@ -98,12 +97,6 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
             });
     }
 
-    // 初始化（或用于 message 提醒）
-    const intl = useIntl();
-
-    // TODO: 获取列名<Title>
-    const formLabel = (code: string, defaultMessage: string) => getTitleInfo(code, intl, defaultMessage);
-
     // TODO: 传给子组件的参数
     const baseCGDON: any = {form, FormItem, handleChangeData};
 
@@ -114,41 +107,6 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                 breadcrumb: {},
             }}
         >
-            <ProCard title={'委托信息'} className={'ant-card'} bordered={true}>
-                <Row gutter={rowGrid}>
-                    <Col {...colGrid}>
-                        <FormItem label={formLabel('code', '业务编号')}>
-                            {NBasicInfo?.Code}
-                        </FormItem>
-                    </Col>
-                    <Col {...colGrid}>
-                        <FormItem label={formLabel('sales', '销售')}>
-                            {/*{Principal?.SalesManName}*/}
-                        </FormItem>
-                    </Col>
-                    <Col {...colGrid}>
-                        <FormItem label={formLabel('sales', '销售')}>
-                            {/*{Principal?.SalesManName}*/}
-                        </FormItem>
-                    </Col>
-                    <Col {...colGrid}>
-                        <FormItem label={formLabel('sales', '销售')}>
-                            {/*{Principal?.SalesManName}*/}
-                        </FormItem>
-                    </Col>
-                    <Col {...colGrid}>
-                        <FormItem label={formLabel('sales', '销售')}>
-                            {/*{Principal?.SalesManName}*/}
-                        </FormItem>
-                    </Col>
-                    <Col {...colGrid}>
-                        <FormItem label={formLabel('sales', '销售')}>
-                            {/*{Principal?.SalesManName}*/}
-                        </FormItem>
-                    </Col>
-                </Row>
-            </ProCard>
-
             <Form
                 form={form}
                 name={'formCharge'}
@@ -156,14 +114,13 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                 onFinish={handleSave}
                 onFinishFailed={handleSave}
             >
-                <ProCard title={'费用信息'} className={'ant-card'} bordered={true} extra={
-                    <div>
-                        <span>Profit: </span>
-                        <label>Profit: </label>
-                        <label>Total Amount: </label>
-                    </div>
-                }>
-                    {/* region AR */}
+                <ProCard
+                    title={'AR'}
+                    bordered={true}
+                    headerBordered
+                    className={'ant-card'}
+                    collapsible
+                >
                     <Row gutter={24} className={'ant-margin-bottom-24'}>
                         <Col span={24}>
                             <ChargeTable
@@ -173,9 +130,15 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                             />
                         </Col>
                     </Row>
-                    {/* endregion AR */}
+                </ProCard>
 
-                    {/* region AP */}
+                <ProCard
+                    title={'AP'}
+                    bordered={true}
+                    headerBordered
+                    className={'ant-card'}
+                    collapsible
+                >
                     <Row gutter={24}>
                         <Col span={24}>
                             <ChargeTable
@@ -185,7 +148,6 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                             />
                         </Col>
                     </Row>
-                    {/* endregion AP */}
                 </ProCard>
                 <FooterToolbar extra={<Button onClick={() => history.goBack()}>返回</Button>}>
                     <Button type={'primary'} htmlType={'submit'}>保存</Button>
