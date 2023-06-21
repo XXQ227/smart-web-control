@@ -66,6 +66,12 @@ export function request(url: string, options: any) {
         BranchID: getBranchID(),
         ...newOptions.headers
     };
+    if (url.indexOf('/apiIAM') > -1) {
+        newOptions.headers = {
+            keyid: '10afb30d-543c-4d63-b78a-3afd53d74e6e',
+            ...newOptions.headers
+        }
+    }
     if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
         newOptions.body = JSON.stringify(newOptions.body);
     }

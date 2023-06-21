@@ -1,4 +1,4 @@
-import {loginSmart} from '@/services/smart/login';
+import {loginIAM, loginSmart} from '@/services/smart/login';
 import type React from "react";
 import {useCallback, useState} from "react";
 import {setSystemMes} from "@/utils/auths";
@@ -49,6 +49,7 @@ export default (callback: T, deps: React.DependencyList) => {
      */
     const login = useCallback(async (params: API.LoginParams) => {
         const response: API.APILoginResult = await loginSmart(params);
+        // const response: API.APILoginResult = await loginIAM(params);
         if (!response) return;
         setResResult(response);
         if (response.Result) {

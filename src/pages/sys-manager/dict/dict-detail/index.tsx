@@ -1,12 +1,13 @@
 import React, {Fragment, useState} from 'react';
 import type {ProColumns} from '@ant-design/pro-components';
-import {ProFormText, ProTable} from '@ant-design/pro-components'
+import {ProTable} from '@ant-design/pro-components'
 import {useModel, useParams} from 'umi';
 import {DeleteOutlined, PlusOutlined, SaveOutlined} from '@ant-design/icons'
 import {Popconfirm, Input, Button, message, Form} from 'antd'
 import {CustomizeIcon, getFormErrorMsg, ID_STRING} from '@/utils/units'
 import ls from 'lodash'
 import DividerCustomize from '@/components/Divider'
+import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 
 const {Search} = Input;
 
@@ -225,18 +226,15 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             tooltip: 'Code is required',
             className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                <ProFormText
-                    required={true}
-                    placeholder=''
+                <FormItemInput
+                    required
+                    autoFocus
+                    FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`name${record.id}`}
                     name={`name${record.id}`}
                     initialValue={record.name}
-                    fieldProps={{
-                        autoFocus: true,
-                        onChange: (val: any) => handleChangeDictDetail(index, record, 'name', val),
-                        // onKeyDown: (e: any) => onKeyDown(e, index, record, 'name'),
-                    }}
+                    onChange={(val: any) => handleChangeDictDetail(index, record, 'name', val)}
                 />
         },
         {
@@ -247,16 +245,14 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             tooltip: 'Code is required',
             className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                <ProFormText
-                    required={true}
-                    placeholder=''
+                <FormItemInput
+                    required
+                    FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`relatedCode${record.id}`}
                     name={`relatedCode${record.id}`}
                     initialValue={record.relatedCode}
-                    fieldProps={{
-                        onChange: (val: any) => handleChangeDictDetail(index, record, 'relatedCode', val)
-                    }}
+                    onChange={(val: any) => handleChangeDictDetail(index, record, 'relatedCode', val)}
                 />
         },
         {
@@ -264,15 +260,13 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             dataIndex: 'remark',
             align: 'center',
             render: (text: any, record: any, index) =>
-                <ProFormText
-                    placeholder=''
+                <FormItemInput
+                    FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`remark${record.id}`}
                     name={`remark${record.id}`}
                     initialValue={record.remark}
-                    fieldProps={{
-                        onChange: (val: any) => handleChangeDictDetail(index, record, 'remark', val)
-                    }}
+                    onChange={(val: any) => handleChangeDictDetail(index, record, 'remark', val)}
                 />
         },
         {

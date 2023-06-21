@@ -27,7 +27,7 @@ interface Props {
     handleCGTempChange: (data: any, CGType: number) => void,
 }
 
-const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
+const ChargeTemplateCharge: React.FC<Props> = (props) => {
     // @ts-ignore
     const {CGType, CGList, form, FormItem, label, CurrencyList, PayMethodList, InvoTypeList} = props;
 
@@ -262,4 +262,4 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
     )
 
 }
-export default ChargeTemplateChargeTable;
+export default ChargeTemplateCharge;

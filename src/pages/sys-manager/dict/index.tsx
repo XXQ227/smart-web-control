@@ -179,7 +179,6 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    placeholder=''
                     FormItem={Form.Item}
                     id={`name${record.id}`}
                     name={`name${record.id}`}
@@ -200,7 +199,6 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    placeholder=''
                     FormItem={Form.Item}
                     id={`code${record.id}`}
                     name={`code${record.id}`}
@@ -216,7 +214,6 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
             align: 'left',
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    placeholder=''
                     FormItem={Form.Item}
                     id={`remark${record.id}`}
                     name={`remark${record.id}`}

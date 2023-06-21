@@ -23,6 +23,16 @@ export async function loginSmart(body: API.LoginParams, options?: { [key: string
     ...(options || {}),
   });
 }
+export async function loginIAM(body: API.LoginParams, options?: { [key: string]: any }) {
+  return request(`/apiIAM/User/Login?${stringify(body)}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    // data: body,
+    ...(options || {}),
+  });
+}
 
 /** 发送验证码 POST /api/login/captcha */
 export async function getFakeCaptcha(

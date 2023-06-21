@@ -5,7 +5,7 @@ import {FooterToolbar, PageContainer, ProCard, ProForm, ProFormSelect, ProFormTe
 import {Button, Col, Form, message, Row} from 'antd'
 import {history, useModel, useParams} from 'umi'
 import {getFormErrorMsg} from '@/utils/units'
-import ChargeTemplateChargeTable from './charge-template-charge-table'
+import ChargeTemplateChargeTable from './charge'
 import ls from 'lodash'
 
 const FormItem = Form.Item;
@@ -51,7 +51,7 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
      */
     async function handleGetCGTempByID(paramsVal: APICGTemp) {
         if (ServicesList?.length === 0 || PurposeofCallList?.length === 0) {
-            // await queryDictCommon({dictCodes: ['services', 'purpose_of_call']});
+            await queryDictCommon({dictCodes: ['services', 'purpose_of_call']});
             // await queryDictDetailCommon({dictCode: 'services', currentPage: 1, pageSize: 35});
         }
         if (id !== '0') {
