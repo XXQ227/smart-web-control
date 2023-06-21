@@ -48,7 +48,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
         // params.PageNum = params.current || 1;
         // params.pageSize = params.PageSize || 15;
         // params.PageSize = params.PageSize || 15;
-        const result: APIManager.BranchResult = await queryBranch(params);
+        const result: API.Result = await queryBranch(params);
         setBranchListVO(result.data);
         setLoading(false);
         return [];

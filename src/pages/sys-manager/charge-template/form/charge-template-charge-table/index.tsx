@@ -2,7 +2,7 @@ import React from 'react';
 import {Button, Col, Popconfirm, Row, Space, Table} from 'antd';
 import type {ColumnsType} from 'antd/es/table';
 import {DeleteOutlined, PlusOutlined} from '@ant-design/icons';
-import {getBranchID, getFuncCurrency, getUserID} from '@/utils/auths';
+import {getBranchID} from '@/utils/auths';
 import {formatNumToMoney, ID_STRING, keepDecimal} from '@/utils/units';
 import InputEdit from '@/components/InputNumberEdit'
 import SearchModal from '@/components/SearchModal';
@@ -42,67 +42,42 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
             width: 200,
             render: (text: any, record, index) =>
                 <FormItem
-                    name={`CGItemID${record.ID}`}
-                    initialValue={record.CGItemID}
+                    name={`CGItemID${record.id}`}
+                    initialValue={record.chargeItemId}
                     rules={[{required: true, message: 'Charge Name'}]}
                 >
                     <SearchModal
                         qty={13}
                         text={text}
                         title={'Charge Name'}
-                        value={record.CGItemID}
-                        id={`CGItemID${record.ID}`}
-                        url={'/api/MCommon/GetProCGItemByProID'}
-                        query={{UserID: getUserID(), CTType: 1, SystemID: 4,}}
-                        handleChangeData={(val: any, option: any)=> handleRowChange(index, record.ID, 'CGItemID', val, option)}
-                    />
-                </FormItem>
-        },
-        {
-            title: CGType === 1 ? 'Customer' : 'Payer',
-            dataIndex: 'SettlementName',
-            align: 'center',
-            render: (text: any, record, index) =>
-                <FormItem
-                    name={`SettlementID${record.ID}`}
-                    initialValue={record.SettlementID}
-                    // rules={[{required: true, message: CGType === 1 ? 'Customer' : 'Payer'}]}
-                >
-                    <SearchModal
-                        qty={13}
-                        text={text}
-                        value={record.SettlementID}
-                        id={`SettlementID${record.ID}`}
-                        url={'/api/MCommon/GetCTNameByStrOrType'}
-                        title={CGType === 1 ? 'Customer' : 'Payer'}
-                        query={{
-                            searchPayer: true, BusinessLineID: null,
-                            UserID: getUserID(), CTType: 1, SystemID: 4,
-                        }}
-                        handleChangeData={(val: any, option: any)=> handleRowChange(index, record.ID, 'SettlementID', val, option)}
+                        value={record.chargeItemId}
+                        id={`CGItemID${record.id}`}
+                        query={{branchId: 0}}
+                        url={'/apiBase/chargeStandard/queryChargeStandardCommon'}
+                        handleChangeData={(val: any, option: any)=> handleRowChange(index, record.id, 'chargeItemId', val, option)}
                     />
                 </FormItem>
         },
         {
             title: 'Unit',
-            dataIndex: 'CGUnitName',
+            dataIndex: 'unitType',
             align: 'center',
             width: 140,
             render: (text: any, record, index) =>
                 <FormItem
-                    name={`CGUnitID${record.ID}`}
-                    initialValue={record.CGUnitID}
+                    name={`CGUnitID${record.id}`}
+                    initialValue={record.unitType}
                     rules={[{required: true, message: 'Unit'}]}
                 >
                     <SearchModal
                         qty={13}
                         text={text}
                         title={'Unit'}
-                        value={record.CGUnitID}
-                        id={`CGUnitID${record.ID}`}
+                        value={record.unitType}
+                        id={`CGUnitID${record.id}`}
                         query={{BranchID: getBranchID()}}
                         url={'/api/MCommon/GetCGUnitByStr'}
-                        handleChangeData={(val: any, option: any)=> handleRowChange(index, record.ID, 'CGUnitID', val, option)}
+                        handleChangeData={(val: any, option: any)=> handleRowChange(index, record.id, 'unitType', val, option)}
                     />
                 </FormItem>
         },
@@ -113,13 +88,13 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
             width: 100,
             render: (text: any, record: any, index) =>
                 <FormItem
-                    initialValue={text} name={`UnitPrice${record.ID}`}
+                    initialValue={text} name={`UnitPrice${record.id}`}
                     rules={[{required: true, message: 'Unit Price'}]}
                 >
                     <InputEdit
                         value={text} valueStr={record.UnitPriceStr}
-                        id={`UnitPrice${record.ID}`} className={'isNumber-inp'}
-                        handleChangeData={(val) => handleRowChange(index, record.ID, 'UnitPrice', val)}
+                        id={`UnitPrice${record.id}`} className={'isNumber-inp'}
+                        handleChangeData={(val) => handleRowChange(index, record.id, 'UnitPrice', val)}
                     />
                 </FormItem>,
         },
@@ -133,12 +108,12 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
                     required
                     placeholder={''}
                     options={CurrencyList}
-                    name={`CurrencyID${record.ID}`}
+                    name={`CurrencyID${record.id}`}
                     initialValue={record.CurrencyID}
                     rules={[{required: true, message: 'Currency'}]}
                     fieldProps={{
                         dropdownMatchSelectWidth: false,
-                        onSelect: (e) => handleRowChange(index, record.ID, 'CurrencyID', e)
+                        onSelect: (e) => handleRowChange(index, record.id, 'CurrencyID', e)
                     }}
                 />
         },
@@ -152,12 +127,12 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
                     required
                     placeholder={''}
                     options={PayMethodList}
-                    name={`PayMethodID${record.ID}`}
+                    name={`PayMethodID${record.id}`}
                     initialValue={record.PayMethodID}
                     rules={[{required: true, message: 'PayMethod'}]}
                     fieldProps={{
                         dropdownMatchSelectWidth: false,
-                        onSelect: (e) => handleRowChange(index, record.ID, 'PayMethodID', e)
+                        onSelect: (e) => handleRowChange(index, record.id, 'PayMethodID', e)
                     }}
                 />
         },
@@ -167,7 +142,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
             width: 100,
             render: (_, record: any) =>
                 <Popconfirm
-                    onConfirm={() => handleDeleteCharge(record.ID)}
+                    onConfirm={() => handleDeleteCharge(record.id)}
                     title="Sure to delete?" okText={'Yes'} cancelText={'No'}
                 >
                     <DeleteOutlined color={'red'}/>
@@ -184,28 +159,8 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
      * @returns
      */
     const handleAdd = () => {
-        const currLocalObj: APIValue$Label | undefined = CurrencyList?.find((x: APIValue$Label) => x.value === getFuncCurrency());
-        const CGID = ID_STRING();
-        const newDataObj: APICGTempItems = {
-            ID: CGID,
-            SettlementID: null,
-            SettlementName: '',
-            SettlementNameEN: '',
-            CTName: '',
-            CGItemID: null,
-            CGItemName: '',
-            SettlementType: 'f',
-            SettlementTypeName: 'Regular',
-            CGTypeID: CGType,
-            CGUnitID: null,
-            CGUnitName: '',
-            UnitPrice: null,
-            CurrencyID: currLocalObj?.value,
-            InvoTypeID: InvoTypeList[0]?.value,
-            PayMethodID: PayMethodList[0]?.value,
-            ctCheck: false,
-            TaxFree: false
-        };
+        // const currLocalObj: APIValue$Label | undefined = CurrencyList?.find((x: APIValue$Label) => x.value === getFuncCurrency());
+        const newDataObj: APICGTempItems = {id: ID_STRING(), currencyName: 'HKD'};
         const newData: APICGTempItems[] = [...CGList, newDataObj];
         // setCGListVO(newData);
         props.handleCGTempChange(newData, CGType);
@@ -224,7 +179,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
      */
     function handleRowChange(index: number, rowID: any, filedName: string, val: any, data?: any) {
         const newData: APICGTempItems[] = CGList?.map((item: APICGTempItems) => ({...item})) || [];
-        const target: any = newData.find((item: APICGTempItems) => item.ID === rowID) || {};
+        const target: any = newData.find((item: APICGTempItems) => item.id === rowID) || {};
 
         const fileLen: number = filedName.length;
         // TODO: 当录入【数量、单价、汇率】时，转成数字型
@@ -236,8 +191,8 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
             // TODO: 千分符转换
             target[`${filedName}Str`] = formatNumToMoney(keepDecimal(target[filedName], 5));
         } else if (filedName === 'CurrencyID') {
-        } else if (filedName.substring(fileLen-2, fileLen) === 'ID') {
-            // TODO: 判断是不是 【ID】 字段，【ID】 字段需要存 【Name】 的值
+        } else if (filedName.substring(fileLen-2, fileLen) === 'id') {
+            // TODO: 判断是不是 【id】 字段，【id】 字段需要存 【Name】 的值
             target[filedName.substring(0, fileLen-2) + 'Name'] = data?.label;
         }
         target.isChange = true;
@@ -255,7 +210,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
      * @returns
      */
     function handleDeleteCharge(rowID: any) {
-        const newData: APICGTempItems[] = CGList.filter((item: APICGTempItems) => item.ID !== rowID) || [];
+        const newData: APICGTempItems[] = CGList.filter((item: APICGTempItems) => item.id !== rowID) || [];
         // setCGListVO(newCGData);
         props.handleCGTempChange(newData, CGType);
     }
@@ -290,7 +245,7 @@ const ChargeTemplateChargeTable: React.FC<Props> = (props) => {
         <Row gutter={24}>
             <Col span={24}>
                 <Table
-                    rowKey={'ID'}
+                    rowKey={'id'}
                     bordered={true}
                     pagination={false}
                     columns={cgColumns}
