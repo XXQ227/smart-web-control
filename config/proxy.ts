@@ -41,13 +41,23 @@ export default {
     // TODO: Smart 1.0 后台地址
     '/apiLocal/': {
       // 要代理的地址
-      // target: 'http://localhost:52663/',
       target: 'http://cargo2.sinotranshk.com/',
       // 配置了这个可以从 http 代理到 https
       // 依赖 origin 的功能可能需要这个，比如 cookie
       changeOrigin: true,
       pathRewrite: {
         '^/apiLocal': '/api',
+      },
+    },
+    // TODO: 登录 IAM 系统
+    '/apiIAM/': {
+      // 要代理的地址
+      target: 'http://172.30.197.117:30181/iam-external/doc.html#',
+      // 配置了这个可以从 http 代理到 https
+      // 依赖 origin 的功能可能需要这个，比如 cookie
+      changeOrigin: true,
+      pathRewrite: {
+        '^/apiIAM': '/iam-external/v2',
       },
     },
     // TODO: 乾坤子系统代理地址

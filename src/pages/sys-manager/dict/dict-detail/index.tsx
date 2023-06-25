@@ -1,12 +1,13 @@
 import React, {Fragment, useState} from 'react';
 import type {ProColumns} from '@ant-design/pro-components';
-import {ProFormText, ProTable} from '@ant-design/pro-components'
+import {ProTable} from '@ant-design/pro-components'
 import {useModel, useParams} from 'umi';
 import {DeleteOutlined, PlusOutlined, SaveOutlined} from '@ant-design/icons'
 import {Popconfirm, Input, Button, message, Form} from 'antd'
 import {CustomizeIcon, getFormErrorMsg, ID_STRING} from '@/utils/units'
 import ls from 'lodash'
 import DividerCustomize from '@/components/Divider'
+import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 
 const {Search} = Input;
 
@@ -106,9 +107,10 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
      * @param state     操作动作：TODO: {add: 添加, edit: 编辑}
      * @returns
      */
-    const handleSaveDictDetail = (index: number, record: APIDictDetail, state: string) => {
+    const handleSaveDictDetail = async (index: number, record: APIDictDetail, state: string) => {
+        console.log(form);
         form.validateFields()
-            .then(async ()=> {
+            .then(async (val: any)=> {
                 const dictCode = props?.form?.getFieldValue('code')
                 let result: API.Result;
                 const newData: APIDictDetail[] = ls.cloneDeep(DictDetailListVO);
@@ -140,6 +142,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                 }
             })
             .catch((err: any) => {
+                console.log(err);
                 message.error(getFormErrorMsg(err));
             })
     }
@@ -181,6 +184,39 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
         }
     }
 
+    /*const onKeyDown = (e: any, index: number, record: APIDictDetail, filedName: string) => {
+        console.log(e.keyCode, record, filedName);
+        let findIndex = index;
+        let idStr = filedName;
+        switch (e.keyCode) {
+            case 38: // TODO: 上
+                console.log('上');
+                // TODO: 当超过两行时，才给上下切换
+                if (DictDetailListVO?.length > 0) {
+                    if (index === 0) {
+                        findIndex = DictDetailListVO?.length - 1;
+                    } else {
+                        findIndex = index - 1;
+                    }
+                    idStr += DictDetailListVO[findIndex].id;
+                }
+                break;
+            case 40: // TODO: 下
+                console.log('下');
+                break;
+            case 37: // TODO: 左
+                console.log('左');
+                break;
+            case 39: // TODO: 右
+                console.log('右');
+                break;
+        }
+        console.log(idStr);
+        setTimeout(() => {
+            document.getElementById(idStr)?.focus();
+        }, 100);
+    }*/
+
     const columns: ProColumns<APIDictDetail>[] = [
         {
             title: 'Name',
@@ -190,34 +226,33 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             tooltip: 'Code is required',
             className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                <ProFormText
-                    placeholder=''
+                <FormItemInput
+                    required
+                    autoFocus
+                    FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`name${record.id}`}
                     name={`name${record.id}`}
                     initialValue={record.name}
-                    fieldProps={{
-                        onChange: (val: any) => handleChangeDictDetail(index, record, 'name', val)
-                    }}
+                    onChange={(val: any) => handleChangeDictDetail(index, record, 'name', val)}
                 />
         },
         {
             title: 'Code',
-            dataIndex: 'relatedName',
+            dataIndex: 'relatedCode',
             width: 200,
             align: 'center',
             tooltip: 'Code is required',
             className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                <ProFormText
-                    placeholder=''
+                <FormItemInput
+                    required
+                    FormItem={Form.Item}
                     disabled={record.enableFlag}
-                    id={`relatedName${record.id}`}
-                    name={`relatedName${record.id}`}
-                    initialValue={record.relatedName}
-                    fieldProps={{
-                        onChange: (val: any) => handleChangeDictDetail(index, record, 'relatedName', val)
-                    }}
+                    id={`relatedCode${record.id}`}
+                    name={`relatedCode${record.id}`}
+                    initialValue={record.relatedCode}
+                    onChange={(val: any) => handleChangeDictDetail(index, record, 'relatedCode', val)}
                 />
         },
         {
@@ -225,15 +260,13 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             dataIndex: 'remark',
             align: 'center',
             render: (text: any, record: any, index) =>
-                <ProFormText
-                    placeholder=''
+                <FormItemInput
+                    FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`remark${record.id}`}
                     name={`remark${record.id}`}
                     initialValue={record.remark}
-                    fieldProps={{
-                        onChange: (val: any) => handleChangeDictDetail(index, record, 'remark', val)
-                    }}
+                    onChange={(val: any) => handleChangeDictDetail(index, record, 'remark', val)}
                 />
         },
         {
@@ -273,36 +306,38 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
     ];
 
     return (
-        <ProTable<APIDictDetail>
-            rowKey={'id'}
-            search={false}
-            options={false}
-            bordered={true}
-            loading={loading}
-            columns={columns}
-            dataSource={DictDetailListVO}
-            locale={{ emptyText: 'No Data' }}
-            className={'ant-pro-table-edit'}
-            params={searchParams}
-            headerTitle={
-                <Search
-                    placeholder='' enterButton="Search" loading={loading}
-                    onSearch={async (val: any) => {
-                        searchParams.name = val;
-                        await handleSearchDictDetail(searchParams);
-                    }}/>
-            }
-            toolbar={{
-                actions: [
-                    <Button key={'add'} onClick={handleAddDictDetail} type={'primary'} icon={<PlusOutlined/>}>
-                        Add DictDetail
-                    </Button>
-                ]
-            }}
-            pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
-            // @ts-ignore
-            request={(params: APISearchDictDetail) => handleSearchDictDetail(params)}
-        />
+        <Form form={form} name={'dictDetail'}>
+            <ProTable<APIDictDetail>
+                rowKey={'id'}
+                search={false}
+                options={false}
+                bordered={true}
+                loading={loading}
+                columns={columns}
+                dataSource={DictDetailListVO}
+                locale={{ emptyText: 'No Data' }}
+                className={'ant-pro-table-edit'}
+                params={searchParams}
+                headerTitle={
+                    <Search
+                        placeholder='' enterButton="Search" loading={loading}
+                        onSearch={async (val: any) => {
+                            searchParams.name = val;
+                            await handleSearchDictDetail(searchParams);
+                        }}/>
+                }
+                toolbar={{
+                    actions: [
+                        <Button key={'add'} onClick={handleAddDictDetail} type={'primary'} icon={<PlusOutlined/>}>
+                            Add DictDetail
+                        </Button>
+                    ]
+                }}
+                pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
+                // @ts-ignore
+                request={(params: APISearchDictDetail) => handleSearchDictDetail(params)}
+            />
+        </Form>
     )
 }
 export default DictDetailDetailIndex;

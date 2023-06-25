@@ -1,7 +1,7 @@
 import React, {Fragment, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProColumns} from '@ant-design/pro-components';
-import {PageContainer, ProCard, ProFormText, ProTable} from '@ant-design/pro-components'
+import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
 import {DeleteOutlined, PlusOutlined, SaveOutlined} from '@ant-design/icons'
 import {Button, Form, Input, message, Popconfirm} from 'antd'
@@ -9,6 +9,7 @@ import ls from 'lodash'
 import {CustomizeIcon, getFormErrorMsg, ID_STRING} from '@/utils/units'
 import DividerCustomize from '@/components/Divider'
 import {history} from '@@/core/history'
+import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 
 const {Search} = Input;
 
@@ -176,17 +177,15 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
             tooltip: 'Name is required',
             className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                <ProFormText
+                <FormItemInput
                     required
-                    placeholder=''
-                    disabled={record.enableFlag}
+                    FormItem={Form.Item}
                     id={`name${record.id}`}
                     name={`name${record.id}`}
                     initialValue={record.name}
+                    disabled={record.enableFlag}
                     rules={[{required: true, message: 'Name'}]}
-                    fieldProps={{
-                        onChange: (val: any) => handleChangeDict(index, record, 'name', val)
-                    }}
+                    onChange={(val: any) => handleChangeDict(index, record, 'name', val)}
                 />
         },
         {
@@ -198,17 +197,15 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
             tooltip: 'Code is required',
             className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                <ProFormText
+                <FormItemInput
                     required
-                    placeholder=''
-                    disabled={record.enableFlag}
+                    FormItem={Form.Item}
                     id={`code${record.id}`}
                     name={`code${record.id}`}
                     initialValue={record.code}
+                    disabled={record.enableFlag}
                     rules={[{required: true, message: 'Code'}]}
-                    fieldProps={{
-                        onChange: (val: any) => handleChangeDict(index, record, 'code', val)
-                    }}
+                    onChange={(val: any) => handleChangeDict(index, record, 'code', val)}
                 />
         },
         {
@@ -216,15 +213,13 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
             dataIndex: 'remark',
             align: 'left',
             render: (text: any, record: any, index) =>
-                <ProFormText
-                    placeholder=''
-                    disabled={record.enableFlag}
+                <FormItemInput
+                    FormItem={Form.Item}
                     id={`remark${record.id}`}
                     name={`remark${record.id}`}
                     initialValue={record.remark}
-                    fieldProps={{
-                        onChange: (val: any) => handleChangeDict(index, record, 'remark', val)
-                    }}
+                    disabled={record.enableFlag}
+                    onChange={(val: any) => handleChangeDict(index, record, 'remark', val)}
                 />
         },
         {

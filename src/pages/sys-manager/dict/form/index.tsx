@@ -75,7 +75,7 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
             <ProForm
                 form={form}
                 formRef={formRef}
-                layout={'vertical'}
+                layout={'inline'}
                 // TODO: 不显示提交、重置按键
                 submitter={false}
                 // TODO: 焦点给到第一个控件
@@ -122,16 +122,15 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
                         </Col>
                     </Row>
                 </ProCard>
-                <ProCard title={'Dict Detail'} className={'ant-card ant-card-pro-table'}>
-                    <Row gutter={24}>
-                        <Col span={24}>
-                            <DictDetailDetailIndex form={form}/>
-                        </Col>
-                    </Row>
-                </ProCard>
-
-                <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/dict'})}>返回</Button>}/>
             </ProForm>
+            <ProCard title={'Dict Detail'} className={'ant-card ant-card-pro-table'}>
+                <Row gutter={24}>
+                    <Col span={24}>
+                        <DictDetailDetailIndex form={form}/>
+                    </Col>
+                </Row>
+            </ProCard>
+            <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/dict'})}>返回</Button>}/>
         </PageContainer>
     )
 }

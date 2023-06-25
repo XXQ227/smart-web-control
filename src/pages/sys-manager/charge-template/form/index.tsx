@@ -1,12 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProFormInstance} from '@ant-design/pro-components';
 import {FooterToolbar, PageContainer, ProCard, ProForm, ProFormSelect, ProFormText,} from '@ant-design/pro-components'
 import {Button, Col, Form, message, Row} from 'antd'
 import {history, useModel, useParams} from 'umi'
-import {getUserID} from '@/utils/auths'
 import {getFormErrorMsg} from '@/utils/units'
-import ChargeTemplateChargeTable from './charge-template-charge-table'
+import ChargeTemplateChargeTable from './charge'
 import ls from 'lodash'
 
 const FormItem = Form.Item;
@@ -20,16 +19,24 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
     const {push, location: {pathname}} = history;
     const formRef = useRef<ProFormInstance>();
-    const id = Number(atob(params?.id));
+    const id = atob(params?.id);
 
     const {
-        addChargeTemplate, queryChargeTemplateInfo, editChargeTemplate,  operateChargeTemplate
+        addChargeTemplate, queryChargeTemplateInfo, editChargeTemplate,
     } = useModel('manager.charge-template', (res: any) => ({
         addChargeTemplate: res.addChargeTemplate,
         queryChargeTemplateInfo: res.queryChargeTemplateInfo,
         editChargeTemplate: res.editChargeTemplate,
-        operateChargeTemplate: res.operateChargeTemplate,
     }));
+
+    const {
+        queryDictDetailCommon, queryDictCommon, ServicesList, PurposeofCallList
+    } = useModel('common', (res: any)=> ({
+        queryDictCommon: res.queryDictCommon,
+        queryDictDetailCommon: res.queryDictDetailCommon,
+        ServicesList: res.ServicesList,
+        PurposeofCallList: res.PurposeofCallList,
+    }))
 
     const [loading, setLoading] = useState<boolean>(false);
     const [CGTempInfoVO, setCGTempInfoVO] = useState<any>({});
@@ -43,10 +50,18 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     async function handleGetCGTempByID(paramsVal: APICGTemp) {
-        setLoading(true);
-        const result: API.Result = await queryChargeTemplateInfo(paramsVal);
-        setLoading(false);
-        return result;
+        if (ServicesList?.length === 0 || PurposeofCallList?.length === 0) {
+            await queryDictCommon({dictCodes: ['services', 'purpose_of_call']});
+            // await queryDictDetailCommon({dictCode: 'services', currentPage: 1, pageSize: 35});
+        }
+        if (id !== '0') {
+            setLoading(true);
+            const result: API.Result = await queryChargeTemplateInfo(paramsVal);
+            setLoading(false);
+            return result;
+        } else {
+            return {};
+        }
     }
 
     /**
@@ -67,29 +82,49 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
 
     const handleSave = async (values: any) => {
         setLoading(true);
-        const ID = pathname.indexOf('/copy') > -1 ? 0 : id;
+        const saveId = pathname.indexOf('/copy') > -1 ? 0 : id;
         const saveResult: any = {
-            ID,
-            Name: values.Name,
-            APUSDRate: values.APUSDRate,
-            ARUSDRate: values.ARUSDRate,
-            ServicesID: values.ServicesID,
-            PurposeofCallID: values.PurposeofCallID,
+            id: saveId,
+            branchId: 0,
+            ...values,
         };
-        // TODO: 模板费用保存，字符串的费用 ID 变成 0
+        // TODO: 模板费用保存，字符串的费用 id 变成 0
         let arList: CGTempItems[] = ls.cloneDeep(ARListVO),
             apList: CGTempItems[] = ls.cloneDeep(APListVO);
-        arList = arList.map((item: CGTempItems) => ({...item, ID: typeof item.ID === 'string' ? 0 : item.ID})) || [];
-        apList = apList.map((item: CGTempItems) => ({...item, ID: typeof item.ID === 'string' ? 0 : item.ID})) || [];
+        // let chargeTemplateItemList: CGTempItems[];
+        // if (arList?.length > 0) {
+        //     arList.map((item: CGTempItems) => {
+        //         if (item.id && item.id.indexOf('ID_') > -1) {
+        //             delete item.id;
+        //         }
+        //         item.type = 1;
+        //         chargeTemplateItemList.push(item);
+        //     })
+        // }
+        // if (apList?.length > 0) {
+        //     apList.map((item: CGTempItems) => {
+        //         if (item.id && item.id.indexOf('ID_') > -1) {
+        //             delete item.id;
+        //         }
+        //         item.type = 1;
+        //         chargeTemplateItemList.push(item);
+        //     })
+        // }
+        arList = arList.map((item: CGTempItems) => ({...item, type: 1, id: item.id && item.id.indexOf('ID_') > -1 ? '' : item.id})) || [];
+        apList = apList.map((item: CGTempItems) => ({...item, type: 2, id: item.id && item.id.indexOf('ID_') > -1 ? '' : item.id})) || [];
         // TODO: 费用模板里的 AR、AP 费用
-        saveResult.CGTempItems = [...arList, ...apList];
-        const result: any = await saveCGTemp(saveResult);
+        saveResult.chargeTemplateItemList = [...arList, ...apList];
+        let result: API.Result;
+        if (saveId === '0') {
+            result = await addChargeTemplate(saveResult);
+        } else {
+            result = await editChargeTemplate(saveResult);
+        }
         setLoading(false);
-        if (result.Result) {
+        if (result.success) {
             message.success('Success!');
         } else {
-            setSaveState(false);
-            message.error(result.Content);
+            message.error(result.message);
         }
     }
 
@@ -127,9 +162,8 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
                         setLoading(false);
                     }
                 }}
-                params={{UserID: getUserID(), ID: id}}
                 // @ts-ignore
-                request={async (paramsVal: APIManager.CGTempByIDParams) => saveState ? handleGetCGTempByID(paramsVal) : null}
+                request={async () => handleGetCGTempByID({id})}
             >
                 {/** // TODO: Template Name、AP USD Rate、AR USD Rate、Services、Purpose of call */}
                 <ProCard title={'Basic Info'} className={'ant-card'}>
@@ -164,9 +198,9 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
                         <Col span={5}>
                             <ProFormSelect
                                 placeholder=''
-                                name='ServicesID'
+                                name='serviceType'
                                 label='Services'
-                                // options={ServicesList}
+                                options={ServicesList}
                             />
                         </Col>
                         <Col span={5}>
@@ -174,7 +208,7 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
                                 placeholder=''
                                 name='PurposeofCallID'
                                 label='Purpose of call'
-                                // options={PurposeOfCallList}
+                                options={PurposeofCallList}
                             />
                         </Col>
                     </Row>

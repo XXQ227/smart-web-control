@@ -384,11 +384,11 @@ declare namespace APIManager {
 
 
   type CGTempItems = {
-    id: string; // TODO: 主键
+    id?: string; // TODO: 主键
     chargeTemplateId?: string; // TODO: 费目模版ID
     chargeItemId?: string; // TODO:费目ID
     unitType?: string; // TODO:单位类型
-    type?: string; // TODO:费用类型:1-收2-付
+    type?: number; // TODO:费用类型:1-收2-付
     unitPrice?: string; // TODO:单价
     branchId?: string; // TODO:公司ID
     payMethod?: string; // TODO:付款方式
@@ -408,13 +408,6 @@ declare namespace APIManager {
   //region TODO: Branch
   type SearchBranchParams = {
     name: string;
-  };
-  type BranchResult = {
-    data: Branch[];
-    /** 列表的内容总数 */
-    total: number | null;
-    /** 返回结果 */
-    success?: boolean;
   };
   type Branch = {
     /** 列表的内容总数 */
