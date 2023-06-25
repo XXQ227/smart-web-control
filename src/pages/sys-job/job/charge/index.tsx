@@ -46,7 +46,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                     // TODO: 设置 ID 且初始化数据
                     setJobID(res?.ID);
                     setPayCGList(res.PayCGList || []);
-                    setReceiveCGList(res.PayCGList || []);
+                    setReceiveCGList(res.ReceiveCGList || []);
                     isLoadingData = false;
                     setLoading(false);
                 })

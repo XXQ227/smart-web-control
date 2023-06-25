@@ -92,9 +92,6 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
      */
     async function handleQueryProject(params: APISearchProject) {
         setLoading(true);
-        // TODO: 分页查询【参数页】
-        // params.currentPage = params.current || 1;
-        // params.pageSize = params.pageSize || 20;
         const result: API.Result = await queryProject(params);
         setProjectListVO(result.data || []);
         setLoading(false);
@@ -174,37 +171,6 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                 breadcrumb: {},
             }}
         >
-            {/*<ProCard
-                tabs={{
-                    tabPosition: 'left',
-                    activeKey: tab,
-                    items: [
-                        {
-                            label: 'Sea',
-                            key: 'Sea',
-                            children: renderContent('Sea'),
-                        },
-                        {
-                            label: 'Airport',
-                            key: 'Airport',
-                            children: renderContent('Airport'),
-                        },
-                        {
-                            label: 'Land',
-                            key: 'Land',
-                            children: renderContent('Land'),
-                        },
-                        {
-                            label: 'Trade place',
-                            key: 'TradePlace',
-                            children: renderContent('TradePlace'),
-                        },
-                    ],
-                    onChange: (key) => {
-                        setTab(key);
-                    },
-                }}
-            />*/}
             <ProCard className={'ant-card-pro-table'}>
                 <ProTable<APIProject>
                     rowKey={'id'}
@@ -229,7 +195,6 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                     }
                     toolbar={{
                         actions: [
-                            // <PortDrawerForm key={'add'} PortInfo={{}} isCreate={true} actionRef={ref}/>
                             <Button key={'add'} onClick={()=> handleEditProject({id: '0'})} type={'primary'} icon={<PlusOutlined/>}>
                                 Add Project
                             </Button>
@@ -246,37 +211,6 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                     }}
                     request={handleQueryProject}
                 />
-                {/*<ProTable<APIBranch>
-                    rowKey={'ID'}
-                    search={false}
-                    options={false}
-                    bordered={true}
-                    loading={loading}
-                    columns={columns}
-                    params={searchParams}
-                    dataSource={BranchListVO}
-                    locale={{ emptyText: 'No Data' }}
-                    className={'antd-pro-table-port-sea'}
-                    rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
-                    headerTitle={
-                        <Search
-                            placeholder='' enterButton="Search" loading={loading}
-                            onSearch={async (val: any) => {
-                                searchParams.name = val;
-                                await handleQueryBranch(searchParams);
-                            }}/>
-                    }
-                    toolbar={{
-                        actions: [
-                            <Button key={'add'} onClick={()=> handleEditBranch({id: '0'})} type={'primary'} icon={<PlusOutlined/>}>
-                                Add Branch
-                            </Button>
-                        ]
-                    }}
-                    pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
-                    // @ts-ignore
-                    request={(params: APISearchBranch) => handleQueryBranch(params)}
-                />*/}
             </ProCard>
         </PageContainer>
     )

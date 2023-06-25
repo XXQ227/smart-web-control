@@ -2,7 +2,6 @@ import {GetNJobCGSByIDAPI} from '@/services/smart/job/job-info';
 import type React from "react";
 import {useCallback, useState} from "react";
 
-
 interface T {
     resResult: object,
     // TODO: 单票详情

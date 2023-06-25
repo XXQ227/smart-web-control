@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
-import {Button, Col, Popconfirm, Row, Select, Space, Table} from 'antd';
-import type {ColumnsType} from 'antd/es/table';
-import {PlusOutlined} from '@ant-design/icons';
+import {Button, Col, Divider, Popconfirm, Row, Select, Space, Table} from 'antd';
+import {DeleteOutlined, PlusOutlined, FormOutlined} from '@ant-design/icons';
 import {useModel} from 'umi';
 import {getBranchID, getFuncCurrency, getUserID} from '@/utils/auths';
 import {formatNumToMoney, ID_STRING, keepDecimal} from '@/utils/units';
@@ -10,6 +9,8 @@ import {CHARGE_STATE_ENUM} from '@/utils/enum'
 import {stringify} from 'querystring';
 import ls from 'lodash';
 import SearchModal from '@/components/SearchModal';
+import {ProTable} from "@ant-design/pro-components";
+import type {ProColumns} from '@ant-design/pro-table';
 
 const Option = Select.Option;
 // TODO: 数据类型
@@ -38,18 +39,18 @@ const ChargeTable: React.FC<Props> = (props) => {
     const {CGType, CGList, form, FormItem} = props;
     const {
         ChargeBaseInfo: {CurrencyOpts}
-    } = useModel('job.jobCharge', (res: any) => ({ChargeBaseInfo: res.ChargeBaseInfo}));
+    } = useModel('job.jobCharge', (res: any) => ({
+        ChargeBaseInfo: res.ChargeBaseInfo
+    }));
 
     const [cgList, setCGList] = useState<APICGInfo[]>(CGList || []);
     const [currRateList, setCurrRateList] = useState<ABillRateResult[]>([]);
-
-    const cgColumns: ColumnsType<APICGInfo> = [
+    const cgColumns: ProColumns<APICGInfo>[] = [
         {
             title: 'Charge Name',
             dataIndex: 'CGItemName',
-            align: 'center',
-            width: 140,
-            render: (text: any, record, index) =>
+            width: '13%',
+            render: (text: any, record: any, index) =>
                 <FormItem
                     initialValue={record.CGItemID}
                     name={`CGItemID${record.CGID}`}
@@ -68,14 +69,14 @@ const ChargeTable: React.FC<Props> = (props) => {
                 </FormItem>
         },
         {
-            title: CGType === 1 ? 'Customer' : 'Payer',
-            dataIndex: 'CTName',
+            title: CGType === 1 ? 'Payer' : 'Vendor',
+            dataIndex: 'CTNameShortEN',
             align: 'center',
-            render: (text: any, record, index) =>
+            render: (text: any, record: any, index) =>
                 <FormItem
                     name={`CTID${record.CGID}`}
                     initialValue={record.CGItemID}
-                    rules={[{required: true, message: `请输入${CGType === 1 ? 'Customer' : 'Payer'}`}]}
+                    rules={[{required: true, message: `请输入${CGType === 1 ? 'Payer' : 'Vendor'}`}]}
                 >
                     <SearchModal
                         qty={13}
@@ -83,7 +84,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                         value={record.CTID}
                         id={`CTID${record.CGID}`}
                         url={'/api/MCommon/GetCTNameByStrOrType'}
-                        title={CGType === 1 ? 'Customer' : 'Payer'}
+                        title={CGType === 1 ? 'Payer' : 'Vendor'}
                         query={{
                             searchPayer: true, BusinessLineID: null,
                             UserID: getUserID(), CTType: 1, SystemID: 4,
@@ -96,8 +97,8 @@ const ChargeTable: React.FC<Props> = (props) => {
             title: 'Unit',
             dataIndex: 'CGUnitName',
             align: 'center',
-            width: 140,
-            render: (text: any, record, index) =>
+            width: '6%',
+            render: (text: any, record: any, index) =>
                 <FormItem
                     name={`CGUnitID${record.CGID}`}
                     initialValue={record.CGUnitID}
@@ -116,10 +117,51 @@ const ChargeTable: React.FC<Props> = (props) => {
                 </FormItem>
         },
         {
-            title: 'Currency',
+            title: 'QTY',
+            dataIndex: 'QTY',
+            align: 'center',
+            width: '6%',
+            render: (text: any, record: any, index) =>
+                <FormItem
+                    // TODO: 一定要有 initialValue: 用于设置初始值
+                    initialValue={record.QTY} name={`QTY${record.CGID}`}
+                    rules={[{required: true, message: `QTY is required.`}]}
+                >
+                    <InputEdit
+                        value={text} valueStr={record.QTYStr}
+                        id={`QTY${record.CGID}`} className={'isNumber-inp'}
+                        handleChangeData={(val) => handleRowChange(index, record.CGID, 'QTY', val)}
+                    />
+                </FormItem>,
+        },
+        {
+            title: 'Unit Price',
+            dataIndex: 'UnitPrice',
+            align: 'center',
+            width: '10%',
+            render: (text: any, record: any, index) =>
+                <FormItem
+                    initialValue={text} name={`UnitPrice${record.CGID}`}
+                    rules={[{required: true, message: `Unit Price is required.`}]}
+                >
+                    <InputEdit
+                        value={text} valueStr={record.UnitPriceStr}
+                        id={`UnitPrice${record.CGID}`} className={'isNumber-inp'}
+                        handleChangeData={(val) => handleRowChange(index, record.CGID, 'UnitPrice', val)}
+                    />
+                </FormItem>,
+        },
+        {
+            title: 'Amount',
+            dataIndex: 'AmountStr',
+            align: 'right',
+            width: '10%',
+        },
+        {
+            title: 'CURR',
             dataIndex: 'CurrencyName',
             align: 'center',
-            width: 80,
+            width: '8%',
             render: (text: any, record: any, index) =>
                 <FormItem
                     initialValue={record.CurrencyID}
@@ -137,46 +179,10 @@ const ChargeTable: React.FC<Props> = (props) => {
                 </FormItem>,
         },
         {
-            title: 'QTY',
-            dataIndex: 'QTY',
-            align: 'center',
-            width: 100,
-            render: (text: any, record: any, index) =>
-                <FormItem
-                    // TODO: 一定要有 initialValue: 用于设置初始值
-                    initialValue={record.QTY} name={`QTY${record.CGID}`}
-                    rules={[{required: true, message: `QTY is required.`}]}
-                >
-                    <InputEdit
-                        value={text} valueStr={record.QTYStr}
-                        id={`QTY${record.CGID}`} className={'isNumber-inp'}
-                        handleChangeData={(val) => handleRowChange(index, record.CGID, 'QTY', val)}
-                    />
-                </FormItem>,
-        },
-        {
-            title: 'U. Price',
-            dataIndex: 'UnitPrice',
-            align: 'center',
-            width: 100,
-            render: (text: any, record: any, index) =>
-                <FormItem
-                    initialValue={text} name={`UnitPrice${record.CGID}`}
-                    rules={[{required: true, message: `Unit Price is required.`}]}
-                >
-                    <InputEdit
-                        value={text} valueStr={record.UnitPriceStr}
-                        id={`UnitPrice${record.CGID}`} className={'isNumber-inp'}
-                        handleChangeData={(val) => handleRowChange(index, record.CGID, 'UnitPrice', val)}
-                    />
-                </FormItem>,
-        },
-        {title: 'Amount', dataIndex: 'AmountStr', align: 'center', width: 110,},
-        {
-            title: 'Bill CUR',
+            title: 'Bill CURR',
             dataIndex: 'ABillCurrencyTempName',
             align: 'center',
-            width: 72,
+            width: '8%',
             render: (text: any, record: any, index) =>
                 <FormItem
                     initialValue={record.ABillCurrencyTempID}
@@ -194,34 +200,44 @@ const ChargeTable: React.FC<Props> = (props) => {
                 </FormItem>,
         },
         {
-            title: 'Ex-Rate',
-            dataIndex: 'ExRate',
+            title: 'Ex Rate',
+            dataIndex: 'EXRateTemp',
             align: 'center',
-            width: 80,
+            width: '8%',
             render: (text: any, record: any, index) =>
                 <FormItem
-                    initialValue={text} name={`ExRate${record.CGID}`}
-                    rules={[{required: true, message: `Ex-Rate is required.`}]}
+                    initialValue={text} name={`EXRateTemp${record.CGID}`}
+                    rules={[{required: true, message: `Ex Rate is required.`}]}
                 >
                     <InputEdit
                         value={text} valueStr={record.ExRateStr}
-                        id={`ExRate${record.CGID}`} className={'isNumber-inp'}
-                        handleChangeData={(val) => handleRowChange(index, record.CGID, 'ExRate', val)}
+                        id={`EXRateTemp${record.CGID}`} className={'isNumber-inp'}
+                        handleChangeData={(val) => handleRowChange(index, record.CGID, 'EXRateTemp', val)}
                     />
                 </FormItem>
         },
         {
-            title: 'State', dataIndex: 'State', align: 'center', width: 140,
-            render: (value: any) => <div>{CHARGE_STATE_ENUM[value]?.status}</div>
+            title: 'State',
+            dataIndex: 'State',
+            align: 'center',
+            width: '11%',
+            render: (text: any, record: any, ) => <div>{record.InvoNum || CHARGE_STATE_ENUM[text]?.status}</div>
         },
         {
-            title: 'Operate',
+            title: 'Action',
             align: 'center',
-            width: 100,
-            render: (_, record: any) =>
-                <Popconfirm title="Sure to delete?" onConfirm={() => handleDeleteCharge(record.CGID)}>
-                    <a>Delete</a>
-                </Popconfirm>,
+            width: 60,
+            render: (_: any, record: any) =>
+                <>
+                    <Popconfirm
+                        onConfirm={() => handleDeleteCharge(record.CGID)}
+                        title="Sure to delete?" okText={'Yes'} cancelText={'No'}
+                    >
+                        <DeleteOutlined color={'red'}/>
+                        <Divider type='vertical'/>
+                    </Popconfirm>
+                    <FormOutlined />
+                </>
         },
     ];
 
@@ -403,7 +419,7 @@ const ChargeTable: React.FC<Props> = (props) => {
     const renderTableTitle = (
         <div className={'ant-table-title-info'}>
             <div className={'ant-div-left'}>
-                <span className={'ant-table-title-label'}>AR</span>
+                {/*<span className={'ant-table-title-label'}>AR</span>*/}
                 <Space>
                     <Button onClick={() => handleCopy('same')}>Copy</Button>
                     <Button onClick={() => handleCopy('noSame')}>Copy to {CGType === 1 ? 'AP' : 'AR'}</Button>
@@ -421,13 +437,13 @@ const ChargeTable: React.FC<Props> = (props) => {
         <div className={'ant-table-footer-info'}>
             <div className={'ant-div-left'}>
                 <Space>
-                    <span className={'ant-table-title-label'}>Total: </span>
+                    <span className={'ant-table-title-label'}>Total：</span>
                     <label>{}</label>
                 </Space>
             </div>
             <div className={'ant-div-right'}>
                 <Space>
-                    <span className={'ant-table-title-label'}>Total HKD: </span>
+                    <span className={'ant-table-title-label'}>Total HKD：</span>
                     <label>{}</label>
                 </Space>
             </div>
@@ -438,7 +454,7 @@ const ChargeTable: React.FC<Props> = (props) => {
     return (
         <Row gutter={24}>
             <Col span={24}>
-                <Table
+                {/*<Table
                     rowKey={'CGID'}
                     bordered={true}
                     pagination={false}
@@ -448,6 +464,28 @@ const ChargeTable: React.FC<Props> = (props) => {
                     footer={() => renderTableFooter}
                     locale={{emptyText: "NO DATA"}}
                     className={'ant-pro-table-charge-info ant-pro-table-edit'}
+                />*/}
+                <ProTable<APICGInfo>
+                    rowKey={'CGID'}
+                    search={false}
+                    options={false}
+                    bordered={true}
+                    pagination={false}
+                    columns={cgColumns}
+                    dataSource={cgList}
+                    locale={{ emptyText: 'No Data' }}
+                    className={'ant-pro-table-charge-info ant-pro-table-edit'}
+                    title={() => renderTableTitle}
+                    footer={() => renderTableFooter}
+                    /*
+                    toolbar={{
+                        actions: [
+                            <Button key={'add'} onClick={()=> handleEditProject({id: '0'})} type={'primary'} icon={<PlusOutlined/>}>
+                                Add Project
+                            </Button>
+                        ]
+                    }}
+                    request={handleQueryProject}*/
                 />
             </Col>
             <Col span={24}>
