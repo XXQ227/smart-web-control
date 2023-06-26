@@ -28,7 +28,18 @@ export default () => {
     // TODO: 删除费用模板
     const queryChargeTemplateInfo = useCallback(async (params: APIManager.CGTemp)=> {
         // TODO: 请求后台 API
-        return await queryChargeTemplateInfoAPI(params);
+        const result: API.Result = await queryChargeTemplateInfoAPI(params);
+        // if (result.data?.chargeTemplateItemARList) {
+        //     result.data?.chargeTemplateItemARList.map((item: any)=> {
+        //         item.unitPriceStr = formatNumToMoney(item.unitPrice);
+        //     })
+        // }
+        // if (result.data?.chargeTemplateItemAPList) {
+        //     result.data?.chargeTemplateItemAPList.map((item: any)=> {
+        //         item.unitPriceStr = formatNumToMoney(item.unitPrice);
+        //     })
+        // }
+        return result;
     }, []);
 
     // TODO: 删除费用模板

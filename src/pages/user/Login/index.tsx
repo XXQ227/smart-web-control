@@ -13,6 +13,7 @@ import {Alert, message, Tabs} from 'antd';
 import React, {useState} from 'react';
 import {FormattedMessage, history, SelectLang, useIntl, useModel} from 'umi';
 import styles from './index.less';
+import {SYSTEM_ID} from '@/utils/units'
 
 const LoginMessage: React.FC<{
     content: string;
@@ -42,6 +43,7 @@ const Login: React.FC = () => {
         try {
             // 登录
             values.SystemID = 1;
+            values.systemCode = SYSTEM_ID;
             const result: any = await login.login(values);
             // 登录成功
             if (result?.Result) {

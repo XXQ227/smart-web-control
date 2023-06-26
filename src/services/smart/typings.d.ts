@@ -128,6 +128,7 @@ declare namespace API {
     LoginName?: string;
     Password?: string;
     SystemID?: number;
+    systemCode?: number;
   };
 
   // TODO: 接口返回结果

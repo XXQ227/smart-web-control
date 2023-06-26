@@ -15,6 +15,7 @@ type APIDictDetail = APIManager.DictDetail;
 type APISearchDictDetail = APIManager.SearchDictDetailParams;
 
 interface Props {
+    DictVO: any,
     form: any,
 }
 
@@ -108,10 +109,11 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
      * @returns
      */
     const handleSaveDictDetail = async (index: number, record: APIDictDetail, state: string) => {
-        console.log(form);
+        console.log(form, props?.form?.getFieldValue('code'));
         form.validateFields()
-            .then(async (val: any)=> {
-                const dictCode = props?.form?.getFieldValue('code')
+            .then(async ()=> {
+                // const dictCode = props?.form?.getFieldValue('code')
+                const dictCode = props.DictVO.code
                 let result: API.Result;
                 const newData: APIDictDetail[] = ls.cloneDeep(DictDetailListVO);
                 // TODO: 保存、添加 公共参数
@@ -163,10 +165,10 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
         const params: any = {id: record.id};
         // TODO: 删除
         if (state === 'deleteFlag') {
-            if (!(record.id.indexOf('ID_') > -1)) {
-                result = await deleteDictDetail(params);
-            } else {
+            if (record.id.indexOf('ID_') > -1) {
                 result = {success: true};
+            } else {
+                result = await deleteDictDetail(params);
             }
             newData.splice(index, 1);
         } else {

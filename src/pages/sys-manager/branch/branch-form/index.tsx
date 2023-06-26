@@ -51,9 +51,13 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
     const handleGetBranchInfo = async () => {
         setLoading(true);
         const result: any = await queryBranchInfo({id});
-        setBranchInfoVO(result.data);
         setLoading(false);
-        return result;
+        if (result.success) {
+            setBranchInfoVO(result.data);
+        } else {
+            message.error(result.message);
+        }
+        return result.data || {};
     }
 
     /**

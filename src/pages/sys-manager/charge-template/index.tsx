@@ -15,7 +15,7 @@ type APISearchCGTemp = APIManager.SearchCGTempParams;
 
 // TODO: 获取单票集的请求参数
 const searchParams: APISearchCGTemp = {
-    name: '', branchId: 1, currentPage: 1, pageSize: 20, servicesType: ''
+    name: '', branchId: 0, currentPage: 1, pageSize: 20, servicesType: ''
 };
 
 const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
@@ -80,19 +80,19 @@ const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
     const columns: ProColumns<APICGTemp>[] = [
         {
             title: 'Template Name',
-            dataIndex: 'Name',
+            dataIndex: 'name',
             align: 'left',
         },
         {
-            title: 'Creator',
-            dataIndex: 'CreatorName',
-            width: 160,
+            title: 'Services',
+            dataIndex: 'servicesType',
+            width: 200,
             align: 'center',
         },
         {
-            title: 'Create Date',
-            dataIndex: 'CreateDate',
-            width: 100,
+            title: 'Purpose of call',
+            dataIndex: 'purposeOfCallType',
+            width: 200,
             align: 'center',
         },
         {
