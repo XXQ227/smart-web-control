@@ -387,12 +387,14 @@ declare namespace APIManager {
     id?: string; // TODO: 主键
     chargeTemplateId?: string; // TODO: 费目模版ID
     chargeItemId?: string; // TODO:费目ID
-    unitType?: string; // TODO:单位类型
+    unitType?: string; // TODO:单位类型id
+    unitTypeName?: string; // TODO:单位类型
     type?: number; // TODO:费用类型:1-收2-付
     unitPrice?: string; // TODO:单价
     branchId?: string; // TODO:公司ID
     payMethod?: string; // TODO:付款方式
     currencyName?: string; // TODO:币种名称
+    currencyType?: string; // TODO:币种id
     enableFlag?: string; // TODO:启用状态:0-不启用、1-启用
     deleteFlag?: string; // TODO:删除标识
     createUserId?: string; // TODO:创建人ID

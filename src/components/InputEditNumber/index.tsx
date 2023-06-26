@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Input} from 'antd'
 
 interface Props {
@@ -11,14 +11,11 @@ interface Props {
     handleChangeData: (val: any) => void,
 }
 
-const InputEdit: React.FC<Props> = (props) => {
+const InputEditNumber: React.FC<Props> = (props) => {
 
     // 设置是否是编辑
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [value, setValue] = useState<any>(props.value || null);
-
-    useEffect(()=> {
-    }, [])
 
     /**
      * @Description: TODO: 获取修改的数据
@@ -56,4 +53,4 @@ const InputEdit: React.FC<Props> = (props) => {
     )
 }
 
-export default InputEdit;
+export default InputEditNumber;

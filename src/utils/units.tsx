@@ -6,6 +6,9 @@ import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 
 export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_ckswrjhkwyb.js';
 
+// TODO: 系统五字码
+export const SYSTEM_ID = 99003;
+
 // TODO: 自定义图标使用 【For Example: <CustomizeIcon type={'icon-create'} />】
 export const CustomizeIcon = createFromIconfontCN({
     scriptUrl: icon_font_url, // 在 iconfont.cn 上生成
@@ -362,7 +365,7 @@ export function getStatus(text: string) {
  * @param amount
  * @returns {string}
  */
-export function formatNumToMoney(amount: number) {
+export function formatNumToMoney(amount: any) {
     if (amount) {
         const strArr = amount?.toString()?.split('.') || [];
         let result = String(strArr[0]).replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1,");

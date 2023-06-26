@@ -1,8 +1,8 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProFormInstance} from '@ant-design/pro-components';
-import {FooterToolbar, PageContainer, ProCard, ProForm, ProFormText,} from '@ant-design/pro-components'
-import {Button, Col, Form, message, Row} from 'antd'
+import {FooterToolbar, PageContainer, ProCard, ProForm} from '@ant-design/pro-components'
+import {Button, Col, Form, message, Row, Space} from 'antd'
 import {history, useModel, useParams} from 'umi'
 import {getFormErrorMsg} from '@/utils/units'
 import DictDetailDetailIndex from '@/pages/sys-manager/dict/dict-detail'
@@ -21,6 +21,7 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
         addDict: res.addDict,
     }));
 
+    const [DictVO, setDictVO] = useState<any>({});
     //endregion
 
     /**
@@ -30,7 +31,10 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     const handleGetDictInfo = async () => {
+        form.resetFields();
         const result: API.Result = await queryDictInfo({id});
+        setDictVO(result.data);
+        console.log(result.data);
         return result.data;
     }
 
@@ -81,7 +85,7 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
                 // TODO: 焦点给到第一个控件
                 autoFocusFirstInput
                 // TODO: 设置默认值
-                // initialValues={DictVO}
+                initialValues={DictVO}
                 formKey={'cv-center-information'}
                 // TODO: 提交数据
                 onFinish={onFinish}
@@ -93,32 +97,22 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
                     {/** // TODO: CV Name、CV Name (For Print)、Short Name、CV Identity */}
                     <Row gutter={24}>
                         <Col span={5}>
-                            <ProFormText
-                                readonly
-                                label='Name'
-                                placeholder=''
-                                name='name'
-                                tooltip='length: 64'
-                                rules={[{required: true, message: 'Name'}, {max: 64, message: 'length: 64'}]}
-                            />
+                            <Space>
+                                <b>Name : </b>
+                                <span>{DictVO.name}</span>
+                            </Space>
                         </Col>
                         <Col span={5}>
-                            <ProFormText
-                                readonly
-                                placeholder=''
-                                name='code'
-                                label='Code'
-                                tooltip='length: 64'
-                                rules={[{required: true, message: 'Name Local'}, {max: 64, message: 'length: 64'}]}
-                            />
+                            <Space>
+                                <b>Code : </b>
+                                <span>{DictVO.code}</span>
+                            </Space>
                         </Col>
                         <Col span={14}>
-                            <ProFormText
-                                readonly
-                                name='remark'
-                                placeholder=''
-                                label='Remark'
-                            />
+                            <Space>
+                                <b>Remark : </b>
+                                <span>{DictVO.remark}</span>
+                            </Space>
                         </Col>
                     </Row>
                 </ProCard>
@@ -126,7 +120,7 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
             <ProCard title={'Dict Detail'} className={'ant-card ant-card-pro-table'}>
                 <Row gutter={24}>
                     <Col span={24}>
-                        <DictDetailDetailIndex form={form}/>
+                        <DictDetailDetailIndex DictVO={DictVO} form={form}/>
                     </Col>
                 </Row>
             </ProCard>

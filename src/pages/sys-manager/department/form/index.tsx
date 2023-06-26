@@ -49,7 +49,7 @@ const DepartmentForm: React.FC<RouteChildrenProps> = () => {
         let result: API.Result;
         // TODO: 当有上级部门时，需要加到 parentIds 中
         if(values.parentId) values.parentIds += (values.parentIds ? ',' : '') + values.parentId;
-        console.log(values);
+        values.branchId = '0'
         if (saveId !== '0') {
             values.id = saveId;
             result = await editDepartment(values);

@@ -152,11 +152,15 @@ const DescriptionIndex: React.FC<Props> = () => {
     const handleOperateCGItem = async (index: number, record: APICGItem, state: string) => {
         setLoading(true);
         const params: any = {id: record.id};
-        let result: API.Result = {success: false};
+        let result: API.Result;
         let operate: number;
         // TODO: 删除
         if (state === 'deleteFlag') {
-            if (!(record.id.indexOf('ID_') > -1)) result = await deleteChargeItem(params);
+            if (record.id.indexOf('ID_') > -1) {
+                result = {success: true};
+            } else {
+                result = await deleteChargeItem(params);
+            }
             operate = record.deleteFlag ? 0 : 1;
         }
         // TODO: 冻结

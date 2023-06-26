@@ -1,20 +1,20 @@
 import React from 'react'
-import {Input} from 'antd'
+import {Select} from 'antd'
 
 interface Props {
     id: string,
     name: string,
     initialValue: any
+    options: any
     rules?: any,
     disabled?: boolean,
     required?: boolean,
-    placeholder?: string,
-    FormItem?: any,
-    onChange: (val: any) => void,
+    FormItem: any,
+    onSelect?: (val: any) => void,
 }
 
 const FormItemSelect: React.FC<Props> = (props) => {
-    const {id, name, initialValue, required, rules, onChange, FormItem, disabled, placeholder} = props;
+    const {id, name, initialValue, required, rules, onSelect, FormItem, disabled, options} = props;
     return (
         <FormItem
             id={id}
@@ -23,9 +23,11 @@ const FormItemSelect: React.FC<Props> = (props) => {
             required={required}
             disabled={disabled}
             initialValue={initialValue}
-            placeholder={placeholder || ''}
         >
-            <Input onChange={onChange}/>
+            <Select
+                onSelect={onSelect}
+                options={options}
+            />
         </FormItem>
     )
 }

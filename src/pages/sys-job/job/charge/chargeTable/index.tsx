@@ -1,10 +1,10 @@
 import React, {useState} from 'react';
-import {Button, Col, Divider, Popconfirm, Row, Select, Space, Table} from 'antd';
+import {Button, Col, Divider, Popconfirm, Row, Select, Space} from 'antd';
 import {DeleteOutlined, PlusOutlined, FormOutlined} from '@ant-design/icons';
 import {useModel} from 'umi';
 import {getBranchID, getFuncCurrency, getUserID} from '@/utils/auths';
 import {formatNumToMoney, ID_STRING, keepDecimal} from '@/utils/units';
-import InputEdit from '@/components/InputNumberEdit'
+import InputEditNumber from '@/components/InputEditNumber'
 import {CHARGE_STATE_ENUM} from '@/utils/enum'
 import {stringify} from 'querystring';
 import ls from 'lodash';
@@ -117,24 +117,6 @@ const ChargeTable: React.FC<Props> = (props) => {
                 </FormItem>
         },
         {
-            title: 'QTY',
-            dataIndex: 'QTY',
-            align: 'center',
-            width: '6%',
-            render: (text: any, record: any, index) =>
-                <FormItem
-                    // TODO: 一定要有 initialValue: 用于设置初始值
-                    initialValue={record.QTY} name={`QTY${record.CGID}`}
-                    rules={[{required: true, message: `QTY is required.`}]}
-                >
-                    <InputEdit
-                        value={text} valueStr={record.QTYStr}
-                        id={`QTY${record.CGID}`} className={'isNumber-inp'}
-                        handleChangeData={(val) => handleRowChange(index, record.CGID, 'QTY', val)}
-                    />
-                </FormItem>,
-        },
-        {
             title: 'Unit Price',
             dataIndex: 'UnitPrice',
             align: 'center',
@@ -144,7 +126,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                     initialValue={text} name={`UnitPrice${record.CGID}`}
                     rules={[{required: true, message: `Unit Price is required.`}]}
                 >
-                    <InputEdit
+                    <InputEditNumber
                         value={text} valueStr={record.UnitPriceStr}
                         id={`UnitPrice${record.CGID}`} className={'isNumber-inp'}
                         handleChangeData={(val) => handleRowChange(index, record.CGID, 'UnitPrice', val)}
@@ -179,6 +161,42 @@ const ChargeTable: React.FC<Props> = (props) => {
                 </FormItem>,
         },
         {
+            title: 'QTY',
+            dataIndex: 'QTY',
+            align: 'center',
+            width: 100,
+            render: (text: any, record: any, index) =>
+                <FormItem
+                    // TODO: 一定要有 initialValue: 用于设置初始值
+                    initialValue={record.QTY} name={`QTY${record.CGID}`}
+                    rules={[{required: true, message: `QTY is required.`}]}
+                >
+                    <InputEditNumber
+                        value={text} valueStr={record.QTYStr}
+                        id={`QTY${record.CGID}`} className={'isNumber-inp'}
+                        handleChangeData={(val) => handleRowChange(index, record.CGID, 'QTY', val)}
+                    />
+                </FormItem>,
+        },
+        {
+            title: 'U. Price',
+            dataIndex: 'UnitPrice',
+            align: 'center',
+            width: 100,
+            render: (text: any, record: any, index) =>
+                <FormItem
+                    initialValue={text} name={`UnitPrice${record.CGID}`}
+                    rules={[{required: true, message: `Unit Price is required.`}]}
+                >
+                    <InputEditNumber
+                        value={text} valueStr={record.UnitPriceStr}
+                        id={`UnitPrice${record.CGID}`} className={'isNumber-inp'}
+                        handleChangeData={(val) => handleRowChange(index, record.CGID, 'UnitPrice', val)}
+                    />
+                </FormItem>,
+        },
+        {title: 'Amount', dataIndex: 'AmountStr', align: 'center', width: 110,},
+        {
             title: 'Bill CURR',
             dataIndex: 'ABillCurrencyTempName',
             align: 'center',
@@ -209,7 +227,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                     initialValue={text} name={`EXRateTemp${record.CGID}`}
                     rules={[{required: true, message: `Ex Rate is required.`}]}
                 >
-                    <InputEdit
+                    <InputEditNumber
                         value={text} valueStr={record.ExRateStr}
                         id={`EXRateTemp${record.CGID}`} className={'isNumber-inp'}
                         handleChangeData={(val) => handleRowChange(index, record.CGID, 'EXRateTemp', val)}

@@ -3,7 +3,7 @@
 import { request } from '@/utils/request';
 
 /** 获取字典通用接口 */
-export async function queryDictCommonAPI(body: {dictCodes: string}) {
+export async function queryDictCommonAPI(body: {dictCodes: any}) {
   return request(`/apiBase/dict/queryDictCommon`, {
     method: 'POST',
     body
