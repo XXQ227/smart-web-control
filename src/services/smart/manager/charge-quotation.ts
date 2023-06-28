@@ -5,8 +5,9 @@ import {stringify} from 'querystring'
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function GetAPList(body: APIManager.SearchAccountParams, options?: { [key: string]: any }) {
-  return request(`/api/AccountPeriod/GetAPList?${stringify(body)}`, {
+  return request(`/api/AccountPeriod/GetAPList/`, {
     method: 'GET',
+    body,
     ...(options || {}),
   });
 }

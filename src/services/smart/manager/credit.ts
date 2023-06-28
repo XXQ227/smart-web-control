@@ -35,8 +35,9 @@ export async function editCreditControlAPI(body: APIManager.Credit) {
 
 /** delete Credit Control */
 export async function deleteCreditControlAPI(body: APIManager.Credit) {
-  return request(`/apiBase/creditControl/deleteCreditControl?${stringify(body)}`, {
+  return request(`/apiBase/creditControl/deleteCreditControl/`, {
     method: 'POST',
+    body,
   });
 }
 

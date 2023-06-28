@@ -14,8 +14,9 @@ export async function queryBranchAPI(body: APIManager.SearchBranchParams, option
 
 /** 获取 branch 详情 */
 export async function queryBranchInfoAPI(body: {id: string}, options?: { [key: string]: any }) {
-  return request(`/apiBase/branch/queryBranchInfo?${stringify(body)}`, {
+  return request(`/apiBase/branch/queryBranchInfo/`, {
     method: 'POST',
+    body,
     ...(options || {}),
   });
 }
@@ -40,8 +41,9 @@ export async function editBranchAPI(body: APIManager.Branch, options?: { [key: s
 
 /** Delete Branch */
 export async function deleteBranchAPI(body: APIManager.Branch, options?: { [key: string]: any }) {
-  return request(`/apiBase/branch/deleteBranch?${stringify(body)}`, {
+  return request(`/apiBase/branch/deleteBranch/`, {
     method: 'POST',
+    body,
     ...(options || {}),
   });
 }

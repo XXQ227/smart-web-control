@@ -19,8 +19,9 @@ export async function addEDIAPI(body: APIManager.EDI) {
 
 /** add edi */
 export async function queryEDIInfoAPI(body: APIManager.EDI) {
-  return request(`/apiBase/edi/queryEDIInfo?${stringify(body)}`, {
+  return request(`/apiBase/edi/queryEDIInfo/`, {
     method: 'POST',
+    body,
   });
 }
 
@@ -34,8 +35,9 @@ export async function editEDIAPI(body: APIManager.EDI) {
 
 /** delete edi */
 export async function deleteEDIAPI(body: APIManager.EDI) {
-  return request(`/apiBase/edi/deleteEDI?${stringify(body)}`, {
+  return request(`/apiBase/edi/deleteEDI/`, {
     method: 'POST',
+    body,
   });
 }
 

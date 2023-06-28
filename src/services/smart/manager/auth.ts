@@ -3,9 +3,9 @@ import {stringify} from 'qs'
 
 /** 获取权限数据 */
 export async function queryAuthResourceTreeAPI(body: APIManager.SearchAuthResourceParams, options?: { [key: string]: any }) {
-  return request(`/apiBase/authResource/queryAuthResourceTree?${stringify(body)}`, {
+  return request(`/apiBase/authResource/queryAuthResourceTree/`, {
     method: 'POST',
-    // body,
+    body,
     ...(options || {}),
   });
 }
@@ -30,8 +30,9 @@ export async function editAuthResourceAPI(body: APIManager.AuthResource, options
 
 /** delete authResource */
 export async function deleteAuthResourceAPI(body: APIManager.AuthResource, options?: { [key: string]: any }) {
-  return request(`/apiBase/authResource/deleteAuthResource?${stringify(body)}`, {
+  return request(`/apiBase/authResource/deleteAuthResource/`, {
     method: 'POST',
+    body,
     ...(options || {}),
   });
 }
@@ -64,8 +65,9 @@ export async function editRoleAPI(body: APIManager.Role, options?: { [key: strin
 
 /** delete authResource */
 export async function deleteRoleAPI(body: APIManager.Role, options?: { [key: string]: any }) {
-  return request(`/apiBase/role/deleteRole?${stringify(body)}`, {
+  return request(`/apiBase/role/deleteRole/`, {
     method: 'POST',
+    body,
     ...(options || {}),
   });
 }

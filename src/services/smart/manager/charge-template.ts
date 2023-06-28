@@ -19,8 +19,9 @@ export async function addChargeTemplateAPI(body: APIManager.CGTemp) {
 
 /** 查询费目模板详细信息*/
 export async function queryChargeTemplateInfoAPI(body: APIManager.CGTemp) {
-  return request(`/apiBase/chargeTemplate/queryChargeTemplateInfo?${stringify(body)}`, {
+  return request(`/apiBase/chargeTemplate/queryChargeTemplateInfo/`, {
     method: 'POST',
+    body,
   });
 }
 
