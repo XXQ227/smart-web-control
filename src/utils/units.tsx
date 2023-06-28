@@ -362,7 +362,7 @@ export function getStatus(text: string) {
  * @param amount
  * @returns {string}
  */
-export function formatNumToMoney(amount: number) {
+export function formatNumToMoney(amount: any) {
     if (amount) {
         const strArr = amount?.toString()?.split('.') || [];
         let result = String(strArr[0]).replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1,");

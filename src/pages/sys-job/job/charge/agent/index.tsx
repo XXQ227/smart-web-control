@@ -34,7 +34,7 @@ type ABillRateResult = {
     EXRateConvert?: number,
 }
 
-const ChargeTable: React.FC<Props> = (props) => {
+const Agent: React.FC<Props> = (props) => {
     // @ts-ignore
     const {CGType, CGList, form, FormItem} = props;
     const {
@@ -45,7 +45,7 @@ const ChargeTable: React.FC<Props> = (props) => {
 
     const [cgList, setCGList] = useState<APICGInfo[]>(CGList || []);
     const [currRateList, setCurrRateList] = useState<ABillRateResult[]>([]);
-    const cgColumns: ProColumns<APICGInfo>[] = [
+    const columns: ProColumns<APICGInfo>[] = [
         {
             title: 'Description',
             dataIndex: 'CGItemName',
@@ -403,60 +403,7 @@ const ChargeTable: React.FC<Props> = (props) => {
         handleChangeData(newCGData);
     }
 
-    /**
-     * @Description: TODO: 复制费用
-     * @author XXQ
-     * @date 2023/4/10
-     * @param state         复制成应收、应付
-     * @returns
-     */
-    /*const handleCopy = (state: string) => {
-
-    }
-    // endregion
-
-    //region render
-    const APHidden = CGType === 2;
-    const renderTableTitle = (
-        <div className={'ant-table-title-info'}>
-            <div className={'ant-div-left'}>
-                {/!*<span className={'ant-table-title-label'}>AR</span>*!/}
-                <Space>
-                    <Button onClick={() => handleCopy('same')}>Copy</Button>
-                    <Button onClick={() => handleCopy('noSame')}>Copy to {CGType === 1 ? 'AP' : 'AR'}</Button>
-                </Space>
-            </div>
-            <div className={'ant-div-right'}>
-                <Space>
-                    <Button hidden={APHidden} onClick={() => handleCopy('same')}>Credit Note</Button>
-                    <Button hidden={APHidden} onClick={() => handleCopy('noSame')}>Debit Note</Button>
-                </Space>
-            </div>
-        </div>
-    );
-    const renderTableFooter = (
-        <div className={'ant-table-footer-info'}>
-            <div className={'ant-div-left'}>
-                <Space>
-                    <span className={'ant-table-title-label'}>Total：</span>
-                    <label>{}</label>
-                </Space>
-            </div>
-            <div className={'ant-div-right'}>
-                <Space>
-                    <span className={'ant-table-title-label'}>Total HKD：</span>
-                    <label>{}</label>
-                </Space>
-            </div>
-        </div>
-    );*/
-
-    // const [editableKeys, setEditableRowKeys] = useState<React.Key[]>(() => []);
-    // const editableFormRef = useRef<EditableFormInstance>();
-
-    // @ts-ignore
     const renderAmountByCurrency = (newData: APICGInfo[]) => {
-        // console.log(newData)
         const obj: Record<string, { total: number }> = {};
         if (newData && newData.length > 0) {
             newData.map((item: any) => {
@@ -487,6 +434,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                 })
             )
         }
+        return true
     }
     const total = renderAmountByCurrency(cgList)
     // endregion
@@ -494,84 +442,6 @@ const ChargeTable: React.FC<Props> = (props) => {
     return (
         <Row gutter={24}>
             <Col span={24}>
-                {/*<Table
-                    rowKey={'CGID'}
-                    bordered={true}
-                    pagination={false}
-                    columns={cgColumns}
-                    dataSource={cgList}
-                    title={() => renderTableTitle}
-                    footer={() => renderTableFooter}
-                    locale={{emptyText: "NO DATA"}}
-                    className={'ant-pro-table-charge-info ant-pro-table-edit'}
-                />*/}
-                {/*<ProFormDependency
-                    // name={CGType === 1 ? [['table', 'ar']] : [['table', 'ap']]}
-                    // name={CGType === 1 ? ['arTable'] : ['apTable']}
-                    // name={[name]}
-                    name={['ar']}
-                    dependencies={['dataSource']}
-                    ignoreFormListField
-                >
-                    {({ cgList1 }) => {
-                        const info = (arTable as APICGInfo[]).reduce(
-                            (pre, item) => {
-                                return {
-                                    totalScore:
-                                        pre.totalScore +
-                                        parseInt((item?.UnitPrice || 0).toString(), 10),
-                                    questions:
-                                        pre.questions +
-                                        parseInt((item?.QTY || 0).toString(), 10),
-                                };
-                            },
-                            { totalScore: 0, questions: 0 },
-                        );
-                        console.log(cgList1)
-                        const total = renderAmountByCurrency(cgList1)
-                        return (
-                            <div>
-                                <div>总分：{info.totalScore} </div>
-                                <div>题数：{info.questions} </div>
-                                <div>{total}</div>
-                            </div>
-                        );
-                    }}
-                </ProFormDependency>*/}
-                {/*<ProFormDependency
-                    // name={['arTable']}
-                    name={CGType === 1 ? [['table', 'ar']] : [['table', 'ap']]}
-                    dependencies={['table']}
-                    // ignoreFormListField
-                >
-                    {({ table }) => {
-                        console.log(table)
-                        // const total = renderAmountByCurrency(CGType === 1 ? table.ar : table.ap)
-                        // const total = renderAmountByCurrency(table)
-                        const total = renderAmountByCurrency(cgList)
-                        return (
-                            <div>
-                                <div>{total}</div>
-                                <ProTable<APICGInfo>
-                                    rowKey={'CGID'}
-                                    search={false}
-                                    options={false}
-                                    bordered={true}
-                                    pagination={false}
-                                    columns={cgColumns}
-                                    dataSource={cgList}
-                                    locale={{ emptyText: 'No Data' }}
-                                    className={'ant-pro-table-charge-info ant-pro-table-edit'}
-                                    editable={{
-                                        type: 'multiple',
-                                    }}
-                                    // title={() => renderTableTitle}
-                                    // footer={() => renderTableFooter}
-                                />
-                            </div>
-                        );
-                    }}
-                </ProFormDependency>*/}
                 <div>{total}</div>
                 <ProTable<APICGInfo>
                     rowKey={'CGID'}
@@ -579,37 +449,11 @@ const ChargeTable: React.FC<Props> = (props) => {
                     options={false}
                     bordered={true}
                     pagination={false}
-                    columns={cgColumns}
+                    columns={columns}
                     dataSource={cgList}
                     locale={{ emptyText: 'No Data' }}
                     className={'ant-pro-table-charge-info ant-pro-table-edit'}
-                    // title={() => renderTableTitle}
-                    // footer={() => renderTableFooter}
                 />
-
-                {/*<EditableProTable<APICGInfo>
-                    bordered={true}
-                    rowKey="CGID"
-                    scroll={{
-                        x: true
-                    }}
-                    editableFormRef={editableFormRef}
-                    controlled
-                    // actionRef={actionRef}
-                    name="arTable"
-                    columns={cgColumns}
-                    recordCreatorProps={{
-                        record: (index) => {
-                            return { CGID: index + 1 };
-                        }
-                    }}
-                    editable={{
-                        type: "multiple",
-                        editableKeys,
-                        onChange: setEditableRowKeys
-                    }}
-                    className={'ant-pro-table-charge-info '}
-                />*/}
             </Col>
             <Col span={24}>
                 <Button icon={<PlusOutlined/>} onClick={handleAdd} className={'ant-btn-charge-add'}>Add Charge</Button>
@@ -617,4 +461,4 @@ const ChargeTable: React.FC<Props> = (props) => {
         </Row>
     )
 }
-export default ChargeTable;
+export default Agent;

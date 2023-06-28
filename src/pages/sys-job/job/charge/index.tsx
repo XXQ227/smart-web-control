@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
-import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components';
+import {FooterToolbar, PageContainer, ProCard, ProForm} from '@ant-design/pro-components';
 import {Button, Col, Form, message, Row} from 'antd';
 import {history, useModel} from 'umi';
 import {getFormErrorMsg} from '@/utils/units';
 import ChargeTable from '@/pages/sys-job/job/charge/chargeTable';
+import Agent from '@/pages/sys-job/job/charge/agent';
 
 const FormItem = Form.Item;
 
@@ -17,7 +18,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
     const {match: {params}} = props;
     //region TODO: 数据层
     const {
-        JobChargeInfo: {PayCGList, ReceiveCGList}, getCJobCGByID
+        JobChargeInfo: {PayCGList, ReceiveCGList, ProxyCGList}, getCJobCGByID
     } = useModel('job.jobCharge', (res: any) => ({
         JobChargeInfo: res.JobChargeInfo,
         getCJobCGByID: res.getCJobCGByID,
@@ -33,6 +34,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
 
     const [payCGList, setPayCGList] = useState<APICGInfo[]>(PayCGList || []);
     const [receiveCGList, setReceiveCGList] = useState<APICGInfo[]>(ReceiveCGList || []);
+    const [proxyCGList, setProxyCGList] = useState<APICGInfo[]>(ProxyCGList || []);
     const [updateState, setUpdateState] = useState(false);
 
     useEffect(() => {
@@ -47,6 +49,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                     setJobID(res?.ID);
                     setPayCGList(res.PayCGList || []);
                     setReceiveCGList(res.ReceiveCGList || []);
+                    setProxyCGList(res.ProxyCGList || []);
                     isLoadingData = false;
                     setLoading(false);
                 })
@@ -84,7 +87,8 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                 if (updateState) {
                     const apChangeList: APICGInfo[] = payCGList.filter((item: APICGInfo)=> item.isChange) || [];
                     const arChangeList: APICGInfo[] = receiveCGList.filter((item: APICGInfo)=> item.isChange) || [];
-                    const isChangeCG: APICGInfo[] = [...arChangeList, ...apChangeList];
+                    const proxyChangeList: APICGInfo[] = proxyCGList.filter((item: APICGInfo)=> item.isChange) || [];
+                    const isChangeCG: APICGInfo[] = [...arChangeList, ...apChangeList, ...proxyChangeList];
                     console.log(isChangeCG, arChangeList );
                 } else {
                     message.info('没有需要保存的数据');
@@ -100,6 +104,18 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
     // TODO: 传给子组件的参数
     const baseCGDON: any = {form, FormItem, handleChangeData};
 
+    /*const initialValues = {
+        table: {
+            ar: receiveCGList,
+            ap: payCGList,
+        },
+        arTable: receiveCGList,
+        apTable: payCGList,
+    };*/
+
+    // console.log(receiveCGList)
+    // console.log(initialValues)
+
     return (
         <PageContainer
             loading={loading}
@@ -113,13 +129,14 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                 autoComplete={'off'}
                 onFinish={handleSave}
                 onFinishFailed={handleSave}
+                // initialValues={initialValues}
+                // request={async ()=> initialValues}
             >
                 <ProCard
                     title={'AR'}
                     bordered={true}
                     headerBordered
                     className={'ant-card'}
-                    collapsible
                 >
                     <Row gutter={24} className={'ant-margin-bottom-24'}>
                         <Col span={24}>
@@ -137,7 +154,6 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                     bordered={true}
                     headerBordered
                     className={'ant-card'}
-                    collapsible
                 >
                     <Row gutter={24}>
                         <Col span={24}>
@@ -145,6 +161,23 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                                 CGType={2}
                                 {...baseCGDON}
                                 CGList={payCGList}
+                            />
+                        </Col>
+                    </Row>
+                </ProCard>
+
+                <ProCard
+                    title={'Reimbursement'}
+                    bordered={true}
+                    headerBordered
+                    className={'ant-card'}
+                >
+                    <Row gutter={24}>
+                        <Col span={24}>
+                            <Agent
+                                CGType={3}
+                                {...baseCGDON}
+                                CGList={proxyCGList}
                             />
                         </Col>
                     </Row>
