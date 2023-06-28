@@ -792,7 +792,6 @@ export function getDiffYears(data: string) {
     ) {
         diffYears--;
     }
-
     // 返回从指定日期到现在的年数
     return diffYears;
 }
@@ -807,9 +806,10 @@ export function getDiffYears(data: string) {
  * @returns
  */
 export function getCreditScore (target: any, op_node: number, op_value: any) {
-    let score: number = 0;
+    let score: number = 0, percentage: number = 0.1;
     switch (op_node) {
         case 1: // TODO: 注册资金
+            percentage = 0.2;
             if (op_value <= 100000) {
                 score = 1;
             } else if (100000 < op_value && op_value <= 500000) {
@@ -821,9 +821,9 @@ export function getCreditScore (target: any, op_node: number, op_value: any) {
             } else if (5000000 < op_value) {
                 score = 4;
             }
-            target.score = score;
             break;
         case 2: // TODO: 注册时间（年限）
+            percentage = 0.1;
             const estimated_monthly: number = getDiffYears(op_value || '2008-06-23');
             if (estimated_monthly <= 1) {
                 score = 1;
@@ -836,10 +836,14 @@ export function getCreditScore (target: any, op_node: number, op_value: any) {
             } else if (7 < estimated_monthly) {
                 score = 5;
             }
-            target.score = score;
             break;
-        case 3: /*// TODO: 行业地位*/ case 4: // TODO: 信用状态
-            target.score = op_value;
+        case 3: // TODO: 行业地位
+            percentage = 0.1;
+            score = op_value;
+            break;
+        case 4: // TODO: 信用状态
+            percentage = 0.2;
+            score = op_value;
             break;
         case 5: // TODO: 年营收
             if (op_value <= 100000) {
@@ -853,9 +857,10 @@ export function getCreditScore (target: any, op_node: number, op_value: any) {
             } else if (1000000 < op_value) {
                 score = 4;
             }
-            target.score = score;
+            percentage = 0.2;
             break;
         case 6: // TODO: 利润率
+            percentage = 0.2;
             if (op_value <= 1) {
                 score = 1;
             } else if (1 < op_value && op_value <= 3) {
@@ -867,10 +872,11 @@ export function getCreditScore (target: any, op_node: number, op_value: any) {
             } else if (7 < op_value) {
                 score = 5;
             }
-            target.score = score;
             break;
         default:
             break;
     }
+    target.score = score;
+    target.totalScore = score * percentage;
     return target;
 }

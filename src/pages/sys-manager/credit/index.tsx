@@ -4,7 +4,7 @@ import type {ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
 import {DeleteOutlined, EditOutlined} from '@ant-design/icons'
-import {Divider, message, Popconfirm, Input} from 'antd'
+import {Divider, message, Popconfirm, Input, Button} from 'antd'
 import {history} from '@@/core/history'
 
 const {Search} = Input;
@@ -165,6 +165,7 @@ const CreditIndex: React.FC<RouteChildrenProps> = () => {
                     // @ts-ignore
                     request={(params: APISearchCredit) => handleGetCreditList(params)}
                 />
+                <Button onClick={handleOperate}>aa</Button>
             </ProCard>
         </PageContainer>
     )

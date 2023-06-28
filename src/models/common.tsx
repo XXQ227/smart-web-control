@@ -11,6 +11,7 @@ export default () => {
     const [PurposeOfCallList, setPurposeOfCallList] = useState([]);
     const [PayMethodList, setPayMethodList] = useState([]);
     const [CurrencyList, setCurrencyList] = useState([]);
+    const [BusinessLineList, setBusinessLineList] = useState([]);
 
     //region TODO: 接口
     // TODO: 获取字典数据
@@ -33,6 +34,9 @@ export default () => {
                     case 'pay_method':
                         setPayMethodList(item.data);
                         break;
+                    case 'business_line':
+                        setBusinessLineList(item.data);
+                        break;
                     default: break;
                 }
             })
@@ -49,11 +53,12 @@ export default () => {
 
 
     return {
+        queryDictCommon,
+        queryDictDetailCommon,
         ServicesList,
         PurposeOfCallList,
         PayMethodList,
         CurrencyList,
-        queryDictCommon,
-        queryDictDetailCommon,
+        BusinessLineList,
     }
 }
