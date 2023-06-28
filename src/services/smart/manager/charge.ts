@@ -42,8 +42,9 @@ export async function editChargeStandardAPI(body: APIManager.CGItem, options?: {
 
 /** 删除费目 */
 export async function deleteChargeStandardAPI(body: APIManager.CGItem, options?: { [key: string]: any }) {
-  return request(`/apiBase/chargeStandard/deleteChargeStandard?${stringify(body)}`, {
+  return request(`/apiBase/chargeStandard/deleteChargeStandard/`, {
     method: 'POST',
+    body,
     ...(options || {}),
   });
 }
@@ -96,8 +97,9 @@ export async function editChargeItemAPI(body: APIManager.CGItem, options?: { [ke
 
 /** 删除费目 */
 export async function deleteChargeItemAPI(body: APIManager.CGItem, options?: { [key: string]: any }) {
-  return request(`/apiBase/chargeItem/deleteChargeItem?${stringify(body)}`, {
+  return request(`/apiBase/chargeItem/deleteChargeItem/`, {
     method: 'POST',
+    body,
     ...(options || {}),
   });
 }

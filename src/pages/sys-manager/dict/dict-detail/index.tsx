@@ -69,9 +69,10 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
     const handleAddDictDetail = () => {
         const addDataDetailObj: APIDictDetail = {
             id: ID_STRING(),
-            dictId: '',
-            dictCode: '',
+            dictId: id,
+            dictCode: props.DictVO.code,
             name: '',
+            value: '',
             relatedCode: '',
             remark: '',
             isChange: true
@@ -109,7 +110,6 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
      * @returns
      */
     const handleSaveDictDetail = async (index: number, record: APIDictDetail, state: string) => {
-        console.log(form, props?.form?.getFieldValue('code'));
         form.validateFields()
             .then(async ()=> {
                 // const dictCode = props?.form?.getFieldValue('code')
@@ -120,7 +120,9 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                 const params: any = {
                     dictCode: dictCode,
                     name: record.name,
+                    value: record.value,
                     relatedCode: record.relatedCode,
+                    relatedType: record.relatedType,
                     sort: record.sort || 0,
                     remark: record.remark,
                 };
@@ -255,6 +257,39 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                     name={`relatedCode${record.id}`}
                     initialValue={record.relatedCode}
                     onChange={(val: any) => handleChangeDictDetail(index, record, 'relatedCode', val)}
+                />
+        },
+        {
+            title: 'Value',
+            dataIndex: 'value',
+            width: 200,
+            align: 'center',
+            tooltip: 'Code is required',
+            className: 'ant-columns-required',
+            render: (text: any, record: any, index) =>
+                <FormItemInput
+                    required
+                    FormItem={Form.Item}
+                    disabled={record.enableFlag}
+                    id={`value${record.id}`}
+                    name={`value${record.id}`}
+                    initialValue={record.value}
+                    onChange={(val: any) => handleChangeDictDetail(index, record, 'value', val)}
+                />
+        },
+        {
+            title: 'Type',
+            dataIndex: 'relatedType',
+            width: 200,
+            align: 'center',
+            render: (text: any, record: any, index) =>
+                <FormItemInput
+                    FormItem={Form.Item}
+                    disabled={record.enableFlag}
+                    id={`relatedType${record.id}`}
+                    name={`relatedType${record.id}`}
+                    initialValue={record.relatedType}
+                    onChange={(val: any) => handleChangeDictDetail(index, record, 'Type', val)}
                 />
         },
         {

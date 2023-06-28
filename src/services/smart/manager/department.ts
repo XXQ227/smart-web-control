@@ -14,8 +14,9 @@ export async function queryDepartmentAPI(body: {name: string}) {
 
 /** 获取所有 branch 数据 */
 export async function queryDepartmentInfoAPI(body: APIManager.Department) {
-  return request(`/apiBase/department/queryDepartmentInfo?${stringify(body)}`, {
+  return request(`/apiBase/department/queryDepartmentInfo/`, {
     method: 'POST',
+    body,
   });
 }
 

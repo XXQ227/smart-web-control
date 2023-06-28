@@ -34,8 +34,9 @@ export async function editSeaAPI(body: APIManager.Port, options?: { [key: string
 
 /** 删除港口  */
 export async function deleteSeaAPI(body: APIManager.Port, options?: { [key: string]: any }) {
-    return request(`/apiBase/sea/deleteSea?${stringify(body)}`, {
+    return request(`/apiBase/sea/deleteSea/`, {
         method: 'POST',
+        body,
         ...(options || {}),
     });
 }
@@ -80,8 +81,9 @@ export async function editAirAPI(body: APIManager.Port, options?: { [key: string
 
 /** 删除港口  */
 export async function deleteAirAPI(body: APIManager.Port, options?: { [key: string]: any }) {
-    return request(`/apiBase/air/deleteAir?${stringify(body)}`, {
+    return request(`/apiBase/air/deleteAir/`, {
         method: 'POST',
+        body,
         ...(options || {}),
     });
 }
@@ -126,8 +128,9 @@ export async function editLandAPI(body: APIManager.Port, options?: { [key: strin
 
 /** 删除港口  */
 export async function deleteLandAPI(body: APIManager.Port, options?: { [key: string]: any }) {
-    return request(`/apiBase/land/deleteLand?${stringify(body)}`, {
+    return request(`/apiBase/land/deleteLand/`, {
         method: 'POST',
+        body,
         ...(options || {}),
     });
 }
@@ -172,8 +175,9 @@ export async function editTradePlaceAPI(body: APIManager.Port, options?: { [key:
 
 /** 删除港口  */
 export async function deleteTradePlaceAPI(body: APIManager.Port, options?: { [key: string]: any }) {
-    return request(`/apiBase/trade/deleteTradePlace?${stringify(body)}`, {
+    return request(`/apiBase/trade/deleteTradePlace/`, {
         method: 'POST',
+        body,
         ...(options || {}),
     });
 }

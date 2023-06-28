@@ -23,8 +23,9 @@ export async function addDictAPI(body: APIManager.Dict, options?: { [key: string
 
 /** Get Dict Information  */
 export async function queryDictInfoAPI(body: APIManager.Dict, options?: { [key: string]: any }) {
-  return request(`/apiBase/dict/queryDictInfo?${stringify(body)}`, {
+  return request(`/apiBase/dict/queryDictInfo/`, {
     method: 'POST',
+    body,
     ...(options || {}),
   });
 }
@@ -40,8 +41,9 @@ export async function editDictAPI(body: APIManager.Dict, options?: { [key: strin
 
 /** Delete Dict */
 export async function deleteDictAPI(body: APIManager.Dict, options?: { [key: string]: any }) {
-  return request(`/apiBase/dict/deleteDict?${stringify(body)}`, {
+  return request(`/apiBase/dict/deleteDict/`, {
     method: 'POST',
+    body,
     ...(options || {}),
   });
 }
@@ -86,8 +88,9 @@ export async function editDictDetailAPI(body: APIManager.DictDetail, options?: {
 
 /** Delete DictDetail */
 export async function deleteDictDetailAPI(body: APIManager.DictDetail, options?: { [key: string]: any }) {
-  return request(`/apiBase/dict/deleteDictDetail?${stringify(body)}`, {
+  return request(`/apiBase/dict/deleteDictDetail/`, {
     method: 'POST',
+    body,
     ...(options || {}),
   });
 }

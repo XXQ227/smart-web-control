@@ -32,8 +32,9 @@ export async function editUserAPI(body: APIManager.User, options?: { [key: strin
 
 /** delete user */
 export async function deleteUserAPI(body: APIManager.User, options?: { [key: string]: any }) {
-  return request(`/apiBase/user/deleteUser?${stringify(body)}`, {
+  return request(`/apiBase/user/deleteUser/`, {
     method: 'POST',
+    body,
     ...(options || {}),
   });
 }

@@ -18,6 +18,7 @@ import {getCreditScore, getFormErrorMsg, keepDecimal} from '@/utils/units'
 import {BUSINESS_TYPE, CREDIT_ASSESSMENT_SCORE_DATA, POSITION_IN_INDUSTRY} from '@/utils/common-data'
 import ls from 'lodash'
 import FormItemSelect from '@/components/FormItemComponents/FormItemSelect'
+import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 
 const FormItem = Form.Item;
 
@@ -31,12 +32,18 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
     const id = atob(params?.id);
 
     const {
-        addCreditControl, queryCreditControlInfo, editCreditControl,
+        queryCreditControlInfo, //addCreditControl, editCreditControl,
     } = useModel('manager.credit', (res: any) => ({
         addCreditControl: res.addCreditControl,
         queryCreditControlInfo: res.queryCreditControlInfo,
         editCreditControl: res.editCreditControl,
     }));
+    const {
+        queryDictCommon, BusinessLineList
+    } = useModel('common', (res: any)=> ({
+        queryDictCommon: res.queryDictCommon,
+        BusinessLineList: res.BusinessLineList,
+    }))
 
     const [loading, setLoading] = useState<boolean>(false);
     const [CreditInfoVO, setCreditInfoVO] = useState<any>({});
@@ -50,11 +57,13 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     async function handleGetCreditByID(paramsVal: APICredit) {
-        setLoading(true);
+        // setLoading(true);
+        if (BusinessLineList?.length === 0) {
+            await queryDictCommon({dictCodes: ['business_line']});
+        }
         if (id !== '0') {
             const result: API.Result = await queryCreditControlInfo(paramsVal);
             if (result.success) {
-                setCreditInfoVO(result.data);
                 form.setFieldsValue({
                     name: result.data.name,
                     servicesType: result.data.servicesType,
@@ -62,7 +71,6 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                 });
                 const ctInfo = result.data?.CTInfo || {};
                 if (!result.data.totalScore) {
-                    let totalScore: number = 0;
                     let newData = ls.cloneDeep(ScoreData);
                     // TODO: 当第一次创建信控时，把 【注册资金、注册时间、年营收】 的计分先计算出来
                     newData = newData.map((item: any) => {
@@ -81,16 +89,17 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 break;
                         }
                         const target: any = getCreditScore(item, item.id, op_value);
-                        totalScore += target.score;
+                        result.data.totalScore = target.totalScore;
                         return target;
                     });
                     setScoreData(newData);
-                    result.data.totalScore = totalScore;
+                    result.data.creditLevel = getCreditLevel(result.data.totalScore);
                 }
             } else {
                 message.error(result.message);
             }
-            setLoading(false);
+            setCreditInfoVO(result.data);
+            // setLoading(false);
             return result.data;
         } else {
             return {};
@@ -106,21 +115,44 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
         form.setFieldsValue({lastYearPaymentOnCredit: 1});
     }
 
+    function getCreditLevel (op_value: number) {
+        let creditLevel = '';
+        if (op_value < 1) {
+            creditLevel = 'C';
+        } else if (1 <= op_value && op_value < 2) {
+            creditLevel = 'B';
+        } else if (2 <= op_value && op_value < 3) {
+            creditLevel = 'A';
+        } else if (3 <= op_value && op_value < 4) {
+            creditLevel = 'AA';
+        } else if (4 <= op_value) {
+            creditLevel = 'AAA';
+        }
+        return creditLevel;
+    }
     const handleScoreChange = (val: any, fieldName: string, rowKey: number) => {
         const newData = ls.cloneDeep(ScoreData);
         let target: any = newData.find((item: any) => item.id === rowKey) || {};
         if (['customerLevel', 'creditRatingType'].includes(fieldName)) {
             target.score = val;
+            target = getCreditScore(target, fieldName === 'customerLevel' ? 4 : 3, val);
         } else if (['annualRevenue', 'grossProfit'].includes(fieldName)) {
             const annualRevenue = form.getFieldValue('annualRevenue');
             const grossProfit = form.getFieldValue('grossProfit');
             // TODO: 计算当年毛利率
             if (annualRevenue && grossProfit) {
-                const profitMargin = keepDecimal(Number(grossProfit)/Number(annualRevenue));
+                const profitMargin = keepDecimal(Number(grossProfit)/Number(annualRevenue)*100);
                 target = getCreditScore(target, 6, profitMargin);
                 setGrossProfitMargin(profitMargin);
             }
         }
+        // TODO: 单独拿到成绩，用来评定客户信控等级
+        const scoreArr = newData.map(item=> item.totalScore);
+        CreditInfoVO.totalScore = scoreArr.reduce((old, now) => old + now, 0);
+        // TODO: 获取客户信控等级
+        CreditInfoVO.creditLevel = getCreditLevel(CreditInfoVO.totalScore);
+        setCreditInfoVO(CreditInfoVO);
+        // TODO: 更新评分数据
         newData.splice(rowKey - 1, 1, target);
         setScoreData(newData);
     }
@@ -267,15 +299,6 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 options={POSITION_IN_INDUSTRY} FormItem={FormItem}
                                 onSelect={(e: any) => handleScoreChange(e, 'customerLevel', 3)}
                             />
-                            {/*<ProFormSelect
-                                placeholder=''
-                                name='customerLevel'
-                                label='Position in industry'
-                                options={POSITION_IN_INDUSTRY}
-                                fieldProps={{
-                                    onChange: (e: any) => handleScoreChange(e, 'customerLevel', 3),
-                                }}
-                            />*/}
                         </Col>
                         <Col span={5}>
                             <FormItemSelect
@@ -284,15 +307,6 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 options={POSITION_IN_INDUSTRY} FormItem={FormItem}
                                 onSelect={(e: any) => handleScoreChange(e, 'creditRatingType', 4)}
                             />
-                            {/*<ProFormSelect
-                                placeholder=''
-                                name='creditRatingType'
-                                label='Credit Standing'
-                                options={CREDIT_STANDING}
-                                fieldProps={{
-                                    onChange: (e: any) => handleScoreChange(e, 'creditRatingType', 4),
-                                }}
-                            />*/}
                         </Col>
                     </Row>
                 </ProCard>
@@ -422,27 +436,27 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                             />
                         </Col>
                         <Col span={4}>
-                            <ProFormText
+                            <FormItemInput
                                 placeholder=''
-                                name='annualRevenue'
-                                label='Annual Revenue'
+                                id={'annualRevenue'}
+                                name={'annualRevenue'}
+                                label={'Annual Revenue'}
                                 className={'ant-input-suffix'}
-                                fieldProps={{
-                                    suffix,
-                                    onChange: (e: any) => handleScoreChange(e?.target?.value, 'annualRevenue', 4)
-                                }}
+                                suffix={suffix}
+                                FormItem={FormItem}
+                                onChange={(e: any) => handleScoreChange(e?.target?.value, 'annualRevenue', 6)}
                             />
                         </Col>
                         <Col span={4}>
-                            <ProFormText
+                            <FormItemInput
                                 placeholder=''
+                                id={'grossProfit'}
                                 name={'grossProfit'}
                                 label={'Gross Profit'}
                                 className={'ant-input-suffix'}
-                                fieldProps={{
-                                    suffix,
-                                    onChange: (e: any) => handleScoreChange(e?.target?.value, 'grossProfit', 4)
-                                }}
+                                suffix={suffix}
+                                FormItem={FormItem}
+                                onChange={(e: any) => handleScoreChange(e?.target?.value, 'grossProfit', 6)}
                             />
                         </Col>
                         <Col span={4}>
@@ -462,8 +476,58 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                         dataSource={ScoreData}
                         className={'ant-pro-table-edit'}
                     />
+                    <Row gutter={24} className={'ant-row-score'}>
+                        <Col span={24}>
+                            <label>Assessment Results————</label>
+                            <span>
+                                <Space>
+                                    <Space>Score: {CreditInfoVO.totalScore}</Space>
+                                    <Space>Credit Level: {CreditInfoVO.creditLevel}</Space>
+                                </Space>
+                            </span>
+                        </Col>
+                    </Row>
+                </ProCard>
+
+                <ProCard title={'Credit Result'} className={'ant-card'}>
                     <Row gutter={24}>
-                        <Col span={24} />
+                        <Col span={4}>
+                            <FormItemInput
+                                placeholder=''
+                                id={'creditLine'}
+                                name={'creditLine'}
+                                label={'Credit Line'}
+                                className={'ant-input-suffix'}
+                                suffix={suffix}
+                                FormItem={FormItem}
+                                onChange={(e: any) => handleScoreChange(e?.target?.value, 'annualRevenue', 6)}
+                            />
+                        </Col>
+                        <Col span={4}>
+                            <FormItemInput
+                                placeholder=''
+                                id={'creditDays'}
+                                name={'creditDays'}
+                                label={'Credit Days'}
+                                className={'ant-input-suffix'}
+                                suffix={suffix}
+                                FormItem={FormItem}
+                                onChange={(e: any) => handleScoreChange(e?.target?.value, 'annualRevenue', 6)}
+                            />
+                        </Col>
+                        <Col span={6}>
+                            <ProFormDateRangePicker
+                                name="periodCredit" label="Period of credit"
+                                placeholder={['Start', 'End']}
+                            />
+                        </Col>
+                        <Col span={8}>
+                            <ProFormCheckbox.Group
+                                name='checkbox'
+                                label="行业分布"
+                                options={['农业', '制造业', '互联网']}
+                            />
+                        </Col>
                     </Row>
                 </ProCard>
 

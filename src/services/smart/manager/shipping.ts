@@ -13,8 +13,9 @@ export async function queryVoyageAPI(body: APIManager.SearchShippingParams, opti
 
 /** TODO: 获取 航次 详情 */
 export async function queryVoyageInfoAPI(body: {id: string}, options?: { [key: string]: any }) {
-    return request(`/apiBase/voyage/queryVoyageInfo?${stringify(body)}`, {
+    return request(`/apiBase/voyage/queryVoyageInfo/`, {
         method: 'POST',
+        body,
         ...(options || {}),
     });
 }
@@ -39,8 +40,9 @@ export async function editVoyageAPI(body: APIManager.Voyage, options?: { [key: s
 
 /** TODO: 删除航次 */
 export async function deleteVoyageAPI(body: APIManager.Voyage, options?: { [key: string]: any }) {
-    return request(`/apiBase/voyage/deleteVoyage?${stringify(body)}`, {
+    return request(`/apiBase/voyage/deleteVoyage/`, {
         method: 'POST',
+        body,
         ...(options || {}),
     });
 }
@@ -85,8 +87,9 @@ export async function editVesselAPI(body: APIManager.Shipping, options?: { [key:
 
 /** TODO: 删除船舶 */
 export async function deleteVesselAPI(body: APIManager.Shipping, options?: { [key: string]: any }) {
-    return request(`/apiBase/vessel/deleteVessel?${stringify(body)}`, {
+    return request(`/apiBase/vessel/deleteVessel/`, {
         method: 'POST',
+        body,
         ...(options || {}),
     });
 }
@@ -131,8 +134,9 @@ export async function editLineAPI(body: APIManager.Shipping, options?: { [key: s
 
 /** TODO: 删除航线 */
 export async function deleteLineAPI(body: APIManager.Shipping, options?: { [key: string]: any }) {
-    return request(`/apiBase/line/deleteLine?${stringify(body)}`, {
+    return request(`/apiBase/line/deleteLine/`, {
         method: 'POST',
+        body,
         ...(options || {}),
     });
 }
