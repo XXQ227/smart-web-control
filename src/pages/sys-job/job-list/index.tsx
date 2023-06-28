@@ -6,6 +6,7 @@ import {history, useModel, useIntl} from 'umi';
 import {getTitleInfo, IconFont} from '@/utils/units';
 import {getUserID} from '@/utils/auths';
 import {OCEAN_TRANSPORT_TYPE_ENUM} from '@/utils/enum'
+import SearchModal from "@/components/SearchModal";
 
 type APICJobListItem = APIModel.CJobListItem;
 
@@ -107,52 +108,40 @@ const JobList: React.FC<RouteChildrenProps> = () => {
 
     // TODO: 单票显示列
     const columns: ProColumns<APICJobListItem>[] = [
-        // 序列
-        // {
-        //     dataIndex: 'index',
-        //     valueType: 'indexBorder',
-        //     width: 48,
-        // },
         {
-            title: title('code', '业务编号'),
+            title: 'Job Code',
             dataIndex: 'Code',
             width: 140,
-            disable: true,
         },
         {
-            title: title('customer', '客户'),
+            title: 'Customer',
             dataIndex: 'PrincipalNameEN',
-            disable: true,
         },
         {
-            title: title('mbl', '提单号'),
+            title: 'PO Num',
             dataIndex: 'MBOLNum',
-            width: 120,
+            width: 130,
             ellipsis: true,
         },
-        {dataIndex: 'HBOLNum', hideInTable: true,},
         {
-            title: title('job-type', '货物类型'),
-            dataIndex: 'OceanTransportType',
-            align: 'center',
-            search: false,
-            width: 80,
-            valueEnum: OCEAN_TRANSPORT_TYPE_ENUM
-        },
-        {
-            title: title('create-date', '创建时间'),
+            title: 'Taking Date',
             dataIndex: 'CreateDate',
-            valueType: 'date',
+            valueType: "date",
+            width: 110,
             align: 'center',
-            width: 90,
-            render: (text, record)=> record.ETD || text
         },
         {
-            title: title('option', '操作'),
+            title: 'Complete Date',
+            dataIndex: 'LockDate',
+            valueType: "date",
+            width: 110,
+            align: 'center',
+        },
+        {
+            title: 'Action',
             valueType: 'option',
             align: 'center',
             key: 'option',
-            disable: true,
             width: 160,
             render: (text, record) => {
                 return operationList?.map(x=>
