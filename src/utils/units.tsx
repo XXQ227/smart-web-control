@@ -771,3 +771,106 @@ export function HeaderInfo(NBasicInfo: APIModel.NBasicInfo, LockDate: string, Sa
         </Descriptions>
     )
 }
+
+/**
+ * @Description: TODO: 计算从特定日期到现在的年数
+ * @author XXQ
+ * @date 2023/6/27
+ * @param data  指定的具体日期
+ * @returns
+ */
+export function getDiffYears(data: string) {
+    const specifiedDate = new Date(data);
+    // 当前日期
+    const currentDate = new Date();
+    // 计算年份差异
+    let diffYears: number = currentDate.getFullYear() - specifiedDate.getFullYear();
+    // 考虑月份和日期的差异
+    if (currentDate.getMonth() < specifiedDate.getMonth() ||
+        (currentDate.getMonth() === specifiedDate.getMonth() &&
+            currentDate.getDate() < specifiedDate.getDate())
+    ) {
+        diffYears--;
+    }
+
+    // 返回从指定日期到现在的年数
+    return diffYears;
+}
+
+/**
+ * @Description: TODO: 信控分数计算方法
+ * @author XXQ
+ * @date 2023/6/28
+ * @param target    信控分数行
+ * @param op_node   操作的节点
+ * @param op_value  节点判断的值
+ * @returns
+ */
+export function getCreditScore (target: any, op_node: number, op_value: any) {
+    let score: number = 0;
+    switch (op_node) {
+        case 1: // TODO: 注册资金
+            if (op_value <= 100000) {
+                score = 1;
+            } else if (100000 < op_value && op_value <= 500000) {
+                score = 2;
+            } else if (500000 < op_value && op_value <= 2000000) {
+                score = 3;
+            } else if (2000000 < op_value && op_value <= 5000000) {
+                score = 4;
+            } else if (5000000 < op_value) {
+                score = 4;
+            }
+            target.score = score;
+            break;
+        case 2: // TODO: 注册时间（年限）
+            const estimated_monthly: number = getDiffYears(op_value || '2008-06-23');
+            if (estimated_monthly <= 1) {
+                score = 1;
+            } else if (1 < estimated_monthly && estimated_monthly <= 3) {
+                score = 2;
+            } else if (4 < estimated_monthly && estimated_monthly <= 5) {
+                score = 3;
+            } else if (6 < estimated_monthly && estimated_monthly <= 7) {
+                score = 4;
+            } else if (7 < estimated_monthly) {
+                score = 5;
+            }
+            target.score = score;
+            break;
+        case 3: /*// TODO: 行业地位*/ case 4: // TODO: 信用状态
+            target.score = op_value;
+            break;
+        case 5: // TODO: 年营收
+            if (op_value <= 100000) {
+                score = 1;
+            } else if (100000 < op_value && op_value <= 300000) {
+                score = 2;
+            } else if (300000 < op_value && op_value <= 5000000) {
+                score = 3;
+            } else if (500000 < op_value && op_value <= 1000000) {
+                score = 4;
+            } else if (1000000 < op_value) {
+                score = 4;
+            }
+            target.score = score;
+            break;
+        case 6: // TODO: 利润率
+            if (op_value <= 1) {
+                score = 1;
+            } else if (1 < op_value && op_value <= 3) {
+                score = 2;
+            } else if (4 < op_value && op_value <= 5) {
+                score = 3;
+            } else if (6 < op_value && op_value <= 7) {
+                score = 4;
+            } else if (7 < op_value) {
+                score = 5;
+            }
+            target.score = score;
+            break;
+        default:
+            break;
+    }
+    return target;
+}

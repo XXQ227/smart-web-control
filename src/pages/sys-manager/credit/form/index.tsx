@@ -14,7 +14,7 @@ import {
 import {Button, Col, Form, InputNumber, message, Radio, Row, Space, Table} from 'antd'
 import type {ColumnsType} from 'antd/es/table'
 import {history, useModel, useParams} from 'umi'
-import {getCreditScore, getDiffYears, getFormErrorMsg, keepDecimal} from '@/utils/units'
+import {getCreditScore, getFormErrorMsg, keepDecimal} from '@/utils/units'
 import {BUSINESS_TYPE, CREDIT_ASSESSMENT_SCORE_DATA, POSITION_IN_INDUSTRY} from '@/utils/common-data'
 import ls from 'lodash'
 import FormItemSelect from '@/components/FormItemComponents/FormItemSelect'
