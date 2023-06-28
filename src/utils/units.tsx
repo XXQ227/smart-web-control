@@ -8,6 +8,8 @@ export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_ckswrjhkwyb.js';
 
 // TODO: 系统五字码
 export const SYSTEM_ID = 99003;
+export const SYSTEM_KEY_TEST = '00acb403-fb48-4623-9a85-f8731bc80599';
+export const SYSTEM_KEY_PRODUCT = 'a56aa88d-c8c6-4ee5-a67a-f8cb8a4c2bfd';
 
 // TODO: 自定义图标使用 【For Example: <CustomizeIcon type={'icon-create'} />】
 export const CustomizeIcon = createFromIconfontCN({
@@ -755,14 +757,17 @@ export function getFormErrorMsg(errorInfo: any = []) {
 
 export function HeaderInfo(NBasicInfo: APIModel.NBasicInfo, LockDate: string, SalesManName?: string) {
     return (
-        <Descriptions className={styles.headerList} size="small" column={{ xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 7}}>
-            <Descriptions.Item label="Business Line">{getBusinessLineName(NBasicInfo?.BusinessLineID)}</Descriptions.Item>
+        <Descriptions className={styles.headerList} size="small" column={{xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 7}}>
+            <Descriptions.Item
+                label="Business Line">{getBusinessLineName(NBasicInfo?.BusinessLineID)}</Descriptions.Item>
             <Descriptions.Item label="Job No.">{NBasicInfo?.Code}</Descriptions.Item>
             <Descriptions.Item label="Shipment Type">{NBasicInfo?.BizTypeEN}</Descriptions.Item>
             <Descriptions.Item label="Sales">{SalesManName}</Descriptions.Item>
-            <Descriptions.Item label="Creator" >{NBasicInfo?.Operator}</Descriptions.Item>
-            <Descriptions.Item label="Taking Date">{!!LockDate ? moment(LockDate).format("YYYY-MM-DD") : ""}</Descriptions.Item>
-            <Descriptions.Item label="Last Modified">{NBasicInfo?.LastEditor} / {NBasicInfo?.LastEditDate ? moment(NBasicInfo?.LastEditDate).format("YYYY-MM-DD") : ""}</Descriptions.Item>
+            <Descriptions.Item label="Creator">{NBasicInfo?.Operator}</Descriptions.Item>
+            <Descriptions.Item
+                label="Taking Date">{!!LockDate ? moment(LockDate).format("YYYY-MM-DD") : ""}</Descriptions.Item>
+            <Descriptions.Item
+                label="Last Modified">{NBasicInfo?.LastEditor} / {NBasicInfo?.LastEditDate ? moment(NBasicInfo?.LastEditDate).format("YYYY-MM-DD") : ""}</Descriptions.Item>
         </Descriptions>
     )
 }

@@ -130,6 +130,20 @@ const manager_route = {
             path: '/manager/branch/form/:id',
             component: './sys-manager/branch/branch-form',
         },
+        // TODO: 费用模板数据
+        {
+            name: 'credit_list',
+            icon: 'icon-charge-manage',
+            path: '/manager/credit',
+            component: './sys-manager/credit',
+        },
+        {
+            hideInMenu: true,   // 隐藏不显示
+            name: 'credit_info',
+            icon: 'icon-charge-manage',
+            path: '/manager/credit/form/:id',
+            component: './sys-manager/credit/form',
+        },
         // TODO: 字典表数据维护
         {
             name: 'dict',

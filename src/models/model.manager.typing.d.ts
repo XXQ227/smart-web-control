@@ -197,107 +197,107 @@ declare namespace APIManager {
   //endregion
 
 
-    // region TODO: 船代
-    type SearchShippingParams = {
-        name?: string,
-        currentPage?: number,
-        pageSize?: number,
-    }
+  // region TODO: 船代
+  type SearchShippingParams = {
+      name?: string,
+      currentPage?: number,
+      pageSize?: number,
+  }
 
-    type Voyage = {
-        id: string,                       // TODO:
-        name?: string,                    // TODO: 名称
-        etd?: string,                     // TODO: 预计离港日
-        type?: number,                    // TODO: 类型 1-出境 2-入境
-        lineId?: number,                  // TODO: 航线ID
-        lineName?: string,                // TODO: 航线名称
-        vesselId?: number,                // TODO: 船ID
-        vesselName?: string,              // TODO: 船名称
-        branchId?: number,                // TODO: 公司ID
-        remark?: string,                  // TODO: 备注
-        enableFlag?: number,              // TODO: 启用标识
-        deleteFlag?: number,              // TODO: 删除标识
-    }
+  type Voyage = {
+      id: string,                       // TODO:
+      name?: string,                    // TODO: 名称
+      etd?: string,                     // TODO: 预计离港日
+      type?: number,                    // TODO: 类型 1-出境 2-入境
+      lineId?: number,                  // TODO: 航线ID
+      lineName?: string,                // TODO: 航线名称
+      vesselId?: number,                // TODO: 船ID
+      vesselName?: string,              // TODO: 船名称
+      branchId?: number,                // TODO: 公司ID
+      remark?: string,                  // TODO: 备注
+      enableFlag?: number,              // TODO: 启用标识
+      deleteFlag?: number,              // TODO: 删除标识
+  }
 
-    type Vessel = {
-        id: string,                       // TODO:
-        name?: string,                    // TODO: 名称
-        code?: string,                    // TODO: 编码
-        callSign?: string,                // TODO: 船舶呼号
-        imoNum?: string,                  // TODO: 国际海事组织编号
-        branchId?: number,                // TODO: 公司ID
-        carrierId?: number,               // TODO: 承运人（BU中类型为客户&船公司类型才可被选到）
-        carrierName?: string,             // TODO: 承运人（BU中类型为客户&船公司类型才可被选到）
-        enableFlag?: number,              // TODO: 启用标识
-        deleteFlag?: number,              // TODO: 删除标识
-        isChange?: boolean;               // TODO: 是否编辑过
-    }
+  type Vessel = {
+      id: string,                       // TODO:
+      name?: string,                    // TODO: 名称
+      code?: string,                    // TODO: 编码
+      callSign?: string,                // TODO: 船舶呼号
+      imoNum?: string,                  // TODO: 国际海事组织编号
+      branchId?: number,                // TODO: 公司ID
+      carrierId?: number,               // TODO: 承运人（BU中类型为客户&船公司类型才可被选到）
+      carrierName?: string,             // TODO: 承运人（BU中类型为客户&船公司类型才可被选到）
+      enableFlag?: number,              // TODO: 启用标识
+      deleteFlag?: number,              // TODO: 删除标识
+      isChange?: boolean;               // TODO: 是否编辑过
+  }
 
-    type Line = {
-        id: string,                       // TODO:
-        name?: string,                    // TODO: 名称
-        areaCode?: string,                // TODO: 船公司区域编码 例如：KVT-1
-        serverId?: string,                // TODO: 股份公司Oracle系统所需的统计维度，每一个航线，需要在Oracle中申请此编号后填入
-        branchId?: number,                // TODO: 公司ID
-        carrierId?: number,               // TODO: 承运人（BU中类型为客户&船公司类型才可被选到）
-        enableFlag?: number,              // TODO: 启用标识
-        deleteFlag?: number,              // TODO: 删除标识
-        isChange?: boolean;               // TODO: 是否编辑过
-    }
-    //endregion
+  type Line = {
+      id: string,                       // TODO:
+      name?: string,                    // TODO: 名称
+      areaCode?: string,                // TODO: 船公司区域编码 例如：KVT-1
+      serverId?: string,                // TODO: 股份公司Oracle系统所需的统计维度，每一个航线，需要在Oracle中申请此编号后填入
+      branchId?: number,                // TODO: 公司ID
+      carrierId?: number,               // TODO: 承运人（BU中类型为客户&船公司类型才可被选到）
+      enableFlag?: number,              // TODO: 启用标识
+      deleteFlag?: number,              // TODO: 删除标识
+      isChange?: boolean;               // TODO: 是否编辑过
+  }
+  //endregion
 
-    //region TODO: 账期
-    type SearchAccountParams = {
-        UserID: number,
-        Year: string | undefined,
-    }
-    type AccountList = {
-        AccountState: number,
-        DFStatus: number | null,
-        DFStatusName: string,
-        ESStatus: number | null,
-        ESStatusName: string,
-        EndDate: string,
-        ErrorMes: string,
-        FinaMonth: string,
-        FinaYear: string,
-        ID: number,
-        IsDisplayCloseBtn: boolean,
-        IsDisplayDFBtn: boolean,
-        IsDisplayESBtn: boolean,
-        IsPrepareClose: boolean,
-        PeriodCode: string,
-        StartDate: string,
-        StateName: string,
-        TypeName: string,
-    };
-    type AccountPeriodResult = {
-        AccountPeriod: AccountPeriod,
-        // Currencys: APCurrency[],
-    }
-    type AccountPeriod = {
-        AccountMouth: string,
-        BranchID: number | null,
-        CNYRate: number | null,
-        EndDate: string,
-        ErrorMes: string,
-        ExRates: APExRate[],
-        ID: number | string | null,
-        PeriodCode: string,
-        StartDate: string,
-        State: number | null,
-        StateName: string,
-        Type: number | null,
-    }
-    type APExRate = {
-        RateValue: number,
-        CurrencyID: number,
-    }
-    type APCurrency = {
-        ID: number,
-        Name: string,
-    }
-    //endregion
+  //region TODO: 账期
+  type SearchAccountParams = {
+      UserID: number,
+      Year: string | undefined,
+  }
+  type AccountList = {
+      AccountState: number,
+      DFStatus: number | null,
+      DFStatusName: string,
+      ESStatus: number | null,
+      ESStatusName: string,
+      EndDate: string,
+      ErrorMes: string,
+      FinaMonth: string,
+      FinaYear: string,
+      ID: number,
+      IsDisplayCloseBtn: boolean,
+      IsDisplayDFBtn: boolean,
+      IsDisplayESBtn: boolean,
+      IsPrepareClose: boolean,
+      PeriodCode: string,
+      StartDate: string,
+      StateName: string,
+      TypeName: string,
+  };
+  type AccountPeriodResult = {
+      AccountPeriod: AccountPeriod,
+      // Currencys: APCurrency[],
+  }
+  type AccountPeriod = {
+      AccountMouth: string,
+      BranchID: number | null,
+      CNYRate: number | null,
+      EndDate: string,
+      ErrorMes: string,
+      ExRates: APExRate[],
+      ID: number | string | null,
+      PeriodCode: string,
+      StartDate: string,
+      State: number | null,
+      StateName: string,
+      Type: number | null,
+  }
+  type APExRate = {
+      RateValue: number,
+      CurrencyID: number,
+  }
+  type APCurrency = {
+      ID: number,
+      Name: string,
+  }
+  //endregion
 
   //region TODO: 费目管理
   // TODO: 标准费目
@@ -670,7 +670,64 @@ declare namespace APIManager {
   }
   //endregion
 
-  //region TODO:
+
+  //region TODO: 信控
+  type SearchCreditParams = {
+    type: string;
+    currentPage: number;
+    pageSize: number;
+    ownershipEntityType: string;
+  };
+  type Credit = {
+    id: string;// TODO:
+    corporation?: string;// TODO:法人或者董事
+    establishedTime?: string;// TODO:成立日期
+    registeredCapital?: string;// TODO:注册资金
+    earning?: string;// TODO:年收入
+    ownershipEntityType?: string;// TODO:所有制性质1-合营企业2-个人独资企业3-国有企业4-私营企业5-全民所有制企业6-集体所有制企业7-股份有限公司8-有限责任企业9-外商投资企业10-有限合伙企业
+    creditRatingType?: string;// TODO:信用记录类型1-已发生坏账2-无经验3-款能收回并且经常拖欠4-款能收回并且偶尔拖欠5-及时付款
+    cooperationMonth?: string;// TODO:合作月份
+    cooperationRemark?: string;// TODO:合作影响
+    lastYearReceive?: string;// TODO:上年收入(月/万)
+    lastYearProfit?: string;// TODO:上年毛利(月/万)
+    lastYearProfitRate?: string;// TODO:上年毛利率
+    lastYearCargoInfo?: string;// TODO:上年货物信息
+    creditDays?: string;// TODO:授信天数
+    creditLine?: string;// TODO:授信额度(/万)
+    expiryStartTime?: string;// TODO:有限期开始日
+    expiryEndTime?: string;// TODO:有限期结束日
+    grade1?: string;// TODO:评分项目1-注册资本(20%权重，满分5分)
+    grade2?: string;// TODO:评分项目2-成立年限(10%权重，满分5分)
+    grade3?: string;// TODO:评分项目3-行业类型(10%权重，满分5分)
+    grade4?: string;// TODO:评分项目4-信用记录(20%权重，满分5分)
+    grade5?: string;// TODO:评分项目5-预计交易规模(20%权重，满分5分)
+    grade6?: string;// TODO:评分项目6-预计交易毛利(20%权重，满分5分)
+    creditLevel?: string;// TODO:信用等级-根据评分结算1-AAA (4<=x<5)2-AA (3<=x<4)3-A (2<=x<3)4-B (1<=x<2)5-C (0<=x<1)
+    settlementPartyId?: string;// TODO:客户id(settlementPartyDetail主键)
+    settlementPartyName?: string;// TODO:客户名称
+    receive?: string;// TODO:今年收入
+    profit?: string;// TODO:今年毛利
+    profitRate?: string;// TODO:今年毛利率
+    cargoInfo?: string;// TODO:今年货物信息
+    bizTypeList?: string;// TODO:信控业务的主要类型1-集装箱整箱2-拼箱3-散货4-空运5-公路6-铁路
+    customerLevel?: string;// TODO:客户等级1-极好2-好3-中等4-偏低5-差
+    remark?: string;// TODO:备注信息
+    totalGrade?: string;// TODO:总评分(根据权重算总分，满分5分)
+    cooperation?: string;// TODO:合作影响
+    lastYearCreditDays?: string;// TODO:上年授信天数
+    lastYearCreditLine?: string;// TODO:上年授信额度(/万)
+    naturalPayDays?: string;// TODO:习惯付款天数
+    bizApproveDept?: string;// TODO:业务审批部门1-事业部-多式联运2-事业部-集装箱3-事业部-大宗商品4-事业部-合同物流5-事业部-工程物流6-事业部-电商物流7-事业部-空运
+    creditBusinessList?: string;// TODO:授信业务1-水运货代2-航空货代3-公路货代4-铁路货代5-专业报关6-多式联运7-合同物流8-项目物流9-船舶代理10-船舶承运11-船代订舱12-仓库码头13-汽车运输14-快件15-维修16-电商物流17-其他
+    enableFlag?: string;// TODO:启用标识 0＝停用，1＝啟用
+    deleteFlag?: string;// TODO:删除标识
+    createUserId?: string;// TODO:创建人ID
+    createUserName?: string;// TODO:创建人名称
+    createTime?: string;// TODO:创建时间
+    updateUserId?: string;// TODO:修改人ID
+    updateUserName?: string;// TODO:修改人名称
+    updateTime?: string;// TODO:修改时间
+  };
   //endregion
 
   //region TODO:

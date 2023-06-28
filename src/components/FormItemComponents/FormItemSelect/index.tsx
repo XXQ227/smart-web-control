@@ -4,8 +4,9 @@ import {Select} from 'antd'
 interface Props {
     id: string,
     name: string,
-    initialValue: any
+    initialValue?: any
     options: any
+    label?: any,
     rules?: any,
     disabled?: boolean,
     required?: boolean,
@@ -14,11 +15,12 @@ interface Props {
 }
 
 const FormItemSelect: React.FC<Props> = (props) => {
-    const {id, name, initialValue, required, rules, onSelect, FormItem, disabled, options} = props;
+    const {id, name, initialValue, required, rules, onSelect, FormItem, disabled, options, label} = props;
     return (
         <FormItem
             id={id}
             name={name}
+            label={label}
             rules={rules}
             required={required}
             disabled={disabled}
