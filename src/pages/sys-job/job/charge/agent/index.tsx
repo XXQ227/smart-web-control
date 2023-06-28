@@ -4,7 +4,7 @@ import {DeleteOutlined, PlusOutlined, FormOutlined} from '@ant-design/icons';
 import {useModel} from 'umi';
 import {getBranchID, getFuncCurrency, getUserID} from '@/utils/auths';
 import {formatNumToMoney, ID_STRING, keepDecimal} from '@/utils/units';
-import InputEdit from '@/components/InputNumberEdit'
+import InputEditNumber from '@/components/InputEditNumber'
 import {CHARGE_STATE_ENUM} from '@/utils/enum'
 import {stringify} from 'querystring';
 import ls from 'lodash';
@@ -127,7 +127,7 @@ const Agent: React.FC<Props> = (props) => {
                     initialValue={record.QTY} name={`QTY${record.CGID}`}
                     rules={[{required: true, message: `QTY is required.`}]}
                 >
-                    <InputEdit
+                    <InputEditNumber
                         value={text} valueStr={record.QTYStr}
                         id={`QTY${record.CGID}`} className={'isNumber-inp'}
                         handleChangeData={(val) => handleRowChange(index, record.CGID, 'QTY', val)}
@@ -144,7 +144,7 @@ const Agent: React.FC<Props> = (props) => {
                     initialValue={record.UnitPrice} name={`UnitPrice${record.CGID}`}
                     rules={[{required: true, message: `Unit Price is required.`}]}
                 >
-                    <InputEdit
+                    <InputEditNumber
                         value={text} valueStr={record.UnitPriceStr}
                         id={`UnitPrice${record.CGID}`} className={'isNumber-inp'}
                         handleChangeData={(val) => handleRowChange(index, record.CGID, 'UnitPrice', val)}
@@ -209,7 +209,7 @@ const Agent: React.FC<Props> = (props) => {
                     initialValue={record.EXRateTemp} name={`EXRateTemp${record.CGID}`}
                     rules={[{required: true, message: `Ex Rate is required.`}]}
                 >
-                    <InputEdit
+                    <InputEditNumber
                         value={text} valueStr={record.ExRateStr}
                         id={`EXRateTemp${record.CGID}`} className={'isNumber-inp'}
                         handleChangeData={(val) => handleRowChange(index, record.CGID, 'EXRateTemp', val)}
