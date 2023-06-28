@@ -22,6 +22,7 @@ export default (callback: T, deps: React.DependencyList) => {
         },
         PayCGList: [],
         ReceiveCGList: [],
+        ProxyCGList: [],
     };
     // TODO: 费用的币种、发票类型数据，创建费用时用
     const chargeBaseInfo: APIModel.AccountPeriodInfo = {

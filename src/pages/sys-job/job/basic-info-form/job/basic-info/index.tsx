@@ -1,10 +1,10 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useState} from 'react';
 import {ProCard, ProFormDatePicker, ProFormRadio, ProFormSelect, ProFormText, ProFormSwitch} from '@ant-design/pro-components';
 import {Col, Row, Divider} from 'antd';
-import {getBranchID, getUserID} from '@/utils/auths';
+import {getUserID} from '@/utils/auths';
 import {rowGrid} from '@/utils/units';
-import {stringify} from "qs";
 import SearchProFormSelect from '@/components/SearchProFormSelect'
+
 interface Props {
     FormItem: any,
     form?: any,
@@ -69,8 +69,9 @@ const BasicInfo: React.FC<Props> = (props) => {
                     <ProFormSelect
                         width="md"
                         placeholder=''
-                        name="SalesManID"
-                        initialValue={principalInfo?.SalesManID}
+                        // name="SalesManID"
+                        name={['NBasicInfo', 'Principal', 'SalesManID']}
+                        // initialValue={principalInfo?.SalesManID}
                         label="Sales"
                         options={SalesManList}
                         rules={[{required: true, message: 'Please Select Sales!'}]}
@@ -79,8 +80,9 @@ const BasicInfo: React.FC<Props> = (props) => {
                     <ProFormText
                         width="md"
                         placeholder=''
-                        name="ClientInvoNum"
-                        initialValue={principalInfo?.ClientInvoNum}
+                        // name="ClientInvoNum"
+                        name={['NBasicInfo', 'Principal', 'ClientInvoNum']}
+                        // initialValue={principalInfo?.ClientInvoNum}
                         label="Purchase/Shipment Order (Customer)"
                     />
                     <ProFormDatePicker
