@@ -622,7 +622,9 @@ declare namespace APIManager {
     dictId: string; // TODO: 字典ID
     dictCode?: string; // TODO: 字典代码
     name?: string; // TODO: 字典的名称
+    value?: string; // TODO: 字典的值
     relatedCode?: string; // TODO: 字典代码
+    relatedType?: string; // TODO: 字典类型
     sort?: number | string; // TODO: 排序
     remark?: string; // TODO: 备注
     deleteFlag?: number; // TODO: 删除标识:0不删除、1删除

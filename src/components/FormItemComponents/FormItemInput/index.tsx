@@ -4,10 +4,12 @@ import {Input} from 'antd'
 interface Props {
     id: string,
     name: string,
-    label: string,
-    initialValue: any
+    label?: string,
+    initialValue?: any
     FormItem: any,
     disabled?: boolean,
+    suffix?: any,
+    className?: any,
     required?: boolean,
     rules?: any,
     autoFocus?: boolean,
@@ -17,8 +19,8 @@ interface Props {
 
 const FormItemInput: React.FC<Props> = (props) => {
     const {
-        id, name, initialValue, onChange, FormItem, label,
-        disabled, placeholder, autoFocus, required, rules,
+        id, name, initialValue, onChange, FormItem, label, suffix,
+        disabled, placeholder, autoFocus, required, rules, className
     } = props;
     return (
         <FormItem
@@ -27,11 +29,12 @@ const FormItemInput: React.FC<Props> = (props) => {
             rules={rules}
             label={label}
             required={required}
+            className={className}
             initialValue={initialValue}
         >
             <Input
                 autoFocus={autoFocus} disabled={disabled} autoComplete={'off'}
-                placeholder={placeholder || ''} onChange={onChange}
+                suffix={suffix} placeholder={placeholder || ''} onChange={onChange}
             />
         </FormItem>
     )
