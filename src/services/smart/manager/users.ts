@@ -1,7 +1,6 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from '@/utils/request';
-import {stringify} from 'qs'
 
 /** 获取部门数据 */
 export async function queryUserAPI(body: APIManager.SearchUserParams, options?: { [key: string]: any }) {

@@ -1,7 +1,6 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from '@/utils/request';
-import {stringify} from 'qs'
 //region 字典类型表
 /** 获取所有 Dictionary 数据 */
 export async function queryDictAPI(body: APIManager.SearchDictParams, options?: { [key: string]: any }) {

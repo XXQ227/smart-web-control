@@ -1,7 +1,7 @@
 import {useCallback} from "react";
 import {
     queryChargeTemplateAPI, addChargeTemplateAPI, queryChargeTemplateInfoAPI,
-    editChargeTemplateAPI, deleteChargeTemplateAPI, OperateChargeTemplateAPI
+    editChargeTemplateAPI, deleteChargeTemplateAPI, operateChargeTemplateAPI
 } from '@/services/smart/manager/charge-template'
 
 
@@ -57,7 +57,7 @@ export default () => {
     // TODO: 删除费用模板
     const operateChargeTemplate = useCallback(async (params: APIManager.CGTemp)=> {
         // TODO: 请求后台 API
-        return await OperateChargeTemplateAPI(params);
+        return await operateChargeTemplateAPI(params);
     }, []);
     //endregion
 

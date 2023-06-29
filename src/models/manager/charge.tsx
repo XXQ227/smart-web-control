@@ -2,9 +2,9 @@ import type React from "react";
 import {useCallback} from "react";
 import {
     queryChargeStandardInfoAPI, editChargeStandardAPI, addChargeStandardAPI,
-    deleteChargeStandardAPI, OperateChargeStandardAPI, queryChargeStandardAPI,
+    deleteChargeStandardAPI, operateChargeStandardAPI, queryChargeStandardAPI,
     queryChargeItemInfoAPI, editChargeItemAPI, addChargeItemAPI,
-    deleteChargeItemAPI, OperateChargeItemAPI, queryChargeItemAPI
+    deleteChargeItemAPI, operateChargeItemAPI, queryChargeItemAPI
 } from '@/services/smart/manager/charge'
 
 
@@ -57,9 +57,9 @@ export default (callback: T, deps: React.DependencyList) => {
 
 
     // TODO: 启用禁用标准费目
-    const OperateChargeStandard = useCallback(async (params: APIManager.StandardCGItem) => {
+    const operateChargeStandard = useCallback(async (params: APIManager.StandardCGItem) => {
         // TODO: 请求后台 API
-        const response: any = await OperateChargeStandardAPI(params);
+        const response: any = await operateChargeStandardAPI(params);
         if (!response) return;
         return response;
     }, []);
@@ -107,9 +107,9 @@ export default (callback: T, deps: React.DependencyList) => {
 
 
     // TODO: 启用禁用标准费目
-    const OperateChargeItem = useCallback(async (params: APIManager.CGItem) => {
+    const operateChargeItem = useCallback(async (params: APIManager.CGItem) => {
         // TODO: 请求后台 API
-        const response: any = await OperateChargeItemAPI(params);
+        const response: any = await operateChargeItemAPI(params);
         if (!response) return;
         return response;
     }, []);
@@ -123,13 +123,13 @@ export default (callback: T, deps: React.DependencyList) => {
         queryChargeStandardInfo,
         editChargeStandard,
         deleteChargeStandard,
-        OperateChargeStandard,
+        operateChargeStandard,
 
         queryChargeItem,
         addChargeItem,
         queryChargeItemInfo,
         editChargeItem,
         deleteChargeItem,
-        OperateChargeItem,
+        operateChargeItem,
     }
 }

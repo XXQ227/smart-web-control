@@ -1,5 +1,4 @@
 import { request } from '@/utils/request';
-import {stringify} from 'qs'
 
 /** 获取费用模板数据 */
 export async function queryChargeTemplateAPI(body: APIManager.SearchCGTempParams) {
@@ -42,7 +41,7 @@ export async function deleteChargeTemplateAPI(body: APIManager.CGTemp) {
 }
 
 /** 获取费用模板数据 */
-export async function OperateChargeTemplateAPI(body: APIManager.CGTemp) {
+export async function operateChargeTemplateAPI(body: APIManager.CGTemp) {
   return request(`/apiBase/chargeTemplate/operateChargeTemplate/`, {
     method: 'POST',
     body,

@@ -1,7 +1,6 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from '@/utils/request';
-import {stringify} from 'querystring'
 
 /** 获取所有 branch 数据 */
 export async function queryBranchAPI(body: APIManager.SearchBranchParams, options?: { [key: string]: any }) {

@@ -1,5 +1,4 @@
 import { request } from '@/utils/request';
-import {stringify} from 'querystring'
 
 /** 获取所有 Credit Control 数据 */
 export async function queryCreditControlAPI(body: APIManager.SearchCreditParams) {

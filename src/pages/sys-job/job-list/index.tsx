@@ -2,11 +2,9 @@ import React, {useEffect, useRef, useState} from 'react';
 import type { RouteChildrenProps } from 'react-router';
 import type { ProColumns, ActionType, ColumnsState} from '@ant-design/pro-components';
 import {PageContainer, ProTable} from '@ant-design/pro-components';
-import {history, useModel, useIntl} from 'umi';
-import {getTitleInfo, IconFont} from '@/utils/units';
+import {history, useModel} from 'umi';
+import {IconFont} from '@/utils/units';
 import {getUserID} from '@/utils/auths';
-import {OCEAN_TRANSPORT_TYPE_ENUM} from '@/utils/enum'
-import SearchModal from "@/components/SearchModal";
 
 type APICJobListItem = APIModel.CJobListItem;
 
@@ -42,9 +40,6 @@ const JobList: React.FC<RouteChildrenProps> = () => {
     const [groupId, setGroupID] = useState(null);
     const [jobList, setJobList] = useState<APICJobListItem[]>([]);
 
-    // 初始化（或用于 message 提醒）
-    const intl = useIntl();
-
     useEffect(()=> {
         if (groupInfo.id && groupInfo.id !== groupId) {
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
@@ -52,9 +47,6 @@ const JobList: React.FC<RouteChildrenProps> = () => {
             setGroupID(groupInfo.id);
         }
     }, [groupId, groupInfo]);
-
-    // TODO: 获取列名<Title>
-    const title = (code: string, defaultMessage: string) => getTitleInfo(code, intl, defaultMessage);
 
     /**
      * @Description: TODO 单票操作（编辑、复制、退关）

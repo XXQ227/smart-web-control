@@ -29,14 +29,14 @@ const DescriptionIndex: React.FC<Props> = () => {
     const [form] = Form.useForm();
 
     const {
-        queryChargeItem, addChargeItem, editChargeItem, deleteChargeItem, OperateChargeItem
+        queryChargeItem, addChargeItem, editChargeItem, deleteChargeItem, operateChargeItem
     } = useModel('manager.charge', (res: any) => ({
         CGItemList: res.CGItemList,
         queryChargeItem: res.queryChargeItem,
         addChargeItem: res.addChargeItem,
         editChargeItem: res.editChargeItem,
         deleteChargeItem: res.deleteChargeItem,
-        OperateChargeItem: res.OperateChargeItem,
+        operateChargeItem: res.operateChargeItem,
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -166,7 +166,7 @@ const DescriptionIndex: React.FC<Props> = () => {
         // TODO: 冻结
         else {
             params.operate = operate = record.enableFlag ? 0 : 1;
-            result = await OperateChargeItem(params)
+            result = await operateChargeItem(params)
         }
         if (result.success) {
             message.success('Success!');

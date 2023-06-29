@@ -1,5 +1,4 @@
 import { request } from '@/utils/request';
-import {stringify} from "querystring";
 
 /** TODO: 获取 项目 列表 */
 export async function queryProjectAPI(body: APIManager.SearchPortParams, options?: { [key: string]: any }) {
@@ -49,7 +48,7 @@ export async function deleteProjectAPI(body: APIManager.Project, options?: { [ke
 
 /** TODO: 启用禁用项目 */
 export async function operateProjectAPI(body: APIManager.Project, options?: { [key: string]: any }) {
-    return request(`/apiBase/project/OperateProject`, {
+    return request(`/apiBase/project/operateProject`, {
         method: 'POST',
         body,
         ...(options || {}),

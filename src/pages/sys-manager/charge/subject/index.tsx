@@ -28,14 +28,14 @@ const SubjectIndex: React.FC<Props> = () => {
 
     const [form] = Form.useForm();
     const {
-        queryChargeStandard, addChargeStandard, editChargeStandard, deleteChargeStandard, OperateChargeStandard
+        queryChargeStandard, addChargeStandard, editChargeStandard, deleteChargeStandard, operateChargeStandard
     } = useModel('manager.charge', (res: any) => ({
         StandardCGItemList: res.StandardCGItemList,
         queryChargeStandard: res.queryChargeStandard,
         addChargeStandard: res.addChargeStandard,
         editChargeStandard: res.editChargeStandard,
         deleteChargeStandard: res.deleteChargeStandard,
-        OperateChargeStandard: res.OperateChargeStandard,
+        operateChargeStandard: res.operateChargeStandard,
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -160,7 +160,7 @@ const SubjectIndex: React.FC<Props> = () => {
         // TODO: 冻结
         else {
             params.operate = operate = record.enableFlag ? 0 : 1;
-            result = await OperateChargeStandard(params)
+            result = await operateChargeStandard(params)
         }
         if (result.success) {
             message.success('Success!');

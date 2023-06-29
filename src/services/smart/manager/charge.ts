@@ -1,7 +1,6 @@
 // @ts-ignore
 /* eslint-disable */
 import { request } from '@/utils/request';
-import {stringify} from 'querystring'
 
 //region TODO: 标准科目
 /** 查询标准费目列表 */
@@ -50,8 +49,8 @@ export async function deleteChargeStandardAPI(body: APIManager.CGItem, options?:
 }
 
 /** 启用禁用标准费目 */
-export async function OperateChargeStandardAPI(body: APIManager.CGItem, options?: { [key: string]: any }) {
-  return request(`/apiBase/chargeStandard/OperateChargeStandard`, {
+export async function operateChargeStandardAPI(body: APIManager.CGItem, options?: { [key: string]: any }) {
+  return request(`/apiBase/chargeStandard/operateChargeStandard`, {
     method: 'POST',
     body,
     ...(options || {}),
@@ -105,8 +104,8 @@ export async function deleteChargeItemAPI(body: APIManager.CGItem, options?: { [
 }
 
 /** 启用禁用标准费目 */
-export async function OperateChargeItemAPI(body: APIManager.CGItem, options?: { [key: string]: any }) {
-  return request(`/apiBase/chargeItem/OperateChargeItem`, {
+export async function operateChargeItemAPI(body: APIManager.CGItem, options?: { [key: string]: any }) {
+  return request(`/apiBase/chargeItem/operateChargeItem`, {
     method: 'POST',
     body,
     ...(options || {}),

@@ -1,5 +1,4 @@
 import { request } from '@/utils/request';
-import {stringify} from 'qs'
 
 /** 获取部门数据 */
 export async function queryEDIAPI(body: APIManager.SearchEDIParams) {

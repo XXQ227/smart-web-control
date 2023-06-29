@@ -1,5 +1,4 @@
 import { request } from '@/utils/request';
-import {stringify} from 'querystring'
 
 //region TODO: 航次
 /** TODO: 查询 航次 列表 */
@@ -49,7 +48,7 @@ export async function deleteVoyageAPI(body: APIManager.Voyage, options?: { [key:
 
 /** TODO: 启用禁用航次 */
 export async function operateVoyageAPI(body: APIManager.Voyage, options?: { [key: string]: any }) {
-    return request(`/apiBase/voyage/OperateVoyage`, {
+    return request(`/apiBase/voyage/operateVoyage`, {
         method: 'POST',
         body,
         ...(options || {}),
@@ -68,7 +67,7 @@ export async function queryVesselAPI(body: APIManager.SearchShippingParams, opti
 }
 
 /** TODO: 新增船舶 */
-export async function addVesselAPI(body: APIManager.Shipping, options?: { [key: string]: any }) {
+export async function addVesselAPI(body: APIManager.Vessel, options?: { [key: string]: any }) {
     return request(`/apiBase/vessel/addVessel`, {
         method: 'POST',
         body,
@@ -77,7 +76,7 @@ export async function addVesselAPI(body: APIManager.Shipping, options?: { [key: 
 }
 
 /** TODO: 编辑船舶 */
-export async function editVesselAPI(body: APIManager.Shipping, options?: { [key: string]: any }) {
+export async function editVesselAPI(body: APIManager.Vessel, options?: { [key: string]: any }) {
     return request(`/apiBase/vessel/editVessel`, {
         method: 'POST',
         body,
@@ -86,7 +85,7 @@ export async function editVesselAPI(body: APIManager.Shipping, options?: { [key:
 }
 
 /** TODO: 删除船舶 */
-export async function deleteVesselAPI(body: APIManager.Shipping, options?: { [key: string]: any }) {
+export async function deleteVesselAPI(body: APIManager.Vessel, options?: { [key: string]: any }) {
     return request(`/apiBase/vessel/deleteVessel/`, {
         method: 'POST',
         body,
@@ -95,8 +94,8 @@ export async function deleteVesselAPI(body: APIManager.Shipping, options?: { [ke
 }
 
 /** TODO: 启用禁用船舶 */
-export async function operateVesselAPI(body: APIManager.Shipping, options?: { [key: string]: any }) {
-    return request(`/apiBase/vessel/OperateVessel`, {
+export async function operateVesselAPI(body: APIManager.Vessel, options?: { [key: string]: any }) {
+    return request(`/apiBase/vessel/operateVessel`, {
         method: 'POST',
         body,
         ...(options || {}),
@@ -115,7 +114,7 @@ export async function queryLineAPI(body: APIManager.SearchShippingParams, option
 }
 
 /** TODO: 新增航线 */
-export async function addLineAPI(body: APIManager.Shipping, options?: { [key: string]: any }) {
+export async function addLineAPI(body: APIManager.Line, options?: { [key: string]: any }) {
     return request(`/apiBase/line/addLine`, {
         method: 'POST',
         body,
@@ -124,7 +123,7 @@ export async function addLineAPI(body: APIManager.Shipping, options?: { [key: st
 }
 
 /** TODO: 编辑航线 */
-export async function editLineAPI(body: APIManager.Shipping, options?: { [key: string]: any }) {
+export async function editLineAPI(body: APIManager.Line, options?: { [key: string]: any }) {
     return request(`/apiBase/line/editLine`, {
         method: 'POST',
         body,
@@ -133,7 +132,7 @@ export async function editLineAPI(body: APIManager.Shipping, options?: { [key: s
 }
 
 /** TODO: 删除航线 */
-export async function deleteLineAPI(body: APIManager.Shipping, options?: { [key: string]: any }) {
+export async function deleteLineAPI(body: APIManager.Line, options?: { [key: string]: any }) {
     return request(`/apiBase/line/deleteLine/`, {
         method: 'POST',
         body,
@@ -142,8 +141,8 @@ export async function deleteLineAPI(body: APIManager.Shipping, options?: { [key:
 }
 
 /** TODO: 启用禁用航线 */
-export async function operateLineAPI(body: APIManager.Shipping, options?: { [key: string]: any }) {
-    return request(`/apiBase/line/OperateLine`, {
+export async function operateLineAPI(body: APIManager.Line, options?: { [key: string]: any }) {
+    return request(`/apiBase/line/operateLine`, {
         method: 'POST',
         body,
         ...(options || {}),
