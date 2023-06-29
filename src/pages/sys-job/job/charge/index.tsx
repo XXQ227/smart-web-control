@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
-import {FooterToolbar, PageContainer, ProCard, ProForm} from '@ant-design/pro-components';
+import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components';
 import {Button, Col, Form, message, Row} from 'antd';
 import {history, useModel} from 'umi';
 import {getFormErrorMsg} from '@/utils/units';
