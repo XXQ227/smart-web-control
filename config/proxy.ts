@@ -1,3 +1,4 @@
+
 /**
  * 在生产环境 代理是无法生效的，所以这里没有生产环境的配置
  * -------------------------------
@@ -52,12 +53,14 @@ export default {
     // TODO: 登录 IAM 系统
     '/apiIAM/': {
       // 要代理的地址
-      target: 'http://172.30.197.117:30181/iam-external/doc.html#',
+      // target: 'https://apitest.i.sinotrans.com:8065/',
+      target: 'http://172.30.197.117:30181/',
       // 配置了这个可以从 http 代理到 https
       // 依赖 origin 的功能可能需要这个，比如 cookie
       changeOrigin: true,
       pathRewrite: {
-        '^/apiIAM': '/iam-external/v2',
+        // '^/apiIAM': '/iam-external/v2',
+        '^/apiIAM': '/',
       },
     },
     // TODO: 乾坤子系统代理地址

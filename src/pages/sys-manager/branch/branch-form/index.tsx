@@ -34,12 +34,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
 
     const [BranchInfoVO, setBranchInfoVO] = useState<any>({});
     const [loading, setLoading] = useState<boolean>(false);
-
-
     //endregion
-
-    // useEffect(() => {
-    // }, [])
 
 
     /**
@@ -49,10 +44,10 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const handleGetBranchInfo = async () => {
-        setLoading(true);
+        // setLoading(true);
         const result: any = await queryBranchInfo({id});
-        setLoading(false);
         if (result.success) {
+            // setLoading(false);
             setBranchInfoVO(result.data);
         } else {
             message.error(result.message);
@@ -118,7 +113,6 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                 autoFocusFirstInput
                 // TODO: 设置默认值
                 initialValues={BranchInfoVO}
-                formKey={'cv-center-information'}
                 // TODO: 提交数据
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
@@ -261,7 +255,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                     </Row>
                 </ProCard>
                 <ProCard className={'ant-card-pro-table'}>
-                    <BankIndex BankList={[]}/>
+                    <BankIndex form={form} BankList={[]} />
                 </ProCard>
 
                 <FooterToolbar

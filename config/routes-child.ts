@@ -121,7 +121,7 @@ const manager_route = {
             name: 'branch_list',
             icon: 'icon-company-manager',
             path: '/manager/branch/list',
-            component: './sys-manager/branch/branch-list',
+            component: './sys-manager/branch',
         },
         {
             hideInMenu: true,   // 隐藏不显示

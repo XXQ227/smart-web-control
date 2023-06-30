@@ -40,6 +40,7 @@ export function setSystemMes(sysMes: any = initUserInfo) {
     sessionStorage.setItem('DivisionID', sysMes.DivisionID);
     sessionStorage.setItem('branchCode', sysMes.BranchCode);
     sessionStorage.setItem('FineReportURL', sysMes.FinereportURL);
+    sessionStorage.setItem('currencyList', JSON.stringify([{value: 'CNY', label: 'CNY'}, {value: 'HKD', label: 'HKD'}]));
 }
 
 // 设置密码
@@ -96,6 +97,10 @@ export function getCountryName() {
 
 export function getFuncCurrency() {
     return sessionStorage.getItem('funcCurrency');
+}
+
+export function getCurrencyList() {
+    return JSON.parse(sessionStorage.getItem('currencyList') || '');
 }
 
 export function getIsOpenAccount() {
