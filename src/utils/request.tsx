@@ -1,6 +1,7 @@
 import {getBranchID, getUserID, getAccess_Token} from '@/utils/auths'
-import { notification } from 'antd';
-import {history} from 'umi';
+import {message, notification} from 'antd';
+// import {history} from 'umi';
+import {SYSTEM_ID, SYSTEM_ID_LAND, SYSTEM_KEY_TEST, SYSTEM_KEY_TEST_LAND} from '@/utils/units'
 
 
 const codeMessage = {
@@ -68,7 +69,11 @@ export function request(url: string, options: any) {
     };
     if (url.indexOf('/apiIAM') > -1) {
         newOptions.headers = {
-            keyid: '10afb30d-543c-4d63-b78a-3afd53d74e6e',
+            env: 'fat', // TODO: 可选值： prod(生产环境) / dev（开发环境）/ fat（测试环境）
+            // keyid: SYSTEM_KEY_TEST_LAND,
+            // clientId: SYSTEM_ID_LAND,
+            keyid: SYSTEM_KEY_TEST,
+            clientId: SYSTEM_ID,
             ...newOptions.headers
         }
     }
@@ -88,21 +93,22 @@ export function request(url: string, options: any) {
             }
         })
         .catch((e) => {
+            message.error(e.message);
             const status = e.name;
             if (status === 401) {
-                history.push('/user/login');
+                // history.push('/user/login');
                 return;
             }
             if (status === 403) {
-                history.push('/exception/403');
+                // history.push('/exception/403');
                 return;
             }
             if (status <= 504 && status >= 500) {
-                history.push('/exception/500');
+                // history.push('/exception/500');
                 return;
             }
             if (status >= 404 && status < 422) {
-                history.push('/exception/404');
+                // history.push('/exception/404');
             }
         });
 }

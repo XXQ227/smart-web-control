@@ -6,6 +6,7 @@ import {useModel} from 'umi';
 import {DeleteOutlined, EditOutlined} from '@ant-design/icons'
 import {Divider, message, Popconfirm, Input, Button} from 'antd'
 import {history} from '@@/core/history'
+import {SYSTEM_ID} from '@/utils/units'
 
 const {Search} = Input;
 
@@ -27,6 +28,9 @@ const CreditIndex: React.FC<RouteChildrenProps> = () => {
         deleteCreditControl: res.deleteCreditControl,
     }));
 
+    const {iamAccessedApps, getAdminUserListBySystemCodeList, mdmApps, getManagerUserByAppId
+    } = useModel('iam');
+
     const [loading, setLoading] = useState<boolean>(false);
     const [CreditListVO, setCreditListVO] = useState<APICredit[]>([]);
 
@@ -44,6 +48,63 @@ const CreditIndex: React.FC<RouteChildrenProps> = () => {
         setCreditListVO(result.data);
         setLoading(false);
         return result;
+    }
+
+    const handleIAM = async () => {
+        const queryInfo = {
+            "keyword": "",
+            "orderBy": "",
+            "pagingInfo": {
+                "currentPage": 1,
+                "pageSize": 100
+            },
+            "queryFields": [
+                {
+                    "fieldName": "",
+                    "fieldStringValue": "",
+                    "fieldType": "",
+                    "fieldValue": {},
+                    "operator": ""
+                }
+            ],
+            "superAdmin": true
+        }
+        await iamAccessedApps({queryInfo});
+    }
+
+    const handlemdmApps = async () => {
+        const queryInfo = {
+            "keyword": "",
+            "orderBy": "",
+            "pagingInfo": {
+                "currentPage": 1,
+                "pageSize": 100
+            },
+            "queryFields": [
+                {
+                    "fieldName": "",
+                    "fieldStringValue": "",
+                    "fieldType": "",
+                    "fieldValue": {},
+                    "operator": ""
+                }
+            ],
+            "superAdmin": true
+        }
+        await mdmApps(queryInfo);
+    }
+
+    const handlegetAdminUserListBySystemCodeList = async () => {
+        const params = {
+            list: ['36035']
+        }
+        await getAdminUserListBySystemCodeList(['99003']);
+    }
+    const handlegetManagerUserByAppId = async () => {
+        const params = {
+            appCode: '36035'
+        }
+        await getManagerUserByAppId(99003);
     }
 
     /**
@@ -166,6 +227,10 @@ const CreditIndex: React.FC<RouteChildrenProps> = () => {
                     request={(params: APISearchCredit) => handleGetCreditList(params)}
                 />
                 <Button onClick={handleOperate}>aa</Button>
+                <Button onClick={handleIAM}>IAM</Button>
+                <Button onClick={handlemdmApps}>mdmApps</Button>
+                <Button onClick={handlegetAdminUserListBySystemCodeList}>IAM2</Button>
+                <Button onClick={handlegetManagerUserByAppId}>getManagerUserByAppId</Button>
             </ProCard>
         </PageContainer>
     )

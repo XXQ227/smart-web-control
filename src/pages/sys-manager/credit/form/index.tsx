@@ -57,7 +57,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     async function handleGetCreditByID(paramsVal: APICredit) {
-        // setLoading(true);
+        setLoading(true);
         if (BusinessLineList?.length === 0) {
             await queryDictCommon({dictCodes: ['business_line']});
         }
@@ -70,6 +70,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                     purposeOfCallType: result.data.purposeOfCallType
                 });
                 const ctInfo = result.data?.CTInfo || {};
+                result.data.totalScore = result.data.totalScore || 0;
                 if (!result.data.totalScore) {
                     let newData = ls.cloneDeep(ScoreData);
                     // TODO: 当第一次创建信控时，把 【注册资金、注册时间、年营收】 的计分先计算出来
@@ -99,10 +100,11 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                 message.error(result.message);
             }
             setCreditInfoVO(result.data);
-            // setLoading(false);
+            setLoading(false);
             return result.data;
         } else {
-            return {};
+            setLoading(false);
+            return {totalScore: 0};
         }
     }
 
@@ -132,6 +134,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
     }
     const handleScoreChange = (val: any, fieldName: string, rowKey: number) => {
         const newData = ls.cloneDeep(ScoreData);
+        console.log(CreditInfoVO);
         let target: any = newData.find((item: any) => item.id === rowKey) || {};
         if (['customerLevel', 'creditRatingType'].includes(fieldName)) {
             target.score = val;
@@ -147,10 +150,11 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
             }
         }
         // TODO: 单独拿到成绩，用来评定客户信控等级
-        const scoreArr = newData.map(item=> item.totalScore);
-        CreditInfoVO.totalScore = scoreArr.reduce((old, now) => old + now, 0);
+        let totalScore: number = 0;
+        newData.map(item=> totalScore += item.totalScore);
         // TODO: 获取客户信控等级
-        CreditInfoVO.creditLevel = getCreditLevel(CreditInfoVO.totalScore);
+        CreditInfoVO.totalScore = totalScore;
+        CreditInfoVO.creditLevel = getCreditLevel(totalScore);
         setCreditInfoVO(CreditInfoVO);
         // TODO: 更新评分数据
         newData.splice(rowKey - 1, 1, target);
@@ -289,11 +293,11 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 name='earning'
                                 placeholder=''
                                 label='Annual Revenue'
-                                rules={[{required: true, message: 'Annual Revenue is required'}]}
                             />
                         </Col>
                         <Col span={5}>
                             <FormItemSelect
+                                required
                                 label='Position in industry'
                                 id={'customerLevel'} name={'customerLevel'}
                                 options={POSITION_IN_INDUSTRY} FormItem={FormItem}
@@ -302,6 +306,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                         </Col>
                         <Col span={5}>
                             <FormItemSelect
+                                required
                                 label='Credit Standing'
                                 id={'creditRatingType'} name={'creditRatingType'}
                                 options={POSITION_IN_INDUSTRY} FormItem={FormItem}
@@ -430,6 +435,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                     <Row gutter={24}>
                         <Col span={8}>
                             <ProFormText
+                                required
                                 placeholder=''
                                 name='volume'
                                 label='Total Shipment Volume'
@@ -437,6 +443,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                         </Col>
                         <Col span={4}>
                             <FormItemInput
+                                required
                                 placeholder=''
                                 id={'annualRevenue'}
                                 name={'annualRevenue'}
@@ -449,6 +456,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                         </Col>
                         <Col span={4}>
                             <FormItemInput
+                                required
                                 placeholder=''
                                 id={'grossProfit'}
                                 name={'grossProfit'}
@@ -482,7 +490,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                             <span>
                                 <Space>
                                     <Space>Score: {CreditInfoVO.totalScore}</Space>
-                                    <Space>Credit Level: {CreditInfoVO.creditLevel}</Space>
+                                    <label><Space>Credit Level: {CreditInfoVO.creditLevel}</Space></label>
                                 </Space>
                             </span>
                         </Col>
@@ -510,7 +518,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 name={'creditDays'}
                                 label={'Credit Days'}
                                 className={'ant-input-suffix'}
-                                suffix={suffix}
+                                suffix={<span className={'ant-input-suffix-span'}> Days</span>}
                                 FormItem={FormItem}
                                 onChange={(e: any) => handleScoreChange(e?.target?.value, 'annualRevenue', 6)}
                             />
@@ -523,9 +531,17 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                         </Col>
                         <Col span={8}>
                             <ProFormCheckbox.Group
-                                name='checkbox'
-                                label="行业分布"
-                                options={['农业', '制造业', '互联网']}
+                                name='businessLine'
+                                label="Business Line"
+                                options={BusinessLineList}
+                            />
+                        </Col>
+                        <Col span={24}>
+                            <ProFormTextArea
+                                placeholder=''
+                                name='remark'
+                                label='Remark'
+                                fieldProps={{rows: 3}}
                             />
                         </Col>
                     </Row>

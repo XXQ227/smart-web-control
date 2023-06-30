@@ -713,6 +713,8 @@ declare namespace APIManager {
     cargoInfo?: string;// TODO:今年货物信息
     bizTypeList?: string;// TODO:信控业务的主要类型1-集装箱整箱2-拼箱3-散货4-空运5-公路6-铁路
     customerLevel?: string;// TODO:客户等级1-极好2-好3-中等4-偏低5-差
+    annualRevenue?: number;// TODO:营收
+    grossProfit?: number;// TODO:营收毛利
     remark?: string;// TODO:备注信息
     totalGrade?: string;// TODO:总评分(根据权重算总分，满分5分)
     cooperation?: string;// TODO:合作影响
@@ -732,7 +734,25 @@ declare namespace APIManager {
   };
   //endregion
 
-  //region TODO:
+  //region TODO: 银行
+  type Bank = {
+    id: string;// TODO:
+    name?: string;// TODO: 账号名称 (开户人)
+    num?: string;// TODO:银行账号 (Code+流水号)
+    bankAddress?: string;// TODO:银行地址
+    bankName?: string;// TODO:银行名称
+    currencyName?: string;// TODO:银行币种
+    swiftCode?: string;// TODO:银行国际代码
+    enableFlag?: string;// TODO:启用标识
+    deleteFlag?: string;// TODO:删除标识
+    createUserId?: string;// TODO:创建人ID
+    createUserName?: string;// TODO:创建人名称
+    createTime?: string;// TODO:创建时间
+    updateUserId?: string;// TODO:修改人ID
+    updateUserName?: string;// TODO:修改人名称
+    updateTime?: string;// TODO:修改时间
+    isChange?: boolean; // TODO: 是否编辑过
+  };
   //endregion
 
   //region TODO:

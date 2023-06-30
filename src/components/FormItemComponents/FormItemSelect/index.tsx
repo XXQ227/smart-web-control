@@ -29,6 +29,7 @@ const FormItemSelect: React.FC<Props> = (props) => {
             <Select
                 onSelect={onSelect}
                 options={options}
+                // options={options.map((item: any) => ({ label: item.label || item, value: item.value || item }))}
             />
         </FormItem>
     )

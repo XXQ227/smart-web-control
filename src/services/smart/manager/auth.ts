@@ -1,5 +1,4 @@
 import { request } from '@/utils/request';
-import {stringify} from 'qs'
 
 /** 获取权限数据 */
 export async function queryAuthResourceTreeAPI(body: APIManager.SearchAuthResourceParams, options?: { [key: string]: any }) {

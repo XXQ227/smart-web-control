@@ -1,5 +1,4 @@
 import { request } from '@/utils/request';
-import {stringify} from 'qs'
 
 /** 获取费用模板数据 */
 export async function queryChargeTemplateAPI(body: APIManager.SearchCGTempParams) {
