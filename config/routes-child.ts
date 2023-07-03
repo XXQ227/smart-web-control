@@ -294,6 +294,13 @@ const manager_route = {
             path: '/manager/charge-quotation/form/:id',
             component: './sys-manager/charge-quotation/form',
         },
+        // TODO: 发票类型
+        {
+            name: 'invoiceType_list',
+            icon: 'icon-invoiceType',
+            path: '/manager/invoiceType/list',
+            component: './sys-manager/invoiceType',
+        },
         // TODO: 部门
         {
             name: 'department_list',

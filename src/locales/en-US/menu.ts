@@ -73,6 +73,8 @@ export default {
   // TODO: 报价
   'menu.manager.charge_quotation_list': 'Charge Quotation - Index',
   'menu.manager.charge_quotation_info': 'Charge Quotation - Information',
+  // TODO: 发票类型
+  'menu.manager.invoiceType_list': 'InvoiceType - Index',
   // TODO:
   'menu.chart': 'Report',
   'menu.chart.line-chart': '折线图',

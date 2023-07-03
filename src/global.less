@@ -312,7 +312,7 @@ ol {
               line-height: 32px;
             }
             .ant-input-status-error {
-              border: 1px #ff4d4f dashed !important;
+              //border: 1px #ff4d4f dashed !important;
               &:after {
                 content: 'is required.';
                 right: 30px;
@@ -332,16 +332,18 @@ ol {
               text-align: right;
             }
           }
-          .ant-form-item-explain-error{
+          .ant-form-item-explain-error {
             z-index: 99999!important;
             top: -20px!important;
           }
         }
-        .ant-switch{
-          margin-top: 5px;
+        .ant-switch, .ant-radio-group {
+          margin-top: 6px;
         }
         // TODO: ProForm 组件必填红色边框
-        .ant-form-item-has-error{
+        .ant-form-item-has-error {
+          border-radius: 5px !important;
+          border: 1px #ff4d4f dashed !important;
           .ant-input-affix-wrapper, .ant-select-selector{
             border: solid 1px #d91212!important;
           }
