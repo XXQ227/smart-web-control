@@ -382,6 +382,31 @@ const manager_route = {
                 },
             ],
         },
+        // TODO: bpmn 审批 test
+        {
+            name: 'bpmn',
+            icon: 'icon-user-manager',
+            path: '/manager/bpmn',
+            // component: './sys-manager/bpmn',
+            routes: [
+                {
+                    path: '/',
+                    redirect: '/bpmn/sample',
+                },
+                {
+                    name: 'sample',
+                    icon: 'smile',
+                    path: '/manager/bpmn/sample',
+                    component: './sys-manager/bpmn/bpmn-sample/BpmnSample',
+                },
+                {
+                    name: 'editor',
+                    icon: 'smile',
+                    path: '/manager/bpmn/editor',
+                    component: './sys-manager/bpmn/bpmn-editor/BpmnEditor',
+                },
+            ],
+        },
     ],
 };
 
