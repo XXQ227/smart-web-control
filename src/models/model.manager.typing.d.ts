@@ -537,6 +537,28 @@ declare namespace APIManager {
   }
   //endregion
 
+  //region TODO: 发票类型
+  type SearchInvoiceTypeParams = {
+      name?: string,
+      currentPage?: number,
+      pageSize?: number,
+  }
+
+  type InvoiceType = {
+      id: string,                          // TODO: 主键ID
+      branchId?: number,                   // TODO: 公司ID
+      name?: string;                       // TODO: 名称
+      taxFlag?: number,                    // TODO: 税表示 0-不含税类型（税金=总价*税率） 1-含税类型（税金=总价/（1+税率）*税率） 2-含税类型2（税金=总价/（1-税率）*税率）
+      subSonCode?: string;                 // TODO: 发票税率对应的子目
+      subCategoryCode?: string;            // TODO: 发票税率对应的科目
+      type?: number,                       // TODO: 类型 1-收 2-付
+      taxRate?: number,                    // TODO: 税率
+      enableFlag?: number,                 // TODO: 启用标识 0＝停用，1＝啟用
+      deleteFlag?: number,                 // TODO: 删除标识
+      isChange?: boolean;                  // TODO: 编辑状态
+  }
+  //endregion
+
   //region TODO: 权限
   type SearchAuthResourceParams = {
     id: any;

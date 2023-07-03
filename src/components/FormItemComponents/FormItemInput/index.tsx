@@ -22,6 +22,7 @@ const FormItemInput: React.FC<Props> = (props) => {
         id, name, initialValue, onChange, FormItem, label, suffix,
         disabled, placeholder, autoFocus, required, rules, className
     } = props;
+
     return (
         <FormItem
             id={id}
@@ -29,12 +30,16 @@ const FormItemInput: React.FC<Props> = (props) => {
             rules={rules}
             label={label}
             required={required}
-            className={className}
             initialValue={initialValue}
         >
             <Input
-                autoFocus={autoFocus} disabled={disabled} autoComplete={'off'}
-                suffix={suffix} placeholder={placeholder || ''} onChange={onChange}
+                className={className}
+                autoFocus={autoFocus}
+                disabled={disabled}
+                autoComplete={'off'}
+                suffix={suffix}
+                placeholder={placeholder || ''}
+                onChange={onChange}
             />
         </FormItem>
     )
