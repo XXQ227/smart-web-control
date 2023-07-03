@@ -53,6 +53,11 @@ export default {
   'menu.manager.auth.auth_form': 'Authority - Information',
   'menu.manager.auth.role': 'Role',
   'menu.manager.auth.role_form': 'Role - Information',
+  'menu.manager.user_list': 'User - Index',
+  // TODO: bpmn
+  'menu.manager.bpmn': 'BPMN - Index',
+  'menu.manager.bpmn.sample': 'BPMN - Sample',
+  'menu.manager.bpmn.editor': 'BPMN - Editor',
   // TODO: 业务公司
   'menu.manager.cv_center.company_list': 'Company - Index',
   'menu.manager.cv_center.company_info': 'Company - Information',
@@ -73,7 +78,7 @@ export default {
   // TODO: 账期
   'menu.manager.account_list': 'Account - Index',
   'menu.manager.account_info': 'Account - Information',
-  // TODO: 账期
+  // TODO: edi
   'menu.manager.edi': 'EDI - Index',
   'menu.manager.edi_info': 'EDI - Information',
   // TODO: 费目
