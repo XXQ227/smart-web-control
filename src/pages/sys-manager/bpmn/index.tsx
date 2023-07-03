@@ -4,7 +4,7 @@ import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components'
 import './css/workflow.css';
 import {Button, Space} from 'antd'
 import {history} from '@@/core/history'
-import BpmnViewer from '@/pages/sys-manager/bpmn/bpmn-viewer'
+// import BpmnViewer from '@/pages/sys-manager/bpmn/bpmn-viewer'
 
 /* WorkFlow */
 // import WorkFlow from '@/pages/sys-manager/bpmn/components/WorkFlow'
@@ -26,7 +26,7 @@ const BPMNList: React.FC<RouteChildrenProps> = () => {
             }}
         >
             <ProCard>
-                <BpmnViewer bpmnFilePath={{}} />
+                {/*<BpmnViewer bpmnFilePath={{}} />*/}
                 {/*<WorkFlow config={config}/>*/}
             </ProCard>
             <FooterToolbar
