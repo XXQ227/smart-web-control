@@ -133,7 +133,7 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
                     </Row>
                 </ProCard>
 
-                <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/dict'})}>返回</Button>}>
+                <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/dict'})}>Back</Button>}>
                     <Space>
                         <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
                     </Space>

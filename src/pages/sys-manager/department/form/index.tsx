@@ -182,7 +182,7 @@ const DepartmentForm: React.FC<RouteChildrenProps> = () => {
 
                 <FooterToolbar
                     extra={<Button
-                        onClick={() => push({pathname: '/manager/department'})}>返回</Button>}>
+                        onClick={() => push({pathname: '/manager/department'})}>Back</Button>}>
                     <Button type={'primary'} htmlType={'submit'}>提交</Button>
                 </FooterToolbar>
             </ProForm>

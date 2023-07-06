@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProFormInstance} from '@ant-design/pro-components';
 import {
@@ -59,7 +59,6 @@ const VoyageForm: React.FC<RouteChildrenProps> = (props) => {
     const onFinish = async (val: APIVoyage) => {
         setLoading(true);
         let result: API.Result;
-        console.log(val)
         const param: any = {
             name: val.name,
             etd: val.etd,

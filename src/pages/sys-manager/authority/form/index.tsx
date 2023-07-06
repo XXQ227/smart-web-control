@@ -158,7 +158,7 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
                     </Row>
                 </ProCard>
 
-                <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/auth/auth-resource'})}>返回</Button>}>
+                <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/auth/auth-resource'})}>Back</Button>}>
                     <Space>
                         <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
                     </Space>

@@ -15,10 +15,11 @@ const {Search} = Input;
 type APIBranch = APIManager.Branch;
 type APISearchBranch = APIManager.SearchBranchParams;
 
-
-// TODO: 获取单票集的请求参数
-const searchParams: APISearchBranch = {
+// TODO: 获取公司列表的请求参数
+const initSearchParam = {
     name: '',
+    currentPage: 1,
+    pageSize: 20
 };
 
 const BranchListIndex: React.FC<RouteChildrenProps> = () => {
@@ -34,28 +35,29 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [BranchListVO, setBranchListVO] = useState<APIBranch[]>(BranchList || []);
+    const [searchParams, setSearchParams] = useState<APISearchBranch>(initSearchParam);
 
     /**
-     * @Description: TODO 获取单票数据集合
-     * @author XXQ
-     * @date 2023/2/13
+     * @Description: TODO 获取公司数据集合
+     * @author LLS
+     * @date 2023/7/5
      * @param params    参数
      * @returns
      */
     async function handleQueryBranch(params: APISearchBranch) {
         setLoading(true);
-        // TODO: 分页查询【参数页】
-        // params.PageNum = params.current || 1;
-        // params.pageSize = params.PageSize || 15;
-        // params.PageSize = params.PageSize || 15;
         const result: API.Result = await queryBranch(params);
-        setBranchListVO(result.data);
+        if (result && result.success) {
+            setBranchListVO(result.data);
+        } else if (result) {
+            message.error(result.message);
+        }
         setLoading(false);
         return [];
     }
 
     /**
-     * @Description: TODO: 编辑 CV 信息
+     * @Description: TODO: 编辑 公司 信息
      * @author XXQ
      * @date 2023/5/5
      * @param record    操作当前 行
@@ -63,13 +65,11 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
      */
     const handleEditBranch = (record: APIBranch) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        const url = `/manager/branch/form/${btoa(record.id)}`;
-        // TODO: 跳转页面<带参数>
-        history.push({pathname: url})
+        history.push({pathname: `/manager/branch/form/${btoa(record.id)}`});
     }
 
     /**
-     * @Description: TODO:
+     * @Description: TODO: 删除 / 冻结公司
      * @author XXQ
      * @date 2023/6/1
      * @param index     编辑行的序号
@@ -78,10 +78,11 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     const handleOperateBranch = async (index: number, record: APIBranch, state: string) => {
+        setLoading(true);
         let result: API.Result;
         const params: any = {id: record.id};
         const newData: APIBranch[] = ls.cloneDeep(BranchListVO);
-        if (state === 'freezen') {
+        if (state === 'freeze') {
             // TODO: 冻结取反上传数据
             params.operate = record.enableFlag ? 0 : 1;
             result = await operateBranch(params);
@@ -94,15 +95,14 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
             // TODO: 删除当前行
             newData.splice(index, 1);
         }
-        // TODO:
         if (result.success) {
-            message.success('success!');
+            message.success('Success');
             setBranchListVO(newData);
         } else {
             message.error(result.message);
         }
+        setLoading(false);
     }
-
 
     const columns: ProColumns<APIBranch>[] = [
         {
@@ -113,50 +113,50 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
         {
             title: 'Short Name',
             dataIndex: 'nameShortEn',
-            width: 200,
+            width: '20%',
             align: 'center',
         },
         {
             title: 'Currency',
             dataIndex: 'funcCurrencyName',
-            width: 100,
+            width: '10%',
             align: 'center',
         },
         {
             title: 'Oracle ID',
             dataIndex: 'orgId',
-            width: 150,
+            width: '15%',
             align: 'center',
         },
         {
             title: 'Contact',
             dataIndex: 'contactName',
-            width: 150,
+            width: '15%',
             align: 'center',
         },
         {
             title: 'Action',
-            width: 100,
+            width: 110,
             align: 'center',
             className: 'cursorStyle',
             render: (text, record, index) => {
                 return (
                     <Fragment>
-                        <EditOutlined color={'#1765AE'} onClick={() => handleEditBranch(record)}/>
+                        <EditOutlined color={'#1765AE'} hidden={!!record.enableFlag} onClick={() => handleEditBranch(record)}/>
+                        <DividerCustomize hidden={!!record.enableFlag}/>
+                        <Popconfirm
+                            onConfirm={() => handleOperateBranch(index, record, 'freeze')}
+                            okText={'Yes'} cancelText={'No'} placement={'topRight'}
+                            title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
+                        >
+                            <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                        </Popconfirm>
                         <Popconfirm
                             onConfirm={() => handleOperateBranch(index, record, 'delete')}
                             title="Sure to delete?" okText={'Yes'} cancelText={'No'}
                         >
                             <DividerCustomize />
                             <DeleteOutlined color={'red'}/>
-                        </Popconfirm>
-                        <Popconfirm
-                            onConfirm={() => handleOperateBranch(index, record, 'freezen')}
-                            okText={'Yes'} cancelText={'No'} placement={'topRight'}
-                            title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
-                        >
-                            <DividerCustomize />
-                            <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
                         </Popconfirm>
                     </Fragment>
                 )
@@ -199,9 +199,17 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
                             </Button>
                         ]
                     }}
-                    pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
-                    // @ts-ignore
-                    request={(params: APISearchBranch) => handleQueryBranch(params)}
+                    pagination={{
+                        showSizeChanger: true,
+                        pageSizeOptions: [20, 30, 50, 100],
+                        onChange: (page, pageSize) => {
+                            searchParams.currentPage = page;
+                            searchParams.pageSize = pageSize;
+                            setSearchParams(searchParams);
+                        },
+                    }}
+                    request={handleQueryBranch}
+                    // request={(params: APISearchBranch) => handleQueryBranch(params)}
                 />
             </ProCard>
         </PageContainer>

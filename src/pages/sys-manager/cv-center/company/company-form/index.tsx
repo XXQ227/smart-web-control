@@ -301,7 +301,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                     </Row>
                 </ProCard>
 
-                <FooterToolbar extra={<Button onClick={() => history.push({pathname: returnURL})}>返回</Button>}>
+                <FooterToolbar extra={<Button onClick={() => history.push({pathname: returnURL})}>Back</Button>}>
                     <Space>
                         <Popover
                             title={'Please select the type of merchant center!'}

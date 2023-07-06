@@ -505,7 +505,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                     </Row>
                 </ProCard>
                 <FooterToolbar
-                    extra={<Button onClick={() => history.push({pathname: returnURL})}>返回</Button>}>
+                    extra={<Button onClick={() => history.push({pathname: returnURL})}>Back</Button>}>
                     <Button key={'submit'} type={'primary'} htmlType={'submit'}>提交</Button>
                 </FooterToolbar>
             </ProForm>

@@ -407,36 +407,35 @@ declare namespace APIManager {
 
   //endregion
 
-  //region TODO: Branch
-  type SearchBranchParams = {
-    name: string;
-  };
-  type Branch = {
-    /** 列表的内容总数 */
-    id: string; // TODO: 主键 ID
-    contactName?: string; // TODO: 联系人
-    phone?: string; // TODO: 电话
-    address?: string; // TODO: 公司地址
-    cityName?: string; // TODO: 公司所在城市
-    code?: string; // TODO: 分公司编码
-    defaultPortId?: number | null; // TODO: 公司所在区域的默认港口
-    funcCurrencyName?: string; // TODO: 本位币
-    nameFullEn?: string; // TODO: 公司全称(英文)
-    nameFullLocal?: string; // TODO: 公司全称(当地)
-    nameShortEn?: string; // TODO: 公司简称(英文)
-    nameShortLocal?: string; // TODO: 公司简称(当地)
-    orgId?: string; // TODO: 公司 oracle id
-    orgCreateId?: string; // TODO: AUC组织识别码
-    taxNum?: string; // TODO: 统一社会信用码，或税号
-    bankAccountIds?: string; // TODO: 公司银行id集合
-    enableFlag?: number | null; // TODO: 启用标识
-    deleteFlag?: number | null; // TODO: 删除标识
-    createUserId?: string; // TODO: 创建人ID
-    createUserName?: string; // TODO: 创建人名称
-    createTime?: string; // TODO: 创建时间
-    updateUserId?: string; // TODO: 修改人ID
-    updateUserName?: string; // TODO: 修改人名称
-    updateTime?: string; // TODO: 修改时间
+    //region TODO: Branch 公司
+    type SearchBranchParams = {
+        name?: string,
+        currentPage?: number,
+        pageSize?: number,
+    };
+
+    type Branch = {
+        id: string,                       // TODO: 主键 ID
+        contactName?: string;             // TODO: 联系人
+        phone?: string;                   // TODO: 电话
+        address?: string;                 // TODO: 公司地址
+        cityName?: string;                // TODO: 公司所在城市
+        code?: string;                    // TODO: 分公司编码
+        defaultPortId?: number | null;    // TODO: 公司所在区域的默认港口
+        funcCurrencyName?: string;        // TODO: 本位币
+        currencies?: string[];            // TODO: 币种集合
+        nameFullEn?: string;              // TODO: 公司全称(英文)
+        nameFullLocal?: string;           // TODO: 公司全称(当地)
+        nameShortEn?: string;             // TODO: 公司简称(英文)
+        nameShortLocal?: string;          // TODO: 公司简称(当地)
+        orgId?: string;                   // TODO: 公司 oracle id
+        orgCreateId?: string;             // TODO: AUC组织识别码
+        parentId?: string;                // TODO: 父级公司id
+        taxNum?: string;                  // TODO: 统一社会信用码，或税号
+        bankAccountIds?: string;          // TODO: 公司银行id集合
+        enableFlag?: number | null;       // TODO: 启用标识
+        deleteFlag?: number | null;       // TODO: 删除标识
+        // bankAccountEntityList?: Bank[];   // TODO: 银行数据 <Array>
   };
   //endregion
 
@@ -756,26 +755,20 @@ declare namespace APIManager {
   };
   //endregion
 
-  //region TODO: 银行
-  type Bank = {
-    id: string;// TODO:
-    name?: string;// TODO: 账号名称 (开户人)
-    num?: string;// TODO:银行账号 (Code+流水号)
-    bankAddress?: string;// TODO:银行地址
-    bankName?: string;// TODO:银行名称
-    currencyName?: string;// TODO:银行币种
-    swiftCode?: string;// TODO:银行国际代码
-    enableFlag?: string;// TODO:启用标识
-    deleteFlag?: string;// TODO:删除标识
-    createUserId?: string;// TODO:创建人ID
-    createUserName?: string;// TODO:创建人名称
-    createTime?: string;// TODO:创建时间
-    updateUserId?: string;// TODO:修改人ID
-    updateUserName?: string;// TODO:修改人名称
-    updateTime?: string;// TODO:修改时间
-    isChange?: boolean; // TODO: 是否编辑过
-  };
-  //endregion
+    //region TODO: 银行
+    type Bank = {
+        id: string,                       // TODO: 主键 ID
+        name?: string,                    // TODO: 账号名称 (开户人)
+        num?: string,                     // TODO: 银行账号 (Code+流水号)
+        bankAddress?: string,             // TODO: 银行地址
+        bankName?: string,                // TODO: 银行名称
+        currencyName?: string,            // TODO: 银行币种
+        swiftCode?: string,               // TODO: 银行国际代码
+        enableFlag?: string,              // TODO: 启用标识
+        deleteFlag?: string,              // TODO: 删除标识
+        isChange?: boolean;               // TODO: 是否编辑过
+    };
+    //endregion
 
   //region TODO:
   //endregion

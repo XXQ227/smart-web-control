@@ -34,7 +34,6 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
         form.resetFields();
         const result: API.Result = await queryDictInfo({id});
         setDictVO(result.data);
-        console.log(result.data);
         return result.data;
     }
 
@@ -124,7 +123,7 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
                     </Col>
                 </Row>
             </ProCard>
-            <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/dict'})}>返回</Button>}/>
+            <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/manager/dict'})}>Back</Button>}/>
         </PageContainer>
     )
 }

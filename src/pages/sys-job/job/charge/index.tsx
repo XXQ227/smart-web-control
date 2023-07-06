@@ -182,7 +182,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
                         </Col>
                     </Row>
                 </ProCard>
-                <FooterToolbar extra={<Button onClick={() => history.goBack()}>返回</Button>}>
+                <FooterToolbar extra={<Button onClick={() => history.goBack()}>Back</Button>}>
                     <Button type={'primary'} htmlType={'submit'}>保存</Button>
                 </FooterToolbar>
             </Form>

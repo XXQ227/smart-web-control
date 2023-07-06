@@ -107,31 +107,31 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
         {
             title: 'Short Name',
             dataIndex: 'nameShort',
-            width: 150,
+            width: '13%',
             ellipsis: true,
         },
         {
             title: 'Code',
             dataIndex: 'code',
-            width: 150,
+            width: '13%',
             ellipsis: true,
         },
         {
             title: 'Industry',
             dataIndex: 'industryType',
-            width: 150,
+            width: '13%',
             ellipsis: true,
         },
         {
             title: 'Manager',
             dataIndex: 'managerId',
-            width: 150,
+            width: '13%',
             ellipsis: true,
         },
         {
             title: 'Oracle ID',
             dataIndex: 'oracleId',
-            width: 150,
+            width: '13%',
             ellipsis: true,
         },
         {

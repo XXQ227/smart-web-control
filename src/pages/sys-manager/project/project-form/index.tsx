@@ -129,12 +129,10 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
         } else {
             // TODO: 编辑项目
             param.id = id;
-            console.log(param)
             result = await editProject(param);
         }
         if (result.success) {
             message.success('success');
-            console.log(result.data)
             if (id === '0') history.push({pathname: `/manager/project/form/${btoa(result.data)}`});
         } else {
             message.error(result.message)

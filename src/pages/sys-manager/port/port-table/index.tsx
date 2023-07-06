@@ -23,7 +23,6 @@ interface Props {
     editAPI: any,
 }
 
-
 const PortTable: React.FC<Props> = (props) => {
     const {type, queryAPI, deleteAPI, operateAPI, addAPI, editAPI,} = props;
 

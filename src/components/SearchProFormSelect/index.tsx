@@ -27,15 +27,17 @@ let isSearch: number = 0;
 
 const SearchProFormSelect: React.FC<Props> = (props) => {
     const {
-        valueObj, label, url, qty, query, disabled, filedValue, filedLabel, required, placeholder, isShowLabel
+        valueObj, label, url, qty, query,
+        disabled, filedValue, filedLabel,
+        required, placeholder, isShowLabel,
     } = props;
     // 设置是否是编辑
     const [valInput, setUserInput] = useState<API.APIValue$Label>(valueObj || {});
     // const [isSearch, setIsSearch] = useState<boolean>(false);
 
     // TODO: 返回结果的数据结构；默认 {Key: number, Value: string}，当有其他返回键值对时，在组件调用时定义
-    const resValue: string = filedValue || 'id';
-    const resLabel: string = filedLabel || 'name';
+    const resValue: string = filedValue || 'value';
+    const resLabel: string = filedLabel || 'label';
     // const [resValue, setResValue] = useState<string>('Key');
     // const [resLabel, setResLabel] = useState<string>('Value');
 
@@ -92,11 +94,12 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
             // @ts-ignore
             request={(val: any) => {
                 // TODO: isSearch === 1：可搜索
-                if (isSearch === 1) {
+                /*if (isSearch === 1) {
                     return fetchData(val.keyWords, url, query, qty, resValue, resLabel)
                 } else {
                     return [];
-                }
+                }*/
+                return fetchData(val.keyWords, url, query, qty, resValue, resLabel)
             }}
         />
     )

@@ -11,7 +11,7 @@ export async function queryProjectAPI(body: APIManager.SearchPortParams, options
 
 /** TODO: 获取 项目 详情 */
 export async function queryProjectInfoAPI(body: {id: string}, options?: { [key: string]: any }) {
-    return request(`/apiBase/project/queryProjectInfo/`, {
+    return request(`/apiBase/project/queryProjectInfo`, {
         method: 'POST',
         body,
         ...(options || {}),

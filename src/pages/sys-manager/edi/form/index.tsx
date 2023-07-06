@@ -261,7 +261,7 @@ const EDIForm: React.FC<RouteChildrenProps> = () => {
 
                 <FooterToolbar
                     extra={<Button
-                        onClick={() => push({pathname: '/manager/edi/list'})}>返回</Button>}>
+                        onClick={() => push({pathname: '/manager/edi/list'})}>Back</Button>}>
                     <Button type={'primary'} htmlType={'submit'}>提交</Button>
                 </FooterToolbar>
             </ProForm>
