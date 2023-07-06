@@ -342,7 +342,6 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <SearchProFormSelect
-                                mode={true}
                                 qty={10}
                                 isShowLabel={true}
                                 required={false}
