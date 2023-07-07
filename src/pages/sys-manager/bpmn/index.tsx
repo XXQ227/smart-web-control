@@ -2,13 +2,12 @@ import React from 'react';
 import type { RouteChildrenProps } from 'react-router';
 import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components'
 import {Button, Space} from 'antd'
-import {history} from '@@/core/history'
+import './style.less'
+import {history} from 'umi'
+import {xmlStr} from '@/pages/sys-manager/bpmn/resources/xmlStr'
+import BpmnJsModeler from '@/pages/sys-manager/bpmn/test/bpmn-js-modeler'
 
-const BPMNList: React.FC<RouteChildrenProps> = () => {
-    /* WorkFlow */
-    // const config = data.data.nodeConfig;
-
-    // const bpmnFilePath = 'path/to/bpmn-file.bpmn';
+const BpmnJsFetch: React.FC<RouteChildrenProps> = () => {
 
     return (
         <PageContainer
@@ -18,7 +17,8 @@ const BPMNList: React.FC<RouteChildrenProps> = () => {
                 breadcrumb: {},
             }}
         >
-            <ProCard>
+            <ProCard className={'ant-card-bpmn'}>
+                <BpmnJsModeler xmlStr={xmlStr}/>
             </ProCard>
             <FooterToolbar
                 extra={<Button onClick={() => history.push({pathname: '/manager/bpmn/list'})}>返回</Button>}>
@@ -29,4 +29,5 @@ const BPMNList: React.FC<RouteChildrenProps> = () => {
         </PageContainer>
     )
 }
-export default BPMNList;
+
+export default BpmnJsFetch;

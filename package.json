@@ -55,7 +55,12 @@
     "@umijs/max": "^4.0.51",
     "@umijs/route-utils": "^2.2.2",
     "antd": "^4.24.7",
+    "bpmn-js": "^8.9.1",
+    "bpmn-js-properties-panel": "^0.46.0",
+    "bpmn-moddle": "^8.0.1",
+    "camunda-bpmn-moddle": "^6.1.1",
     "classnames": "^2.3.0",
+    "diagram-js": "^12.2.0",
     "lodash": "^4.17.0",
     "moment": "^2.29.0",
     "omit.js": "^2.0.2",
@@ -66,7 +71,8 @@
     "react-dev-inspector": "^1.7.0",
     "react-dom": "^17.0.2",
     "react-helmet-async": "^1.2.0",
-    "umi": "^3.5.0"
+    "umi": "^3.5.0",
+    "webpack": "^5.88.1"
   },
   "devDependencies": {
     "@ant-design/pro-cli": "^2.1.0",
