@@ -36,6 +36,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [BranchListVO, setBranchListVO] = useState<APIBranch[]>(BranchList || []);
     const [searchParams, setSearchParams] = useState<APISearchBranch>(initSearchParam);
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
 
     /**
      * @Description: TODO 获取公司数据集合
@@ -46,6 +47,10 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
      */
     async function handleQueryBranch(params: APISearchBranch) {
         setLoading(true);
+        if (isFirstLoad) {
+            setSearchParams({ ...initSearchParam, name: '' });
+            setIsFirstLoad(false)
+        }
         const result: API.Result = await queryBranch(params);
         if (result && result.success) {
             setBranchListVO(result.data);
@@ -190,7 +195,8 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
                             onSearch={async (val: any) => {
                                 searchParams.name = val;
                                 await handleQueryBranch(searchParams);
-                            }}/>
+                            }}
+                        />
                     }
                     toolbar={{
                         actions: [
