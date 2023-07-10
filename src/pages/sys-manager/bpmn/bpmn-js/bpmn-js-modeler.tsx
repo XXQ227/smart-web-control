@@ -16,14 +16,15 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import 'bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css'; // 右边工具栏样式
-
 import '../styles/bpmn-custom-color.css'
 // import '../styles/bpmn-properties-theme-red.css'
 import '../styles/bpmn-properties-theme-blue.css'
+
 // import '../styles/bpmn-properties-theme-black.css'
 
 interface Props {
     xmlStr: any;
+    handleChangeBpmnXml: (xml: any) => void;
 }
 
 const BpmnJsModeler: React.FC<Props> = (props) => {
@@ -36,7 +37,7 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
             keyboard: {
                 bindTo: window,
             },
-            //添加控制板
+            //添加右侧控制板
             propertiesPanel: {
                 // parent: '#js-properties-panel'
             },
@@ -57,7 +58,7 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
                 viewer.on('commandStack.changed', () => {
                     // 把传入的 done 再传给bpmn原型的saveXML函数调用
                     viewer.saveXML({ format: true }, (_err: any, xml: any) => {
-                        console.log(xml);
+                        props.handleChangeBpmnXml(xml);
                     })
                 })
                 // 让图能自适应屏幕
@@ -71,7 +72,7 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
     return (
         <div className={'containers'} style={{height: '100%'}}>
             <div id={'canvas'} ref={containerRef} />
-            <div id="js-properties-panel" className="panel"></div>
+            <div id="js-properties-panel" className="panel" />
         </div>
     )
 }

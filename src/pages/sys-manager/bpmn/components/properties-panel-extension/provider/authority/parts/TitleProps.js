@@ -6,7 +6,8 @@ import {
 
 
 export default function(group, element) {
-    if (is(element, 'bpmn:StartEvent')) { // 可以在这里做类型判断
+    if (is(element, 'bpmn:startEvent')) { // 可以在这里做类型判断
+        console.log(entryFactory);
         group.entries.push(entryFactory.textField({
             id: 'title',
             description: '权限的标题',

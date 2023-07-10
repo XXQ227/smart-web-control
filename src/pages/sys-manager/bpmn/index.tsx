@@ -5,9 +5,13 @@ import {Button, Space} from 'antd'
 import './style.less'
 import {history} from 'umi'
 import {xmlStr} from '@/pages/sys-manager/bpmn/resources/xmlStr'
-import BpmnJsModeler from '@/pages/sys-manager/bpmn/test/bpmn-js-modeler'
+import BpmnJsModeler from '@/pages/sys-manager/bpmn/bpmn-js/bpmn-js-modeler'
 
 const BpmnJsFetch: React.FC<RouteChildrenProps> = () => {
+
+    const handleChangeBpmnXml = (xml: any) => {
+        console.log(xml);
+    }
 
     return (
         <PageContainer
@@ -18,7 +22,7 @@ const BpmnJsFetch: React.FC<RouteChildrenProps> = () => {
             }}
         >
             <ProCard className={'ant-card-bpmn'}>
-                <BpmnJsModeler xmlStr={xmlStr}/>
+                <BpmnJsModeler xmlStr={xmlStr} handleChangeBpmnXml={handleChangeBpmnXml}/>
             </ProCard>
             <FooterToolbar
                 extra={<Button onClick={() => history.push({pathname: '/manager/bpmn/list'})}>返回</Button>}>
