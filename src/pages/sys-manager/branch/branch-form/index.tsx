@@ -55,7 +55,6 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
         setLoading(true);
         const result: any = await queryBranchInfo({id});
         if (result.success) {
-            console.log(result.data)
             setBranchInfoVO(result.data);
             setBankListVO(result.data?.bankAccountList);
         } else {
