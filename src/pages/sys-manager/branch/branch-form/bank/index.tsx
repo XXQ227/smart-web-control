@@ -46,12 +46,12 @@ const BankIndex: React.FC<Props> = (props) => {
             result = {success: true};
         } else {
             result = await props.handleOperateBank(record.id)
-            console.log(result)
         }
         newData.splice(index, 1);
         if (result.success) {
             message.success('Success');
             setBankListVO(newData);
+            props.handleChangeBank(newData);
         } else {
             message.error(result.message);
         }

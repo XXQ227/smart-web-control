@@ -196,6 +196,7 @@ const manager_route = {
                 },
                 // TODO: 客户审批
                 {
+                    hideInMenu: true,   // 隐藏不显示
                     name: 'customer_approval_list',
                     icon: 'icon-cv-approval',
                     path: '/manager/cv-center/cv-approval/list',

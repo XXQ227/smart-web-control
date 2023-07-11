@@ -31,7 +31,6 @@ const PortTable: React.FC<Props> = (props) => {
     const [PortInfoVO, setPortInfoVO] = useState<any>({});
     const [searchParams, setSearchParams] = useState<APISearchPort>(initSearchParam);
 
-
     const [loading, setLoading] = useState<boolean>(false);
     const [PortListVO, setPortListVO] = useState<APIPort[]>([]);
 

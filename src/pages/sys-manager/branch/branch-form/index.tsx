@@ -19,9 +19,11 @@ import SearchProFormSelect from '@/components/SearchProFormSelect'
 type APIBranch = APIManager.Branch;
 type APIBank = APIManager.Bank;
 
+export type LocationState = Record<string, unknown>;
+
 const BranchForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
-    const {match: {params}} = props;
+    const {match: {params}, location: {state}} = props;
     const id = atob(params?.id);
     const [form] = Form.useForm();
     const formRef = useRef<ProFormInstance>();
@@ -87,12 +89,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
     const onFinish = async (val: APIBranch) => {
         setLoading(true);
         let result: API.Result;
-        // const newBankList: Omit<APIBank, 'id'>[] = BankListVO.map(({id, ...rest}: APIBank) => rest);
-        /*const newBankList = BankListVO.filter((obj: { [key: string]: any }) => !(obj.hasOwnProperty("isChange") && obj.isChange === true))
-            .map(({ id, ...rest }: APIBank) => rest);*/
         const newBankList = filterObjects(BankListVO);
-        console.log(BankListVO)
-        console.log(newBankList)
         const param: any = {
             contactName: val.contactName,
             phone: val.phone,
@@ -110,18 +107,14 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
             parentId: val.parentId,
             taxNum: val.taxNum,
             currencies: val.currencies,
-            // bankAccountIds: BranchInfoVO.bankAccountIds,
             bankAccountEntityList: newBankList,
         };
         if (id === '0') {
             // TODO: 新增公司
-            console.log(param)
             result = await addBranch(param);
         } else {
             // TODO: 编辑公司
             param.id = id;
-            // param.bankAccountIds = BranchInfoVO.bankAccountIds;
-            console.log(param)
             result = await editBranch(param);
         }
         if (result.success) {
@@ -165,20 +158,14 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
      */
     const handleOperateBank = async (bankAccountId: string) => {
         const bankAccountIds = (BranchInfoVO.bankAccountIds).replace(new RegExp(`\\b${bankAccountId}\\b,?`), '');
-        console.log(BranchInfoVO.bankAccountIds)
-        console.log(bankAccountIds)
         const param: any = {
             branchId: id,
             bankAccountId,
             bankAccountIds,
         };
-        console.log(param)
         const result: API.Result = await deleteBank(param)
         if (result.success) {
-            console.log(BranchInfoVO)
             BranchInfoVO.bankAccountIds = bankAccountIds;
-            console.log(BranchInfoVO)
-            // setBranchInfoVO(newData);
         }
         return result;
     }
@@ -371,7 +358,14 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                 </ProCard>
 
                 <FooterToolbar
-                    extra={<Button onClick={() => history.push({pathname: '/manager/branch/list'})}>Back</Button>}>
+                    extra={<Button
+                        onClick={() => history.push({
+                            pathname: '/manager/branch/list',
+                            state: {
+                                searchParams: state ? (state as LocationState)?.searchParams : '',
+                            },
+                        })}
+                    >Back</Button>}>
                     <Space>
                         <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
                     </Space>

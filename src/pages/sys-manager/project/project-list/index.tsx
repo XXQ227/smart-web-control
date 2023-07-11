@@ -166,7 +166,6 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
 
     return (
         <PageContainer
-            loading={false}
             header={{
                 breadcrumb: {},
             }}
