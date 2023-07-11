@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
@@ -15,6 +15,8 @@ const {Search} = Input;
 type APIBranch = APIManager.Branch;
 type APISearchBranch = APIManager.SearchBranchParams;
 
+export type LocationState = Record<string, unknown>;
+
 // TODO: 获取公司列表的请求参数
 const initSearchParam = {
     name: '',
@@ -22,21 +24,42 @@ const initSearchParam = {
     pageSize: 20
 };
 
-const BranchListIndex: React.FC<RouteChildrenProps> = () => {
+const initPagination = {
+    current: 1,
+    pageSize: 20,
+    total: 0,
+}
+
+const BranchListIndex: React.FC<RouteChildrenProps> = (props) => {
+    const searchQueryBranch = ls.cloneDeep(initSearchParam)
+    const searchLocation = props.location.state ? (props.location.state as LocationState)?.searchParams : '';
 
     const {
-        BranchList, queryBranch, operateBranch, deleteBranch
+        queryBranch, operateBranch, deleteBranch
     } = useModel('manager.branch', (res: any) => ({
-        BranchList: res.BranchList,
         queryBranch: res.queryBranch,
         operateBranch: res.operateBranch,
         deleteBranch: res.deleteBranch,
     }));
-
     const [loading, setLoading] = useState<boolean>(false);
-    const [BranchListVO, setBranchListVO] = useState<APIBranch[]>(BranchList || []);
-    const [searchParams, setSearchParams] = useState<APISearchBranch>(initSearchParam);
-    const [isFirstLoad, setIsFirstLoad] = useState(true);
+    const [BranchListVO, setBranchListVO] = useState<APIBranch[]>([]);
+    const [searchParams, setSearchParams] = useState<APISearchBranch>(searchLocation || searchQueryBranch);
+    const [searchValue, setSearchValue] = useState(searchParams.name);
+    const [pagination, setPagination] = useState<any>(initPagination)
+
+    // 当props.location.state有值，页面被刷新的时，重置跳传地址。为了清空原来的搜索参数
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            if (props.location.state) {
+                history.push({pathname: '/manager/branch/list'});
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, []);
 
     /**
      * @Description: TODO 获取公司数据集合
@@ -47,18 +70,19 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
      */
     async function handleQueryBranch(params: APISearchBranch) {
         setLoading(true);
-        if (isFirstLoad) {
-            setSearchParams({ ...initSearchParam, name: '' });
-            setIsFirstLoad(false)
-        }
         const result: API.Result = await queryBranch(params);
-        if (result && result.success) {
+        if (result.success) {
             setBranchListVO(result.data);
-        } else if (result) {
+            setPagination({
+                current: result.current,
+                pageSize: result.size,
+                total: result.total,
+            });
+        } else {
             message.error(result.message);
         }
         setLoading(false);
-        return [];
+        return result;
     }
 
     /**
@@ -70,7 +94,12 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
      */
     const handleEditBranch = (record: APIBranch) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        history.push({pathname: `/manager/branch/form/${btoa(record.id)}`});
+        history.push({
+            pathname: `/manager/branch/form/${btoa(record.id)}`,
+            state: {
+                searchParams: searchParams,
+            },
+        });
     }
 
     /**
@@ -171,7 +200,6 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
 
     return (
         <PageContainer
-            loading={false}
             header={{
                 breadcrumb: {},
             }}
@@ -191,8 +219,12 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
                     rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
                     headerTitle={
                         <Search
-                            placeholder='' enterButton="Search" loading={loading}
+                            placeholder=''
+                            enterButton="Search"
+                            loading={loading}
+                            defaultValue={searchValue}
                             onSearch={async (val: any) => {
+                                setSearchValue(val);
                                 searchParams.name = val;
                                 await handleQueryBranch(searchParams);
                             }}
@@ -207,15 +239,15 @@ const BranchListIndex: React.FC<RouteChildrenProps> = () => {
                     }}
                     pagination={{
                         showSizeChanger: true,
+                        ...pagination,
                         pageSizeOptions: [20, 30, 50, 100],
                         onChange: (page, pageSize) => {
-                            searchParams.currentPage = page;
+                            // searchParams.currentPage = page;
                             searchParams.pageSize = pageSize;
                             setSearchParams(searchParams);
                         },
                     }}
                     request={handleQueryBranch}
-                    // request={(params: APISearchBranch) => handleQueryBranch(params)}
                 />
             </ProCard>
         </PageContainer>

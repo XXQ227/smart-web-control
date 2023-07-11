@@ -1,4 +1,4 @@
-import {useCallback, useState} from "react";
+import {useCallback} from "react";
 import {
     addBranchAPI,
     deleteBranchAPI,
@@ -11,15 +11,12 @@ import {
 type APIBranch = APIManager.Branch;
 
 export default () => {
-    // TODO: Branch List 数据
-    const [BranchList, setBranchList] = useState<APIBranch[]>([]);
 
     //region TODO: 接口
     // TODO: 获取 公司 列表
     const queryBranch = useCallback(async (params: APIManager.SearchBranchParams) => {
         const response = await queryBranchAPI(params);
         if (!response) return;
-        setBranchList(response.data);
         return response;
     }, []);
 
@@ -50,7 +47,6 @@ export default () => {
 
     return {
         queryBranch,
-        BranchList,
         addBranch,
         queryBranchInfo,
         editBranch,
