@@ -83,7 +83,7 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
      */
     function handleAddModelerListener(viewer: any) {
         // 'shape.removed', 'connect.end', 'connect.move'
-        const events = ['shape.added', 'shape.move.end', 'shape.removed']
+        const events = ['shape.added', 'shape.move.end', 'shape.removed', 'connect.end', 'connection.create', 'connection.move'];
         events.forEach((event) => {
             viewer.on(event, (e: any) => {
                 // const elementRegistry = viewer.get('elementRegistry')
@@ -94,6 +94,12 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
                     console.log('移动了shape')
                 } else if (event === 'shape.removed') {
                     console.log('删除了shape')
+                /*} else if (event === 'connect.end') {
+                    console.log('connect.end')
+                } else if (event === 'connection.create') {
+                    console.log('connection.create')
+                } else if (event === 'connection.move') {
+                    console.log('connection.move')*/
                 }
             })
         })
