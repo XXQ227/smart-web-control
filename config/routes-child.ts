@@ -382,7 +382,7 @@ const manager_route = {
                 },
             ],
         },
-        // TODO: bpmn 审批 test
+        // TODO: bpmn 审批 bpmn-js
         {
             name: 'bpmn',
             icon: 'icon-user-manager',
