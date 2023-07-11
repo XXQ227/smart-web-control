@@ -1,4 +1,4 @@
-export const xmlStr = `<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" targetNamespace="http://www.activiti.org/processdef">
   <process id="ev-global" name="ev-global" isExecutable="true">
     <sequenceFlow id="Flow_107n7hz" sourceRef="Activity_1wufezc" targetRef="Activity_0yqfdpe" />
@@ -40,7 +40,6 @@ export const xmlStr = `<?xml version="1.0" encoding="UTF-8"?>
     </exclusiveGateway>
     <endEvent id="Event_1kpnt0m" name="结束">
       <incoming>Flow_02s755t</incoming>
-      <incoming>Flow_0v011i7</incoming>
     </endEvent>
     <userTask id="Activity_1wufezc" name="财务部">
       <incoming>Flow_1d8xabe</incoming>
@@ -60,7 +59,6 @@ export const xmlStr = `<?xml version="1.0" encoding="UTF-8"?>
       <incoming>Flow_1ali1l8</incoming>
       <incoming>Flow_0uexg8c</incoming>
       <incoming>Flow_0z6mj7n</incoming>
-      <incoming>Flow_0flyu2p</incoming>
       <outgoing>Flow_0xdofqo</outgoing>
     </intermediateThrowEvent>
     <exclusiveGateway id="Gateway_0gzabj6" name="是否同意">
@@ -102,8 +100,6 @@ export const xmlStr = `<?xml version="1.0" encoding="UTF-8"?>
     <sequenceFlow id="Flow_0y00quy" name="同意" sourceRef="Activity_0yqfdpe" targetRef="Activity_1wldrd7" />
     <task id="Activity_0blu30o" name="总经理审批">
       <incoming>Flow_13atetm</incoming>
-      <outgoing>Flow_0flyu2p</outgoing>
-      <outgoing>Flow_0v011i7</outgoing>
     </task>
     <sequenceFlow id="Flow_13atetm" name="同意" sourceRef="Activity_1wldrd7" targetRef="Activity_0blu30o" />
     <exclusiveGateway id="Gateway_0iobu59">
@@ -118,8 +114,6 @@ export const xmlStr = `<?xml version="1.0" encoding="UTF-8"?>
     </exclusiveGateway>
     <sequenceFlow id="Flow_0z6mj7n" name="驳回" sourceRef="Gateway_04h8lfg" targetRef="Event_17c4mky" />
     <sequenceFlow id="Flow_02iun45" sourceRef="Activity_1wldrd7" targetRef="Gateway_04h8lfg" />
-    <sequenceFlow id="Flow_0flyu2p" name="驳回" sourceRef="Activity_0blu30o" targetRef="Event_17c4mky" />
-    <sequenceFlow id="Flow_0v011i7" name="同意" sourceRef="Activity_0blu30o" targetRef="Event_1kpnt0m" />
     <group id="Group_1fcm1hv" categoryValueRef="CategoryValue_1mi20en" />
   </process>
   <category id="Category_0b19dvo">
@@ -127,59 +121,6 @@ export const xmlStr = `<?xml version="1.0" encoding="UTF-8"?>
   </category>
   <bpmndi:BPMNDiagram id="BPMNDiagram_ev-global">
     <bpmndi:BPMNPlane id="BPMNPlane_ev-global" bpmnElement="ev-global">
-      <bpmndi:BPMNEdge id="Flow_0v011i7_di" bpmnElement="Flow_0v011i7">
-        <omgdi:waypoint x="-500" y="250" />
-        <omgdi:waypoint x="-500" y="444" />
-        <omgdi:waypoint x="-108" y="444" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="-496" y="344" width="23" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0flyu2p_di" bpmnElement="Flow_0flyu2p">
-        <omgdi:waypoint x="-500" y="170" />
-        <omgdi:waypoint x="-500" y="-122" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="-496" y="103" width="22" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_02iun45_di" bpmnElement="Flow_02iun45">
-        <omgdi:waypoint x="-355" y="170" />
-        <omgdi:waypoint x="-355" y="93" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0z6mj7n_di" bpmnElement="Flow_0z6mj7n">
-        <omgdi:waypoint x="-380" y="68" />
-        <omgdi:waypoint x="-500" y="68" />
-        <omgdi:waypoint x="-500" y="-122" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="-451" y="50" width="22" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0uexg8c_di" bpmnElement="Flow_0uexg8c">
-        <omgdi:waypoint x="-215" y="30" />
-        <omgdi:waypoint x="-500" y="30" />
-        <omgdi:waypoint x="-500" y="-122" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="-368" y="12" width="22" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1sbmhyo_di" bpmnElement="Flow_1sbmhyo">
-        <omgdi:waypoint x="-190" y="170" />
-        <omgdi:waypoint x="-190" y="55" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_13atetm_di" bpmnElement="Flow_13atetm">
-        <omgdi:waypoint x="-400" y="210" />
-        <omgdi:waypoint x="-450" y="210" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="-436" y="192" width="23" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0y00quy_di" bpmnElement="Flow_0y00quy">
-        <omgdi:waypoint x="-240" y="210" />
-        <omgdi:waypoint x="-300" y="210" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="-281" y="192" width="23" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_18qzeft_di" bpmnElement="Flow_18qzeft">
         <omgdi:waypoint x="-100" y="-190" />
         <omgdi:waypoint x="-100" y="-260" />
@@ -254,12 +195,48 @@ export const xmlStr = `<?xml version="1.0" encoding="UTF-8"?>
           <omgdc:Bounds x="-156" y="-58" width="22" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dz0nu9_di" bpmnElement="Flow_0dz0nu9">
+        <omgdi:waypoint x="160" y="210" />
+        <omgdi:waypoint x="102" y="210" />
+        <omgdi:waypoint x="102" y="90" />
+        <omgdi:waypoint x="40" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1bwuzcj_di" bpmnElement="Flow_1bwuzcj">
+        <omgdi:waypoint x="-60" y="90" />
+        <omgdi:waypoint x="-100" y="90" />
+        <omgdi:waypoint x="-100" y="210" />
+        <omgdi:waypoint x="-140" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1sbmhyo_di" bpmnElement="Flow_1sbmhyo">
+        <omgdi:waypoint x="-190" y="170" />
+        <omgdi:waypoint x="-190" y="55" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uexg8c_di" bpmnElement="Flow_0uexg8c">
+        <omgdi:waypoint x="-215" y="30" />
+        <omgdi:waypoint x="-500" y="30" />
+        <omgdi:waypoint x="-500" y="-122" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="-368" y="12" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z6mj7n_di" bpmnElement="Flow_0z6mj7n">
+        <omgdi:waypoint x="-380" y="68" />
+        <omgdi:waypoint x="-500" y="68" />
+        <omgdi:waypoint x="-500" y="-122" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="-451" y="50" width="22" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02iun45_di" bpmnElement="Flow_02iun45">
+        <omgdi:waypoint x="-355" y="170" />
+        <omgdi:waypoint x="-355" y="93" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_02s755t_di" bpmnElement="Flow_02s755t">
         <omgdi:waypoint x="380" y="235" />
         <omgdi:waypoint x="380" y="444" />
         <omgdi:waypoint x="-72" y="444" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="388" y="333" width="23" height="14" />
+          <omgdc:Bounds x="141" y="426" width="23" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_00tbjwr_di" bpmnElement="Flow_00tbjwr">
@@ -279,59 +256,49 @@ export const xmlStr = `<?xml version="1.0" encoding="UTF-8"?>
         <omgdi:waypoint x="102" y="320" />
         <omgdi:waypoint x="43" y="320" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0dz0nu9_di" bpmnElement="Flow_0dz0nu9">
-        <omgdi:waypoint x="160" y="210" />
-        <omgdi:waypoint x="102" y="210" />
-        <omgdi:waypoint x="102" y="90" />
-        <omgdi:waypoint x="40" y="90" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1bwuzcj_di" bpmnElement="Flow_1bwuzcj">
-        <omgdi:waypoint x="-60" y="90" />
-        <omgdi:waypoint x="-100" y="90" />
-        <omgdi:waypoint x="-100" y="210" />
-        <omgdi:waypoint x="-140" y="210" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1d2gv7g_di" bpmnElement="Flow_1d2gv7g">
         <omgdi:waypoint x="-57" y="210" />
         <omgdi:waypoint x="-140" y="210" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_107n7hz_di" bpmnElement="Flow_107n7hz">
         <omgdi:waypoint x="-57" y="320" />
-        <omgdi:waypoint x="-100" y="320" />
-        <omgdi:waypoint x="-100" y="210" />
+        <omgdi:waypoint x="-80" y="320" />
+        <omgdi:waypoint x="-80" y="210" />
         <omgdi:waypoint x="-140" y="210" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Activity_0yqfdpe_di" bpmnElement="Activity_0yqfdpe">
-        <omgdc:Bounds x="-240" y="170" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_00jz54w_di" bpmnElement="Activity_0f8nyx9">
-        <omgdc:Bounds x="160" y="170" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_081lu8o_di" bpmnElement="Gateway_0w8wtrs" isMarkerVisible="true">
-        <omgdc:Bounds x="355" y="185" width="50" height="50" />
+      <bpmndi:BPMNEdge id="Flow_0y00quy_di" bpmnElement="Flow_0y00quy">
+        <omgdi:waypoint x="-240" y="210" />
+        <omgdi:waypoint x="-300" y="210" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="414.5" y="203" width="67" height="14" />
+          <omgdc:Bounds x="-281" y="192" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13atetm_di" bpmnElement="Flow_13atetm">
+        <omgdi:waypoint x="-400" y="210" />
+        <omgdi:waypoint x="-450" y="210" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="-436" y="192" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1mcxi49_di" bpmnElement="Activity_1mcxi49">
+        <omgdc:Bounds x="50" y="-190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0c98i0f_di" bpmnElement="Gateway_0c98i0f" isMarkerVisible="true">
+        <omgdc:Bounds x="-235" y="-285" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="-233" y="-309" width="45" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_1kpnt0m_di" bpmnElement="Event_1kpnt0m">
-        <omgdc:Bounds x="-108" y="426" width="36" height="36" />
+      <bpmndi:BPMNShape id="shape-93885be7-3106-490f-a662-4b5eeb5f9595" bpmnElement="sid-18e7b453-1439-41d8-a2b8-ec5cefcf1ff0">
+        <omgdc:Bounds x="-350" y="-190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lfdd3m_di" bpmnElement="Activity_1lfdd3m">
+        <omgdc:Bounds x="-160" y="-190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1o3xjtn_di" bpmnElement="Gateway_1o3xjtn" isMarkerVisible="true">
+        <omgdc:Bounds x="-35" y="-285" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="-101" y="469" width="23" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1wufezc_di" bpmnElement="Activity_1wufezc">
-        <omgdc:Bounds x="-57" y="280" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1e6xdzp_di" bpmnElement="Activity_1e6xdzp">
-        <omgdc:Bounds x="-57" y="170" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0hg94dx_di" bpmnElement="Activity_0hg94dx">
-        <omgdc:Bounds x="-60" y="50" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_17c4mky_di" bpmnElement="Event_17c4mky">
-        <omgdc:Bounds x="-518" y="-158" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="-511" y="-188" width="23" height="14" />
+          <omgdc:Bounds x="-33" y="-309" width="45" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0gzabj6_di" bpmnElement="Gateway_0gzabj6" isMarkerVisible="true">
@@ -340,35 +307,14 @@ export const xmlStr = `<?xml version="1.0" encoding="UTF-8"?>
           <omgdc:Bounds x="187" y="-309" width="45" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_1o3xjtn_di" bpmnElement="Gateway_1o3xjtn" isMarkerVisible="true">
-        <omgdc:Bounds x="-35" y="-285" width="50" height="50" />
+      <bpmndi:BPMNShape id="Event_17c4mky_di" bpmnElement="Event_17c4mky">
+        <omgdc:Bounds x="-518" y="-158" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="-33" y="-309" width="45" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1lfdd3m_di" bpmnElement="Activity_1lfdd3m">
-        <omgdc:Bounds x="-160" y="-190" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="shape-93885be7-3106-490f-a662-4b5eeb5f9595" bpmnElement="sid-18e7b453-1439-41d8-a2b8-ec5cefcf1ff0">
-        <omgdc:Bounds x="-350" y="-190" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Gateway_0c98i0f_di" bpmnElement="Gateway_0c98i0f" isMarkerVisible="true">
-        <omgdc:Bounds x="-235" y="-285" width="50" height="50" />
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds x="-233" y="-309" width="45" height="14" />
+          <omgdc:Bounds x="-511" y="-188" width="23" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_040rj4o_di" bpmnElement="Activity_040rj4o">
         <omgdc:Bounds x="330" y="-190" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1mcxi49_di" bpmnElement="Activity_1mcxi49">
-        <omgdc:Bounds x="50" y="-190" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1wldrd7_di" bpmnElement="Activity_1wldrd7">
-        <omgdc:Bounds x="-400" y="170" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0blu30o_di" bpmnElement="Activity_0blu30o">
-        <omgdc:Bounds x="-550" y="170" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_0iobu59_di" bpmnElement="Gateway_0iobu59" isMarkerVisible="true">
         <omgdc:Bounds x="-215" y="5" width="50" height="50" />
@@ -376,12 +322,45 @@ export const xmlStr = `<?xml version="1.0" encoding="UTF-8"?>
       <bpmndi:BPMNShape id="Gateway_04h8lfg_di" bpmnElement="Gateway_04h8lfg" isMarkerVisible="true">
         <omgdc:Bounds x="-380" y="43" width="50" height="50" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1kpnt0m_di" bpmnElement="Event_1kpnt0m">
+        <omgdc:Bounds x="-108" y="426" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="-101" y="469" width="23" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_081lu8o_di" bpmnElement="Gateway_0w8wtrs" isMarkerVisible="true">
+        <omgdc:Bounds x="355" y="185" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds x="414.5" y="203" width="67" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00jz54w_di" bpmnElement="Activity_0f8nyx9">
+        <omgdc:Bounds x="160" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1e6xdzp_di" bpmnElement="Activity_1e6xdzp">
+        <omgdc:Bounds x="-57" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1wufezc_di" bpmnElement="Activity_1wufezc">
+        <omgdc:Bounds x="-57" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0yqfdpe_di" bpmnElement="Activity_0yqfdpe">
+        <omgdc:Bounds x="-240" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1wldrd7_di" bpmnElement="Activity_1wldrd7">
+        <omgdc:Bounds x="-400" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0blu30o_di" bpmnElement="Activity_0blu30o">
+        <omgdc:Bounds x="-550" y="170" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0hg94dx_di" bpmnElement="Activity_0hg94dx">
+        <omgdc:Bounds x="-60" y="50" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Group_1fcm1hv_di" bpmnElement="Group_1fcm1hv">
-        <omgdc:Bounds x="-260" y="-10" width="400" height="380" />
+        <omgdc:Bounds x="-260" y="-10" width="400" height="346" />
         <bpmndi:BPMNLabel>
           <omgdc:Bounds x="-93" y="-3" width="67" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
-</definitions>`;
+</definitions>

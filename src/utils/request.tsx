@@ -1,7 +1,6 @@
 import {getBranchID, getUserID, getAccess_Token} from '@/utils/auths'
 import {message, notification} from 'antd';
-// import {history} from 'umi';
-import {SYSTEM_ID, SYSTEM_ID_LAND, SYSTEM_KEY_TEST, SYSTEM_KEY_TEST_LAND} from '@/utils/units'
+import {SYSTEM_ID, SYSTEM_KEY_TEST} from '@/utils/units'
 
 
 const codeMessage = {
