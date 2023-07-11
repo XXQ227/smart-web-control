@@ -58,13 +58,14 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
             if (err) {
                 console.log('something went wrong:', err);
             } else {
-                // 给图绑定事件，当图有发生改变就会触发这个事件
+                // change 保存 ** 暂时不用，用手工保存
                 // viewer.on('commandStack.changed', () => {
                 //     // 把传入的 done 再传给bpmn原型的saveXML函数调用
                 //     viewer.saveXML({ format: true }, (_err: any, xml: any) => {
                 //         props.handleChangeBpmnXml(xml);
                 //     })
                 // })
+                // 给图绑定事件，当图有发生改变就会触发这个事件
                 handleAddModelerListener(viewer);
                 handleAddEventBusListener(viewer);
                 // 让图能自适应屏幕
