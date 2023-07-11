@@ -11,7 +11,7 @@ import propertiesProviderModule from '../components/properties-panel-extension/p
 // @ts-ignore
 import authorityModdleDescriptor from '../components/properties-panel-extension/descriptors/authority';
 
-import { saveAs } from 'file-saver';
+import { readFile } from 'fs/promises';
 
 // TODO: 以下为bpmn工作流绘图工具的样式
 // 左边工具栏以及编辑节点的样式
@@ -25,16 +25,18 @@ import '../styles/bpmn-properties-theme-blue.css'
 // import '../styles/bpmn-properties-theme-black.css'
 // import '../styles/bpmn-properties-theme-red.css'
 
+const bpmnFilePath = '../resources/bpmn-file.xml';
+
 interface Props {
     xmlStr: any;
     handleChangeBpmnXml: (xml: any) => void;
 }
 
-const BpmnJsModeler: React.FC<Props> = (props) => {
+const BpmnJsReadFile: React.FC<Props> = (props) => {
     const containerRef = useRef(null);
     const [viewerState, setViewerState] = useState<any>({});
 
-    useEffect(() => {
+    /*useEffect(() => {
         const viewer = new BpmnModeler({
             container: '#canvas',
             // 使用快捷键
@@ -55,7 +57,7 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
                 authority: authorityModdleDescriptor
             }
         });
-        viewer.importXML(props.xmlStr, (err: any) => {
+        /!*viewer.importXML(props.xmlStr, (err: any) => {
             if (err) {
                 console.log('something went wrong:', err);
             } else {
@@ -72,9 +74,63 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
                 // 让图能自适应屏幕
                 viewer.get('canvas').zoom('fit-viewport', 'auto');
             }
-        });
+        });*!/
         if (viewer) setViewerState(viewer);
-    }, [props, props.xmlStr]);
+    }, [props, props.xmlStr]);*/
+
+
+    // 读取 BPMN 文件内容
+    async function readBpmnFile(filePath: string) {
+        try {
+            return await readFile(filePath, 'utf-8');
+        } catch (error) {
+            console.error('Failed to read BPMN file:', error);
+            throw error;
+        }
+    }
+
+    // 导入 BPMN XML
+    async function importBpmnXml(xml: any) {
+        try {
+            const viewer = new BpmnModeler({
+                container: '#canvas',
+                // 使用快捷键
+                keyboard: {
+                    bindTo: window,
+                },
+                //添加右侧控制板
+                propertiesPanel: {
+                    // parent: '#js-properties-panel'
+                },
+                additionalModules: [
+                    // 左边的工具栏(固定引入)
+                    propertiesPanelModule,
+                    // 自定义右边工作栏的内容
+                    propertiesProviderModule
+                ],
+                moddleExtensions: {
+                    authority: authorityModdleDescriptor
+                }
+            });
+            if (viewer) setViewerState(viewer);
+            const result = await viewer.importXML(xml);
+            // 处理导入成功后的逻辑
+            console.log('BPMN XML imported successfully:', result);
+        } catch (error) {
+            console.error('Failed to import BPMN XML:', error);
+            throw error;
+        }
+    }
+
+    // 读取 BPMN 文件并导入
+    async function processBpmnFile(filePath: string) {
+        try {
+            const xml = await readBpmnFile(filePath);
+            await importBpmnXml(xml);
+        } catch (error) {
+            console.error('Failed to process BPMN file:', error);
+        }
+    }
 
     /**
      * @Description: TODO: BPMN 监听：有 【移动、添加、删除】3个监听事件
@@ -157,30 +213,35 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
 
     // TODO: 保存为【.bpmn】格式的文件
     const handeSaveBpmnXml = () => {
+        const saveDiagramBpmn = document.getElementById('saveDiagram');
         // 把传入的 done 再传给bpmn原型的saveXML函数调用
         viewerState.saveXML({format: true}, (_err: any, xml: any) => {
             // props.handleChangeBpmnXml(xml);
-            handleDownloadBpmn('diagram.bpmn', xml);
+            handleDownloadBpmn(saveDiagramBpmn, 'diagram.bpmn', xml);
         })
     }
 
     // TODO: 保存为【svg】格式的流程图
     const handeSaveBpmnSvg = () => {
+        const saveDiagramSvg = document.getElementById('saveSvg');
         // 把传入的 done 再传给bpmn原型的saveXML函数调用
         viewerState.saveSVG((_err: any, xml: any) => {
             // props.handleChangeBpmnXml(xml);
-            handleDownloadBpmn('diagram.svg', xml);
+            handleDownloadBpmn(saveDiagramSvg, 'diagram.svg', xml);
         })
     }
 
-    // TODO: 保存为【.bpmn】格式的流程图
-    function handleDownloadBpmn(name: any, data: any) {
+    // 当图发生改变的时候会调用这个函数，这个data就是图的xml
+    function handleDownloadBpmn(link: any, name: any, data: any) {
+        // 把xml转换为URI，下载要用到的
+        const encodedData = encodeURIComponent(data)
         // 下载图的具体操作,改变a的属性，className令a标签可点击，href令能下载，download是下载的文件的名字
-        // const xmlFile = new File([data], name);
+        // const xmlFile = new File([data], 'test.bpmn');
         // console.log(xmlFile);
         if (data) {
-            const blob = new Blob([data], { type: 'text/plain;charset=utf-8' });
-            saveAs(blob, name);
+            // link.className = 'ant-btn ant-btn-primary'
+            link.href = 'data:application/bpmn20-xml;charset=UTF-8,' + encodedData
+            link.download = name
         }
     }
 
@@ -191,15 +252,18 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
             <FooterToolbar
                 extra={<Button onClick={() => history.push({pathname: '/manager/bpmn/list'})}>返回</Button>}>
                 <Space>
-                    <Button type={'primary'} id={'saveDiagram'} onClick={() => handeSaveBpmnXml()}>
+                    <Button type={'primary'} id={'saveDiagram'} href={'javascript:'} onClick={() => handeSaveBpmnXml()}>
                         Save BPMN XML
                     </Button>
-                    <Button type={'primary'} id={'saveSvg'} onClick={() => handeSaveBpmnSvg()}>
+                    <Button type={'primary'} id={'saveSvg'} href={'javascript:'} onClick={() => handeSaveBpmnSvg()}>
                         Save BPMN SVG
+                    </Button>
+                    <Button type={'primary'} onClick={() => processBpmnFile(bpmnFilePath)}>
+                        加载 BPMN
                     </Button>
                 </Space>
             </FooterToolbar>
         </div>
     )
 }
-export default BpmnJsModeler;
+export default BpmnJsReadFile;

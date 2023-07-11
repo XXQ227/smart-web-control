@@ -4,6 +4,7 @@ import {PageContainer, ProCard} from '@ant-design/pro-components'
 import './style.less'
 import {xmlStr} from '@/pages/sys-manager/bpmn/resources/xmlStr'
 import BpmnJsModeler from '@/pages/sys-manager/bpmn/bpmn-js/bpmn-js-modeler'
+// import BpmnJsModeler from '@/pages/sys-manager/bpmn/bpmn-js/bpmn-js-read-file'
 
 
 const BpmnJsFetch: React.FC<RouteChildrenProps> = () => {
