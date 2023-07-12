@@ -155,31 +155,50 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
         }
     }
 
-    // TODO: 保存为【.bpmn】格式的文件
-    const handeSaveBpmnXml = () => {
-        // 把传入的 done 再传给bpmn原型的saveXML函数调用
-        viewerState.saveXML({format: true}, (_err: any, xml: any) => {
-            // props.handleChangeBpmnXml(xml);
-            handleDownloadBpmn('diagram.bpmn', xml);
-        })
+    /**
+     * @Description: TODO: 下载当前的流程图
+     * @author XXQ
+     * @date 2023/7/11
+     * @param state     【state：bpmn】: Bpmn 格式文件；【state：svg】: svg 格式的图；
+     * @returns
+     */
+    const handeSaveBpmn = (state: string) => {
+        if (state === 'save') {
+            // 把传入的 done 再传给bpmn原型的saveXML函数调用
+            viewerState.saveXML({format: true}, (_err: any, xml: any) => {
+                props.handleChangeBpmnXml(xml);
+            })
+        } else if (state === 'svg') {
+            viewerState.saveSVG((_err: any, xml: any) => {
+                // props.handleChangeBpmnXml(xml);
+                handleDownloadBpmn('diagram.svg', xml);
+            })
+        } else if (state === 'bpmn') {
+            // 把传入的 done 再传给bpmn原型的saveXML函数调用
+            viewerState.saveXML({format: true}, (_err: any, xml: any) => {
+                // props.handleChangeBpmnXml(xml);
+                handleDownloadBpmn('diagram.bpmn', xml);
+            })
+        }
     }
 
-    // TODO: 保存为【svg】格式的流程图
-    const handeSaveBpmnSvg = () => {
-        // 把传入的 done 再传给bpmn原型的saveXML函数调用
-        viewerState.saveSVG((_err: any, xml: any) => {
-            // props.handleChangeBpmnXml(xml);
-            handleDownloadBpmn('diagram.svg', xml);
-        })
-    }
-
-    // TODO: 保存为【.bpmn】格式的流程图
+    /**
+     * @Description: TODO: 使用 FileSaver.js 库实现下载自己生成的文件。
+     * @author XXQ
+     * @date 2023/7/11
+     * @param name  文件名
+     * @param data  文件内容
+     * @returns
+     */
     function handleDownloadBpmn(name: any, data: any) {
         // 下载图的具体操作,改变a的属性，className令a标签可点击，href令能下载，download是下载的文件的名字
         // const xmlFile = new File([data], name);
         // console.log(xmlFile);
         if (data) {
+            // TODO: 1、使用 Blob 对象创建了一个文件
             const blob = new Blob([data], { type: 'text/plain;charset=utf-8' });
+            // TODO: 2、使用 saveAs() 函数从 FileSaver.js 库来实现下载操作。
+            // TODO:    **注：saveAs() 函数接受两个参数：blob（要保存的文件内容）和 filename（要保存的文件名）
             saveAs(blob, name);
         }
     }
@@ -191,10 +210,13 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
             <FooterToolbar
                 extra={<Button onClick={() => history.push({pathname: '/manager/bpmn/list'})}>返回</Button>}>
                 <Space>
-                    <Button type={'primary'} id={'saveDiagram'} onClick={() => handeSaveBpmnXml()}>
+                    <Button type={'primary'} id={'saveDiagram'} onClick={() => handeSaveBpmn('save')}>
+                        Save BPMN
+                    </Button>
+                    <Button type={'primary'} id={'saveDiagram'} onClick={() => handeSaveBpmn('bpmn')}>
                         Save BPMN XML
                     </Button>
-                    <Button type={'primary'} id={'saveSvg'} onClick={() => handeSaveBpmnSvg()}>
+                    <Button type={'primary'} id={'saveSvg'} onClick={() => handeSaveBpmn('svg')}>
                         Save BPMN SVG
                     </Button>
                 </Space>
