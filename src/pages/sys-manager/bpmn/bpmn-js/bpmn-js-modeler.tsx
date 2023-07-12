@@ -17,13 +17,12 @@ import { saveAs } from 'file-saver';
 // 左边工具栏以及编辑节点的样式
 import 'bpmn-js/dist/assets/diagram-js.css';
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css';
-import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css';
-import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
-import 'bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css'; // 右边工具栏样式
-import '../styles/bpmn-custom-color.css'
+// import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-codes.css';
+// import 'bpmn-js/dist/assets/bpmn-font/css/bpmn-embedded.css';
 import '../styles/bpmn-properties-theme-blue.css'
 // import '../styles/bpmn-properties-theme-black.css'
 // import '../styles/bpmn-properties-theme-red.css'
+import 'bpmn-js-properties-panel/dist/assets/bpmn-js-properties-panel.css'; // 右边工具栏样式
 
 interface Props {
     xmlStr: any;
@@ -59,13 +58,6 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
             if (err) {
                 console.log('something went wrong:', err);
             } else {
-                // change 保存 ** 暂时不用，用手工保存
-                // viewer.on('commandStack.changed', () => {
-                //     // 把传入的 done 再传给bpmn原型的saveXML函数调用
-                //     viewer.saveXML({ format: true }, (_err: any, xml: any) => {
-                //         props.handleChangeBpmnXml(xml);
-                //     })
-                // })
                 // 给图绑定事件，当图有发生改变就会触发这个事件
                 handleAddModelerListener(viewer);
                 handleAddEventBusListener(viewer);
@@ -163,21 +155,18 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
      * @returns
      */
     const handeSaveBpmn = (state: string) => {
-        if (state === 'save') {
-            // 把传入的 done 再传给bpmn原型的saveXML函数调用
-            viewerState.saveXML({format: true}, (_err: any, xml: any) => {
-                props.handleChangeBpmnXml(xml);
-            })
-        } else if (state === 'svg') {
+        if (state === 'svg') {
             viewerState.saveSVG((_err: any, xml: any) => {
-                // props.handleChangeBpmnXml(xml);
                 handleDownloadBpmn('diagram.svg', xml);
             })
-        } else if (state === 'bpmn') {
+        } else {
             // 把传入的 done 再传给bpmn原型的saveXML函数调用
             viewerState.saveXML({format: true}, (_err: any, xml: any) => {
-                // props.handleChangeBpmnXml(xml);
-                handleDownloadBpmn('diagram.bpmn', xml);
+                if (state === 'save') {
+                    props.handleChangeBpmnXml(xml);
+                } else if (state === 'bpmn') {
+                    handleDownloadBpmn('diagram.bpmn', xml);
+                }
             })
         }
     }
