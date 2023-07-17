@@ -1,13 +1,14 @@
 import React, {Fragment, useState} from 'react';
 import type {ProColumns} from '@ant-design/pro-components';
-import {PageContainer, ProCard, ProFormText, ProTable} from '@ant-design/pro-components'
+import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
 import {DeleteOutlined, PlusOutlined} from '@ant-design/icons'
-import {Button, Divider, Form, Input, message, Popconfirm} from 'antd'
+import {Button, Form, Input, message, Popconfirm} from 'antd'
 import {CustomizeIcon, getFormErrorMsg, ID_STRING} from '@/utils/units'
 import DividerCustomize from '@/components/Divider'
 import ls from 'lodash'
-import SearchProFormSelect from '@/components/SearchProFormSelect'
+import SearchModal from '@/components/SearchModal'
+import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 
 const {Search} = Input;
 
@@ -67,7 +68,7 @@ const DescriptionIndex: React.FC<Props> = () => {
     const handleAddCGItem = () => {
         const newData: APICGItem[] = CGItemListVO?.map((item: APICGItem) => ({...item})) || [];
         const rowKey = ID_STRING();
-        newData.splice(0, 0, {id: rowKey});
+        newData.splice(0, 0, {id: rowKey, isChange: true, chargeStandardId: null});
         setCGItemListVO(newData);
     }
 
@@ -187,17 +188,15 @@ const DescriptionIndex: React.FC<Props> = () => {
             tooltip: 'Name is required',
             className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                <ProFormText
+                <FormItemInput
                     required
                     placeholder=''
-                    disabled={record.enableFlag}
-                    id={`name${record.id}`}
+                    FormItem={Form.Item}
                     name={`name${record.id}`}
                     initialValue={record.name}
+                    disabled={record.enableFlag}
                     rules={[{required: true, message: 'Name'}]}
-                    fieldProps={{
-                        onChange: (val: any) => handleRowChange(index, record, 'name', val)
-                    }}
+                    onChange={(val: any) => handleRowChange(index, record, 'name', val)}
                 />
         },
         {
@@ -207,39 +206,43 @@ const DescriptionIndex: React.FC<Props> = () => {
             tooltip: 'Name is required',
             className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                <ProFormText
+                <FormItemInput
                     required
                     placeholder=''
-                    id={`code${record.id}`}
+                    FormItem={Form.Item}
                     name={`code${record.id}`}
                     initialValue={record.code}
                     disabled={record.enableFlag}
                     rules={[{required: true, message: 'Code'}]}
-                    fieldProps={{
-                        onChange: (val: any) => handleRowChange(index, record, 'code', val)
-                    }}
+                    onChange={(val: any) => handleRowChange(index, record, 'code', val)}
                 />
         },
         {
-            title: 'standard',
-            dataIndex: 'chargeStandardId',
+            title: 'Subject',
+            dataIndex: 'chargeStandardName',
             align: 'left',
             tooltip: 'subject is required',
             className: 'ant-columns-required',
-            render: (text: any, record: any, index) =>
-                <SearchProFormSelect
-                    qty={8}
-                    required
-                    placeholder=''
-                    label={'subject Name'}
-                    disabled={record.enableFlag}
-                    query={{currentPage: 1, code: ''}}
-                    id={`chargeStandardId${record.id}`}
-                    name={`chargeStandardId${record.id}`}
-                    url={'/apiBase/chargeStandard/queryChargeStandard'}
-                    valueObj={{value: record.chargeStandardId, label: record.chargeStandardName}}
-                    handleChangeData={(val: any, option: any)=> handleRowChange(index, record, 'chargeStandardId', val, option)}
-                />
+            render: (text: any, record: any, index) => {
+                return (
+                    <Form.Item
+                        required={true} initialValue={record.chargeStandardId}
+                        name={`chargeStandardId${record.id}`}
+                        rules={[{required: true, message: 'Subject'}]}
+                    >
+                        <SearchModal
+                            qty={13}
+                            required={true}
+                            title={'Subject'}
+                            text={record.chargeStandardName}
+                            // value={record.chargeItemId}
+                            query={{currentPage: 1, code: ''}}
+                            url={'/apiBase/chargeStandard/queryChargeStandardCommon'}
+                            handleChangeData={(val: any, option: any) => handleRowChange(index, record, 'chargeStandardId', val, option)}
+                        />
+                    </Form.Item>
+                )
+            }
         },
         {
             title: 'Action',
@@ -267,7 +270,8 @@ const DescriptionIndex: React.FC<Props> = () => {
                         onConfirm={() => handleOperateCGItem(index, record, 'deleteFlag')}
                         title={'Are you sure to delete?'} okText={'Yes'} cancelText={'No'}
                     >
-                        <Divider type='vertical'/>
+                        <DividerCustomize hidden={record.id?.indexOf('ID_') > -1}/>
+                        {/*<Divider type='vertical'/>*/}
                         <DeleteOutlined color={'red'}/>
                     </Popconfirm>
                 </Fragment>,

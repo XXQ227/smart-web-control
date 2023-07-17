@@ -54,6 +54,9 @@ const SearchTable: React.FC<Props> = (props) => {
         if (document?.getElementById('search-input')) {
             document?.getElementById('search-input')?.focus();
         }
+        return () => {
+
+        }
     }, [debounceTimeout, visible])
 
     useEffect(() => {
@@ -138,7 +141,7 @@ const SearchTable: React.FC<Props> = (props) => {
     }
 
     /**
-     * @Description: TODO: 控制键盘上下的激活选项：keyCode 38=up arrow  40=down arrow   13=Enter
+     * @Description: TODO: 控制键盘上下的激活选项：keyCode 38=up arrow.svg  40=down arrow.svg   13=Enter
      * @author XXQ
      * @date 2023/4/20
      * @param e     按钮按下时，返回的参数
@@ -147,21 +150,21 @@ const SearchTable: React.FC<Props> = (props) => {
     const handleKeyDown = (e: any) => {
         const keyCode = e.keyCode;
         let opActiveItem = -1;
-        //如果是 up arrow 和 down arrow 操作
+        //如果是 up arrow.svg 和 down arrow.svg 操作
         if (keyCode === 38 || keyCode === 40) {
             if (dataSourceList?.length > 0) {
                 //如果激活序号为空
                 if (activeItem === -1) {
-                    // TODO: 【keyCode === 40】down arrow 设置成第一项；【keyCode === 38】up arrow 设置成最后一项
+                    // TODO: 【keyCode === 40】down arrow.svg 设置成第一项；【keyCode === 38】up arrow.svg 设置成最后一项
                     opActiveItem = keyCode === 40 ? 0 : dataSourceList.length - 1;
                 } else {
                     switch (keyCode) {
                         case 38:
-                            //up arrow 序号减一
+                            //up arrow.svg 序号减一
                             opActiveItem = activeItem !== 0 ? activeItem - 1 : dataSourceList.length - 1;
                             break;
                         case 40:
-                            //down arrow 序号加一
+                            //down arrow.svg 序号加一
                             opActiveItem = activeItem !== dataSourceList.length - 1 ? activeItem + 1 : 0;
                             break;
                         default: return;

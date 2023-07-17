@@ -10,7 +10,7 @@ export default () => {
     const [ServicesList, setServicesList] = useState([]);
     const [PurposeOfCallList, setPurposeOfCallList] = useState([]);
     const [PayMethodList, setPayMethodList] = useState([]);
-    const [CurrencyList, setCurrencyList] = useState([]);
+    const [CurrencyList, setCurrencyList] = useState<any[]>([]);
     const [BusinessLineList, setBusinessLineList] = useState([]);
     const [IndustryList, setIndustryList] = useState([]);
 
@@ -30,7 +30,11 @@ export default () => {
                         setPurposeOfCallList(item.data);
                         break;
                     case 'currency':
-                        setCurrencyList(item.data);
+                        if (item.data?.length > 0) {
+                            const currResult: any[] = item.data.map((curr: any)=>
+                                ({value: curr.label, label: curr.label}));
+                            setCurrencyList(currResult);
+                        }
                         break;
                     case 'pay_method':
                         setPayMethodList(item.data);

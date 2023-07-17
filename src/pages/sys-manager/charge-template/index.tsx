@@ -38,6 +38,7 @@ const CGTempListIndex: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     async function handleGetCGTempList(params: APISearchCGTemp) {
+
         setLoading(true);
         // TODO: 分页查询【参数页】
         const result: API.Result = await queryChargeTemplate(params);

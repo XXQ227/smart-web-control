@@ -29,7 +29,10 @@ interface Props {
 
 const ChargeTemplateCharge: React.FC<Props> = (props) => {
     // @ts-ignore
-    const {CGType, CGList, form, FormItem, label, CurrencyList, PayMethodList, chargeTemplateId} = props;
+    const {
+        CGType, CGList, form, FormItem, label,
+        CurrencyList, PayMethodList, chargeTemplateId
+    } = props;
 
 
     //region function 方法
@@ -44,12 +47,9 @@ const ChargeTemplateCharge: React.FC<Props> = (props) => {
         const newDataObj: APICGTempItems = {
             id: ID_STRING(), chargeTemplateId, branchId: '0', type: CGType,
             currencyName: currLocalObj?.label,
-            currencyType: currLocalObj?.value,
-
         };
         const newData: APICGTempItems[] = ls.cloneDeep(CGList) || [];
         newData.push(newDataObj);
-        // setCGListVO(newData);
         props.handleCGTempChange(newData, CGType);
     }
 
@@ -115,7 +115,7 @@ const ChargeTemplateCharge: React.FC<Props> = (props) => {
     const cgColumns: ColumnsType<APICGTempItems> = [
         {
             title: 'Charge Name',
-            dataIndex: 'CGItemName',
+            dataIndex: 'chargeItemName',
             align: 'center',
             width: 200,
             render: (text: any, record, index) =>
@@ -131,7 +131,7 @@ const ChargeTemplateCharge: React.FC<Props> = (props) => {
                         value={record.chargeItemId}
                         id={`chargeItemId${record.id}`}
                         query={{branchId: 0}}
-                        url={'/apiBase/chargeStandard/queryChargeStandardCommon'}
+                        url={'/apiBase/chargeItem/queryChargeItemCommon'}
                         handleChangeData={(val: any, option: any)=> handleRowChange(index, record.id, 'chargeItemId', val, option)}
                     />
                 </FormItem>
@@ -179,7 +179,7 @@ const ChargeTemplateCharge: React.FC<Props> = (props) => {
         },
         {
             title: 'Currency',
-            dataIndex: 'currencyType',
+            dataIndex: 'currencyName',
             align: 'center',
             width: 60,
             render: (text: any, record: any, index) =>
@@ -187,11 +187,11 @@ const ChargeTemplateCharge: React.FC<Props> = (props) => {
                     required
                     FormItem={Form.Item}
                     options={CurrencyList}
-                    id={`currencyType${record.id}`}
-                    name={`currencyType${record.id}`}
-                    initialValue={record.currencyType}
+                    id={`currencyName${record.id}`}
+                    name={`currencyName${record.id}`}
+                    initialValue={record.currencyName}
                     rules={[{required: true, message: 'Currency'}]}
-                    onSelect={(e: any) => handleRowChange(index, record.id, 'currencyType', e)}
+                    onSelect={(e: any) => handleRowChange(index, record.id, 'currencyName', e)}
                 />
         },
         {

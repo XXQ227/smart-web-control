@@ -1,4 +1,10 @@
-import {GetCTPByStr, GetCTPByID, UploadCTCenter, addBusinessUnitAPI} from '@/services/smart/manager/cv-center';
+import {
+    GetCTPByStr,
+    GetCTPByID,
+    UploadCTCenter,
+    addBusinessUnitAPI,
+    queryBusinessUnitPropertyCreditInfoAPI
+} from '@/services/smart/manager/cv-center';
 import type React from "react";
 import {useCallback, useState} from "react";
 import {getLabel$Value, getTransIndustryListToLine} from '@/utils/units'
@@ -125,6 +131,14 @@ export default (callback: T, deps: React.DependencyList) => {
 
 
 
+    // TODO: 新增业务单位
+    const queryBusinessUnitPropertyCreditInfo = useCallback(async (params: any)=> {
+        return await queryBusinessUnitPropertyCreditInfoAPI(params);
+    }, [])
+
+
+
+
 
 
 
@@ -140,9 +154,7 @@ export default (callback: T, deps: React.DependencyList) => {
         CustomerPropertyList,
         BusinessLineList,
         uploadCTCenter,
-
-
-
+        queryBusinessUnitPropertyCreditInfo,
         addBusinessUnit,
     }
 }

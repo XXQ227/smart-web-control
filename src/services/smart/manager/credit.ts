@@ -8,6 +8,14 @@ export async function queryCreditControlAPI(body: APIManager.SearchCreditParams)
   });
 }
 
+/** 获取所有 Credit Control 数据 */
+export async function queryUnCreditControlAPI(body: APIManager.SearchCreditParams) {
+  return request(`/apiBase/creditControl/queryUnCreditControl/`, {
+    method: 'POST',
+    body,
+  });
+}
+
 /** 获取 Credit Control 详情 */
 export async function addCreditControlAPI(body: APIManager.Credit) {
   return request(`/apiBase/creditControl/addCreditControl/`, {

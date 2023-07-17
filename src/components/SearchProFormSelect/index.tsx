@@ -72,7 +72,7 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
             disabled={disabled}
             required={!!required}
             // initialValue={valInput}
-            initialValue={valueObj}
+            // initialValue={valueObj}
             label={isShowLabel ? label : ''}
             allowClear={props.allowClear}
             placeholder={placeholder || ""}

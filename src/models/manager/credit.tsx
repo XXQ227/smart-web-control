@@ -5,6 +5,7 @@ import {
     editCreditControlAPI,
     operateCreditControlAPI,
     queryCreditControlAPI,
+    queryUnCreditControlAPI,
     queryCreditControlInfoAPI
 } from '@/services/smart/manager/credit'
 
@@ -18,7 +19,15 @@ export default () => {
     // TODO: 获取单票业务详情请求
     const queryCreditControl = useCallback(async (params: APIManager.SearchCreditParams) => {
         // TODO: 请求后台 API
-        const response = await queryCreditControlAPI(params);
+        const response: API.Result = await queryCreditControlAPI(params);
+        if (!response) return;
+        return response;
+    }, []);
+
+    // TODO: 获取单票业务详情请求
+    const queryUnCreditControl = useCallback(async (params: APIManager.SearchCreditParams) => {
+        // TODO: 请求后台 API
+        const response: API.Result = await queryUnCreditControlAPI(params);
         if (!response) return;
         return response;
     }, []);
@@ -52,6 +61,7 @@ export default () => {
 
     return {
         queryCreditControl,
+        queryUnCreditControl,
         addCreditControl,
         queryCreditControlInfo,
         editCreditControl,

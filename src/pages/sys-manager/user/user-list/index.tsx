@@ -133,7 +133,7 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
         },
         {
             title: 'Department',
-            dataIndex: 'departmentId',
+            dataIndex: 'defaultDepartmentId',
             width: 150,
             disable: true,
             align: 'center',

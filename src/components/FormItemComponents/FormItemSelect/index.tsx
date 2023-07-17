@@ -2,7 +2,7 @@ import React from 'react'
 import {Select} from 'antd'
 
 interface Props {
-    id: string,
+    id?: string,
     name: string,
     initialValue?: any
     options: any

@@ -40,3 +40,12 @@ export async function addBusinessUnitAPI(body: APIManager.Branch, options?: { [k
         ...(options || {}),
     });
 }
+
+/** TODO: 新增业务单位 */
+export async function queryBusinessUnitPropertyCreditInfoAPI(body: any, options?: { [key: string]: any }) {
+    return request(`/apiBase/businessUnitProperty/queryBusinessUnitPropertyCreditInfo`, {
+        method: 'POST',
+        body,
+        ...(options || {}),
+    });
+}

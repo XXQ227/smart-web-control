@@ -109,7 +109,7 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
         return cgArr.map((item: CGTempItems) => ({
             id: item.id && item.id.indexOf('ID_') > -1 ? '' : item.id,
             type: item.type, branchId: item.branchId,
-            currencyType: item.currencyType,
+            currencyName: item.currencyName,
             chargeTemplateId: item.chargeTemplateId,
             chargeItemId: item.chargeItemId,
             unitType: item.unitType,
@@ -128,12 +128,14 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
     const handleSave = async (values: any) => {
         setLoading(true);
         const saveId = pathname.indexOf('/copy') > -1 ? 0 : id;
+        const serviceObj: any = ServicesList?.find((item: any)=> item.value === values.servicesType) || {};
+        const pocObj: any = PurposeOfCallList?.find((item: any)=> item.value === values.purposeOfCallType) || {};
         const saveResult: any = {
             id: saveId,
             branchId: '0',
             name: values.name,
-            servicesType: values.servicesType,
-            purposeOfCallType: values.purposeOfCallType,
+            servicesType: serviceObj.label,
+            purposeOfCallType: pocObj.label,
             chargeTemplateItemList: [],
         };
         // TODO: 模板费用保存，字符串的费用 id 变成 0
@@ -163,7 +165,7 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
             message.error(result.message);
         }
     }
-    
+
     // TODO: 传给子组件的参数
     const baseCGDON: any = {
         form, formRef, FormItem, handleCGTempChange, CurrencyList, PayMethodList, chargeTemplateId: id

@@ -4,7 +4,7 @@ import {createFromIconfontCN} from '@ant-design/icons';
 import {Descriptions} from "antd";
 import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 
-export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_pnyf6lhb3ac.js';
+export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_o4ewkhme0hr.js';
 
 // TODO: 系统五字码
 export const SYSTEM_ID = 99003;
@@ -826,14 +826,14 @@ export function getCreditScore (target: any, op_node: number, op_value: any) {
             break;
         case 2: // TODO: 注册时间（年限）
             percentage = 0.1;
-            const estimated_monthly: number = getDiffYears(op_value || '2008-06-23');
+            const estimated_monthly: number = getDiffYears(op_value);
             if (estimated_monthly <= 1) {
                 score = 1;
             } else if (1 < estimated_monthly && estimated_monthly <= 3) {
                 score = 2;
-            } else if (4 < estimated_monthly && estimated_monthly <= 5) {
+            } else if (4 <= estimated_monthly && estimated_monthly <= 5) {
                 score = 3;
-            } else if (6 < estimated_monthly && estimated_monthly <= 7) {
+            } else if (6 <= estimated_monthly && estimated_monthly <= 7) {
                 score = 4;
             } else if (7 < estimated_monthly) {
                 score = 5;
@@ -848,6 +848,7 @@ export function getCreditScore (target: any, op_node: number, op_value: any) {
             score = op_value;
             break;
         case 5: // TODO: 年营收
+            percentage = 0.2;
             if (op_value <= 100000) {
                 score = 1;
             } else if (100000 < op_value && op_value <= 300000) {
@@ -859,7 +860,6 @@ export function getCreditScore (target: any, op_node: number, op_value: any) {
             } else if (1000000 < op_value) {
                 score = 4;
             }
-            percentage = 0.2;
             break;
         case 6: // TODO: 利润率
             percentage = 0.2;

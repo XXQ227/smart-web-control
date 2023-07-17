@@ -41,7 +41,7 @@ const UserDrawerForm: React.FC<Props> = (props) => {
                 console.log(values);
                 values.leaderId = 0;
                 values.branchId = 0;
-                values.departmentId = 0;
+                // values.departmentId = 0;
                 values.salesFlag = values.salesFlag ? 1 : 0;
 
                 let result: API.Result;
@@ -84,7 +84,7 @@ const UserDrawerForm: React.FC<Props> = (props) => {
                     width={'70%'}
                     destroyOnClose={true}
                     onClose={() => setOpen(false)}
-                    title={'Port Information'}
+                    title={'User'}
                 >
                     <ProForm
                         form={form}
@@ -95,7 +95,7 @@ const UserDrawerForm: React.FC<Props> = (props) => {
                         // TODO: 自动 focus 表单第一个输入框
                         autoFocusFirstInput={true}
                         // TODO: 设置默认值
-                        // initialValues={UserInfo}
+                        initialValues={UserInfo}
                         // TODO: 提交数据
                         onFinish={handleSave}
                         onFinishFailed={handleSave}
@@ -183,25 +183,25 @@ const UserDrawerForm: React.FC<Props> = (props) => {
                                         label='F8 Authority Code'
                                     />
                                 </Col>
-                                {/*<Col span={6}>*/}
-                                {/*    <SearchProFormSelect*/}
-                                {/*        required={true}*/}
-                                {/*        valueObj={{}}*/}
-                                {/*        placeholder=''*/}
-                                {/*        label='Department'*/}
-                                {/*        id='department_id'*/}
-                                {/*        name='department_id'*/}
-                                {/*        url={'/apiBase/user/queryUser'}*/}
-                                {/*    />*/}
-                                {/*</Col>*/}
                                 <Col span={6}>
                                     <SearchProFormSelect
-                                        valueObj={{value: UserInfo.leaderId, label: UserInfo.leaderName}}
+                                        required={true}
+                                        isShowLabel={true}
+                                        placeholder=''
+                                        label='Department'
+                                        id='departmentId'
+                                        name='defaultDepartmentId'
+                                        url={'/apiBase/department/queryDepartmentCommon'}
+                                    />
+                                </Col>
+                                <Col span={6}>
+                                    <SearchProFormSelect
+                                        isShowLabel={true}
                                         placeholder=''
                                         id='leaderId'
-                                        name='leaderId'
+                                        name='defaultLeaderId'
                                         label='Superior'
-                                        url={'/api/manager/queryDepartment'}
+                                        url={'/apiBase/department/queryDepartmentCommon'}
                                     />
                                 </Col>
                             </Row>

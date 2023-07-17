@@ -2,7 +2,7 @@ import React from 'react'
 import {Input} from 'antd'
 
 interface Props {
-    id: string,
+    id?: string,
     name: string,
     label?: string,
     initialValue?: any

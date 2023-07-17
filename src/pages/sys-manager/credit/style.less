@@ -1,0 +1,211 @@
+
+.ant-credit-info-table {
+  table, tr, td {
+    border: 1px #fff solid;
+  }
+  table {
+    width: 100%;
+  }
+  tr {
+  }
+  .ant-credit-tr-dark {
+    background-color: rgba(0, 0, 0, 0.25);
+  }
+  td {
+    line-height: 25px;
+    padding: 4px 8px;
+    min-width: 130px;
+    &:not(.ant-value-left){
+      text-align: center;
+    }
+  }
+
+  .ant-credit-result-table{
+    .ant-table {
+      td {
+        line-height: 30px;
+        padding: 4px 8px;
+        min-width: 130px;
+        text-align: center;
+      }
+    }
+  }
+}
+
+.ant-credit-line-days {
+  color: rgb(211, 158, 89);
+  font-size: 30px; line-height: 40px;
+}
+
+.ant-credit-approval-operate {
+  //background-color: #012e69;
+  margin-top: 12px;
+  border-top: 3px #fff solid;
+  border-bottom: 3px #fff solid;
+  .ant-col-22 {
+    padding-top: 12px;
+  }
+  .ant-col-2 {
+    padding-top: 12px;
+    border-right: 3px #fff solid;
+    div {
+      border-bottom: 1px #fff solid;
+      cursor: pointer;
+      * {
+        font-size: 24px;
+        line-height: 50px;
+      }
+      &:hover {
+        color: rgb(211, 158, 89);
+        border-color: rgb(211, 158, 89);
+      }
+    }
+    .ant-credit-approval-state-choose {
+      color: rgb(211, 158, 89);
+      border-color: rgb(211, 158, 89);
+    }
+  }
+}
+
+.ant-credit-approval-info {
+  margin-top: 22px;
+  .ant-col {
+    padding-right: 0!important;
+  }
+  .ant-col-1 {
+    padding: 0!important;
+  }
+  .ant-col-23 {
+    width: calc(100% - 20px) !important;
+  }
+  .ant-col-5 {
+    &:not(&:first-child) {
+      margin-left: 3px;
+    }
+  }
+  .ant-approval-title-name {
+    span {
+      &:last-child {
+        float: right;
+        padding-right: 38px;
+      }
+    }
+  }
+  .ant-approval-remark{
+    border: 2px #52c41a solid;
+    border-radius: 5px;
+    min-height: 100px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  .arrow {
+    position: relative;
+    transform: rotate(180deg);
+    top: 40%;
+    left: -18%;
+    img {
+      width: 27px;
+    }
+  }
+
+  .ant-credit-approval-line-dashed {
+    border: 2px #fff dashed;
+    padding: 8px 12px;
+    border-radius: 5px;
+  }
+}
+
+.ant-credit-approval-info-to-financial-line {
+  height: 30px;
+  .line {
+    position: relative;
+    width: 37.5%;
+    left: -9.21%;
+    top: 19px;
+    float: right;
+    height: 0;
+    border-bottom: 2px solid #52c41a;
+  }
+
+  .line2 {
+    position: relative;
+    width: 20px;
+    height: 0;
+    transform: rotate(90deg);
+    border-bottom: 2px solid #52c41a;
+    float: right;
+    left: -10%;
+    top: 10px;
+  }
+
+  .line3 {
+    position: relative;
+    width: 20px;
+    height: 0;
+    transform: rotate(90deg);
+    border-bottom: 2px solid #52c41a;
+    float: right;
+    left: -48.85%;
+    top: 29px;
+  }
+  .arrow {
+    position: relative;
+    display: inline-block;
+    float: right;
+    left: -49.95%;
+    top: 34px;
+  }
+}
+
+.ant-credit-approval-info-to-financial-line, .ant-credit-approval-info-to-headquarters-line {
+  .arrow::after {
+    content: "";
+    display: inline-block;
+    width: 0;
+    height: 0;
+    border-top: 10px solid #52c41a;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+  }
+}
+.ant-credit-approval-info-to-headquarters-line {
+  height: 30px;
+  .line {
+    position: relative;
+    width: 64%;
+    left: -9.21%;
+    top: 19px;
+    float: right;
+    height: 0;
+    border-bottom: 2px solid #52c41a;
+  }
+
+  .line2 {
+    position: relative;
+    width: 20px;
+    height: 0;
+    transform: rotate(90deg);
+    border-bottom: 2px solid #52c41a;
+    float: right;
+    left: -10%;
+    top: 10px;
+  }
+
+  .line3 {
+    position: relative;
+    width: 20px;
+    height: 0;
+    transform: rotate(90deg);
+    border-bottom: 2px solid #52c41a;
+    float: right;
+    left: -75.4%;
+    top: 29px;
+  }
+  .arrow {
+    position: relative;
+    display: inline-block;
+    float: right;
+    left: -76.48%;
+    top: 34px;
+  }
+}

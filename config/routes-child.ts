@@ -130,20 +130,6 @@ const manager_route = {
             path: '/manager/branch/form/:id',
             component: './sys-manager/branch/branch-form',
         },
-        // TODO: 费用模板数据
-        {
-            name: 'credit_list',
-            icon: 'icon-charge-manage',
-            path: '/manager/credit',
-            component: './sys-manager/credit',
-        },
-        {
-            hideInMenu: true,   // 隐藏不显示
-            name: 'credit_info',
-            icon: 'icon-charge-manage',
-            path: '/manager/credit/form/:id',
-            component: './sys-manager/credit/form',
-        },
         // TODO: 字典表数据维护
         {
             name: 'dict',
@@ -157,6 +143,14 @@ const manager_route = {
             path: '/manager/dict/form/:id',
             component: './sys-manager/dict/form',
         },
+        // TODO: 港口数据
+        {
+            name: 'port_list',
+            icon: 'icon-port',
+            path: '/manager/port/list',
+            component: './sys-manager/port',
+        },
+        // TODO: 业务公司
         {
             name: 'cv_center',
             icon: 'icon-cv-center',
@@ -225,12 +219,33 @@ const manager_route = {
                 },
             ],
         },
-        // TODO: 港口数据
+        // TODO: 信控数据
         {
-            name: 'port_list',
-            icon: 'icon-port',
-            path: '/manager/port/list',
-            component: './sys-manager/port',
+            name: 'credit_list',
+            icon: 'icon-charge-manage',
+            path: '/manager/credit',
+            component: './sys-manager/credit',
+        },
+        {
+            hideInMenu: true,   // 隐藏不显示
+            name: 'credit_info',
+            icon: 'icon-charge-manage',
+            path: '/manager/credit/form/:id',
+            component: './sys-manager/credit/form',
+        },
+        {
+            hideInMenu: true,   // 隐藏不显示
+            name: 'credit_info',
+            icon: 'icon-charge-manage',
+            path: '/manager/credit/form/:id/:buId',
+            component: './sys-manager/credit/form',
+        },
+        {
+            hideInMenu: true,   // 隐藏不显示
+            name: 'credit_approval',
+            icon: 'icon-charge-manage',
+            path: '/manager/credit/approval/:id',
+            component: './sys-manager/credit/approval',
         },
         // TODO: 船代
         {
@@ -283,6 +298,7 @@ const manager_route = {
         },
         // TODO: 报价数据
         {
+            hideInMenu: true,   // 隐藏不显示
             name: 'charge_quotation_list',
             icon: 'icon-charge-quotation',
             path: '/manager/charge-quotation/list',

@@ -45,7 +45,7 @@ const InputEditNumber: React.FC<Props> = (props) => {
             autoComplete='off'
             onChange={handleChange}
             className={props.className}
-            value={isEdit ? props.valueStr : value || ''}
+            value={isEdit ? value || '' : props.valueStr}
             // 获取焦点时，进入编辑状态
             onFocusCapture={()=> setIsEdit(true)}
             onBlur={(e)=> handleChange(e, 'onBlue')}
