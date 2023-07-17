@@ -1,9 +1,9 @@
-import {GetCTPByStr, GetCTPByID, UploadCTCenter} from '@/services/smart/manager/cv-center';
+import {GetCTPByStr, GetCTPByID, UploadCTCenter, addBusinessUnitAPI} from '@/services/smart/manager/cv-center';
 import type React from "react";
 import {useCallback, useState} from "react";
 import {getLabel$Value, getTransIndustryListToLine} from '@/utils/units'
 
-type APICVInfo = APIManager.CVInfo;
+type APICVInfo = APIManager.BUInfo;
 type APICTTypeItemList = APIManager.CTTypeItemList[];
 type APICustomerProperty = APIManager.CustomerProperty[];
 type APIBusinessLine = APIManager.BusinessLine[];
@@ -12,14 +12,13 @@ type APIIndustrysTreeSelect = APIManager.IndustrysTreeSelect[][];
 
 interface T {
     CVInfoList: APICVInfo[],
-    CVInfo: APICVInfo,
+    BUInfo: APICVInfo,
     CustomerTypeList: APICTTypeItemList,
     VendorTypeList: APICTTypeItemList,
     IndustryList: APIIndustrys,
     CustomerPropertyList: APICustomerProperty,
     BusinessLineList: APIBusinessLine,
 }
-
 
 export default (callback: T, deps: React.DependencyList) => {
     // TODO: 单票详情
@@ -45,7 +44,7 @@ export default (callback: T, deps: React.DependencyList) => {
         CTTypeItemListSupplier: null,
         CTList: [],
     };
-    /* TODO: CV 详情数据*/  const [CVInfo, setCVInfo] = useState<APICVInfo>(cvInfo);
+    /* TODO: CV 详情数据*/  const [BUInfo, setCVInfo] = useState<APICVInfo>(cvInfo);
     /* TODO: 客户*/   const [CustomerTypeList, setCustomerTypeList] = useState<APICTTypeItemList>([]);
     /* TODO: 供应商*/  const [VendorTypeList, setVendorTypeList] = useState<APICTTypeItemList>([]);
     /* TODO: 行业*/   const [IndustryList, setIndustryList] = useState<APIIndustrysTreeSelect>([]);
@@ -116,17 +115,34 @@ export default (callback: T, deps: React.DependencyList) => {
     }, []);
 
 
+
+
+    // TODO: 新增业务单位
+    const addBusinessUnit = useCallback(async (params: APICVInfo)=> {
+        return await addBusinessUnitAPI(params);
+    }, [])
+
+
+
+
+
+
+
     return {
         CVInfoList,
         getGetCTPByStr,
 
         getGetCTPByID,
-        CVInfo,
+        BUInfo,
         CustomerTypeList,
         VendorTypeList,
         IndustryList,
         CustomerPropertyList,
         BusinessLineList,
         uploadCTCenter,
+
+
+
+        addBusinessUnit,
     }
 }

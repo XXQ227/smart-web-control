@@ -5,43 +5,68 @@ import {
     FooterToolbar,
     PageContainer,
     ProCard,
-    ProForm, ProFormRadio, ProFormSwitch,
+    ProForm, ProFormDatePicker, ProFormSelect,
     ProFormText,
-    ProFormTextArea,
-    ProFormTreeSelect
 } from '@ant-design/pro-components'
 import {Button, Col, Form, Popover, Row, Space, Radio} from 'antd'
 import {getUserID} from '@/utils/auths'
 import {useModel, history} from 'umi'
-import SearchInput from '@/components/SearchInput'
 import {message} from 'antd/es'
+import {getFormErrorMsg, rowGrid} from "@/utils/units";
+import SearchProFormSelect from "@/components/SearchProFormSelect";
 
-type APICVInfo = APIManager.CVInfo;
-const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
+export type LocationState = Record<string, unknown>;
+type APICVInfo = APIManager.BUInfo;
+
+const cityList = [
+    {label: 'HONG KONG', value: 1},
+    {label: 'SHENZHEN', value: 2},
+    {label: 'SHANGHAI', value: 3},
+    {label: 'BEIJING', value: 4},
+    {label: 'GUANGZHOU', value: 5},
+]
+
+const BUForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
-    const {match: {params}} = props;
-    const {location: {pathname}} = history;
+    const {match: {params}, location: {state}} = props;
+    const id = atob(params?.id);
+    // const {location: {pathname}} = history;
     const [form] = Form.useForm();
     const formRef = useRef<ProFormInstance>();
-    const {current} = formRef;
+    // const {current} = formRef;
     //region TODO: 数据层
     const {
-        getGetCTPByID, CVInfo, IndustryList, CustomerPropertyList, uploadCTCenter
+        addBusinessUnit,
+        BUInfo, uploadCTCenter
     } = useModel('manager.cv-center', (res: any) => ({
-        CVInfo: res.CVInfo,
+        addBusinessUnit: res.addBusinessUnit,
+
+        BUInfo: res.BUInfo,
         getGetCTPByID: res.getGetCTPByID,
-        IndustryList: res.IndustryList,
-        CustomerPropertyList: res.CustomerPropertyList,
         uploadCTCenter: res.uploadCTCenter,
     }));
-    const [CVInfoVO, setCVInfoVO] = useState<APICVInfo>(CVInfo);
-    const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
-    const [CTCenterType, setCTCenterType] = useState<number | null>(null);
 
+    const {
+        queryDictCommon, IndustryList
+    } = useModel('common', (res: any)=> ({
+        queryDictCommon: res.queryDictCommon,
+        IndustryList: res.IndustryList,
+    }))
+
+    const [CVInfoVO, setCVInfoVO] = useState<APICVInfo>(BUInfo);
+    // const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
+    const [CTCenterType, setCTCenterType] = useState<number | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     //endregion
 
     useEffect(() => {
+        setTimeout(async () => {
+            if (IndustryList?.length === 0) {
+                await queryDictCommon({dictCodes: ['industry']});
+            }
+        })
+
     }, [])
 
 
@@ -51,11 +76,11 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
      * @date 2023/5/5
      * @returns
      */
-    const handleGetCTPByID = async () => {
+    /*const handleGetCTPByID = async () => {
         const result: any = await getGetCTPByID({UserID: getUserID(), CTPID: Number(atob(params?.id))});
         setCVInfoVO(result);
         return result;
-    }
+    }*/
 
     /**
      * @Description: TODO:
@@ -65,9 +90,9 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
      * @param val
      * @returns
      */
-    const handleChange = (filedName: string, val: any) => {
+    /*const handleChange = (filedName: string, val: any) => {
         console.log(filedName, val);
-    }
+    }*/
 
     /**
      * @Description: TODO: 当 ProForm 表单修改时，调用此方法
@@ -76,7 +101,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
      * @param changeValues   ProForm 表单修改的参数
      * @returns
      */
-    const handleProFormValueChange = (changeValues: any) => {
+    /*const handleProFormValueChange = (changeValues: any) => {
         console.log(changeValues);
         if (!isChangeValue) {
             setIsChangeValue(true);
@@ -85,7 +110,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
             const setFieldVal: any = {};
             current?.setFieldsValue(setFieldVal);
         })
-    }
+    }*/
 
     const handleUpload = async () => {
         const result: any = await uploadCTCenter({UserID: getUserID(), CTID: Number(atob(params?.id)), custType: CTCenterType});
@@ -96,14 +121,59 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
         }
     }
 
+    /**
+     * @Description: TODO: 保存数据
+     * @author LLS
+     * @date 2023/7/12
+     * @param val
+     * @returns
+     */
+    const onFinish = async (val: APICVInfo) => {
+        setLoading(true);
+        let result: API.Result;
+        /*const param: any = {
+            // contactName: val.contactName,
+        };*/
+        if (id === '0') {
+            // TODO: 新增业务单位
+            val.cityName = cityList.find(city => city.value === val.cityId)?.label ?? '';
+            console.log(val)
+            result = await addBusinessUnit(val);
+        } else {
+            // TODO: 编辑公司
+            // param.id = id;
+            result = await addBusinessUnit(val);
+        }
+        if (result.success) {
+            message.success('Success');
+            if (id === '0') history.push({pathname: `/manager/cv-center/company/form/${btoa(result.data)}`});
+        } else {
+            message.error(result.message)
+        }
+        setLoading(false);
+    }
+
+    /**
+     * @Description: TODO: 验证错误信息
+     * @author XXQ
+     * @date 2023/5/24
+     * @param val
+     * @returns
+     */
+    const onFinishFailed = (val: any) => {
+        console.log(val);
+        const errInfo = getFormErrorMsg(val);
+        message.error(errInfo);
+    }
+
     //region TODO: 显示隐藏：{SCAC, IATA}
     //endregion
     // TODO: 返回列表集合
-    const returnURL = pathname.substring(0, pathname.indexOf('/form')) + '/dict';
+    // const returnURL = pathname.substring(0, pathname.indexOf('/form')) + '/dict';
 
     return (
         <PageContainer
-            // loading={false}
+            loading={loading}
             header={{
                 breadcrumb: {},
             }}
@@ -119,189 +189,225 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                 initialValues={CVInfoVO}
                 formKey={'cv-center-information'}
                 // TODO: 空间有改数据时触动
-                onValuesChange={handleProFormValueChange}
+                // onValuesChange={handleProFormValueChange}
                 // TODO: 提交数据
-                onFinish={async (values) => {
-                    console.log(values);
-                }}
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
                 // TODO: 向后台请求数据
-                request={async () => handleGetCTPByID()}
+                // request={async () => handleGetCTPByID()}
             >
                 <ProCard title={'Name & Code'} className={'ant-card'}>
-                    {/** // TODO: CV Name、CV Name (For Print)、Short Name、CV Identity */}
-                    <Row gutter={24}>
-                        <Col span={7}>
+                    <Row gutter={rowGrid}>
+                        <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={10}>
                             <ProFormText
                                 required
-                                name='name_full'
                                 placeholder=''
-                                tooltip='length: 100'
-                                label='Company'
-                                rules={[{required: true, message: 'is required'}]}
+                                label='BU Name'
+                                name='nameFullEn'
+                                tooltip='length: 500'
+                                rules={[{required: true, message: 'Name'}, {max: 500, message: 'length: 500'}]}
                             />
                         </Col>
-                        <Col span={7}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormText
-                                required
-                                name='name_full_en'
-                                placeholder=''
-                                tooltip='length: 100'
-                                label='Company'
-                                rules={[{required: true, message: 'is required'}]}
-                            />
-                        </Col>
-                        <Col span={4}>
-                            <ProFormText
-                                required
-                                name='tax_num'
+                                name='taxNum'
                                 placeholder=''
                                 label='Tax Num'
-                                tooltip='length: 30'
+                                tooltip='length: 25'
+                                rules={[{max: 25, message: 'length: 25'}]}
                             />
                         </Col>
-                        <Col span={6}>
-                            <Form.Item label={'Affiliated Group'} name={'parent_company_id'}>
-                                <SearchInput
-                                    qty={5}
-                                    id={'parent_company_id'}
-                                    url={'/api/MCommon/GetCountryByKey'}
-                                    valueObj={{value: CVInfoVO.parent_company_id, label: CVInfoVO.parent_company_name}}
-                                    handleChangeData={(val: any) => handleChange('city_id', val)}
-                                />
-                            </Form.Item>
-                        </Col>
-                        <Col span={24}>
-                            <ProFormTextArea name='Address' placeholder='' label='address'/>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col span={4}>
-                            <ProFormTextArea name='legal_entity' placeholder='' label='Legal Entity'/>
-                        </Col>
-                        <Col span={4}>
-                            <Form.Item label={'City'} name={'city_id'}>
-                                <SearchInput
-                                    qty={5}
-                                    id={'city_id'}
-                                    url={'/api/MCommon/GetCountryByKey'}
-                                    valueObj={{value: CVInfoVO.city_id, label: CVInfoVO.city_name}}
-                                    handleChangeData={(val: any) => handleChange('city_id', val)}
-                                />
-                            </Form.Item>
-                        </Col>
-                    </Row>
-
-                    {/** // TODO: MDM Number<主数据代码>、CV-Center Number<客商代码>、Oracle ID (Customer)、
-                     // TODO: Oracle ID (Vendor)、Sinotrans Company ID<如果是中外运内部公司，则有一个5位数字的编码> */}
-                    <Row gutter={24}>
-                        <Col span={4}>
-                            <ProFormText
-                                placeholder=''
-                                name='mdm_code'
-                                label='MDM Number'
-                            />
-                        </Col>
-                        <Col span={4}>
-                            <ProFormText
-                                placeholder=''
-                                name='internal_code'
-                                label='CDH Code'
-                            />
-                        </Col>
-                        <Col span={4}>
-                            <ProFormText
-                                placeholder=''
-                                name='OracleID'
-                                label='Oracle ID (Customer)'
-                            />
-                        </Col>
-                        <Col span={4}>
-                            <ProFormText
-                                placeholder=''
-                                name='OracleIDSupplier'
-                                label='Oracle ID (Vendor)'
-                            />
-                        </Col>
-                        <Col span={4}>
-                            <ProFormText
-                                placeholder=''
-                                name='internal_company_code'
-                                label='Sinotrans Company ID'
-                            />
-                        </Col>
-                        <Col span={4}>
-                            <ProFormText
-                                placeholder=''
-                                name='internal_org_code'
-                                label='Sinotrans Dept. ID'
-                            />
-                        </Col>
-                        <Col span={4}>
-                            <ProFormText
-                                placeholder=''
-                                name='organization_code'
-                                label='Organization Code'
-                            />
-                        </Col>
-                    </Row>
-                </ProCard>
-
-                <ProCard title={'Properties'} className={'ant-card ant-cv-center-properties'}>
-                    {/** // TODO: Nature of a Company */}
-                    <Row gutter={24}>
-                        <Col span={3} className={'ant-cv-center-properties-label'}>
-                            <label>Nature of a Company : </label>
-                        </Col>
-                        <Col span={20}>
-                            <ProFormRadio.Group
-                                name='enterprise_type'
-                                options={CustomerPropertyList}
-                            />
-                        </Col>
-                    </Row>
-                    {/** // TODO: Industry、、、、、、、 */}
-                    <Row gutter={24}>
-                        <Col span={8}>
-                            <ProFormTreeSelect
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormSelect
                                 required
                                 placeholder=''
-                                label='Industry'
-                                name='industry_type'
-                                request={async () => IndustryList}
-                                fieldProps={{
-                                    treeDefaultExpandAll: true,
-                                    dropdownMatchSelectWidth: false,
-                                }}
+                                label='Located in (City)'
+                                name='cityId'
+                                rules={[{required: true, message: 'City'}]}
+                                options={cityList}
                             />
                         </Col>
-                        {/* TODO: 船公司编码 */}
-                        <Col span={3}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                name='internalCode'
+                                placeholder=''
+                                label='Internal Code'
+                                tooltip='length: 6'
+                                rules={[{max: 6, message: 'length: 6'}, {min: 6, message: 'length: 6'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                name='mdmCode'
+                                placeholder=''
+                                label='MDM Number'
+                                tooltip='length: 50'
+                                rules={[{max: 50, message: 'length: 50'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                name='mdmStatus'
+                                placeholder=''
+                                label='MDM Status'
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormSelect
+                                placeholder=''
+                                label='Nature of a Company'
+                                name='enterpriseType'
+                                options={[
+                                    {label: '私企（民营企业）', value: 1},
+                                    {label: '外企（外资企业）', value: 2},
+                                    {label: '央企', value: 3},
+                                    {label: '地方国企-省属', value: 4},
+                                    {label: '地方国企-市属', value: 5},
+                                    {label: '地方国企-其他', value: 6},
+                                ]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={10}>
+                            <SearchProFormSelect
+                                qty={10}
+                                isShowLabel={true}
+                                required={false}
+                                label="Parent Company (Belongs to Group)"
+                                id={'parentCompanyId'}
+                                name={'parentCompanyId'}
+                                url={"/apiBase/branch/queryBranchCommon"}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormText
                                 name='scac'
+                                placeholder=''
                                 label='SCAC'
-                                placeholder=''
+                                tooltip='length: 10'
+                                rules={[{max: 10, message: 'length: 10'}]}
                             />
                         </Col>
-                        {/* TODO: 航空公司编码 */}
-                        <Col span={3}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormText
+                                name='organizationCode'
+                                placeholder=''
+                                label='Organization Code'
+                                tooltip='length: 50'
+                                rules={[{max: 50, message: 'length: 50'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                name='internalCompanyCode'
+                                placeholder=''
+                                label='Internal Company Code'
+                                tooltip='length: 50'
+                                rules={[{max: 50, message: 'length: 50'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                name='internalOrgCode'
+                                placeholder=''
+                                label='Internal Department Code'
+                                tooltip='length: 50'
+                                rules={[{max: 50, message: 'length: 50'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                name='iataCode'
+                                placeholder=''
                                 label='IATA'
-                                placeholder=''
-                                name='iata_code'
+                                tooltip='length: 10'
+                                rules={[{max: 10, message: 'length: 10'}]}
                             />
                         </Col>
-                        {/* TODO: 满足是航空公司时显示 */}
-                        <Col span={3}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormSelect
+                                required
+                                placeholder=''
+                                label="Industry"
+                                id={'industryType'}
+                                name={'industryType'}
+                                options={IndustryList}
+                                rules={[{required: true, message: 'Industry'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                required
+                                name='corporation'
+                                placeholder=''
+                                label='Corporation'
+                                tooltip='length: 20'
+                                rules={[{max: 20, message: 'length: 20'},{required: true, message: 'Corporation'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                required
+                                name='registeredCapital'
+                                placeholder=''
+                                label='Registered Capital'
+                                rules={[{required: true, message: 'Registered Capital'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                name='paidInCapital'
+                                placeholder=''
+                                label='Paid In Capital'
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormDatePicker
+                                placeholder=''
+                                name="establishedDate"
+                                label="Established Date"
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormSelect
+                                required
+                                placeholder=''
+                                label='Nature of a Company'
+                                name='natureOfCompany'
+                                rules={[{required: true, message: 'Nature of a Company'}]}
+                                options={[
+                                    {label: '合营企业', value: 1},
+                                    {label: '个人独资企业', value: 2},
+                                    {label: '国有企业', value: 3},
+                                    {label: '私营企业', value: 4},
+                                    {label: '全民所有制企业', value: 5},
+                                    {label: '集体所有制企业', value: 6},
+                                    {label: '股份有限公司', value: 7},
+                                    {label: '有限责任企业', value: 8},
+                                    {label: '外商投资企业', value: 9},
+                                    {label: '有限合伙企业', value: 10},
+                                ]}
+                            />
+                        </Col>
+                        {/*<Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormSwitch
-                                placeholder=''
-                                name='enable_flag'
-                                label='Freezen'
+                                name="enableFlag"
+                                label="Freezen"
+                                checkedChildren="Yes"
+                                unCheckedChildren="No"
                             />
-                        </Col>
+                        </Col>*/}
                     </Row>
                 </ProCard>
 
-                <FooterToolbar extra={<Button onClick={() => history.push({pathname: returnURL})}>Back</Button>}>
+                <FooterToolbar
+                    extra={<Button
+                        onClick={() => history.push({
+                            pathname: '/manager/cv-center/company/list',
+                            state: {
+                                searchParams: state ? (state as LocationState)?.searchParams : '',
+                            },
+                        })}
+                    >Back</Button>}>
                     <Space>
                         <Popover
                             title={'Please select the type of merchant center!'}
@@ -332,4 +438,4 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
         </PageContainer>
     )
 }
-export default CVCenterForm;
+export default BUForm;

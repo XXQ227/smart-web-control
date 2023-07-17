@@ -22,7 +22,7 @@ import ls from 'lodash';
 import {CloseOutlined} from '@ant-design/icons'
 import {useModel, history} from 'umi'
 
-type APICVInfo = APIManager.CVInfo;
+type APICVInfo = APIManager.BUInfo;
 const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}} = props;
@@ -32,10 +32,10 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
     const {current} = formRef;
     //region TODO: 数据层
     const {
-        getGetCTPByID, CVInfo, CustomerTypeList, VendorTypeList, CustomerPropertyList, BusinessLineList,
+        getGetCTPByID, BUInfo, CustomerTypeList, VendorTypeList, CustomerPropertyList, BusinessLineList,
         IndustryList,
     } = useModel('manager.cv-center', (res: any) => ({
-        CVInfo: res.CVInfo,
+        BUInfo: res.BUInfo,
         getGetCTPByID: res.getGetCTPByID,
         CustomerTypeList: res.CustomerTypeList,
         VendorTypeList: res.VendorTypeList,
@@ -43,34 +43,34 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
         BusinessLineList: res.BusinessLineList,
         IndustryList: res.IndustryList,
     }));
-    const [CVInfoVO, setCVInfoVO] = useState<APICVInfo>(CVInfo);
-    const [ClientVO, setClientVO] = useState<API.APIKey$Value[]>(CVInfo.CTList);
+    const [CVInfoVO, setCVInfoVO] = useState<APICVInfo>(BUInfo);
+    const [ClientVO, setClientVO] = useState<API.APIKey$Value[]>(BUInfo.CTList);
     const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
 
     // TODO: 客户类型
-    const [customerTypeID, setCustomerTypeID] = useState<number | null>(CVInfo.CTTypeItemClient);
+    const [customerTypeID, setCustomerTypeID] = useState<number | null>(BUInfo.CTTypeItemClient);
     // TODO: 供应商类型
-    const [vendorTypeList, setVendorTypeList] = useState<number[] | null>(CVInfo.CTTypeItemListSupplier);
+    const [vendorTypeList, setVendorTypeList] = useState<number[] | null>(BUInfo.CTTypeItemListSupplier);
 
     //endregion
 
     useEffect(() => {
-        if (CVInfo.CTList?.length !== ClientVO?.length) {
-            setClientVO(CVInfo.CTList);
+        if (BUInfo.CTList?.length !== ClientVO?.length) {
+            setClientVO(BUInfo.CTList);
         }
-        if (!!CVInfo.CTTypeItemClient && !customerTypeID) {
-            setCustomerTypeID(CVInfo.CTTypeItemClient);
+        if (!!BUInfo.CTTypeItemClient && !customerTypeID) {
+            setCustomerTypeID(BUInfo.CTTypeItemClient);
         }
-        if (CVInfo.CTTypeItemListSupplier?.length > 0 && vendorTypeList?.length === 0) {
-            setVendorTypeList(CVInfo.CVInfo.CTTypeItemListSupplier);
+        if (BUInfo.CTTypeItemListSupplier?.length > 0 && vendorTypeList?.length === 0) {
+            setVendorTypeList(BUInfo.BUInfo.CTTypeItemListSupplier);
         }
-    }, [CVInfo.CTList, ClientVO?.length])
+    }, [BUInfo.CTList, ClientVO?.length])
     //
     // useMemo(()=> {
-    //     if (CVInfoVO.NameFull && CVInfo.NameFull && CVInfoVO.NameFull !== CVInfo.NameFull) {
-    //         setCVInfoVO(CVInfo);
+    //     if (CVInfoVO.NameFull && BUInfo.NameFull && CVInfoVO.NameFull !== BUInfo.NameFull) {
+    //         setCVInfoVO(BUInfo);
     //     }
-    // }, [CVInfo, CVInfoVO.NameFull])
+    // }, [BUInfo, CVInfoVO.NameFull])
 
     /**
      * @Description: TODO: 获取 CV 详情
@@ -141,15 +141,15 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
             const setFieldVal: any = {};
             // TODO: 客户类型
             if (item === 'CTTypeItemClient') {
-                setFieldVal.SCAC =  changeValues[item] === 14 && vendorTypeList?.includes(5) ? CVInfo.SCAC : '';
+                setFieldVal.SCAC =  changeValues[item] === 14 && vendorTypeList?.includes(5) ? BUInfo.SCAC : '';
                 setCustomerTypeID(changeValues[item]);
             }
             // TODO: 供应商类型
             else if (item === 'CTTypeItemListSupplier') {
                 // TODO: 没选航空公司时，清空 IATA
-                setFieldVal.IATA = changeValues[item]?.includes(6) ? CVInfo.SCAC : '';
+                setFieldVal.IATA = changeValues[item]?.includes(6) ? BUInfo.SCAC : '';
                 // TODO: 没选船公司时，清空 SCAC
-                setFieldVal.SCAC =  customerTypeID === 14 || changeValues[item]?.includes(5) ? CVInfo.SCAC : '';
+                setFieldVal.SCAC =  customerTypeID === 14 || changeValues[item]?.includes(5) ? BUInfo.SCAC : '';
                 setVendorTypeList(changeValues[item]);
             }
             current?.setFieldsValue(setFieldVal);

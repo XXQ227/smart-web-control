@@ -28,3 +28,15 @@ export async function UploadCTCenter(body: any, options?: { [key: string]: any }
   });
 }
 
+
+
+
+
+/** TODO: 新增业务单位 */
+export async function addBusinessUnitAPI(body: APIManager.Branch, options?: { [key: string]: any }) {
+    return request(`/apiBase/businessUnit/addBusinessUnit`, {
+        method: 'POST',
+        body,
+        ...(options || {}),
+    });
+}

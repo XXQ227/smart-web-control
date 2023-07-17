@@ -6,15 +6,17 @@ import {
     PageContainer,
     ProCard,
     ProForm,
-    ProFormCheckbox,
+    ProFormCheckbox, ProFormDatePicker,
     ProFormRadio,
     ProFormSelect,
     ProFormSwitch,
+    ProFormGroup,
     ProFormText,
     ProFormTextArea,
-    ProFormTreeSelect
+    ProFormTreeSelect,
+    ProFormFieldSet
 } from '@ant-design/pro-components'
-import {Button, Col, Form, Row, Tag} from 'antd'
+import {Button, Col, Form, Row, Tag, Switch} from 'antd'
 import {getUserID} from '@/utils/auths'
 import SearchModal from '@/components/SearchModal'
 import {message} from 'antd/es'
@@ -22,21 +24,26 @@ import ls from 'lodash';
 import {CloseOutlined} from '@ant-design/icons'
 import {useModel, history} from 'umi'
 import SearchSelectInput from '@/components/SearchSelectInput'
+import {getFormErrorMsg, rowGrid} from "@/utils/units";
+import styles from "@/pages/sys-job/job/basic-info-form/style.less";
+import SearchProFormSelect from "@/components/SearchProFormSelect";
 
-type APICVInfo = APIManager.CVInfo;
-const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
+export type LocationState = Record<string, unknown>;
+type APIBUPInfo = APIManager.BUPInfo;
+
+const BUPForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
-    const {match: {params}} = props;
-    const {location: {pathname}} = history;
+    const {match: {params}, location: {state}} = props;
+    const id = atob(params?.id);
     const [form] = Form.useForm();
     const formRef = useRef<ProFormInstance>();
-    const {current} = formRef;
+    // const {current} = formRef;
     //region TODO: 数据层
     const {
-        getGetCTPByID, CVInfo, CustomerTypeList, VendorTypeList, CustomerPropertyList, BusinessLineList,
+        getGetCTPByID, BUInfo, CustomerTypeList, VendorTypeList, CustomerPropertyList, BusinessLineList,
         IndustryList,
     } = useModel('manager.cv-center', (res: any) => ({
-        CVInfo: res.CVInfo,
+        BUInfo: res.BUInfo,
         getGetCTPByID: res.getGetCTPByID,
         CustomerTypeList: res.CustomerTypeList,
         VendorTypeList: res.VendorTypeList,
@@ -44,37 +51,37 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
         BusinessLineList: res.BusinessLineList,
         IndustryList: res.IndustryList,
     }));
-    const [CVInfoVO, setCVInfoVO] = useState<APICVInfo>(CVInfo);
-    const [ClientVO, setClientVO] = useState<API.APIKey$Value[]>(CVInfo.CTList);
-    const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
+    const [CVInfoVO, setCVInfoVO] = useState<APIBUPInfo>(BUInfo);
+    const [ClientVO, setClientVO] = useState<API.APIKey$Value[]>(BUInfo.CTList);
+    // const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
     const [companyNameEN, setCompanyNameEN] = useState<API.APIValue$Label>({
-        label: CVInfo.NameFullEN, value: CVInfo.ID
+        label: BUInfo.NameFullEN, value: BUInfo.ID
     });
+    const [loading, setLoading] = useState<boolean>(false);
 
     // TODO: 客户类型
-    const [customerTypeID, setCustomerTypeID] = useState<number | null>(CVInfo.CTTypeItemClient);
+    const [customerTypeID, setCustomerTypeID] = useState<number | null>(BUInfo.CTTypeItemClient);
     // TODO: 供应商类型
-    const [vendorTypeList, setVendorTypeList] = useState<number[] | null>(CVInfo.CTTypeItemListSupplier);
-
+    const [vendorTypeList, setVendorTypeList] = useState<number[] | null>(BUInfo.CTTypeItemListSupplier);
     //endregion
 
     useEffect(() => {
-        if (CVInfo.CTList?.length !== ClientVO?.length) {
-            setClientVO(CVInfo.CTList);
+        if (BUInfo.CTList?.length !== ClientVO?.length) {
+            setClientVO(BUInfo.CTList);
         }
-        if (!!CVInfo.CTTypeItemClient && !customerTypeID) {
-            setCustomerTypeID(CVInfo.CTTypeItemClient);
+        if (!!BUInfo.CTTypeItemClient && !customerTypeID) {
+            setCustomerTypeID(BUInfo.CTTypeItemClient);
         }
-        if (CVInfo.CTTypeItemListSupplier?.length > 0 && vendorTypeList?.length === 0) {
-            setVendorTypeList(CVInfo.CVInfo.CTTypeItemListSupplier);
+        if (BUInfo.CTTypeItemListSupplier?.length > 0 && vendorTypeList?.length === 0) {
+            setVendorTypeList(BUInfo.CVInfo.CTTypeItemListSupplier);
         }
-    }, [CVInfo.CTList, ClientVO?.length])
-    //
-    // useMemo(()=> {
-    //     if (CVInfoVO.NameFull && CVInfo.NameFull && CVInfoVO.NameFull !== CVInfo.NameFull) {
-    //         setCVInfoVO(CVInfo);
-    //     }
-    // }, [CVInfo, CVInfoVO.NameFull])
+    }, [BUInfo.CTList, ClientVO?.length])
+
+    /*useMemo(()=> {
+        if (CVInfoVO.NameFull && BUInfo.NameFull && CVInfoVO.NameFull !== BUInfo.NameFull) {
+            setCVInfoVO(BUInfo);
+        }
+    }, [BUInfo, CVInfoVO.NameFull])*/
 
     /**
      * @Description: TODO: 获取 CV 详情
@@ -87,12 +94,6 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
         setCVInfoVO(result);
         return result;
     }
-    // const handleGetCTPByID = useMemo(async ()=> {
-    //     const result: any = await getGetCTPByID({UserID: getUserID(), CTPID: Number(atob(params?.id))});
-    //     setCVInfoVO(result);
-    //  /   return result;
-    // }, [getGetCTPByID, params?.id])
-
 
     const handleSelectPayers = (val: any, option: any) => {
         const clientObj: API.APIKey$Value = ClientVO?.find((item: API.APIKey$Value) => item.Key === val) || {};
@@ -136,7 +137,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
      * @param changeValues   ProForm 表单修改的参数
      * @returns
      */
-    const handleProFormValueChange = (changeValues: any) => {
+    /*const handleProFormValueChange = (changeValues: any) => {
         console.log(changeValues);
         if (!isChangeValue) {
             setIsChangeValue(true);
@@ -145,20 +146,20 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
             const setFieldVal: any = {};
             // TODO: 客户类型
             if (item === 'CTTypeItemClient') {
-                setFieldVal.SCAC =  changeValues[item] === 14 && vendorTypeList?.includes(5) ? CVInfo.SCAC : '';
+                setFieldVal.SCAC =  changeValues[item] === 14 && vendorTypeList?.includes(5) ? BUInfo.SCAC : '';
                 setCustomerTypeID(changeValues[item]);
             }
             // TODO: 供应商类型
             else if (item === 'CTTypeItemListSupplier') {
                 // TODO: 没选航空公司时，清空 IATA
-                setFieldVal.IATA = changeValues[item]?.includes(6) ? CVInfo.SCAC : '';
+                setFieldVal.IATA = changeValues[item]?.includes(6) ? BUInfo.SCAC : '';
                 // TODO: 没选船公司时，清空 SCAC
-                setFieldVal.SCAC =  customerTypeID === 14 || changeValues[item]?.includes(5) ? CVInfo.SCAC : '';
+                setFieldVal.SCAC =  customerTypeID === 14 || changeValues[item]?.includes(5) ? BUInfo.SCAC : '';
                 setVendorTypeList(changeValues[item]);
             }
             current?.setFieldsValue(setFieldVal);
         })
-    }
+    }*/
 
     const handleChangeData = (val: any, filedName: string) => {
         console.log(val);
@@ -167,14 +168,53 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
         }
     }
 
-    //region TODO: 显示隐藏：{SCAC, IATA}
-    //endregion
-    // TODO: 返回列表集合
-    const returnURL = pathname.substring(0, pathname.indexOf('/form')) + '/dict';
+    /**
+     * @Description: TODO: 保存数据
+     * @author LLS
+     * @date 2023/7/13
+     * @param val
+     * @returns
+     */
+    const onFinish = async (val: APIBUPInfo) => {
+        /*setLoading(true);
+        let result: API.Result;*/
+        /*const param: any = {
+            // contactName: val.contactName,
+        };*/
+        if (id === '0') {
+            // TODO: 新增业务单位
+            console.log(val)
+            // result = await addBusinessUnit(val);
+        } else {
+            // TODO: 编辑公司
+            // param.id = id;
+            // result = await addBusinessUnit(val);
+        }
+        /*if (result.success) {
+            message.success('Success');
+            if (id === '0') history.push({pathname: `/manager/cv-center/customer/form/${btoa(result.data)}`});
+        } else {
+            message.error(result.message)
+        }
+        setLoading(false);*/
+    }
+
+    /**
+     * @Description: TODO: 验证错误信息
+     * @author XXQ
+     * @date 2023/5/24
+     * @param val
+     * @returns
+     */
+    const onFinishFailed = (val: any) => {
+        console.log(val);
+        const errInfo = getFormErrorMsg(val);
+        message.error(errInfo);
+    }
 
     return (
         <PageContainer
-            // loading={false}
+            loading={loading}
             header={{
                 breadcrumb: {},
             }}
@@ -190,57 +230,141 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                 initialValues={CVInfoVO}
                 formKey={'cv-center-information'}
                 // TODO: 空间有改数据时触动
-                onValuesChange={handleProFormValueChange}
+                // onValuesChange={handleProFormValueChange}
                 // TODO: 提交数据
-                onFinish={async (values) => {
-                    console.log(values);
-                }}
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
                 // TODO: 向后台请求数据
-                request={async () => handleGetCTPByID()}
+                // request={async () => handleGetCTPByID()}
             >
-                <ProCard title={'Name & Code'} className={'ant-card'}>
-                    {/** // TODO: CV Name、CV Name (For Print)、Short Name、CV Identity */}
-                    <Row gutter={24}>
-                        <Col span={7}>
-                            <Form.Item
+                <ProCard
+                    className={'ant-card'}
+                    title={'Name'}
+                    headerBordered
+                    collapsible
+                >
+                    <Row gutter={rowGrid}>
+                        <Col span={24}>
+                            <ProFormText
+                                readonly
+                                placeholder=''
+                                label='BU Name'
+                                name='businessUnitId'
+                            />
+                            {/*<SearchProFormSelect
                                 required
-                                label={'Company'}
-                                name={'name_full_en'}
-                                tooltip={'length: 100'}
-                                rules={[{required: true, message: '这是必填项'}]}
-                            >
-                                <SearchSelectInput
-                                    qty={5}
-                                    filedValue={'ID'}
-                                    id={'name_full_en'}
-                                    filedLabel={'NameFull'}
-                                    valueObj={companyNameEN}
-                                    query={{UserID: getUserID()}}
-                                    url={'/api/CT/GetCTByStrNoPage'}
-                                    handleChangeData={(val: any)=> handleChangeData(val, 'name_full_en')}
-                                />
-                            </Form.Item>
+                                qty={10}
+                                isShowLabel={true}
+                                label="BU Name"
+                                id={'parentCompanyId'}
+                                name={'parentCompanyId'}
+                                url={"/apiBase/businessUnit/queryBusinessUnitCommon"}
+                            />*/}
                         </Col>
-                        <Col span={7}>
+                        <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={10}>
                             <ProFormText
                                 required
-                                name='NameFullEN'
                                 placeholder=''
-                                tooltip='length: 100'
-                                label='CV Name (For Print)'
-                                rules={[{required: true, message: 'is required'}]}
+                                label='Name(EN)'
+                                name='nameFullEn'
+                                tooltip='length: 500'
+                                rules={[{required: true, message: 'Name(EN)'}, {max: 500, message: 'length: 500'}]}
                             />
                         </Col>
-                        <Col span={5}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormText
                                 required
-                                name='NameShort'
                                 placeholder=''
                                 label='Short Name'
                                 tooltip='length: 100'
-                                rules={[{required: true, message: 'is required'}]}
+                                name='nameShort'
+                                rules={[{required: true, message: 'Short Name'}, {max: 100, message: 'length: 100'}]}
                             />
                         </Col>
+                        <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={10}>
+                            <ProFormText
+                                required
+                                placeholder=''
+                                label='Name(CN)'
+                                name='nameFullCn'
+                                tooltip='length: 500'
+                                rules={[{required: true, message: 'Name(CN)'}, {max: 500, message: 'length: 500'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={10}>
+                            <ProFormText
+                                required
+                                placeholder=''
+                                label='Name(For Print)'
+                                name='namePrint'
+                                tooltip='length: 500'
+                                rules={[{max: 500, message: 'length: 500'}]}
+                            />
+                        </Col>
+                    </Row>
+                </ProCard>
+
+                <ProCard
+                    className={'ant-card'}
+                    title={'Contact'}
+                    headerBordered
+                    collapsible
+                >
+                    <Row gutter={rowGrid}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                required
+                                placeholder=''
+                                label='Contacts'
+                                name='Contacts'
+                                tooltip='length: 30'
+                                rules={[{required: true, message: 'Contacts'}, {max: 30, message: 'length: 30'}]}
+                            />
+                            <SearchProFormSelect
+                                required={false}
+                                qty={10}
+                                isShowLabel={true}
+                                label="Sales (From Sinotrans)"
+                                id={'salesId'}
+                                name={'salesId'}
+                                url={"/apiBase/user/queryUserCommon"}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                placeholder=''
+                                label='Telephone Number'
+                                name='phone'
+                                tooltip='length: 20'
+                                rules={[{max: 20, message: 'length: 20'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                placeholder=''
+                                label='Email'
+                                name='Email'
+                                tooltip='length: 30'
+                                rules={[{max: 30, message: 'length: 30'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={10}>
+                            <ProFormText
+                                required
+                                placeholder=''
+                                label='Name(For Print)'
+                                name='namePrint'
+                                tooltip='length: 500'
+                                rules={[{max: 500, message: 'length: 500'}]}
+                            />
+                        </Col>
+                    </Row>
+                </ProCard>
+
+                <ProCard title={'Contact'} className={'ant-card'}>
+                    {/** // TODO: MDM Number<主数据代码>、CV-Center Number<客商代码>、Oracle ID (Customer)、
+                     // TODO: Oracle ID (Vendor)、Sinotrans Company ID<如果是中外运内部公司，则有一个5位数字的编码> */}
+                    <Row gutter={24}>
                         <Col span={5}>
                             <ProFormText
                                 required
@@ -250,11 +374,6 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                                 tooltip='length: 30'
                             />
                         </Col>
-                    </Row>
-
-                    {/** // TODO: MDM Number<主数据代码>、CV-Center Number<客商代码>、Oracle ID (Customer)、
-                     // TODO: Oracle ID (Vendor)、Sinotrans Company ID<如果是中外运内部公司，则有一个5位数字的编码> */}
-                    <Row gutter={24}>
                         <Col span={5}>
                             <ProFormText
                                 placeholder=''
@@ -291,9 +410,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                             />
                         </Col>
                     </Row>
-                </ProCard>
 
-                <ProCard title={'Contact'} className={'ant-card'}>
                     {/** // TODO: Contacts、Telephone Number、Email、Sales (From Sinotrans)、Located in (City)、
                      // TODO: Parent Company (Belongs to Group)、Address */}
                     <Row gutter={24}>
@@ -393,7 +510,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                         <Col span={1} className={'ant-cv-center-properties-clear'}>
                             <CloseOutlined
                                 // TODO: 未保存的客户属性是可以被清空的
-                                hidden={!!CVInfoVO.CustomerPropertyID}
+                                // hidden={!!CVInfoVO.CustomerPropertyID}
                                 onClick={() => handleClearCustomer('CustomerPropertyID')}
                             />
                         </Col>
@@ -412,7 +529,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                         <Col span={1} className={'ant-cv-center-properties-clear'}>
                             <CloseOutlined
                                 // TODO: 为保存的客户类型是可以被清空的
-                                hidden={!!CVInfoVO.CTTypeItemClient}
+                                // hidden={!!CVInfoVO.CTTypeItemClient}
                                 onClick={() => handleClearCustomer('CTTypeItemClient')}
                             />
                         </Col>
@@ -526,11 +643,18 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                     </Row>
                 </ProCard>
                 <FooterToolbar
-                    extra={<Button onClick={() => history.push({pathname: returnURL})}>Back</Button>}>
-                    <Button key={'submit'} type={'primary'} htmlType={'submit'}>提交</Button>
+                    extra={<Button
+                        onClick={() => history.push({
+                            pathname: '/manager/cv-center/company/list',
+                            state: {
+                                searchParams: state ? (state as LocationState)?.searchParams : '',
+                            },
+                        })}
+                    >Back</Button>}>
+                    <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
                 </FooterToolbar>
             </ProForm>
         </PageContainer>
     )
 }
-export default CVCenterForm;
+export default BUPForm;

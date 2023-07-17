@@ -12,6 +12,7 @@ export default () => {
     const [PayMethodList, setPayMethodList] = useState([]);
     const [CurrencyList, setCurrencyList] = useState([]);
     const [BusinessLineList, setBusinessLineList] = useState([]);
+    const [IndustryList, setIndustryList] = useState([]);
 
     //region TODO: 接口
     // TODO: 获取字典数据
@@ -37,6 +38,9 @@ export default () => {
                     case 'business_line':
                         setBusinessLineList(item.data);
                         break;
+                    case 'industry':
+                        setIndustryList(item.data);
+                        break;
                     default: break;
                 }
             })
@@ -60,5 +64,6 @@ export default () => {
         PayMethodList,
         CurrencyList,
         BusinessLineList,
+        IndustryList,
     }
 }

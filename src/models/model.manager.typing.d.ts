@@ -1,65 +1,108 @@
 declare namespace APIManager {
-  //region TODO:  结算对象
-  // TODO: 结算对象搜索参数
-  type CVSearchParams = {
-    current?: number | null;
-    PageNum?: 1 | number | null;
-    OracleID?: string;
-    OracleIDSupplier?: string;
-    CustomerUBSID?: string;
-    SupplierUBSID?: string;
-    TaxNum?: string;
-    CTName?: string;
-    NameFull?: string;
-    PageSize?: 15 | number | null;
-    CTType?: 1 | number | string | null;
-    UserID?: number | null;
-  };
-  type CVResultInfo = {
-    data: CVInfo[];
-    /** 列表的内容总数 */
-    total: number | null;
-    success: boolean;
-  };
+    //region TODO:  结算对象
+    // TODO: 结算对象搜索参数
+    type BUSearchParams = {
+        currentPage?: number,
+        pageSize?: number,
+        OracleID?: string;
+        OracleIDSupplier?: string;
+        CustomerUBSID?: string;
+        SupplierUBSID?: string;
+        TaxNum?: string;
+        CTName?: string;
+        NameFull?: string;
+        CTType?: 1 | number | string | null;
+        UserID?: number | null;
+    };
 
-  type GetCVInfoParams = {
-    UserID: number | null;
-    CTPID: number | null;
-  };
-  type GetCVInfoResult = {
-    CTDetailDto: CVInfo;
-    CTTypeOpts: CTTypeOpts[];
-    Industrys: Industrys[];
-    CustomerPropertyList: CustomerProperty[];
-    BusinessLine: BusinessLine[];
-  };
-  type CVInfo = {
-    ID: number | null;
-    CTPID: number | null;
-    CTTypeItem?: string;
-    BranchName?: string;
-    CustSupCode: string;
-    Freezen: number | null;
-    NameFull: string;
-    NameFullEN: string;
-    Address: string;
-    OracleID: string;
-    OracleIDSupplier: string;
-    Settlement: number | null;
-    TaxCode: string;
-    BusinessLine?: any;
-    BusinessLineList?: any[];
-    CustomerPropertyID?: number | null;
-    CTTypeItemClient?: number | null;
-    CTTypeItemIDClient?: number | null;
-    CTTypeItemListSupplier?: number | null;
-    CTList?: any[];
-    SCAC?: string;
-    cityId?: number;
-    cityName?: string;
-    parentCompanyId?: number;
-    parentCompanyName?: string;
-  };
+    type CVResultInfo = {
+        data: BUInfo[];
+        /** 列表的内容总数 */
+        total: number | null;
+        success: boolean;
+    };
+
+    type GetCVInfoParams = {
+        UserID: number | null;
+        CTPID: number | null;
+    };
+
+    type GetCVInfoResult = {
+        CTDetailDto: BUInfo;
+        CTTypeOpts: CTTypeOpts[];
+        Industrys: Industrys[];
+        CustomerPropertyList: CustomerProperty[];
+        BusinessLine: BusinessLine[];
+    };
+
+    type BUInfo = {
+        id: string,                       // TODO: 主键 ID
+        nameFullEn?: string;              // TODO: 全称(英文，统一名称必填)
+        taxNum?: string;                  // TODO: 税号
+        cityId?: number | null;           // TODO: 城市id
+        cityName?: string;                // TODO: 城市名称
+        internalCode?: string;            // TODO: 由6位数字组成的内部编码,(用于上传BMS)
+        mdmCode?: string;                 // TODO: MDM代码
+        mdmStatus?: number | null;        // TODO: MDM-认证状态 1-未提交  2-审批中  3-审批通过  4-审批失败
+        enterpriseType?: number | null;   // TODO: 企业类型 1-私企（民营企业） 2-外企（外资企业） 3-央企  4-地方国企-省属  5-地方国企-市属  6-地方国企-其他
+        parentCompanyId?: number | null;  // TODO: 上级公司ID
+        scac?: string;                    // TODO: 船公司代码
+        organizationCode?: string;        // TODO: 组织机构代码
+        internalCompanyCode?: string;     // TODO: 内部公司组织代码
+        internalOrgCode?: string;         // TODO: 内部部门代码
+        iataCode?: string;                // TODO: 航司代码
+        industryType?: string;            // TODO: 行业类型
+        corporation?: string;             // TODO: 法人或者董事
+        establishedDate?: string;         // TODO: 成立日期
+        registeredCapital?: number | null;// TODO: 注册资金
+        paidInCapital?: number | null;    // TODO: 实缴资金
+        natureOfCompany?: number | null;  // TODO: 所有制性质 1-合营企业 2-个人独资企业 3-国有企业 4-私营企业 5-全民所有制企业 6-集体所有制企业 7-股份有限公司 8-有限责任企业 9-外商投资企业 10-有限合伙企业
+        enableFlag?: number | null;       // TODO: 启用标识
+        deleteFlag?: number | null;       // TODO: 删除标识
+    };
+
+    type BUPInfo = {
+        id: string,                       // TODO: 主键 ID
+        businessUnitId?: number | null;   // TODO: 业务单位表
+        nameFullEn?: string;              // TODO: 全称（英文）
+        nameFullCn?: string;              // TODO: 全称（中文）
+        nameShort?: string;               // TODO: 简称
+        namePrint?: string;               // TODO: 客户打印名称
+        branchId?: number | null;         // TODO: 公司id
+        payerFlag?: number | null;        // TODO: 付款方标识
+        reimbursementFlag?: number | null;// TODO: 代收代付标识
+        customerFlag?: number | null;     // TODO: 客户标识
+        customerType?: number | null;     // TODO: 客户类型  1-直客  2-同行  3-招商  4-中外运公司  5-船公司
+        vendorFlag?: number | null;       // TODO: 供应商标识
+        vendorTypeList?: string;          // TODO: 供应商类型（多选） 1-订舱代理 2-船公司（承运） 3-航空公司 4-班列公司 5-目的港代理 6-仓库 7-堆场 8-码头 9-报关公司 10-运输公司 11-政府机构 12-个人
+        address?: string;                 // TODO: 地址(默认英文)
+        contacts?: string;                // TODO: 联系人
+        Email?: string;                   // TODO: 邮箱
+        phone?: string;                   // TODO: 电话
+        settlementType?: number | null;   // TODO: 结算方式 1-现结 2-月结
+        oracleCustomerCode?: string;      // TODO: oracle客戶代码
+        oracleSupplierCode?: string;      // TODO: oracle供应商代码
+        cvCenterNumber?: string;          // TODO: 客商编码
+        custType?: number | null;         // TODO: 客商类型：0-外部公司 2-内部公司 3-内部部门 4-个人客商
+        crmStatus?: number | null;        // TODO: CRM-认证状态 1-未提交 2-审批中 3-审批通过 4-审批失败
+        srmStatus?: number | null;        // TODO: SRM-认证状态 1-未提交 2-审批中 3-审批通过 4-审批失败
+        originalMessage?: string;         // TODO: 客商返回原始报文
+        businessLine?: number | null;     // TODO: 业务线 1-货代 2-工程 3-合同物流 4-电商 5-船代 6-仓储
+        remark?: string;                  // TODO: 备注
+        salesId?: number | null;          // TODO: 销售人员id
+        salesName?: string;               // TODO: 销售人员名称
+        cdhStatus?: number | null;        // TODO: CDH申请状态 1-客户 2-供应商 3-客户&供应商 4-申请中
+        cssStatus?: number | null;        // TODO: CSS申请状态 0-申请中 3-成功 4-失败
+        cdhReturnInfo?: string;           // TODO: CDH返回错误信息
+        cssReturnInfo?: string;           // TODO: CSS返回错误信息
+        credit_status?: number | null;    // TODO: 授信状态(月结客户必须做授信) null-未创建授信 1-已创建授信 2-授信审核完成
+        creditFuncAmount?: number | null; // TODO: 授信本位币金额（授信完成时候赋值）
+        creditResidueFuncAmount?: number | null;// TODO: 授信剩余本位币金额 （授信完成时候赋值）（提交财务时递减，核销新增）
+        creditExpiryEndTime?: string;     // TODO: 授信有限期结束日
+        enableFlag?: number | null;       // TODO: 启用标识
+        deleteFlag?: number | null;       // TODO: 删除标识
+    };
+
   // TODO: 行业
   type Industrys = {
     BizPlateType: number;
@@ -436,8 +479,8 @@ declare namespace APIManager {
         enableFlag?: number | null;       // TODO: 启用标识
         deleteFlag?: number | null;       // TODO: 删除标识
         // bankAccountEntityList?: Bank[];   // TODO: 银行数据 <Array>
-  };
-  //endregion
+    };
+    //endregion
 
   //region TODO: Department 部门
   type SearchDeptParams = {
