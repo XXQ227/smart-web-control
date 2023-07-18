@@ -124,29 +124,29 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     function getCreditScoreInfo(result: any) {
-        result.totalScore = result.totalScore || 0;
+        result.totalScore = 0;
         let newData = ls.cloneDeep(ScoreData);
         // TODO: 当第一次创建信控时，把 【注册资金、注册时间、年营收】 的计分先计算出来
+        const needDivided = buId && buId !== '0' ? 1 : 10000;
         newData = newData.map((item: any) => {
             let op_value: any = null;
             switch (item.id) {
                 case 1: // TODO: 注册资金
-                    console.log(result.annualRevenue);
-                    op_value = result.annualRevenue;
+                    op_value = keepDecimal(result.annualRevenue*needDivided);
                     break;
                 case 2: // TODO: 注册时间（年限）
                     op_value = result.establishedDate;
                     break;
-                case 3: // TODO: 年营收
+                case 3: // TODO: 行业地位
                     op_value = result.positionIndustry;
                     break;
-                case 4: // TODO: 年营收
+                case 4: // TODO: 信用等级
                     op_value = result.creditStanding;
                     break;
-                case 5: // TODO: 年营收
-                    op_value = result.estimatedAnnualRevenue;
+                case 5: // TODO: 本年度预计应收
+                    op_value = keepDecimal(result.estimatedAnnualRevenue*needDivided);
                     break;
-                case 6: // TODO: 年营收
+                case 6: // TODO: 本年度预计营收毛利率
                     if (result.estimatedGrossProfit && result.estimatedAnnualRevenue) {
                         op_value = keepDecimal(Number(result.estimatedGrossProfit) / Number(result.estimatedAnnualRevenue) * 100);
                     } else {
@@ -159,7 +159,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
             // TODO: 获取成绩分数
             const target: any = getCreditScore(item, item.id, op_value);
             result[`score${target.id}`] = target.score;
-            result.totalScore = target.totalScore;
+            result.totalScore += keepDecimal(target.totalScore);
             return target;
         });
         setScoreData(newData);

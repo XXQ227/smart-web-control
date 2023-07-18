@@ -821,7 +821,7 @@ export function getCreditScore (target: any, op_node: number, op_value: any) {
             } else if (2000000 < op_value && op_value <= 5000000) {
                 score = 4;
             } else if (5000000 < op_value) {
-                score = 4;
+                score = 5;
             }
             break;
         case 2: // TODO: 注册时间（年限）
@@ -853,12 +853,12 @@ export function getCreditScore (target: any, op_node: number, op_value: any) {
                 score = 1;
             } else if (100000 < op_value && op_value <= 300000) {
                 score = 2;
-            } else if (300000 < op_value && op_value <= 5000000) {
+            } else if (300000 < op_value && op_value <= 500000) {
                 score = 3;
             } else if (500000 < op_value && op_value <= 1000000) {
                 score = 4;
             } else if (1000000 < op_value) {
-                score = 4;
+                score = 5;
             }
             break;
         case 6: // TODO: 利润率
