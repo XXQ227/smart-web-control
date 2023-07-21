@@ -14,6 +14,7 @@ import {useModel, history} from 'umi'
 import {message} from 'antd/es'
 import {getFormErrorMsg, rowGrid} from "@/utils/units";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
+import {NATURE_OF_COMPANY} from '@/utils/common-data'
 
 export type LocationState = Record<string, unknown>;
 type APICVInfo = APIManager.BUInfo;
@@ -57,7 +58,7 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
     // const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
     const [CTCenterType, setCTCenterType] = useState<number | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-
+    const [parentValue, setParentValue] = useState<number | null>(null);
     //endregion
 
     useEffect(() => {
@@ -66,7 +67,6 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
                 await queryDictCommon({dictCodes: ['industry']});
             }
         })
-
     }, [])
 
 
@@ -131,16 +131,14 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
     const onFinish = async (val: APICVInfo) => {
         setLoading(true);
         let result: API.Result;
-        /*const param: any = {
-            // contactName: val.contactName,
-        };*/
         if (id === '0') {
             // TODO: 新增业务单位
             val.cityName = cityList.find(city => city.value === val.cityId)?.label ?? '';
-            console.log(val)
+            val.industryName = IndustryList.find((industry: any) => industry.value === val.industryType)?.label ?? '';
+            delete val.enterpriseType;
             result = await addBusinessUnit(val);
         } else {
-            // TODO: 编辑公司
+            // TODO: 编辑业务单位
             // param.id = id;
             result = await addBusinessUnit(val);
         }
@@ -210,11 +208,12 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormText
+                                required
                                 name='taxNum'
                                 placeholder=''
                                 label='Tax Num'
                                 tooltip='length: 25'
-                                rules={[{max: 25, message: 'length: 25'}]}
+                                rules={[{required: true, message: 'Tax Num'}, {max: 25, message: 'length: 25'}]}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
@@ -252,7 +251,7 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
                                 label='MDM Status'
                             />
                         </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                        {/*<Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormSelect
                                 placeholder=''
                                 label='Nature of a Company'
@@ -266,6 +265,15 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
                                     {label: '地方国企-其他', value: 6},
                                 ]}
                             />
+                        </Col>*/}
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                name='scac'
+                                placeholder=''
+                                label='SCAC'
+                                tooltip='length: 10'
+                                rules={[{max: 10, message: 'length: 10'}]}
+                            />
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={10}>
                             <SearchProFormSelect
@@ -276,15 +284,6 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
                                 id={'parentCompanyId'}
                                 name={'parentCompanyId'}
                                 url={"/apiBase/branch/queryBranchCommon"}
-                            />
-                        </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
-                            <ProFormText
-                                name='scac'
-                                placeholder=''
-                                label='SCAC'
-                                tooltip='length: 10'
-                                rules={[{max: 10, message: 'length: 10'}]}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
@@ -350,7 +349,7 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
                                 name='registeredCapital'
                                 placeholder=''
                                 label='Registered Capital'
-                                rules={[{required: true, message: 'Registered Capital'}]}
+                                rules={[{required: true, message: 'Registered Capital'}, { pattern: /^([0-9]\d*|0)(\.\d{0,2})?$/, message: "Must be 0.00 in numeric format" }]}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
@@ -367,8 +366,131 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
                                 label="Established Date"
                             />
                         </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
-                            <ProFormSelect
+                        <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={10}>
+                            <label className={'ant-form-label-required'} style={{ display: 'block', marginBottom: 8 }}>Nature of a Company</label>
+                            {/*<Space direction="horizontal" align="center" className={styles.siteSpace}>
+                                <ProFormSelect
+                                    // width='md'
+                                    required
+                                    placeholder=''
+                                    name='natureOfCompany'
+                                    rules={[{required: true, message: 'Nature of a Company'}]}
+                                    options={NATURE_OF_COMPANY}
+                                />
+                                <span className={styles.siteSpaceSpan}/>
+                                <ProFormSelect
+                                    required
+                                    placeholder=''
+                                    name='natureOfCompany'
+                                    rules={[{required: true, message: 'Nature of a Company'}]}
+                                    options={[
+                                        {label: '合营企业', value: 1},
+                                        {label: '个人独资企业', value: 2},
+                                        {label: '国有企业', value: 3},
+                                        {label: '私营企业', value: 4},
+                                        {label: '全民所有制企业', value: 5},
+                                        {label: '集体所有制企业', value: 6},
+                                        {label: '股份有限公司', value: 7},
+                                        {label: '有限责任企业', value: 8},
+                                        {label: '外商投资企业', value: 9},
+                                        {label: '有限合伙企业', value: 10},
+                                    ]}
+                                />
+                                <Row>
+                                    <Col span={12}>
+                                        <ProFormSelect
+                                            name="parent"
+                                            placeholder=''
+                                            options={NATURE_OF_COMPANY.map((option) => ({
+                                                value: option.value,
+                                                label: option.label,
+                                            }))}
+                                            fieldProps={{
+                                                onChange: (e) => {
+                                                    setParentValue(e)
+                                                    form.setFieldsValue({natureOfCompany: null});
+                                                }
+                                            }}
+                                        />
+                                    </Col>
+                                    {
+                                        parentValue ?
+                                            <Col span={12}>
+                                                <span className={styles.siteSpaceSpan}/>
+                                                <ProFormSelect
+                                                    name="natureOfCompany"
+                                                    placeholder=''
+                                                    options={[]}
+                                                    dependencies={['parent']}
+                                                    shouldUpdate={(prevValues, curValues) => prevValues.parent !== curValues.parent}
+                                                    request={async () => {
+                                                        console.log(1111111111111111)
+                                                        console.log(form.getFieldValue('parent'))
+                                                        const selectedParent = NATURE_OF_COMPANY.find((option) => option.value === form.getFieldValue('parent'));
+                                                        console.log(selectedParent)
+                                                        if (selectedParent) {
+                                                            return selectedParent.children.map((child) => ({
+                                                                value: child.value.toString(),
+                                                                label: child.label,
+                                                            }));
+                                                        }
+                                                        return [];
+                                                    }}
+                                                />
+                                            </Col> : null
+                                    }
+                                </Row>
+                            </Space>*/}
+                            <Row>
+                                <Col span={8}>
+                                    <ProFormSelect
+                                        required
+                                        name="enterpriseType"
+                                        placeholder=''
+                                        options={NATURE_OF_COMPANY.map((option) => ({
+                                            value: option.value,
+                                            label: option.label,
+                                        }))}
+                                        fieldProps={{
+                                            onChange: (e) => {
+                                                setParentValue(e)
+                                                form.setFieldsValue({natureOfCompany: null});
+                                            }
+                                        }}
+                                        rules={[{required: true, message: 'Nature of a Company'}]}
+                                    />
+                                </Col>
+                                {
+                                    parentValue ?
+                                        <>
+                                            <Col>
+                                                <span className={'ant-space-span'}/>
+                                            </Col>
+                                            <Col span={8}>
+                                                <ProFormSelect
+                                                    required
+                                                    name="natureOfCompany"
+                                                    placeholder=''
+                                                    options={[]}
+                                                    dependencies={['enterpriseType']}
+                                                    shouldUpdate={(prevValues, curValues) => prevValues.enterpriseType !== curValues.enterpriseType}
+                                                    request={async () => {
+                                                        const selectedParent = NATURE_OF_COMPANY.find((option) => option.value === form.getFieldValue('enterpriseType'));
+                                                        if (selectedParent) {
+                                                            return selectedParent.children.map((child) => ({
+                                                                value: child.value,
+                                                                label: child.label,
+                                                            }));
+                                                        }
+                                                        return [];
+                                                    }}
+                                                    rules={[{required: true, message: 'Nature of a Company'}]}
+                                                />
+                                            </Col>
+                                        </> : null
+                                }
+                            </Row>
+                            {/*<ProFormSelect
                                 required
                                 placeholder=''
                                 label='Nature of a Company'
@@ -386,7 +508,7 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
                                     {label: '外商投资企业', value: 9},
                                     {label: '有限合伙企业', value: 10},
                                 ]}
-                            />
+                            />*/}
                         </Col>
                         {/*<Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormSwitch

@@ -1,6 +1,19 @@
 declare namespace APIManager {
-    //region TODO:  结算对象
-    // TODO: 结算对象搜索参数
+    //region TODO:  BU BUP
+    type SearchBUPParams = {
+        type?: number,
+        name?: string,
+        createTimeStart?: string,
+        createTimeEnd?: string,
+        taxNum?: string,
+        mdmCode?: string,
+        cvCenterNumber?: string,
+        oracleCustomerCode?: string,
+        oracleSupplierCode?: string,
+        currentPage?: number,
+        pageSize?: number,
+    };
+
     type BUSearchParams = {
         currentPage?: number,
         pageSize?: number,
@@ -35,6 +48,13 @@ declare namespace APIManager {
         BusinessLine: BusinessLine[];
     };
 
+    type BUAndBUPCommonInfo = {
+        value?: string,                   // TODO: BU ID
+        label?: string,                   // TODO: BU 全称(英文，统一名称必填)
+        industryName?: string;            // TODO: 行业名称
+        taxNum?: string;                  // TODO: 税号
+    };
+
     type BUInfo = {
         id: string,                       // TODO: 主键 ID
         nameFullEn?: string;              // TODO: 全称(英文，统一名称必填)
@@ -44,31 +64,32 @@ declare namespace APIManager {
         internalCode?: string;            // TODO: 由6位数字组成的内部编码,(用于上传BMS)
         mdmCode?: string;                 // TODO: MDM代码
         mdmStatus?: number | null;        // TODO: MDM-认证状态 1-未提交  2-审批中  3-审批通过  4-审批失败
-        enterpriseType?: number | null;   // TODO: 企业类型 1-私企（民营企业） 2-外企（外资企业） 3-央企  4-地方国企-省属  5-地方国企-市属  6-地方国企-其他
         parentCompanyId?: number | null;  // TODO: 上级公司ID
         scac?: string;                    // TODO: 船公司代码
         organizationCode?: string;        // TODO: 组织机构代码
         internalCompanyCode?: string;     // TODO: 内部公司组织代码
         internalOrgCode?: string;         // TODO: 内部部门代码
         iataCode?: string;                // TODO: 航司代码
+        industryName?: string;            // TODO: 行业名称
         industryType?: string;            // TODO: 行业类型
         corporation?: string;             // TODO: 法人或者董事
         establishedDate?: string;         // TODO: 成立日期
         registeredCapital?: number | null;// TODO: 注册资金
         paidInCapital?: number | null;    // TODO: 实缴资金
+        enterpriseType?: number | null;   // TODO: 企业类型 1-私企（民营企业） 2-外企（外资企业） 3-央企  4-地方国企-省属  5-地方国企-市属  6-地方国企-其他
         natureOfCompany?: number | null;  // TODO: 所有制性质 1-合营企业 2-个人独资企业 3-国有企业 4-私营企业 5-全民所有制企业 6-集体所有制企业 7-股份有限公司 8-有限责任企业 9-外商投资企业 10-有限合伙企业
         enableFlag?: number | null;       // TODO: 启用标识
         deleteFlag?: number | null;       // TODO: 删除标识
     };
 
-    type BUPInfo = {
+    type BUP = {
         id: string,                       // TODO: 主键 ID
-        businessUnitId?: number | null;   // TODO: 业务单位表
+        businessUnitId?: string;          // TODO: 业务单位表
         nameFullEn?: string;              // TODO: 全称（英文）
         nameFullCn?: string;              // TODO: 全称（中文）
         nameShort?: string;               // TODO: 简称
         namePrint?: string;               // TODO: 客户打印名称
-        branchId?: number | null;         // TODO: 公司id
+        branchId?: string;                // TODO: 公司id
         payerFlag?: number | null;        // TODO: 付款方标识
         reimbursementFlag?: number | null;// TODO: 代收代付标识
         customerFlag?: number | null;     // TODO: 客户标识
@@ -87,7 +108,7 @@ declare namespace APIManager {
         crmStatus?: number | null;        // TODO: CRM-认证状态 1-未提交 2-审批中 3-审批通过 4-审批失败
         srmStatus?: number | null;        // TODO: SRM-认证状态 1-未提交 2-审批中 3-审批通过 4-审批失败
         originalMessage?: string;         // TODO: 客商返回原始报文
-        businessLine?: number | null;     // TODO: 业务线 1-货代 2-工程 3-合同物流 4-电商 5-船代 6-仓储
+        businessLine?: string;            // TODO: 业务线 1-货代 2-工程 3-合同物流 4-电商 5-船代 6-仓储
         remark?: string;                  // TODO: 备注
         salesId?: number | null;          // TODO: 销售人员id
         salesName?: string;               // TODO: 销售人员名称
@@ -101,6 +122,8 @@ declare namespace APIManager {
         creditExpiryEndTime?: string;     // TODO: 授信有限期结束日
         enableFlag?: number | null;       // TODO: 启用标识
         deleteFlag?: number | null;       // TODO: 删除标识
+
+        label?: string,                    // TODO: BU 全称(英文，统一名称必填)
     };
 
   // TODO: 行业

@@ -4,7 +4,7 @@ import {createFromIconfontCN} from '@ant-design/icons';
 import {Descriptions} from "antd";
 import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 
-export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_pnyf6lhb3ac.js';
+export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_jnagxd850an.js';
 
 // TODO: 系统五字码
 export const SYSTEM_ID = 99003;

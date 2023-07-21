@@ -13,7 +13,7 @@ import ls from 'lodash'
 const {Search} = Input;
 
 type APIBranch = APIManager.Branch;
-type APISearchBranch = APIManager.SearchBranchParams;
+type APISearchBranchParams = APIManager.SearchBranchParams;
 
 export type LocationState = Record<string, unknown>;
 
@@ -43,7 +43,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = (props) => {
     }));
     const [loading, setLoading] = useState<boolean>(false);
     const [BranchListVO, setBranchListVO] = useState<APIBranch[]>([]);
-    const [searchParams, setSearchParams] = useState<APISearchBranch>(searchLocation || searchQueryBranch);
+    const [searchParams, setSearchParams] = useState<APISearchBranchParams>(searchLocation || searchQueryBranch);
     const [searchValue, setSearchValue] = useState(searchParams.name);
     const [pagination, setPagination] = useState<any>(initPagination)
 
@@ -68,7 +68,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = (props) => {
      * @param params    参数
      * @returns
      */
-    async function handleQueryBranch(params: APISearchBranch) {
+    async function handleQueryBranch(params: APISearchBranchParams) {
         setLoading(true);
         const result: API.Result = await queryBranch(params);
         if (result.success) {
