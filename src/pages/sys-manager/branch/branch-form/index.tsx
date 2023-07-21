@@ -48,7 +48,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
     //endregion
 
     /**
-     * @Description: TODO: 获取 CV 详情
+     * @Description: TODO: 获取 公司 详情
      * @author XXQ
      * @date 2023/5/5
      * @returns

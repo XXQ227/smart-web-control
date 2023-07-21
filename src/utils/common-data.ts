@@ -55,3 +55,88 @@ export const CREDIT_ASSESSMENT_SCORE_DATA: any[] = [
 export const aasDemo = [
     {value: '', label: ''},
 ];
+
+export const NATURE_OF_COMPANY = [
+    {
+        value: 1,
+        label: '政府机构',
+        children: [
+            {
+                value: 1,
+                label: '党政机关',
+            },
+            {
+                value: 2,
+                label: '事业单位',
+            },
+        ],
+    },
+    {
+        value: 2,
+        label: '央国企',
+        children: [
+            {
+                value: 3,
+                label: '央企',
+            },
+            {
+                value: 4,
+                label: '国企（省属）',
+            },
+            {
+                value: 5,
+                label: '国企（市属）',
+            },
+            {
+                value: 6,
+                label: '国企（其它）',
+            },
+        ],
+    },
+    {
+        value: 3,
+        label: '民营企业',
+        children: [
+            {
+                value: 7,
+                label: '中国内地',
+            },
+            {
+                value: 8,
+                label: '台湾',
+            },
+            {
+                value: 9,
+                label: '香港',
+            },
+            {
+                value: 10,
+                label: '澳门',
+            },
+            {
+                value: 11,
+                label: '其它',
+            },
+        ],
+    },
+    {
+        value: 4,
+        label: '外企',
+        children: [
+            {
+                value: 12,
+                label: '外资企业',
+            },
+        ],
+    },
+    {
+        value: 5,
+        label: '境外',
+        children: [
+            {
+                value: 13,
+                label: '境外企业',
+            },
+        ],
+    },
+];

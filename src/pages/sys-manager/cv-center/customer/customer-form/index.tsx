@@ -6,52 +6,57 @@ import {
     PageContainer,
     ProCard,
     ProForm,
-    ProFormCheckbox, ProFormDatePicker,
+    ProFormCheckbox,
     ProFormRadio,
     ProFormSelect,
     ProFormSwitch,
-    ProFormGroup,
     ProFormText,
     ProFormTextArea,
-    ProFormTreeSelect,
-    ProFormFieldSet
 } from '@ant-design/pro-components'
-import {Button, Col, Form, Row, Tag, Switch} from 'antd'
+import {Button, Col, Form, Row, Tag, Checkbox, Divider} from 'antd'
 import {getUserID} from '@/utils/auths'
 import SearchModal from '@/components/SearchModal'
 import {message} from 'antd/es'
 import ls from 'lodash';
-import {CloseOutlined} from '@ant-design/icons'
 import {useModel, history} from 'umi'
-import SearchSelectInput from '@/components/SearchSelectInput'
-import {getFormErrorMsg, rowGrid} from "@/utils/units";
-import styles from "@/pages/sys-job/job/basic-info-form/style.less";
+import {getFormErrorMsg, IconFont, rowGrid} from "@/utils/units";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
+import {NATURE_OF_COMPANY} from "@/utils/common-data";
 
 export type LocationState = Record<string, unknown>;
-type APIBUPInfo = APIManager.BUPInfo;
+type APIBUP = APIManager.BUP;
+type APIBUAndBUPCommonInfo = APIManager.BUAndBUPCommonInfo;
 
 const BUPForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}, location: {state}} = props;
+    // console.log(state)
     const id = atob(params?.id);
     const [form] = Form.useForm();
     const formRef = useRef<ProFormInstance>();
     // const {current} = formRef;
     //region TODO: 数据层
     const {
-        getGetCTPByID, BUInfo, CustomerTypeList, VendorTypeList, CustomerPropertyList, BusinessLineList,
-        IndustryList,
+        addBusinessUnitProperty, queryBusinessUnitPropertyInfo,
+        BUInfo,
     } = useModel('manager.cv-center', (res: any) => ({
         BUInfo: res.BUInfo,
-        getGetCTPByID: res.getGetCTPByID,
-        CustomerTypeList: res.CustomerTypeList,
-        VendorTypeList: res.VendorTypeList,
-        CustomerPropertyList: res.CustomerPropertyList,
-        BusinessLineList: res.BusinessLineList,
-        IndustryList: res.IndustryList,
+
+        addBusinessUnitProperty: res.addBusinessUnitProperty,
+        queryBusinessUnitPropertyInfo: res.queryBusinessUnitPropertyInfo,
     }));
-    const [CVInfoVO, setCVInfoVO] = useState<APIBUPInfo>(BUInfo);
+
+    const {
+        queryDictCommon, BusinessLineList, VendorTypeList
+    } = useModel('common', (res: any)=> ({
+        queryDictCommon: res.queryDictCommon,
+        BusinessLineList: res.BusinessLineList,
+        VendorTypeList: res.VendorTypeList,
+    }))
+
+    const [BUPInfoVO, setBUPInfoVO] = useState<any>({});
+
+    const [BUAndBUPCommonInfoVO, setBUAndBUPCommonInfoVO] = useState<APIBUAndBUPCommonInfo>((state as LocationState)?.BUParams as APIBUAndBUPCommonInfo || {});
     const [ClientVO, setClientVO] = useState<API.APIKey$Value[]>(BUInfo.CTList);
     // const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
     const [companyNameEN, setCompanyNameEN] = useState<API.APIValue$Label>({
@@ -77,21 +82,44 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
         }
     }, [BUInfo.CTList, ClientVO?.length])
 
+    useEffect(() => {
+        setTimeout(async () => {
+            if (BusinessLineList?.length === 0) {
+                await queryDictCommon({dictCodes: ['business_line']});
+            }
+            if (VendorTypeList?.length === 0) {
+                await queryDictCommon({dictCodes: ['vendor_type']});
+            }
+        })
+    }, [])
+
     /*useMemo(()=> {
-        if (CVInfoVO.NameFull && BUInfo.NameFull && CVInfoVO.NameFull !== BUInfo.NameFull) {
-            setCVInfoVO(BUInfo);
+        if (BUPInfoVO.NameFull && BUInfo.NameFull && BUPInfoVO.NameFull !== BUInfo.NameFull) {
+            setBUPInfoVO(BUInfo);
         }
-    }, [BUInfo, CVInfoVO.NameFull])*/
+    }, [BUInfo, BUPInfoVO.NameFull])*/
 
     /**
-     * @Description: TODO: 获取 CV 详情
+     * @Description: TODO: 获取 BUP 详情
      * @author XXQ
      * @date 2023/5/5
      * @returns
      */
-    const handleGetCTPByID = async () => {
-        const result: any = await getGetCTPByID({UserID: getUserID(), CTPID: Number(atob(params?.id))});
-        setCVInfoVO(result);
+    const handleGetBUPInfo = async () => {
+        setLoading(true);
+        const result: any = await queryBusinessUnitPropertyInfo({id});
+        if (result.success) {
+            console.log(BUAndBUPCommonInfoVO);
+            const newData = result.data || BUAndBUPCommonInfoVO
+            if (id !== '0') {
+                newData.businessLine = [`${newData.businessLine}`];
+            }
+            console.log(newData);
+            setBUPInfoVO(newData);
+        } else {
+            message.error(result.message);
+        }
+        setLoading(false);
         return result;
     }
 
@@ -175,28 +203,33 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
      * @param val
      * @returns
      */
-    const onFinish = async (val: APIBUPInfo) => {
-        /*setLoading(true);
-        let result: API.Result;*/
-        /*const param: any = {
-            // contactName: val.contactName,
-        };*/
+    const onFinish = async (val: APIBUP) => {
+        setLoading(true);
+        let result: API.Result;
         if (id === '0') {
-            // TODO: 新增业务单位
+            // TODO: 新增业务单位属性
+            val.businessUnitId = BUAndBUPCommonInfoVO?.value;
+            val.branchId = "1665596906844135426";
+            val.businessLine = val.businessLine?.toString();
+            val.payerFlag = val.payerFlag ? 1 : 0;
+            val.reimbursementFlag = val.reimbursementFlag ? 1 : 0;
+            val.customerFlag = val.customerType ? 1 : 0;
+            val.vendorFlag = val.vendorTypeList ? 1 : 0;
+            delete val.label;
             console.log(val)
-            // result = await addBusinessUnit(val);
+            result = await addBusinessUnitProperty(val);
         } else {
-            // TODO: 编辑公司
-            // param.id = id;
-            // result = await addBusinessUnit(val);
+            // TODO: 编辑业务单位属性
+            val.id = id;
+            result = await addBusinessUnitProperty(val);
         }
-        /*if (result.success) {
+        if (result.success) {
             message.success('Success');
             if (id === '0') history.push({pathname: `/manager/cv-center/customer/form/${btoa(result.data)}`});
         } else {
             message.error(result.message)
         }
-        setLoading(false);*/
+        setLoading(false);
     }
 
     /**
@@ -227,7 +260,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                 // TODO: 焦点给到第一个控件
                 autoFocusFirstInput
                 // TODO: 设置默认值
-                initialValues={CVInfoVO}
+                initialValues={BUPInfoVO}
                 formKey={'cv-center-information'}
                 // TODO: 空间有改数据时触动
                 // onValuesChange={handleProFormValueChange}
@@ -235,7 +268,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 // TODO: 向后台请求数据
-                // request={async () => handleGetCTPByID()}
+                request={async () => handleGetBUPInfo()}
             >
                 <ProCard
                     className={'ant-card'}
@@ -244,12 +277,12 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                     collapsible
                 >
                     <Row gutter={rowGrid}>
-                        <Col span={24}>
+                        <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={10}>
                             <ProFormText
-                                readonly
+                                disabled={true}
                                 placeholder=''
                                 label='BU Name'
-                                name='businessUnitId'
+                                name='label'
                             />
                             {/*<SearchProFormSelect
                                 required
@@ -261,6 +294,8 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 url={"/apiBase/businessUnit/queryBusinessUnitCommon"}
                             />*/}
                         </Col>
+                    </Row>
+                    <Row gutter={rowGrid}>
                         <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={10}>
                             <ProFormText
                                 required
@@ -268,6 +303,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 label='Name(EN)'
                                 name='nameFullEn'
                                 tooltip='length: 500'
+                                initialValue={BUAndBUPCommonInfoVO?.label}
                                 rules={[{required: true, message: 'Name(EN)'}, {max: 500, message: 'length: 500'}]}
                             />
                         </Col>
@@ -276,8 +312,9 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 required
                                 placeholder=''
                                 label='Short Name'
-                                tooltip='length: 100'
                                 name='nameShort'
+                                tooltip='length: 100'
+                                initialValue={BUAndBUPCommonInfoVO?.label}
                                 rules={[{required: true, message: 'Short Name'}, {max: 100, message: 'length: 100'}]}
                             />
                         </Col>
@@ -288,6 +325,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 label='Name(CN)'
                                 name='nameFullCn'
                                 tooltip='length: 500'
+                                initialValue={BUAndBUPCommonInfoVO?.label}
                                 rules={[{required: true, message: 'Name(CN)'}, {max: 500, message: 'length: 500'}]}
                             />
                         </Col>
@@ -298,6 +336,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 label='Name(For Print)'
                                 name='namePrint'
                                 tooltip='length: 500'
+                                initialValue={BUAndBUPCommonInfoVO?.label}
                                 rules={[{max: 500, message: 'length: 500'}]}
                             />
                         </Col>
@@ -311,12 +350,12 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                     collapsible
                 >
                     <Row gutter={rowGrid}>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4}>
                             <ProFormText
                                 required
                                 placeholder=''
                                 label='Contacts'
-                                name='Contacts'
+                                name='contacts'
                                 tooltip='length: 30'
                                 rules={[{required: true, message: 'Contacts'}, {max: 30, message: 'length: 30'}]}
                             />
@@ -330,7 +369,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 url={"/apiBase/user/queryUserCommon"}
                             />
                         </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4}>
                             <ProFormText
                                 placeholder=''
                                 label='Telephone Number'
@@ -338,8 +377,14 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 tooltip='length: 20'
                                 rules={[{max: 20, message: 'length: 20'}]}
                             />
+                            <ProFormSelect
+                                readonly
+                                placeholder=''
+                                label='Located in (City)'
+                                name='cityId'
+                            />
                         </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4}>
                             <ProFormText
                                 placeholder=''
                                 label='Email'
@@ -347,13 +392,289 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 tooltip='length: 30'
                                 rules={[{max: 30, message: 'length: 30'}]}
                             />
+                            <ProFormSelect
+                                readonly
+                                placeholder=''
+                                label='Parent Company (Belongs to Group)'
+                                name='parentCompanyId'
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={16} xl={18} xxl={9}>
+                            <ProFormTextArea
+                                required
+                                name='address'
+                                placeholder=''
+                                label='Address'
+                                fieldProps={{rows: 4}}
+                                tooltip='length: 500'
+                                rules={[{required: true, message: 'Address'}, {max: 500, message: 'length: 500'}]}
+                            />
+                        </Col>
+                    </Row>
+                </ProCard>
+
+                <ProCard
+                    className={'ant-card'}
+                    title={'Code'}
+                    headerBordered
+                    collapsible
+                >
+                    <Row gutter={rowGrid}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                readonly
+                                name='mdmCode'
+                                placeholder=''
+                                label='MDM Number'
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                name='cvCenterNumber'
+                                placeholder=''
+                                label='CV-Center Number'
+                                tooltip='length: 50'
+                                rules={[{max: 50, message: 'length: 50'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                name='oracleCustomerCode'
+                                placeholder=''
+                                label='OracleID (Customer)'
+                                tooltip='length: 15'
+                                rules={[{max: 15, message: 'length: 15'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                name='oracleSupplierCode'
+                                placeholder=''
+                                label='OracleID (Vendor)'
+                                tooltip='length: 15'
+                                rules={[{max: 15, message: 'length: 15'}]}
+                            />
+                        </Col>
+                    </Row>
+                </ProCard>
+
+                <ProCard
+                    className={'ant-card ant-cv-center-properties'}
+                    title={'Properties'}
+                    headerBordered
+                    collapsible
+                >
+                    <Row gutter={rowGrid}>
+                        <Col xs={3} sm={3} md={3} lg={3} xl={4} xxl={3} className={'ant-cv-center-properties-label'}>
+                            <label className={'ant-form-label-required'}>Business Line : </label>
+                        </Col>
+                        <Col xs={20} sm={20} md={20} lg={20} xl={20} xxl={20}>
+                            <ProFormCheckbox.Group
+                                required
+                                name='businessLine'
+                                options={BusinessLineList}
+                                rules={[{required: true, message: 'Business Line'}]}
+                            />
+                        </Col>
+                        <Col xs={20} sm={20} md={20} lg={20} xl={22} xxl={14}>
+                            <Divider style={{marginTop: '-6px'}}/>
+                        </Col>
+                    </Row>
+                    <Row gutter={rowGrid}>
+                        <Col xs={3} sm={3} md={3} lg={3} xl={4} xxl={3} className={'ant-cv-center-properties-label'}>
+                            <label>Nature of a Company : </label>
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={10}>
-                            <ProFormText
+                            <Row>
+                                <Col span={8}>
+                                    <ProFormSelect
+                                        disabled={true}
+                                        name="enterpriseType"
+                                        placeholder=''
+                                        options={NATURE_OF_COMPANY.map((option) => ({
+                                            value: option.value,
+                                            label: option.label,
+                                        }))}
+                                        /*fieldProps={{
+                                            onChange: (e) => {
+                                                setParentValue(e)
+                                                form.setFieldsValue({natureOfCompany: null});
+                                            }
+                                        }}*/
+                                    />
+                                </Col>
+                                <Col>
+                                    <span className={'ant-space-span'}/>
+                                </Col>
+                                <Col span={8}>
+                                    <ProFormSelect
+                                        disabled={true}
+                                        name="natureOfCompany"
+                                        placeholder=''
+                                        options={[]}
+                                        dependencies={['enterpriseType']}
+                                        shouldUpdate={(prevValues, curValues) => prevValues.enterpriseType !== curValues.enterpriseType}
+                                        request={async () => {
+                                            const selectedParent = NATURE_OF_COMPANY.find((option) => option.value === form.getFieldValue('enterpriseType'));
+                                            if (selectedParent) {
+                                                return selectedParent.children.map((child) => ({
+                                                    value: child.value,
+                                                    label: child.label,
+                                                }));
+                                            }
+                                            return [];
+                                        }}
+                                    />
+                                </Col>
+                            </Row>
+                        </Col>
+                        {/*<Col xs={20} sm={20} md={20} lg={20} xl={6} xxl={8}>
+                            <ProFormSelect
+                                width='md'
+                                placeholder=''
+                                name='enterpriseType'
+                                options={[
+                                    {label: '私企（民营企业）', value: 1},
+                                    {label: '外企（外资企业）', value: 2},
+                                    {label: '央企', value: 3},
+                                    {label: '地方国企-省属', value: 4},
+                                    {label: '地方国企-市属', value: 5},
+                                    {label: '地方国企-其他', value: 6},
+                                ]}
+                            />
+                            <ProFormText name="name" label="姓名" />
+                            <ProFormSelect
+                                name="addr"
+                                width="md"
+                                label="与 name 联动的选择器"
+                                // dependencies 的内容会注入 request 中
+                                dependencies={['name']}
+                                request={async (param) => [
+                                    { label: param.name, value: 'all' },
+                                    { label: 'Unresolved', value: 'open' },
+                                    { label: 'Resolved', value: 'closed' },
+                                    { label: 'Resolving', value: 'processing' },
+                                ]}
+                            />
+                        </Col>*/}
+                        <Col xs={20} sm={20} md={20} lg={20} xl={22} xxl={14}>
+                            <Divider style={{marginTop: '-6px'}}/>
+                        </Col>
+                    </Row>
+                    <Row gutter={rowGrid}>
+                        <Col xs={3} sm={3} md={3} lg={3} xl={4} xxl={3} className={'ant-cv-center-properties-label'}>
+                            <label>Property (as Customer) : </label>
+                        </Col>
+                        <Col xs={20} sm={20} md={20} lg={20} xl={18} xxl={15}>
+                            <ProFormRadio.Group
+                                name="customerType"
+                                options={[
+                                    {
+                                        label: 'Direct Customer 直客',
+                                        value: 1,
+                                    },
+                                    {
+                                        label: 'Peer 同行',
+                                        value: 2,
+                                    },
+                                    {
+                                        label: 'CMG 招商',
+                                        value: 3,
+                                    },
+                                    {
+                                        label: 'Sinotrans 中外运公司',
+                                        value: 4,
+                                    },
+                                    {
+                                        label: 'Carrier(as Customer) 船公司',
+                                        value: 5,
+                                    },
+                                ]}
+                            />
+                        </Col>
+                        <Col xs={2} sm={2} md={2} lg={2} xl={1} xxl={2}>
+                            <Button icon={<IconFont type={'icon-clear'} />}
+                                    style={{border: "none", padding: '0 10px'}}
+                                    onClick={() => handleClearCustomer('customerType')}
+                            >
+                                Clear
+                            </Button>
+                        </Col>
+                        <Col xs={20} sm={20} md={20} lg={20} xl={22} xxl={14}>
+                            <Divider style={{marginTop: '-6px'}}/>
+                        </Col>
+                    </Row>
+                    <Row gutter={rowGrid}>
+                        <Col xs={3} sm={3} md={3} lg={3} xl={4} xxl={3} className={'ant-cv-center-properties-label'}>
+                            <label>Property (as Vendor) : </label>
+                        </Col>
+                        <Col xs={20} sm={20} md={20} lg={20} xl={20} xxl={20}>
+                            {/*<ProFormCheckbox.Group
+                                name='vendorTypeList'
+                                options={VendorTypeList}
+                            />*/}
+                            <ProFormCheckbox.Group name='vendorTypeList'>
+                                <Row>
+                                    {
+                                        VendorTypeList && VendorTypeList.length > 0 ? VendorTypeList.map((x: any) => {
+                                            return <Col span={4}><Checkbox key={x.value} value={x.value}>{x.label}</Checkbox></Col>
+                                        }) : null
+                                    }
+                                </Row>
+                            </ProFormCheckbox.Group>
+                        </Col>
+                        <Col xs={20} sm={20} md={20} lg={20} xl={22} xxl={14}>
+                            <Divider style={{marginTop: '-6px'}}/>
+                        </Col>
+                    </Row>
+                    <Row gutter={rowGrid}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormSelect
+                                disabled={true}
+                                placeholder=''
+                                label="Industry"
+                                name={'industryName'}
+                            />
+                            <Row>
+                                <Col span={6}>
+                                    <ProFormSwitch
+                                        name="payerFlag"
+                                    />
+                                </Col>
+                                <Col span={12} style={{marginTop: '5px'}}>
+                                    <label>Is Payer</label>
+                                </Col>
+                            </Row>
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormSelect
                                 required
                                 placeholder=''
-                                label='Name(For Print)'
-                                name='namePrint'
+                                name="settlementType"
+                                label="Payment Terms"
+                                options={[
+                                    {label: 'Cash Account - No Credit', value: 1},
+                                    {label: 'Credit Sale', value: 2},
+                                ]}
+                                rules={[{required: true, message: 'Payment Terms'}]}
+                            />
+                            <Row>
+                                <Col span={6}>
+                                    <ProFormSwitch
+                                        name="reimbursementFlag"
+                                    />
+                                </Col>
+                                <Col span={12} style={{marginTop: '5px'}}>
+                                    <label>Is Reimbursement</label>
+                                </Col>
+                            </Row>
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={16} xl={11} xxl={9}>
+                            <ProFormTextArea
+                                name='remark'
+                                placeholder=''
+                                label='Remark'
+                                fieldProps={{rows: 4}}
                                 tooltip='length: 500'
                                 rules={[{max: 500, message: 'length: 500'}]}
                             />
@@ -361,142 +682,23 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                     </Row>
                 </ProCard>
 
-                <ProCard title={'Contact'} className={'ant-card'}>
-                    {/** // TODO: MDM Number<主数据代码>、CV-Center Number<客商代码>、Oracle ID (Customer)、
-                     // TODO: Oracle ID (Vendor)、Sinotrans Company ID<如果是中外运内部公司，则有一个5位数字的编码> */}
-                    <Row gutter={24}>
-                        <Col span={5}>
-                            <ProFormText
-                                required
-                                name='TaxCode'
-                                placeholder=''
-                                label='CV Identity'
-                                tooltip='length: 30'
-                            />
-                        </Col>
-                        <Col span={5}>
-                            <ProFormText
-                                placeholder=''
-                                name='CDHCode'
-                                label='MDM Number'
-                            />
-                        </Col>
-                        <Col span={5}>
-                            <ProFormText
-                                placeholder=''
-                                name='CustSupCode'
-                                label='CV-Center Number'
-                            />
-                        </Col>
-                        <Col span={5}>
-                            <ProFormText
-                                placeholder=''
-                                name='OracleID'
-                                label='Oracle ID (Customer)'
-                            />
-                        </Col>
-                        <Col span={5}>
-                            <ProFormText
-                                placeholder=''
-                                name='OracleIDSupplier'
-                                label='Oracle ID (Vendor)'
-                            />
-                        </Col>
-                        <Col span={4}>
-                            <ProFormText
-                                placeholder=''
-                                name='InternalCompanyCode'
-                                label='Sinotrans Company ID'
-                            />
-                        </Col>
-                    </Row>
-
-                    {/** // TODO: Contacts、Telephone Number、Email、Sales (From Sinotrans)、Located in (City)、
-                     // TODO: Parent Company (Belongs to Group)、Address */}
-                    <Row gutter={24}>
-                        <Col span={16}>
-                            <Row gutter={24}>
-                                <Col span={8}>
-                                    <ProFormText
-                                        name='Contacts'
-                                        placeholder=''
-                                        label='Contacts'
-                                        tooltip='length: 100'
-                                    />
-                                </Col>
-                                <Col span={8}>
-                                    <ProFormText
-                                        name='Phone'
-                                        placeholder=''
-                                        tooltip='length: 100'
-                                        label='Telephone Number'
-                                    />
-                                </Col>
-                                <Col span={8}>
-                                    <ProFormText
-                                        name='Email'
-                                        placeholder=''
-                                        label='Email'
-                                        tooltip='length: 100'
-                                    />
-                                </Col>
-                                <Col span={8}>
-                                    <ProFormText
-                                        name='Sales'
-                                        placeholder=''
-                                        label='Sales (From Sinotrans)'
-                                        tooltip='length: 30'
-                                    />
-                                </Col>
-                                <Col span={8}>
-                                    <ProFormText
-                                        name='LocatedInCityID'
-                                        placeholder=''
-                                        label='Located in (City)'
-                                        tooltip='length: 30'
-                                    />
-                                </Col>
-                                <Col span={8}>
-                                    {/** 上级集团公司，需要提前维护进去后选择。如果没有的话可以留空 */}
-                                    <ProFormText
-                                        name='GroupID'
-                                        placeholder=''
-                                        label='Parent Company (Belongs to Group)'
-                                        tooltip='length: 30'
-                                    />
-                                </Col>
-                            </Row>
-                        </Col>
-                        <Col span={8}>
-                            <Row gutter={8}>
-                                <Col span={24}>
-                                    <ProFormTextArea
-                                        name='Address'
-                                        placeholder=''
-                                        label='Address'
-                                        fieldProps={{rows: 5}}
-                                    />
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                </ProCard>
-
-                <ProCard title={'Properties'} className={'ant-card ant-cv-center-properties'}>
-                    {/* // TODO: Business Line */}
+                {/*<ProCard title={'Properties'} className={'ant-card ant-cv-center-properties'}>
+                     // TODO: Business Line
                     <Row gutter={24}>
                         <Col span={3} className={'ant-cv-center-properties-label'}>
                             <label>Business Line : </label>
                         </Col>
                         <Col span={20}>
                             <ProFormCheckbox.Group
+                                required
+                                // label='Business Line'
                                 name='BusinessLineList'
-                                colProps={{span: 4,}}
-                                options={BusinessLineList}
+                                colProps={{span: 5,}}
+                                // options={BusinessLineList}
                             />
                         </Col>
                     </Row>
-                    {/** // TODO: Nature of a Company */}
+                    * // TODO: Nature of a Company
                     <Row gutter={24}>
                         <Col span={3} className={'ant-cv-center-properties-label'}>
                             <label>Nature of a Company : </label>
@@ -510,12 +712,12 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                         <Col span={1} className={'ant-cv-center-properties-clear'}>
                             <CloseOutlined
                                 // TODO: 未保存的客户属性是可以被清空的
-                                // hidden={!!CVInfoVO.CustomerPropertyID}
+                                // hidden={!!BUPInfoVO.CustomerPropertyID}
                                 onClick={() => handleClearCustomer('CustomerPropertyID')}
                             />
                         </Col>
                     </Row>
-                    {/** // TODO: Property (as Customer) */}
+                    * // TODO: Property (as Customer)
                     <Row gutter={24}>
                         <Col span={3} className={'ant-cv-center-properties-label'}>
                             <label>Property (as Customer) : </label>
@@ -529,12 +731,12 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                         <Col span={1} className={'ant-cv-center-properties-clear'}>
                             <CloseOutlined
                                 // TODO: 为保存的客户类型是可以被清空的
-                                // hidden={!!CVInfoVO.CTTypeItemClient}
+                                // hidden={!!BUPInfoVO.CTTypeItemClient}
                                 onClick={() => handleClearCustomer('CTTypeItemClient')}
                             />
                         </Col>
                     </Row>
-                    {/** // TODO: Property (as Vendor) */}
+                    * // TODO: Property (as Vendor)
                     <Row gutter={24}>
                         <Col span={3} className={'ant-cv-center-properties-label'}>
                             <label>Property (as Vendor) : </label>
@@ -546,7 +748,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                             />
                         </Col>
                     </Row>
-                    {/** // TODO: Industry、、、、、、、 */}
+                    * // TODO: Industry、、、、、、、
                     <Row gutter={24}>
                         <Col span={8}>
                             <ProFormTreeSelect
@@ -576,21 +778,21 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 }}
                             />
                         </Col>
-                        {/* TODO: 是否是仅付款方 */}
+                         TODO: 是否是仅付款方
                         <Col span={2}>
                             <ProFormSwitch
                                 name='IsOnlySettlement'
                                 label='Is Payer'
                             />
                         </Col>
-                        {/* TODO: 是否是仅代收代付 */}
+                         TODO: 是否是仅代收代付
                         <Col span={3}>
                             <ProFormSwitch
                                 name='IsReimbursement'
                                 label='Is Reimbursement'
                             />
                         </Col>
-                        {/* TODO: 满足是船公司时显示 */}
+                         TODO: 满足是船公司时显示
                         <Col span={3} hidden={!(customerTypeID === 14 || vendorTypeList?.includes(5))}>
                             <ProFormText
                                 placeholder=''
@@ -598,7 +800,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 label='SCAC'
                             />
                         </Col>
-                        {/* TODO: 满足是航空公司时显示 */}
+                         TODO: 满足是航空公司时显示
                         <Col span={3} hidden={!(vendorTypeList?.includes(6))}>
                             <ProFormText
                                 placeholder=''
@@ -607,13 +809,13 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                             />
                         </Col>
                     </Row>
-                    {/* // TODO: 客户备注 */}
+                     // TODO: 客户备注
                     <Row gutter={24}>
                         <Col span={24}>
                             <ProFormTextArea name='CVRemark' placeholder='' label='Remark'/>
                         </Col>
                     </Row>
-                </ProCard>
+                </ProCard>*/}
 
                 {/* // TODO: 相关付款客户 */}
                 <ProCard title={'Payers'} className={'ant-card ant-card-payers'} extra={
@@ -645,7 +847,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                 <FooterToolbar
                     extra={<Button
                         onClick={() => history.push({
-                            pathname: '/manager/cv-center/company/list',
+                            pathname: '/manager/cv-center/customer/list',
                             state: {
                                 searchParams: state ? (state as LocationState)?.searchParams : '',
                             },

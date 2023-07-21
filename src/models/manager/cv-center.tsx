@@ -3,13 +3,17 @@ import {
     GetCTPByID,
     UploadCTCenter,
     addBusinessUnitAPI,
-    queryBusinessUnitPropertyCreditInfoAPI
+    queryBusinessUnitPropertyCreditInfoAPI,
+    queryBusinessUnitPropertyInfoAPI,
+    addBusinessUnitPropertyAPI,
+    queryBusinessUnitPropertyAPI
 } from '@/services/smart/manager/cv-center';
 import type React from "react";
 import {useCallback, useState} from "react";
 import {getLabel$Value, getTransIndustryListToLine} from '@/utils/units'
 
-type APICVInfo = APIManager.BUInfo;
+type APIBUInfo = APIManager.BUInfo;
+type APIBUP = APIManager.BUP;
 type APICTTypeItemList = APIManager.CTTypeItemList[];
 type APICustomerProperty = APIManager.CustomerProperty[];
 type APIBusinessLine = APIManager.BusinessLine[];
@@ -17,8 +21,8 @@ type APIIndustrys = APIManager.Industrys[];
 type APIIndustrysTreeSelect = APIManager.IndustrysTreeSelect[][];
 
 interface T {
-    CVInfoList: APICVInfo[],
-    BUInfo: APICVInfo,
+    CVInfoList: APIBUInfo[],
+    BUInfo: APIBUInfo,
     CustomerTypeList: APICTTypeItemList,
     VendorTypeList: APICTTypeItemList,
     IndustryList: APIIndustrys,
@@ -28,8 +32,8 @@ interface T {
 
 export default (callback: T, deps: React.DependencyList) => {
     // TODO: 单票详情
-    /* TODO: 客户列表*/     const [CVInfoList, setCVInfoList] = useState<APICVInfo[]>([]);
-    /* TODO: CV 详情数据*/ const cvInfo: APICVInfo = {
+    /* TODO: 客户列表*/     const [CVInfoList, setCVInfoList] = useState<APIBUInfo[]>([]);
+    /* TODO: CV 详情数据*/ const cvInfo: APIBUInfo = {
         ID: null,
         CTPID: null,
         CTTypeItem: '',
@@ -50,7 +54,7 @@ export default (callback: T, deps: React.DependencyList) => {
         CTTypeItemListSupplier: null,
         CTList: [],
     };
-    /* TODO: CV 详情数据*/  const [BUInfo, setCVInfo] = useState<APICVInfo>(cvInfo);
+    /* TODO: CV 详情数据*/  const [BUInfo, setCVInfo] = useState<APIBUInfo>(cvInfo);
     /* TODO: 客户*/   const [CustomerTypeList, setCustomerTypeList] = useState<APICTTypeItemList>([]);
     /* TODO: 供应商*/  const [VendorTypeList, setVendorTypeList] = useState<APICTTypeItemList>([]);
     /* TODO: 行业*/   const [IndustryList, setIndustryList] = useState<APIIndustrysTreeSelect>([]);
@@ -80,7 +84,7 @@ export default (callback: T, deps: React.DependencyList) => {
         // TODO: 请求后台 API
         const response: APIManager.GetCVInfoResult = await GetCTPByID(params);
         if (!response) return;
-        const ctDetailInfo: APICVInfo = response.CTDetailDto;
+        const ctDetailInfo: APIBUInfo = response.CTDetailDto;
         if (ctDetailInfo.BusinessLine) {
             const blArr: string[] = ctDetailInfo.BusinessLine?.split(',');
             const blList: number[] = [];
@@ -124,28 +128,37 @@ export default (callback: T, deps: React.DependencyList) => {
 
 
     // TODO: 新增业务单位
-    const addBusinessUnit = useCallback(async (params: APICVInfo)=> {
+    const addBusinessUnit = useCallback(async (params: APIBUInfo)=> {
         return await addBusinessUnitAPI(params);
     }, [])
 
+    //region TODO: 业务单位属性 接口
+    // TODO: 获取 业务单位属性 列表
+    const queryBusinessUnitProperty = useCallback(async (params: APIManager.SearchBUPParams) => {
+        const response = await queryBusinessUnitPropertyAPI(params);
+        if (!response) return;
+        return response;
+    }, []);
 
+    // TODO: 获取 业务单位属性 详情
+    const queryBusinessUnitPropertyInfo = useCallback(async (params: APIBUP)=> {
+        return await queryBusinessUnitPropertyInfoAPI(params);
+    }, [])
 
+    // TODO: 新增业务单位属性
+    const addBusinessUnitProperty = useCallback(async (params: APIBUP)=> {
+        return await addBusinessUnitPropertyAPI(params);
+    }, [])
 
-    // TODO: 新增业务单位
+    // TODO: 查询 业务单位属性信控信息 详情
     const queryBusinessUnitPropertyCreditInfo = useCallback(async (params: any)=> {
         return await queryBusinessUnitPropertyCreditInfoAPI(params);
     }, [])
-
-
-
-
-
-
+    //endregion
 
     return {
         CVInfoList,
         getGetCTPByStr,
-
         getGetCTPByID,
         BUInfo,
         CustomerTypeList,
@@ -154,7 +167,11 @@ export default (callback: T, deps: React.DependencyList) => {
         CustomerPropertyList,
         BusinessLineList,
         uploadCTCenter,
-        queryBusinessUnitPropertyCreditInfo,
+
         addBusinessUnit,
+        queryBusinessUnitProperty,
+        queryBusinessUnitPropertyInfo,
+        addBusinessUnitProperty,
+        queryBusinessUnitPropertyCreditInfo,
     }
 }

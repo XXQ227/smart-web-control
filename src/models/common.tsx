@@ -13,6 +13,7 @@ export default () => {
     const [CurrencyList, setCurrencyList] = useState<any[]>([]);
     const [BusinessLineList, setBusinessLineList] = useState([]);
     const [IndustryList, setIndustryList] = useState([]);
+    const [VendorTypeList, setVendorTypeList] = useState([]);
 
     //region TODO: 接口
     // TODO: 获取字典数据
@@ -45,6 +46,9 @@ export default () => {
                     case 'industry':
                         setIndustryList(item.data);
                         break;
+                    case 'vendor_type':
+                        setVendorTypeList(item.data);
+                        break;
                     default: break;
                 }
             })
@@ -69,5 +73,6 @@ export default () => {
         CurrencyList,
         BusinessLineList,
         IndustryList,
+        VendorTypeList,
     }
 }

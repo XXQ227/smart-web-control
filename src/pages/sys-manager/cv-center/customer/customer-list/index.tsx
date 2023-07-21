@@ -1,20 +1,42 @@
 import React, {useState} from 'react';
 import type { RouteChildrenProps } from 'react-router';
 import type { ProColumns} from '@ant-design/pro-components';
-import {FooterToolbar, PageContainer, ProCard, ProTable} from '@ant-design/pro-components';
-import {Button, message,} from 'antd';
+import {
+    FooterToolbar,
+    PageContainer,
+    ProCard,
+    ProTable,
+    ProForm,
+    ProFormText,
+    ProFormSelect, ProFormDatePicker
+} from '@ant-design/pro-components';
+import {Button, Divider, Form, message, Modal, Row, Col} from 'antd';
 import {useModel} from 'umi';
-import {getUserID} from '@/utils/auths';
 import {history} from '@@/core/history'
-import {EditOutlined, PlusOutlined} from '@ant-design/icons'
+import {EditOutlined, PlusOutlined, SearchOutlined} from '@ant-design/icons'
 import ls from "lodash";
+import SearchProFormSelect from "@/components/SearchProFormSelect";
+import {getFormErrorMsg, rowGrid} from "@/utils/units";
 
 export type LocationState = Record<string, unknown>;
-type APIBUPInfo = APIManager.BUPInfo;
-type APIBUSearchParams = APIManager.BUSearchParams;
+type APIBUP = APIManager.BUP;
+type APISearchBUPParams = APIManager.SearchBUPParams;
 
 // TODO: 获取BUP列表的请求参数
-const initSearchParam: APIBUSearchParams = {
+const initSearchParam = {
+    type: 0,
+    name: '',
+    createTimeStart: '',
+    createTimeEnd: '',
+    taxNum: '',
+    mdmCode: '',
+    cvCenterNumber: '',
+    oracleCustomerCode: '',
+    oracleSupplierCode: '',
+    currentPage: 1,
+    pageSize: 20
+};
+/*const initSearchParam = {
     currentPage: 1,
     pageSize: 20,
     OracleID: "",
@@ -26,7 +48,7 @@ const initSearchParam: APIBUSearchParams = {
     NameFull: "",
     CTType: 1,
     UserID: getUserID(),
-};
+};*/
 
 const initPagination = {
     current: 1,
@@ -35,35 +57,41 @@ const initPagination = {
 }
 
 const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
-    const searchQueryBranch = ls.cloneDeep(initSearchParam)
-    const searchLocation = props.location.state ? (props.location.state as LocationState)?.searchParams : '';
+    const {location: {state}} = props;
+    const [form] = Form.useForm();
+    const FormItem = Form.Item;
+    const searchQueryBUP = ls.cloneDeep(initSearchParam)
+    const searchLocation = state ? (state as LocationState)?.searchParams : '';
 
     const {
-        CVInfoList, getGetCTPByStr
+        queryBusinessUnitProperty,
     } = useModel('manager.cv-center', (res: any)=> ({
-        CVInfoList: res.CVInfoList,
-        getGetCTPByStr: res.getGetCTPByStr,
+        queryBusinessUnitProperty: res.queryBusinessUnitProperty,
     }));
 
+    const [visible, setVisible] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
-    const [cvInfoList, setCVInfoList] = useState<APIBUPInfo[]>(CVInfoList);
-    const [searchParams, setSearchParams] = useState<APIBUSearchParams>(searchLocation || searchQueryBranch);
+    const [BUPListVO, setBUPListVO] = useState<APIBUP[]>([]);
+    const [searchParams, setSearchParams] = useState<APISearchBUPParams>(searchLocation || searchQueryBUP);
     const [pagination, setPagination] = useState<any>(initPagination)
+    const [nextButtonDisabled, setNextButtonDisabled] = useState(true);
+    const [BUParams, setBUParams] = useState(null);  // TODO: 所选的业务单位属性
 
     /**
-     * @Description: TODO 获取单票数据集合
+     * @Description: TODO 获取 业务单位属性 集合
      * @author LLS
-     * @date 2023/7/13
+     * @date 2023/7/19
      * @param params    参数
      * @returns
      */
-    async function handleGetGetCTPByStr (params: APIBUSearchParams){
+    async function handleQueryBUP (params: APISearchBUPParams){
         setLoading(true);
-        params.CTName = params.NameFull;
-        const result: API.Result = await getGetCTPByStr(params);
+        // params.CTName = params.NameFull;
+        const result: API.Result = await queryBusinessUnitProperty(params);
         // const result: APIManager.CVResultInfo = await getGetCTPByStr(params);
         if (result.success) {
-            setCVInfoList(result.data);
+            setBUPListVO(result.data);
+            console.log(result.data)
             setPagination({
                 current: result.current,
                 pageSize: result.size,
@@ -83,14 +111,25 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
      * @param record    操作当前 行
      * @returns
      */
-    const handleEditBUP = (record: APIBUPInfo) => {
+    const handleEditBUP = (record: APIBUP) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        history.push({
-            pathname: `/manager/cv-center/customer/form/${btoa(record.id)}`,
-            state: {
-                searchParams: searchParams,
-            },
-        });
+        const url = `/manager/cv-center/customer/form/${btoa(record.id)}`;
+        if (record.id === '0') {
+            console.log(BUParams)
+            history.push({
+                pathname: url,
+                state: {
+                    BUParams: BUParams,
+                },
+            })
+        } else {
+            history.push({
+                pathname: url,
+                state: {
+                    searchParams: searchParams,
+                },
+            });
+        }
     }
 
     /**
@@ -100,78 +139,239 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
      * @param record    操作当前 行
      * @returns
      */
-    const handleOperateJob = (record: any) => {
+    /*const handleOperateJob = (record: any) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
         const url = `/manager/cv-center/customer/form/${btoa(record?.CTPID || 0)}`;
         // TODO: 跳转页面<带参数>
         // @ts-ignore
         history.push({pathname: url})
+    }*/
+
+    /**
+     * @Description: TODO: 新增BUP弹框开启关闭
+     * @author LLS
+     * @date 2023/7/18
+     * @returns
+     */
+    const handleModal = () => {
+        setVisible(!visible);
     }
 
-    const columns: ProColumns<APIBUPInfo>[] = [
+    /*const handleChange = (e) => {
+        const value = e.target.value;
+        setInputValue(value);
+        setNextButtonDisabled(value === ''); // Disable the button if the input value is empty
+    };*/
+
+    const onFinish = async (val: APIBUP) => {
+        console.log(searchParams)
+        console.log(val)
+        await handleQueryBUP(searchParams);
+    }
+
+    const onFinishFailed = (val: any) => {
+        console.log(val);
+        const errInfo = getFormErrorMsg(val);
+        message.error(errInfo);
+    }
+
+    const handleChange = (val: any, option?: any) => {
+        console.log(val)
+        console.log(option)
+        setBUParams(option.data)
+        setNextButtonDisabled(false)
+    }
+
+    const columns: ProColumns<APIBUP>[] = [
         {
-            title: 'CV Type',
-            dataIndex: 'CTTypeItem',
-            width: 123,
-            disable: true,
+            title: 'BU Type',
+            dataIndex: 'type',
+            valueType: 'select',
+            width: '8%',
+            align: 'center',
+            /*search: {
+                transform: (value) => ({ cvCenterNumber: value }), // 将输入值封装成 { city: value } 对象
+            },
+            renderFormItem: (item, { defaultRender }) => {
+                console.log(item);
+                console.log(defaultRender);
+                return (
+                    /!*<Select defaultValue="ALL" placeholder=''>
+                        <Option value="ALL">ALL</Option>
+                        <Option value="Customer">Customer</Option>
+                        <Option value="Vendor">Vendor</Option>
+                    </Select>*!/
+                    <ProFormSelect
+                        placeholder=''
+                        options={[
+                            {label: '34', value: '34'},
+                            {label: 'ALL', value: 'ALL'},
+                            {label: 'Customer', value: 'Customer'},
+                            {label: 'Vendor', value: 'Vendor'},
+                        ]}
+                    />
+                );
+            },*/
+        },
+        {
+            title: 'BU Identity',
+            dataIndex: 'taxNum',
+            width: '15%',
             align: 'center',
         },
         {
-            title: 'CV Identity',
-            dataIndex: 'TaxCode',
-            width: 180,
-            disable: true,
-            align: 'center',
-        },
-        {
-            title: 'CV Name',
-            dataIndex: 'NameFull',
-            disable: true,
+            title: 'BU Name',
+            dataIndex: 'nameFullEn',
+            // width: '20%',
         },
         {
             title: 'MDM Number',
-            dataIndex: 'CDHCode',
-            width: 100,
-            disable: true,
+            dataIndex: 'mdmCode',
+            width: '15%',
             align: 'center',
         },
         {
-            title: 'CV Center Number',
-            dataIndex: 'CustSupCode',
-            width: 140,
-            disable: true,
+            title: 'CV-Center Number',
+            dataIndex: 'cvCenterNumber',
+            width: '15%',
             align: 'center',
         },
         {
             title: 'OracleID(C)',
-            dataIndex: 'OracleID',
-            width: 100,
-            disable: true,
+            dataIndex: 'oracleCustomerCode',
+            width: '8%',
             align: 'center',
         },
         {
             title: 'OracleID(V)',
-            dataIndex: 'OracleIDSupplier',
-            width: 100,
-            disable: true,
+            dataIndex: 'oracleSupplierCode',
+            width: '8%',
             align: 'center',
         },
-        {
+        /*{
             title: 'Status',
             dataIndex: 'Freezen',
             width: 100,
             disable: true,
             align: 'center',
-        },
+        },*/
         {
             title: 'Action',
-            width: 80,
-            disable: true,
+            width: 70,
             align: 'center',
             render: (text, record) =>
-                <EditOutlined color={'#1765AE'} onClick={() => handleOperateJob(record)}/>,
+                <EditOutlined color={'#1765AE'} onClick={() => handleEditBUP(record)}/>,
         },
     ];
+
+    const renderSearch = () => {
+        return (
+            <ProCard>
+                <ProForm
+                    form={form}
+                    // TODO: 不显示提交、重置按键
+                    submitter={false}
+                    // TODO: 焦点给到第一个控件
+                    autoFocusFirstInput
+                    // TODO: 设置默认值
+                    // formKey={'cv-center-information'}
+                    // TODO: 空间有改数据时触动
+                    // onValuesChange={handleProFormValueChange}
+                    // TODO: 提交数据
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                >
+                    <Row gutter={rowGrid}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={5}>
+                            <ProFormSelect
+                                name='type'
+                                label='BU Type'
+                                placeholder=''
+                                initialValue={{label: 'ALL', value: 'ALL'}}
+                                options={[
+                                    {label: 'ALL', value: 'ALL'},
+                                    {label: 'Customer', value: 'Customer'},
+                                    {label: 'Vendor', value: 'Vendor'},
+                                ]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={10} xxl={5}>
+                            <ProFormText
+                                name='name'
+                                placeholder=''
+                                label='BUP Name'
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={16} xl={10} xxl={10}>
+                            <Row>
+                                <label style={{ marginBottom: 8 }}>Create Time</label>
+                            </Row>
+                            <Row>
+                                <Col span={8}>
+                                    <ProFormDatePicker
+                                        // width="md"
+                                        placeholder=''
+                                        name="createTimeStart"
+                                    />
+                                </Col>
+                                <Col>
+                                    <span className={'ant-space-span'}/>
+                                </Col>
+                                <Col span={8}>
+                                    <ProFormDatePicker
+                                        // width="md"
+                                        placeholder=''
+                                        name="createTimeEnd"
+                                    />
+                                </Col>
+                            </Row>
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                name='taxNum'
+                                placeholder=''
+                                label='BU Identity'
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={5}>
+                            <ProFormText
+                                name='mdmCode'
+                                placeholder=''
+                                label='MDM Number'
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                name='cvCenterNumber'
+                                placeholder=''
+                                label='CV-Center Number'
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={5}>
+                            <ProFormText
+                                name='oracleCustomerCode'
+                                placeholder=''
+                                label='Oracle ID (Customer)'
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={5}>
+                            <ProFormText
+                                name='oracleSupplierCode'
+                                placeholder=''
+                                label='Oracle ID (Vendor)'
+                            />
+                        </Col>
+                    </Row>
+                    <Button key={'add'} onClick={handleModal} type={'primary'} icon={<PlusOutlined />}>
+                        Add
+                    </Button>
+                    <Button key={'submit'} type={'primary'} htmlType={'submit'} style={{float: "right"}} icon={<SearchOutlined />}>
+                        Search
+                    </Button>
+                </ProForm>
+            </ProCard>
+        )
+    }
 
     return (
         <PageContainer
@@ -185,26 +385,23 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
             }*/
         >
             {/*<ProCard className={'ant-card ant-card-pro-table'}>*/}
-                <ProTable<APIBUPInfo>
+                {renderSearch()}
+                <ProTable<APIBUP>
                     rowKey={'ID'}
                     options={false}
                     bordered={true}
                     loading={loading}
                     columns={columns}
                     params={searchParams}
-                    dataSource={cvInfoList}
+                    dataSource={BUPListVO}
+                    search={false}
                     /*search={{
                         layout: 'vertical',
                         defaultCollapsed: false,
+                        span: 6,
                         // hiddenNum: 1,
                     }}*/
-                    toolbar={{
-                        actions: [
-                            <Button key={'add'} onClick={()=> handleEditBUP({id: '0'})} type={'primary'} icon={<PlusOutlined/>}>
-                                Add
-                            </Button>
-                        ]
-                    }}
+                    // toolbar={{actions: [renderSearch()]}}
                     pagination={{
                         showSizeChanger: true,
                         ...pagination,
@@ -215,14 +412,88 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
                             setSearchParams(searchParams);
                         },
                     }}
-                    // @ts-ignore
-                    // request={(params: APIBUSearchParams)=> handleGetGetCTPByStr(params)}
-                    request={handleGetGetCTPByStr}
+                    // request={(params: APISearchBUPParams)=> handleQueryBUP(params)}
+                    request={handleQueryBUP}
                 />
             {/*</ProCard>*/}
             {/*<FooterToolbar extra={<Button>返回</Button>}>
                 <Button key={'submit'} type={'primary'} htmlType={'submit'}>提交</Button>
             </FooterToolbar>*/}
+
+            <Modal
+                className={'ant-add-modal'}
+                // className={styles.addServiceModal}
+                open={visible}
+                bodyStyle={{height: 170}}
+                onOk={handleModal}
+                onCancel={handleModal}
+                // onOk={handleAddService}
+                // onCancel={handleCancel}
+                title={'Add Business Unit Property'}
+                width={540}
+                footer={[
+                    <Button htmlType={"button"} key="back" onClick={handleModal}>
+                        Cancel
+                    </Button>,
+                    <Button
+                        htmlType={"submit"}
+                        key="submit"
+                        type="primary"
+                        onClick={()=> handleEditBUP({id: '0'})}
+                        disabled={nextButtonDisabled}
+                    >
+                        Next
+                    </Button>,
+                ]}
+                // footer={null}
+            >
+                {/*<ProForm
+                    form={form}
+                    // TODO: 不显示提交、重置按键
+                    submitter={false}
+                    // TODO: 焦点给到第一个控件
+                    autoFocusFirstInput
+                    // TODO: 设置默认值
+                    formKey={'cv-center-information'}
+                    // TODO: 空间有改数据时触动
+                    // onValuesChange={handleProFormValueChange}
+                    // TODO: 提交数据
+                    onFinish={onFinish}
+                    onFinishFailed={onFinishFailed}
+                    // TODO: 向后台请求数据
+                    // request={async () => handleGetCTPByID()}
+                    layout={"horizontal"}
+                >*/}
+                    {/*<FormItem
+                        name={'parentCompanyId'}
+                        // initialValue={record.CGItemID}
+                        // rules={[{required: true, message: `请输入${CGType === 1 ? 'Payer' : 'Vendor'}`}]}
+                    >*/}
+                <Row gutter={rowGrid}>
+                    <Col span={24} className={'ant-add-divider'}>
+                        <Divider />
+                    </Col>
+                    <Col span={23}>
+                        <SearchProFormSelect
+                            required
+                            qty={10}
+                            allowClear={false}
+                            isShowLabel={true}
+                            label="BU Name"
+                            id={'parentCompanyId'}
+                            name={'parentCompanyId'}
+                            url={"/apiBase/businessUnit/queryBusinessUnitCommon"}
+                            handleChangeData={(val: any, option: any) => handleChange(val, option)}
+                        />
+                    </Col>
+                </Row>
+                    {/*</FormItem>*/}
+                    {/*<div>
+                        <Button htmlType={"button"} key="back" onClick={handleModal}>Cancel</Button>
+                        <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
+                    </div>*/}
+                {/*</ProForm>*/}
+            </Modal>
         </PageContainer>
     )
 }

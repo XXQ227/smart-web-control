@@ -246,11 +246,8 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             dataIndex: 'relatedCode',
             width: 200,
             align: 'center',
-            tooltip: 'Code is required',
-            className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    required
                     FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`relatedCode${record.id}`}
@@ -289,7 +286,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                     id={`relatedType${record.id}`}
                     name={`relatedType${record.id}`}
                     initialValue={record.relatedType}
-                    onChange={(val: any) => handleChangeDictDetail(index, record, 'Type', val)}
+                    onChange={(val: any) => handleChangeDictDetail(index, record, 'relatedType', val)}
                 />
         },
         {

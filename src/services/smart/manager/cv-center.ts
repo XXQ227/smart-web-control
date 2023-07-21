@@ -33,7 +33,7 @@ export async function UploadCTCenter(body: any, options?: { [key: string]: any }
 
 
 /** TODO: 新增业务单位 */
-export async function addBusinessUnitAPI(body: APIManager.Branch, options?: { [key: string]: any }) {
+export async function addBusinessUnitAPI(body: APIManager.BUInfo, options?: { [key: string]: any }) {
     return request(`/apiBase/businessUnit/addBusinessUnit`, {
         method: 'POST',
         body,
@@ -41,7 +41,34 @@ export async function addBusinessUnitAPI(body: APIManager.Branch, options?: { [k
     });
 }
 
-/** TODO: 新增业务单位 */
+/** TODO: 获取 业务单位属性 列表 */
+export async function queryBusinessUnitPropertyAPI(body: APIManager.SearchBUPParams, options?: { [key: string]: any }) {
+    return request(`/apiBase/businessUnitProperty/queryBusinessUnitProperty`, {
+        method: 'POST',
+        body,
+        ...(options || {}),
+    });
+}
+
+/** TODO: 获取 业务单位属性 详情 */
+export async function queryBusinessUnitPropertyInfoAPI(body: APIManager.BUP, options?: { [key: string]: any }) {
+    return request(`/apiBase/businessUnitProperty/queryBusinessUnitPropertyInfo`, {
+        method: 'POST',
+        body,
+        ...(options || {}),
+    });
+}
+
+/** TODO: 新增业务单位属性 */
+export async function addBusinessUnitPropertyAPI(body: APIManager.BUP, options?: { [key: string]: any }) {
+    return request(`/apiBase/businessUnitProperty/addBusinessUnitProperty`, {
+        method: 'POST',
+        body,
+        ...(options || {}),
+    });
+}
+
+/** TODO: 查询 业务单位属性信控信息 详情 */
 export async function queryBusinessUnitPropertyCreditInfoAPI(body: any, options?: { [key: string]: any }) {
     return request(`/apiBase/businessUnitProperty/queryBusinessUnitPropertyCreditInfo`, {
         method: 'POST',
