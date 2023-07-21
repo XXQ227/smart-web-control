@@ -282,92 +282,107 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
                     onFinishFailed={onFinishFailed}
                 >
                     <Row gutter={rowGrid}>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={5}>
-                            <ProFormSelect
-                                name='type'
-                                label='BU Type'
-                                placeholder=''
-                                initialValue={{label: 'ALL', value: 'ALL'}}
-                                options={[
-                                    {label: 'ALL', value: 'ALL'},
-                                    {label: 'Customer', value: 'Customer'},
-                                    {label: 'Vendor', value: 'Vendor'},
-                                ]}
-                            />
-                        </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={10} xxl={5}>
-                            <ProFormText
-                                name='name'
-                                placeholder=''
-                                label='BUP Name'
-                            />
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={16} xl={10} xxl={10}>
-                            <Row>
-                                <label style={{ marginBottom: 8 }}>Create Time</label>
-                            </Row>
-                            <Row>
-                                <Col span={8}>
-                                    <ProFormDatePicker
-                                        // width="md"
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={16}>
+                            <Row gutter={rowGrid}>
+                                <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={4}>
+                                    <ProFormSelect
+                                        name='type'
+                                        label='BU Type'
                                         placeholder=''
-                                        name="createTimeStart"
+                                        initialValue={{label: 'ALL', value: 'ALL'}}
+                                        options={[
+                                            {label: 'ALL', value: 'ALL'},
+                                            {label: 'Customer', value: 'Customer'},
+                                            {label: 'Vendor', value: 'Vendor'},
+                                        ]}
                                     />
                                 </Col>
-                                <Col>
-                                    <span className={'ant-space-span'}/>
-                                </Col>
-                                <Col span={8}>
-                                    <ProFormDatePicker
-                                        // width="md"
+                                <Col xs={24} sm={24} md={12} lg={8} xl={10} xxl={9}>
+                                    <ProFormText
+                                        name='name'
                                         placeholder=''
-                                        name="createTimeEnd"
+                                        label='BUP Name'
+                                    />
+                                </Col>
+                                <Col xs={24} sm={24} md={24} lg={16} xl={10} xxl={11}>
+                                    <Row>
+                                        <label style={{ marginBottom: 8 }}>Create Time</label>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <ProFormDatePicker
+                                                placeholder=''
+                                                name="createTimeStart"
+                                            />
+                                        </Col>
+                                        <Col>
+                                            <span className={'ant-space-span'}/>
+                                        </Col>
+                                        <Col>
+                                            <ProFormDatePicker
+                                                placeholder=''
+                                                name="createTimeEnd"
+                                            />
+                                        </Col>
+                                    </Row>
+                                </Col>
+                            </Row>
+                            <Row gutter={rowGrid}>
+                                <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                                    <ProFormText
+                                        name='taxNum'
+                                        placeholder=''
+                                        label='BU Identity'
+                                    />
+                                </Col>
+                                <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={4}>
+                                    <ProFormText
+                                        name='mdmCode'
+                                        placeholder=''
+                                        label='MDM Number'
+                                    />
+                                </Col>
+                                <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                                    <ProFormText
+                                        name='cvCenterNumber'
+                                        placeholder=''
+                                        label='CV-Center Number'
+                                    />
+                                </Col>
+                                <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={5}>
+                                    <ProFormText
+                                        name='oracleCustomerCode'
+                                        placeholder=''
+                                        label='Oracle ID (Customer)'
+                                    />
+                                </Col>
+                                <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={5}>
+                                    <ProFormText
+                                        name='oracleSupplierCode'
+                                        placeholder=''
+                                        label='Oracle ID (Vendor)'
                                     />
                                 </Col>
                             </Row>
                         </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
-                            <ProFormText
-                                name='taxNum'
-                                placeholder=''
-                                label='BU Identity'
-                            />
-                        </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={5}>
-                            <ProFormText
-                                name='mdmCode'
-                                placeholder=''
-                                label='MDM Number'
-                            />
-                        </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
-                            <ProFormText
-                                name='cvCenterNumber'
-                                placeholder=''
-                                label='CV-Center Number'
-                            />
-                        </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={5}>
-                            <ProFormText
-                                name='oracleCustomerCode'
-                                placeholder=''
-                                label='Oracle ID (Customer)'
-                            />
-                        </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={5}>
-                            <ProFormText
-                                name='oracleSupplierCode'
-                                placeholder=''
-                                label='Oracle ID (Vendor)'
-                            />
+                        <Col xs={0} sm={0} md={0} lg={0} xl={0} xxl={2} className={'ant-search-button'}>
+                            <Button key={'submit'} type={'primary'} htmlType={'submit'} icon={<SearchOutlined />}>
+                                Search
+                            </Button>
                         </Col>
                     </Row>
-                    <Button key={'add'} onClick={handleModal} type={'primary'} icon={<PlusOutlined />}>
-                        Add
-                    </Button>
-                    <Button key={'submit'} type={'primary'} htmlType={'submit'} style={{float: "right"}} icon={<SearchOutlined />}>
-                        Search
-                    </Button>
+                    <Row>
+                        <Col span={12}>
+                            <Button key={'add'} onClick={handleModal} type={'primary'} icon={<PlusOutlined />}>
+                                Add
+                            </Button>
+                        </Col>
+                        <Col xs={12} sm={12} md={12} lg={12} xl={12} xxl={0}>
+                            <Button key={'submit'} type={'primary'} htmlType={'submit'} style={{float: "right"}} icon={<SearchOutlined />}>
+                                Search
+                            </Button>
+                        </Col>
+                    </Row>
                 </ProForm>
             </ProCard>
         )

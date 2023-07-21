@@ -204,6 +204,42 @@ ol {
   width: 30px;
 }
 
+// TODO: BUP搜索按钮
+@media (min-width: 1600px) {
+  .ant-search-button {
+    display: flex;
+    align-items: center;
+
+    button {
+      display: flex;
+      height: 45%;
+      align-items: center;
+      border-radius: 10px;
+      font-size: 40px;
+      border: none;
+      background: none;
+
+      span:first-child {
+        font-size: 50px;
+        margin-left: 20px;
+        margin-right: 25px;
+      }
+    }
+
+    button:active, button:focus, button:hover {
+      border: none;
+      background: none;
+      box-shadow: none;
+    }
+
+    button::before, button::after {
+      /* 清空伪元素的内容和动画 */
+      content: none;
+      animation: none;
+    }
+  }
+}
+
 .ant-input-suffix{
   .ant-input-suffix-span{
     color: #9d9d9d;
