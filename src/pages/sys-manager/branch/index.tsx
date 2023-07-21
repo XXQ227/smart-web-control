@@ -51,7 +51,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = (props) => {
     useEffect(() => {
         const handleBeforeUnload = () => {
             if (props.location.state) {
-                history.push({pathname: '/manager/branch/list'});
+                history.push({pathname: '/manager/branch'});
             }
         };
         window.addEventListener('beforeunload', handleBeforeUnload);

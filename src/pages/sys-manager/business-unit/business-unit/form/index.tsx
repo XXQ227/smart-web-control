@@ -144,7 +144,7 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
         }
         if (result.success) {
             message.success('Success');
-            if (id === '0') history.push({pathname: `/manager/cv-center/company/form/${btoa(result.data)}`});
+            if (id === '0') history.push({pathname: `/manager/business-unit/form/${btoa(result.data)}`});
         } else {
             message.error(result.message)
         }
@@ -185,7 +185,7 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
                 autoFocusFirstInput
                 // TODO: 设置默认值
                 initialValues={CVInfoVO}
-                formKey={'cv-center-information'}
+                formKey={'business-unit-information'}
                 // TODO: 空间有改数据时触动
                 // onValuesChange={handleProFormValueChange}
                 // TODO: 提交数据
@@ -524,7 +524,7 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
                 <FooterToolbar
                     extra={<Button
                         onClick={() => history.push({
-                            pathname: '/manager/cv-center/company/list',
+                            pathname: '/manager/business-unit/list',
                             state: {
                                 searchParams: state ? (state as LocationState)?.searchParams : '',
                             },

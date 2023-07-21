@@ -91,7 +91,7 @@ const PortForm: React.FC<RouteChildrenProps> = (props) => {
                 autoFocusFirstInput
                 // TODO: 设置默认值
                 initialValues={PortInfoVO}
-                formKey={'cv-center-information'}
+                formKey={'business-unit-information'}
                 trigger={<EditOutlined/>}
                 // TODO: 空间有改数据时触动
                 // onValuesChange={handleProFormValueChange}

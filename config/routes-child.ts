@@ -109,26 +109,26 @@ const bill_route = {
 // TODO: Manager 系统
 const manager_route = {
     name: 'manager',
-    icon: 'icon-menu-cv-center',
+    icon: 'icon-menu-manager',
     path: '/manager',
     routes: [
         {
             path: '/manager',
             redirect: '/manager',
         },
-        // TODO: 经营单位<branch>数据
+        // TODO: 经营单位<Branch>数据
         {
             name: 'branch_list',
-            icon: 'icon-company-manager',
-            path: '/manager/branch/list',
+            icon: 'icon-branch',
+            path: '/manager/branch',
             component: './sys-manager/branch',
         },
         {
             hideInMenu: true,   // 隐藏不显示
             name: 'branch_info',
-            icon: 'icon-company-manager',
+            icon: 'icon-branch',
             path: '/manager/branch/form/:id',
-            component: './sys-manager/branch/branch-form',
+            component: './sys-manager/branch/form',
         },
         // TODO: 字典表数据维护
         {
@@ -147,75 +147,72 @@ const manager_route = {
         {
             name: 'port_list',
             icon: 'icon-port',
-            path: '/manager/port/list',
+            path: '/manager/port',
             component: './sys-manager/port',
         },
-        // TODO: 业务公司
+        // TODO: 业务单位
         {
-            name: 'cv_center',
-            icon: 'icon-cv-center',
-            path: '/manager/cv-center',
+            name: 'business_unit',
+            icon: 'icon-business-unit',
+            path: '/manager/business-unit',
             routes: [
+                // TODO: 业务单位
                 {
-                    path: '/manager/cv-center',
-                    redirect: '/manager/cv-center/company/list',
-                },
-                // TODO: 公司
-                {
-                    name: 'company_list',
-                    icon: 'icon-cv-center',
-                    path: '/manager/cv-center/company/list',
-                    component: './sys-manager/cv-center/company/company-list',
+                    name: 'business_unit_list',
+                    icon: 'icon-business-unit',
+                    path: '/manager/business-unit/list',
+                    component: './sys-manager/business-unit/business-unit',
                 },
                 {
                     hideInMenu: true,   // 隐藏不显示
-                    name: 'company_info',
-                    icon: 'icon-cv-center',
-                    path: '/manager/cv-center/company/form/:id',
-                    component: './sys-manager/cv-center/company/company-form',
+                    name: 'business_unit_info',
+                    icon: 'icon-business-unit',
+                    path: '/manager/business-unit/form/:id',
+                    component: './sys-manager/business-unit/business-unit/form',
                 },
-                // TODO: 客户
+                // TODO: 业务单位属性
                 {
-                    name: 'customer_list',
+                    name: 'business_unit_property_list',
                     icon: 'icon-cv-approval',
-                    path: '/manager/cv-center/customer/list',
-                    component: './sys-manager/cv-center/customer/customer-list',
+                    path: '/manager/business-unit/property',
+                    component: './sys-manager/business-unit/business-unit-property',
                 },
                 {
                     hideInMenu: true,   // 隐藏不显示
-                    name: 'customer_info',
-                    icon: 'icon-cv-center',
-                    path: '/manager/cv-center/customer/form/:id',
-                    component: './sys-manager/cv-center/customer/customer-form',
+                    name: 'business_unit_property_info',
+                    icon: 'icon-business-unit',
+                    path: '/manager/business-unit/property/form/:id',
+                    component: './sys-manager/business-unit/business-unit-property/form',
                 },
                 // TODO: 客户审批
                 {
                     hideInMenu: true,   // 隐藏不显示
                     name: 'customer_approval_list',
                     icon: 'icon-cv-approval',
-                    path: '/manager/cv-center/cv-approval/list',
-                    component: './sys-manager/cv-center/customer/approval-list',
+                    path: '/manager/business-unit/cv-approval/list',
+                    component: './sys-manager/business-unit/business-unit-property/approval-list',
                 },
                 {
                     hideInMenu: true,   // 隐藏不显示
                     name: 'customer_approval_info',
-                    icon: 'icon-cv-center',
-                    path: '/manager/cv-center/cv-approval/form/:id',
-                    component: './sys-manager/cv-center/customer/customer-form',
+                    icon: 'icon-business-unit',
+                    path: '/manager/business-unit/cv-approval/form/:id',
+                    component: './sys-manager/business-unit/business-unit-property/form',
                 },
                 // TODO: 供应商
                 {
+                    hideInMenu: true,   // 隐藏不显示
                     name: 'vendor_list',
                     icon: 'icon-cv-approval',
-                    path: '/manager/cv-approval/list',
-                    component: './sys-manager/cv-center/vendor/vendor-list',
+                    path: '/manager/business-unit/vendor/list',
+                    component: './sys-manager/business-unit/vendor/vendor-list',
                 },
                 {
                     hideInMenu: true,   // 隐藏不显示
                     name: 'vendor_info',
-                    icon: 'icon-cv-center',
+                    icon: 'icon-business-unit',
                     path: '/manager/vendor/form/:id',
-                    component: './sys-manager/cv-center/vendor/vendor-form',
+                    component: './sys-manager/business-unit/vendor/vendor-form',
                 },
             ],
         },
@@ -251,7 +248,7 @@ const manager_route = {
         {
             name: 'shipping_list',
             icon: 'icon-shipping',
-            path: '/manager/shipping/list',
+            path: '/manager/shipping',
             component: './sys-manager/shipping',
         },
         {
@@ -430,7 +427,7 @@ const manager_route = {
 // TODO: Chart 系统
 const chart_route = {
     name: 'chart',
-    icon: 'icon-menu-cv-center',
+    icon: 'icon-report',
     path: '/chart',
     routes: [
         {
@@ -439,7 +436,7 @@ const chart_route = {
         },
         {
             name: 'line-chart',
-            icon: 'icon-cv-center',
+            icon: 'icon-report',
             path: '/chart/line-chart',
             component: './sys-chart/line-chart',
             ...MICRO_APP_CARGO('chart'),

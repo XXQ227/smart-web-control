@@ -35,8 +35,9 @@ export default {
   // TODO: 经营单位公司
   'menu.manager.branch_list': 'Branch - Index',
   'menu.manager.branch_info': 'Branch - Information',
-  // TODO: 经营单位公司
-  'menu.manager.dictionary': 'Dictionary - Index',
+  // TODO: 字典类型
+  'menu.manager.dict': 'Dictionary',
+  'menu.manager.dict_type': 'Dictionary - Detail',
   // 'menu.manager.dictionary_info': 'Branch - Information',
   // TODO: 经营单位部门
   'menu.manager.department_list': 'Department - Index',
@@ -45,17 +46,17 @@ export default {
   'menu.manager.project_info': 'Project - Information',
   // TODO: 经营单位员工用户
   'menu.manager.user_list': 'User - Index',
-  // TODO: 业务公司
-  'menu.manager.cv_center.company_list': 'Company - Index',
-  'menu.manager.cv_center.company_info': 'Company - Information',
-  // TODO: 客户
-  'menu.manager.cv_center.customer_list': 'Customer - Index',
-  'menu.manager.cv_center.customer_info': 'Customer - Information',
-  'menu.manager.cv_center.customer_approval_list': 'Customer - Approval - Index',
-  'menu.manager.cv_center.customer_approval_info': 'Customer - Approval - Information',
+  // TODO: 业务单位
+  'menu.manager.business_unit.business_unit_list': 'Business Unit - Index',
+  'menu.manager.business_unit.business_unit_info': 'Business Unit - Information',
+  // TODO: 业务单位属性
+  'menu.manager.business_unit.business_unit_property_list': 'Business Unit Property - Index',
+  'menu.manager.business_unit.business_unit_property_info': 'Business Unit Property - Information',
+  'menu.manager.business_unit.customer_approval_list': 'Customer - Approval - Index',
+  'menu.manager.business_unit.customer_approval_info': 'Customer - Approval - Information',
   // TODO: 供应商
-  'menu.manager.cv_center.vendor_list': 'Vendor - Index',
-  'menu.manager.cv_center.vendor_info': 'Vendor - Information',
+  'menu.manager.business_unit.vendor_list': 'Vendor - Index',
+  'menu.manager.business_unit.vendor_info': 'Vendor - Information',
   // TODO: 港口
   'menu.manager.port_list': 'Port - Index',
   'menu.manager.port_info': 'Port - Information',

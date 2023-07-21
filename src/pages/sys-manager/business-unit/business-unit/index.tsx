@@ -54,7 +54,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
     useEffect(() => {
         const handleBeforeUnload = () => {
             if (props.location.state) {
-                history.push({pathname: '/manager/cv-center/company/list'});
+                history.push({pathname: '/manager/business-unit/list'});
             }
         };
         window.addEventListener('beforeunload', handleBeforeUnload);
@@ -100,7 +100,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
     const handleEditBU = (record: APIBUInfo) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
         history.push({
-            pathname: `/manager/cv-center/company/form/${btoa(record.id)}`,
+            pathname: `/manager/business-unit/form/${btoa(record.id)}`,
             state: {
                 searchParams: searchParams,
             },
@@ -116,7 +116,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
      */
     const handleOperateJob = (record: any) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        const url = `/manager/cv-center/company/form/${btoa(record?.CTPID)}`;
+        const url = `/manager/business-unit/form/${btoa(record?.CTPID)}`;
         // TODO: 跳转页面<带参数>
         // @ts-ignore
         history.push({pathname: url})

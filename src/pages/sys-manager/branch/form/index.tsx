@@ -13,7 +13,7 @@ import {
 import {Button, Col, Form, message, Row, Space} from 'antd'
 import {history, useModel} from 'umi'
 import {getFormErrorMsg, rowGrid} from '@/utils/units'
-import BankIndex from '@/pages/sys-manager/branch/branch-form/bank'
+import BankIndex from '@/pages/sys-manager/branch/form/bank'
 import SearchProFormSelect from '@/components/SearchProFormSelect'
 
 type APIBranch = APIManager.Branch;
@@ -360,7 +360,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                 <FooterToolbar
                     extra={<Button
                         onClick={() => history.push({
-                            pathname: '/manager/branch/list',
+                            pathname: '/manager/branch',
                             state: {
                                 searchParams: state ? (state as LocationState)?.searchParams : '',
                             },

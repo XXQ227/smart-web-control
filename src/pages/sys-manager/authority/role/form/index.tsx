@@ -83,7 +83,7 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
                 autoFocusFirstInput
                 // TODO: 设置默认值
                 // initialValues={DictVO}
-                formKey={'cv-center-information'}
+                formKey={'role-information'}
                 // TODO: 提交数据
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}

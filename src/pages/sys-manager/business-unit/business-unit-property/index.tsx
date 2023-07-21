@@ -113,7 +113,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
      */
     const handleEditBUP = (record: APIBUP) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        const url = `/manager/cv-center/customer/form/${btoa(record.id)}`;
+        const url = `/manager/business-unit/property/form/${btoa(record.id)}`;
         if (record.id === '0') {
             console.log(BUParams)
             history.push({
@@ -141,7 +141,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
      */
     /*const handleOperateJob = (record: any) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        const url = `/manager/cv-center/customer/form/${btoa(record?.CTPID || 0)}`;
+        const url = `/manager/business-unit/property/form/${btoa(record?.CTPID || 0)}`;
         // TODO: 跳转页面<带参数>
         // @ts-ignore
         history.push({pathname: url})
@@ -184,7 +184,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
 
     const columns: ProColumns<APIBUP>[] = [
         {
-            title: 'BU Type',
+            title: 'BUP Type',
             dataIndex: 'type',
             valueType: 'select',
             width: '8%',
@@ -214,13 +214,13 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
             },*/
         },
         {
-            title: 'BU Identity',
+            title: 'BUP Identity',
             dataIndex: 'taxNum',
             width: '15%',
             align: 'center',
         },
         {
-            title: 'BU Name',
+            title: 'BUP Name',
             dataIndex: 'nameFullEn',
             // width: '20%',
         },
@@ -274,7 +274,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
                     // TODO: 焦点给到第一个控件
                     autoFocusFirstInput
                     // TODO: 设置默认值
-                    // formKey={'cv-center-information'}
+                    // formKey={'business-unit-information'}
                     // TODO: 空间有改数据时触动
                     // onValuesChange={handleProFormValueChange}
                     // TODO: 提交数据
@@ -287,7 +287,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
                                 <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={4}>
                                     <ProFormSelect
                                         name='type'
-                                        label='BU Type'
+                                        label='BUP Type'
                                         placeholder=''
                                         initialValue={{label: 'ALL', value: 'ALL'}}
                                         options={[
@@ -332,7 +332,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
                                     <ProFormText
                                         name='taxNum'
                                         placeholder=''
-                                        label='BU Identity'
+                                        label='BUP Identity'
                                     />
                                 </Col>
                                 <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={4}>
@@ -469,7 +469,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
                     // TODO: 焦点给到第一个控件
                     autoFocusFirstInput
                     // TODO: 设置默认值
-                    formKey={'cv-center-information'}
+                    formKey={'business-unit-information'}
                     // TODO: 空间有改数据时触动
                     // onValuesChange={handleProFormValueChange}
                     // TODO: 提交数据

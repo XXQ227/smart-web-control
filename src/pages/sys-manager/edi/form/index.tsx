@@ -148,7 +148,7 @@ const EDIForm: React.FC<RouteChildrenProps> = () => {
                 autoFocusFirstInput
                 // TODO: 设置默认值
                 initialValues={EDIInfoVO}
-                formKey={'cv-center-information'}
+                formKey={'edi-information'}
                 // TODO: 空间有改数据时触动
                 // onValuesChange={handleProFormValueChange}
                 // TODO: 提交数据

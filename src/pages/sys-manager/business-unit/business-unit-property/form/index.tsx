@@ -225,7 +225,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
         }
         if (result.success) {
             message.success('Success');
-            if (id === '0') history.push({pathname: `/manager/cv-center/customer/form/${btoa(result.data)}`});
+            if (id === '0') history.push({pathname: `/manager/business-unit/property/form/${btoa(result.data)}`});
         } else {
             message.error(result.message)
         }
@@ -261,7 +261,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                 autoFocusFirstInput
                 // TODO: 设置默认值
                 initialValues={BUPInfoVO}
-                formKey={'cv-center-information'}
+                formKey={'business-unit-information'}
                 // TODO: 空间有改数据时触动
                 // onValuesChange={handleProFormValueChange}
                 // TODO: 提交数据
@@ -682,10 +682,10 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                     </Row>
                 </ProCard>
 
-                {/*<ProCard title={'Properties'} className={'ant-card ant-cv-center-properties'}>
+                {/*<ProCard title={'Properties'} className={'ant-card ant-business-unit-properties'}>
                      // TODO: Business Line
                     <Row gutter={24}>
-                        <Col span={3} className={'ant-cv-center-properties-label'}>
+                        <Col span={3} className={'ant-business-unit-properties-label'}>
                             <label>Business Line : </label>
                         </Col>
                         <Col span={20}>
@@ -700,7 +700,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                     </Row>
                     * // TODO: Nature of a Company
                     <Row gutter={24}>
-                        <Col span={3} className={'ant-cv-center-properties-label'}>
+                        <Col span={3} className={'ant-business-unit-properties-label'}>
                             <label>Nature of a Company : </label>
                         </Col>
                         <Col span={20}>
@@ -709,7 +709,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 options={CustomerPropertyList}
                             />
                         </Col>
-                        <Col span={1} className={'ant-cv-center-properties-clear'}>
+                        <Col span={1} className={'ant-business-unit-properties-clear'}>
                             <CloseOutlined
                                 // TODO: 未保存的客户属性是可以被清空的
                                 // hidden={!!BUPInfoVO.CustomerPropertyID}
@@ -719,7 +719,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                     </Row>
                     * // TODO: Property (as Customer)
                     <Row gutter={24}>
-                        <Col span={3} className={'ant-cv-center-properties-label'}>
+                        <Col span={3} className={'ant-business-unit-properties-label'}>
                             <label>Property (as Customer) : </label>
                         </Col>
                         <Col span={20}>
@@ -728,7 +728,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 options={CustomerTypeList}
                             />
                         </Col>
-                        <Col span={1} className={'ant-cv-center-properties-clear'}>
+                        <Col span={1} className={'ant-business-unit-properties-clear'}>
                             <CloseOutlined
                                 // TODO: 为保存的客户类型是可以被清空的
                                 // hidden={!!BUPInfoVO.CTTypeItemClient}
@@ -738,7 +738,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                     </Row>
                     * // TODO: Property (as Vendor)
                     <Row gutter={24}>
-                        <Col span={3} className={'ant-cv-center-properties-label'}>
+                        <Col span={3} className={'ant-business-unit-properties-label'}>
                             <label>Property (as Vendor) : </label>
                         </Col>
                         <Col span={20}>
@@ -847,7 +847,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                 <FooterToolbar
                     extra={<Button
                         onClick={() => history.push({
-                            pathname: '/manager/cv-center/customer/list',
+                            pathname: '/manager/business-unit/property',
                             state: {
                                 searchParams: state ? (state as LocationState)?.searchParams : '',
                             },

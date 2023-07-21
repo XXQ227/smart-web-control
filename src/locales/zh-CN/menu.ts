@@ -58,17 +58,17 @@ export default {
   'menu.manager.bpmn': 'BPMN - Index',
   'menu.manager.bpmn.sample': 'BPMN - Sample',
   'menu.manager.bpmn.editor': 'BPMN - Editor',
-  // TODO: 业务公司
-  'menu.manager.cv_center.company_list': 'Company - Index',
-  'menu.manager.cv_center.company_info': 'Company - Information',
-  // TODO: 客户
-  'menu.manager.cv_center.customer_list': 'Customer - Index',
-  'menu.manager.cv_center.customer_info': 'Customer - Information',
-  'menu.manager.cv_center.customer_approval_list': 'Customer - Approval - Index',
-  'menu.manager.cv_center.customer_approval_info': 'Customer - Approval - Information',
+  // TODO: 业务单位
+  'menu.manager.business_unit.business_unit_list': 'Business Unit - Index',
+  'menu.manager.business_unit.business_unit_info': 'Business Unit - Information',
+  // TODO: 业务单位属性
+  'menu.manager.business_unit.business_unit_property_list': 'Business Unit Property - Index',
+  'menu.manager.business_unit.business_unit_property_info': 'Business Unit Property - Information',
+  'menu.manager.business_unit.customer_approval_list': 'Customer - Approval - Index',
+  'menu.manager.business_unit.customer_approval_info': 'Customer - Approval - Information',
   // TODO: 供应商
-  'menu.manager.cv_center.vendor_list': 'Vendor - Index',
-  'menu.manager.cv_center.vendor_info': 'Vendor - Information',
+  'menu.manager.business_unit.vendor_list': 'Vendor - Index',
+  'menu.manager.business_unit.vendor_info': 'Vendor - Information',
   // TODO: 港口
   'menu.manager.port_list': 'Port - Index',
   'menu.manager.port_info': 'Port - Information',

@@ -105,7 +105,7 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
                 autoFocusFirstInput
                 // TODO: 设置默认值
                 // initialValues={AuthResourceVO}
-                formKey={'cv-center-information'}
+                formKey={'authority-information'}
                 // TODO: 提交数据
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}

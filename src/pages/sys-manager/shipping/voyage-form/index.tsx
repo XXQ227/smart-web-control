@@ -112,7 +112,7 @@ const VoyageForm: React.FC<RouteChildrenProps> = (props) => {
                 autoFocusFirstInput
                 // TODO: 设置默认值
                 initialValues={VoyageInfoVO}
-                formKey={'cv-center-information'}
+                formKey={'voyage-information'}
                 // TODO: 提交数据
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
@@ -208,7 +208,7 @@ const VoyageForm: React.FC<RouteChildrenProps> = (props) => {
                 </ProCard>
 
                 <FooterToolbar
-                    extra={<Button onClick={() => history.push({pathname: '/manager/shipping/list'})}>Back</Button>}>
+                    extra={<Button onClick={() => history.push({pathname: '/manager/shipping'})}>Back</Button>}>
                     <Space>
                         <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
                     </Space>

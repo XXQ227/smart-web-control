@@ -81,7 +81,7 @@ const DepartmentForm: React.FC<RouteChildrenProps> = () => {
                 autoFocusFirstInput
                 // TODO: 设置默认值
                 initialValues={DepartmentInfoVO}
-                formKey={'cv-center-information'}
+                formKey={'department-information'}
                 // TODO: 提交数据
                 onFinish={handleSave}
                 onFinishFailed={async (values: any) => {

@@ -179,7 +179,7 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
                 autoFocusFirstInput
                 // TODO: 设置默认值
                 initialValues={ProjectInfoVO}
-                formKey={'cv-center-information'}
+                formKey={'project-information'}
                 // TODO: 提交数据
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}

@@ -177,7 +177,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                 autoFocusFirstInput
                 // TODO: 设置默认值
                 initialValues={CVInfoVO}
-                formKey={'cv-center-information'}
+                formKey={'business-unit-information'}
                 // TODO: 空间有改数据时触动
                 onValuesChange={handleProFormValueChange}
                 // TODO: 提交数据
@@ -369,7 +369,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                                 options={CustomerPropertyList}
                             />
                         </Col>
-                        <Col span={1} className={'ant-cv-center-properties-clear'}>
+                        <Col span={1} className={'ant-business-unit-properties-clear'}>
                             <CloseOutlined
                                 // TODO: 未保存的客户属性是可以被清空的
                                 hidden={!!CVInfoVO.CustomerPropertyID}
@@ -388,7 +388,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                                 options={CustomerTypeList}
                             />
                         </Col>
-                        <Col span={1} className={'ant-cv-center-properties-clear'}>
+                        <Col span={1} className={'ant-business-unit-properties-clear'}>
                             <CloseOutlined
                                 // TODO: 为保存的客户类型是可以被清空的
                                 hidden={!!CVInfoVO.CTTypeItemClient}
