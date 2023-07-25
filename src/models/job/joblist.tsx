@@ -1,4 +1,4 @@
-import {GetCJobByKeyAPI} from '@/services/smart/job/job-list';
+import {GetCJobByKeyAPI, queryJobListAPI} from '@/services/smart/job/job-list';
 import type React from "react";
 import {useCallback, useState} from "react";
 
@@ -41,6 +41,25 @@ export default (callback: T, deps: React.DependencyList) => {
         setResResult(result);
         return result;
     }, deps);
+
+
+    // TODO: 获取单票集
+    const queryJobList = useCallback(async (params: APIModel.GetCJobListInfo) => {
+        // TODO: 请求后台 API
+        const response: API.Result = await queryJobListAPI(params);
+        if (!response) return;
+        // TODO: 定义返回结果
+        const result: APIModel.RuleCJobList = {};
+        // TODO: 拿到需要的单票集参数 - 判断是否返回正确数据
+        const JobDto = response?.data || {};
+        if (JobDto.Result) {
+            // TODO: 整理返回结果
+            result.success = true;
+            result.total = JobDto.Page?.ItemTotal;
+            result.data = JobDto.Content?.CJobList || [];
+        }
+        return result;
+    }, deps);
     //endregion
 
 
@@ -49,5 +68,8 @@ export default (callback: T, deps: React.DependencyList) => {
         CJobList,
         resResult,
         getCJobList,
+
+
+        queryJobList,
     }
 }

@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
-import type { RouteChildrenProps } from 'react-router';
-import type { ProColumns, ActionType, ColumnsState} from '@ant-design/pro-components';
+import type {RouteChildrenProps} from 'react-router';
+import type {ActionType, ColumnsState, ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProTable} from '@ant-design/pro-components';
 import {history, useModel} from 'umi';
 import {IconFont} from '@/utils/units';
@@ -157,24 +157,29 @@ const JobList: React.FC<RouteChildrenProps> = () => {
                 <IconFont key={1} type={'icon-create'} onClick={()=> {console.log(123456)}} />,
             ]}
         >
-            <ProTable<APICJobListItem>
-                rowKey={'ID'}
-                bordered={true}
-                columns={columns}
-                dataSource={jobList}
-                actionRef={actionRef}
-                params={cjobListParams}
-                loading={loading}
-                request={(params)=> getCJobList(params, !!groupInfo.id)}
-                columnsState={{
-                    value: columnsStateMap,
-                    onChange: (str) => {
-                        // console.log(JSON.stringify(str));
-                        setColumnsStateMap(str);
-                    },
-                }}
-                className={'antd-pro-table-ant-space'}
-             />
+            <ProTable className={'ant-card-pro-table'}>
+                <ProTable<APICJobListItem>
+                    rowKey={'ID'}
+                    search={false}
+                    options={false}
+                    bordered={true}
+                    columns={columns}
+                    dataSource={jobList}
+                    actionRef={actionRef}
+                    params={cjobListParams}
+                    loading={loading}
+                    locale={{emptyText: 'No Data'}}
+                    className={'ant-pro-table-edit antd-pro-table-ant-space'}
+                    request={(params) => getCJobList(params, !!groupInfo.id)}
+                    columnsState={{
+                        value: columnsStateMap,
+                        onChange: (str) => {
+                            // console.log(JSON.stringify(str));
+                            setColumnsStateMap(str);
+                        },
+                    }}
+                />
+            </ProTable>
         </PageContainer>
     )
 }

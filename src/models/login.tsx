@@ -1,4 +1,4 @@
-import {loginIAM, loginSmart} from '@/services/smart/login';
+import {loginSmart} from '@/services/smart/login';
 import type React from "react";
 import {useCallback, useState} from "react";
 import {setSystemMes} from "@/utils/auths";

@@ -2,9 +2,9 @@ import {QuestionCircleOutlined} from '@ant-design/icons';
 import {Space} from 'antd';
 import React from 'react';
 import {/*SelectLang, */useModel} from 'umi';
-import HeaderSearch from '../HeaderSearch';
 import Avatar from './AvatarDropdown';
 import styles from './index.less';
+import BranchSelect from '@/components/BranchSelect'
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -23,7 +23,11 @@ const GlobalHeaderRight: React.FC = () => {
     }
     return (
         <Space className={className}>
-            <HeaderSearch
+
+            {/* 选择 branch */}
+            <BranchSelect/>
+
+            {/*<HeaderSearch
                 className={`${styles.action} ${styles.search}`}
                 placeholder="站内搜索"
                 defaultValue="umi ui"
@@ -45,7 +49,8 @@ const GlobalHeaderRight: React.FC = () => {
                 // onSearch={value => {
                 //   console.log('input', value);
                 // }}
-            />
+            />*/}
+
             <span
                 className={styles.action}
                 onClick={() => {

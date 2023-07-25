@@ -11,6 +11,8 @@ import {icon_font_url} from '@/utils/units';
 import WorkSpace from '@/components/WorkSpace';
 import ls from 'lodash';
 import Exception403 from '@/pages/exception/403';
+import {iamUserLogInAPI} from '@/services/smart/iam'
+import {message} from 'antd'
 
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -33,11 +35,23 @@ export async function getInitialState(): Promise<{
     isJobEditPage?: boolean;// TODO: 是否是编辑页面
     fetchUserInfo?: () => Promise<APIModel.LoginUserInfo | undefined>;
 }> {
+    const {push, location: {search, pathname, query}} = history;
     const fetchUserInfo = async () => {
         try {
+            console.log(history);
+            // TODO: 拿到 code 的值
+            if (search) {
+                // TODO: 从地址栏拿到 IAM 返回的 code 请求后台 API, 获取当前用户信息
+                const result: any = await iamUserLogInAPI({code: query?.code});
+                if (result.success) {
+                    console.log(JSON.stringify(result.data));
+                } else {
+                    message.error(result.message);
+                }
+            }
             return getUserInfo();
         } catch (error) {
-            history.push(loginPath);
+            push(loginPath);
         }
         return undefined;
     };
@@ -45,7 +59,7 @@ export async function getInitialState(): Promise<{
     // initialState 的返回结果
     const result: any = {userInfo, fetchUserInfo, settings: defaultSettings,};
     // 如果不是登录页面，执行
-    if (history.location.pathname !== loginPath) {
+    if (pathname !== loginPath) {
         result.groupInfo = {id: 1, title: 'Bayer Project'};
         return result;
     }
@@ -56,6 +70,7 @@ export async function getInitialState(): Promise<{
 export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
     // eslint-disable-next-line prefer-const
     let initInfo: any = ls.cloneDeep(initialState) || {};
+
     /**
      * @Description: TODO 选中分组后，重新获取 <单票列表> 的数据
      * @author XXQ
@@ -68,28 +83,32 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         initInfo.groupInfo = selectedRows;
         setInitialState(initInfo);
     }
+
     const {location} = history;
+    console.log(location);
     return {
         iconfontUrl: icon_font_url,
         // route: routes,
         // TODO: 顶部右侧
         disableContentMargin: false,
         title: 'Smart HK',
-        rightContentRender: () => <RightContent/>,
         // TODO: 水印
         waterMarkProps: {
             content: initialState?.userInfo?.DisplayName,
         },
+        // TODO: 历史上工具
+        rightContentRender: () => <RightContent/>,
+        // TODO: 是否站台
         // collapsed: true,
         footerRender: () => !!initialState?.userInfo?.ID && <Footer/>,
         enableDarkTheme: true,
-        // 菜单的折叠收起事件
+        // TODO: 菜单的折叠收起事件
         onCollapse: (e) => {
             // console.log(e);
         },
-        // 侧边菜单宽度
+        // TODO: 侧边菜单宽度
         siderWidth: 130,
-        // 页面切换时触发
+        // TODO: 页面切换时触发
         onPageChange: () => {
             // 当前页面的路径 <history>
             const newPathname = history?.location?.pathname;
@@ -97,32 +116,12 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
             const oldPathname = location?.pathname;
             // 如果没有登录【!getUserID()】，重定向到登录页面【/user/login】
             if (!getUserID() && newPathname !== loginPath) {
-                history.push(loginPath);
+                // history.push(loginPath);
             } else {
-                // 判断是不是单票编辑页面，只有在编辑页面时才显示，跟 access.ts 文配合使用
-                // let isSetJobEditPage = false;
-                // if (newPathname.indexOf('/job/job/') > -1) {
-                //     isSetJobEditPage = true;
-                //     initInfo.isJobEditPage = true
-                // } else if (oldPathname.indexOf('/job/job/') > -1) {
-                //     isSetJobEditPage = true;
-                //     initInfo.isJobEditPage = false
-                // }
-                // // 只能进入过业务详情页面时，才做 set 操作
-                // if (isSetJobEditPage) {
-                //     setInitialState(initInfo);
-                // }
                 initInfo.isJobEditPage = history?.location?.pathname?.indexOf('/job/job/') > -1;
                 setInitialState(initInfo);
                 const newPathnameArr = newPathname?.split('/') ?? [];
                 const oldPathParamsArr = oldPathname.split('/') ?? [];
-                // console.log(pathname.indexOf('/job/job/job-') > -1, pathname);
-                // if (pathnameHistory.indexOf('/job/job/job-') > -1 && pathnameHistory[4] === ':id') {
-                //     console.log(pathnameHistory);
-                //     history.push({
-                //         pathname: `/job/job/${pathnameHistory[3]}/${pathParams[4]}/${pathParams[5]}`,
-                //     })
-                // }
                 // 当路径为 <route.ts> 中定义的路径时，重新配置路径
                 if (newPathname.indexOf('/job/job/') > -1 && newPathnameArr[4] === ':id') {
                     // 参数用旧的，路径用新的
@@ -149,9 +148,10 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
                 null
             ]
             : [],
-        // TODO: 工作空间
-        menuHeaderRender: () =>
-            location?.pathname?.indexOf('/job') > -1 ? <WorkSpace onChangeGroup={onChangeGroup} groupInfo={initInfo.groupInfo} /> : null,
+        // TODO: 工作空间（暂时不启用）
+        // menuHeaderRender: () =>
+        //     location?.pathname?.indexOf('/job') > -1 ?
+        //         <WorkSpace onChangeGroup={onChangeGroup} groupInfo={initInfo.groupInfo} /> : null,
         // menuDataRender: (menuData)=> menuData,
         // 自定义 403 页面
         childrenRender: (children, props) => {
