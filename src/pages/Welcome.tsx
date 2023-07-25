@@ -1,10 +1,11 @@
-import {PageContainer} from '@ant-design/pro-components';
+import {PageContainer, ProCard} from '@ant-design/pro-components';
 import {Alert, Card} from 'antd';
 import React from 'react';
 import {useIntl} from 'umi';
 
 const Welcome: React.FC = () => {
     const intl = useIntl();
+
 
     return (
         <PageContainer>
@@ -23,6 +24,8 @@ const Welcome: React.FC = () => {
                     }}
                 />
             </Card>
+            <ProCard>
+            </ProCard>
         </PageContainer>
     );
 };

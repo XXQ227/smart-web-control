@@ -9,3 +9,10 @@ export async function GetCJobByKeyAPI(body: APIModel.GetCJobListInfo, options?: 
         ...(options || {}),
     });
 }
+
+export async function queryJobListAPI(body: APIModel.GetCJobListInfo) {
+    return request(`/apiEngine/forwardJob/queryJobList/`, {
+        method: 'POST',
+        body
+    });
+}

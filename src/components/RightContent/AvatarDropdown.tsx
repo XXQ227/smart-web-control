@@ -1,6 +1,6 @@
 import {LogoutOutlined, SettingOutlined, UserOutlined} from '@ant-design/icons';
-import {Avatar, message, Spin} from 'antd';
 import type {MenuProps} from 'antd';
+import {Avatar, message, Spin} from 'antd';
 import React from 'react';
 import {history, useModel} from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
@@ -16,16 +16,15 @@ const avatar = 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/Biazfanxma
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
     // const {initialState, setInitialState} = useModel('@@initialState');
     const userInfo = getUserInfo() || initUserInfo;
-    const users = useModel('users');
+    const {} = useModel('iam');
 
     const onMenuClick = (key: string) => {
         // 退出登录，并且将当前的 url 保存
         if (key === 'logout') {
             // const logout = users.logout();
-            if (true) {
-                message.success('Success!');
-                history.push(`/user/login`);
-            }
+
+            message.success('Success!');
+            history.push(`/user/login`);
             return;
         }
         history.push(`/account/${key}`);
@@ -79,7 +78,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
             <a target="_blank" rel="noopener noreferrer" onClick={()=> onMenuClick('center')}>
                 <span className={`${styles.action} ${styles.account}`}>
                     <Avatar size="small" className={styles.avatar} src={avatar} alt="avatar"/>
-                        <span className={`${styles.name} anticon`}>{userInfo.DisplayName}</span>
+                    <span className={`${styles.name} anticon`}>{userInfo.DisplayName}</span>
                 </span>
             </a>
         </HeaderDropdown>

@@ -59,7 +59,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = (props) => {
         return () => {
             window.removeEventListener('beforeunload', handleBeforeUnload);
         };
-    }, []);
+    }, [props.location.state]);
 
     /**
      * @Description: TODO 获取公司数据集合

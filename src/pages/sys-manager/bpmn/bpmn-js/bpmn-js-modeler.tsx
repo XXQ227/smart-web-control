@@ -5,9 +5,10 @@ import {history} from 'umi'
 // @ts-ignore
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import propertiesPanelModule from 'bpmn-js-properties-panel'
-// import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
-// 自定义的 properties-panel 内容
-import propertiesProviderModule from '../components/properties-panel-extension/provider/authority';
+import propertiesProviderModule from 'bpmn-js-properties-panel/lib/provider/camunda'
+import camundaModdleDescriptor from 'camunda-bpmn-moddle/resources/camunda.json'
+
+// import propertiesProviderModule from '../components/properties-panel-extension/provider/authority';
 // @ts-ignore
 import authorityModdleDescriptor from '../components/properties-panel-extension/descriptors/authority';
 
@@ -42,16 +43,18 @@ const BpmnJsModeler: React.FC<Props> = (props) => {
             },
             //添加右侧控制板
             propertiesPanel: {
-                // parent: '#js-properties-panel'
+                parent: '#js-properties-panel'
             },
             additionalModules: [
                 // 左边的工具栏(固定引入)
-                propertiesPanelModule,
+                propertiesProviderModule,
                 // 自定义右边工作栏的内容
-                propertiesProviderModule
+                propertiesPanelModule,
+                // camundaModdleDescriptor,
             ],
             moddleExtensions: {
-                authority: authorityModdleDescriptor
+                // authority: authorityModdleDescriptor,
+                camunda: camundaModdleDescriptor
             }
         });
         viewer.importXML(props.xmlStr, (err: any) => {
