@@ -65,6 +65,7 @@ export default {
   'menu.manager.business_unit.business_unit_property_list': 'Business Unit Property - Index',
   'menu.manager.business_unit.business_unit_property_info': 'Business Unit Property - Information',
   // TODO: 付款方
+  'menu.manager.business_unit': 'Business Unit',
   'menu.manager.business_unit.payer_list': 'Payer - Index',
   'menu.manager.business_unit.customer_approval_list': 'Customer - Approval - Index',
   'menu.manager.business_unit.customer_approval_info': 'Customer - Approval - Information',
