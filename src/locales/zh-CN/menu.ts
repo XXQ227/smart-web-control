@@ -64,6 +64,8 @@ export default {
   // TODO: 业务单位属性
   'menu.manager.business_unit.business_unit_property_list': 'Business Unit Property - Index',
   'menu.manager.business_unit.business_unit_property_info': 'Business Unit Property - Information',
+  // TODO: 付款方
+  'menu.manager.business_unit.payer_list': 'Payer - Index',
   'menu.manager.business_unit.customer_approval_list': 'Customer - Approval - Index',
   'menu.manager.business_unit.customer_approval_info': 'Customer - Approval - Information',
   // TODO: 供应商
