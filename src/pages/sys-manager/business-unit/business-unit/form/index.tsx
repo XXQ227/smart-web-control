@@ -15,6 +15,7 @@ import {message} from 'antd/es'
 import {getFormErrorMsg, rowGrid} from "@/utils/units";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
 import {NATURE_OF_COMPANY} from '@/utils/common-data'
+import BusinessUnitListIndex from "@/pages/sys-manager/business-unit/business-unit";
 
 export type LocationState = Record<string, unknown>;
 type APICVInfo = APIManager.BUInfo;
@@ -27,7 +28,7 @@ const cityList = [
     {label: 'GUANGZHOU', value: 5},
 ]
 
-const BUForm: React.FC<RouteChildrenProps> = (props) => {
+const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}, location: {state}} = props;
     const id = atob(params?.id);
@@ -39,7 +40,7 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
     const {
         addBusinessUnit,
         BUInfo, uploadCTCenter
-    } = useModel('manager.cv-center', (res: any) => ({
+    } = useModel('manager.business-unit', (res: any) => ({
         addBusinessUnit: res.addBusinessUnit,
 
         BUInfo: res.BUInfo,
@@ -560,4 +561,4 @@ const BUForm: React.FC<RouteChildrenProps> = (props) => {
         </PageContainer>
     )
 }
-export default BUForm;
+export default BusinessUnitForm;

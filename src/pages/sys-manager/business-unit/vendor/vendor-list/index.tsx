@@ -29,7 +29,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = () => {
 
     const {
         CVInfoList, getGetCTPByStr
-    } = useModel('manager.cv-center', (res: any)=> ({
+    } = useModel('manager.business-unit', (res: any)=> ({
         CVInfoList: res.CVInfoList,
         getGetCTPByStr: res.getGetCTPByStr,
     }));

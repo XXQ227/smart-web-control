@@ -34,7 +34,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
     const {
         getGetCTPByID, BUInfo, CustomerTypeList, VendorTypeList, CustomerPropertyList, BusinessLineList,
         IndustryList,
-    } = useModel('manager.cv-center', (res: any) => ({
+    } = useModel('manager.business-unit', (res: any) => ({
         BUInfo: res.BUInfo,
         getGetCTPByID: res.getGetCTPByID,
         CustomerTypeList: res.CustomerTypeList,

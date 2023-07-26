@@ -44,7 +44,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
         queryCreditControlInfo: res.queryCreditControlInfo,
         editCreditControl: res.editCreditControl,
     }));
-    const {queryBusinessUnitPropertyCreditInfo} = useModel('manager.cv-center', (res: any) => ({
+    const {queryBusinessUnitPropertyCreditInfo} = useModel('manager.business-unit', (res: any) => ({
         queryBusinessUnitPropertyCreditInfo: res.queryBusinessUnitPropertyCreditInfo,
     }));
     const {

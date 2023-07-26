@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import type { RouteChildrenProps } from 'react-router';
 import type { ProColumns} from '@ant-design/pro-components';
 import {
-    FooterToolbar,
     PageContainer,
     ProCard,
     ProTable,
@@ -20,35 +19,22 @@ import {getFormErrorMsg, rowGrid} from "@/utils/units";
 
 export type LocationState = Record<string, unknown>;
 type APIBUP = APIManager.BUP;
-type APISearchBUPParams = APIManager.SearchBUPParams;
+type APISearchBUParams = APIManager.SearchBUParams;
 
 // TODO: 获取BUP列表的请求参数
 const initSearchParam = {
-    type: 0,
+    bupType: 0,
     name: '',
-    createTimeStart: '',
-    createTimeEnd: '',
+    createTimeStart: null,
+    createTimeEnd: null,
     taxNum: '',
     mdmCode: '',
     cvCenterNumber: '',
     oracleCustomerCode: '',
     oracleSupplierCode: '',
     currentPage: 1,
-    pageSize: 20
-};
-/*const initSearchParam = {
-    currentPage: 1,
     pageSize: 20,
-    OracleID: "",
-    OracleIDSupplier: "",
-    CustomerUBSID: "",
-    SupplierUBSID: "",
-    TaxNum: "",
-    CTName: "",
-    NameFull: "",
-    CTType: 1,
-    UserID: getUserID(),
-};*/
+};
 
 const initPagination = {
     current: 1,
@@ -56,23 +42,23 @@ const initPagination = {
     total: 0,
 }
 
-const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
+const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
     const {location: {state}} = props;
     const [form] = Form.useForm();
-    const FormItem = Form.Item;
+    // const FormItem = Form.Item;
     const searchQueryBUP = ls.cloneDeep(initSearchParam)
     const searchLocation = state ? (state as LocationState)?.searchParams : '';
 
     const {
         queryBusinessUnitProperty,
-    } = useModel('manager.cv-center', (res: any)=> ({
+    } = useModel('manager.business-unit', (res: any)=> ({
         queryBusinessUnitProperty: res.queryBusinessUnitProperty,
     }));
 
     const [visible, setVisible] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
     const [BUPListVO, setBUPListVO] = useState<APIBUP[]>([]);
-    const [searchParams, setSearchParams] = useState<APISearchBUPParams>(searchLocation || searchQueryBUP);
+    const [searchParams, setSearchParams] = useState<APISearchBUParams>(searchLocation || searchQueryBUP);
     const [pagination, setPagination] = useState<any>(initPagination)
     const [nextButtonDisabled, setNextButtonDisabled] = useState(true);
     const [BUParams, setBUParams] = useState(null);  // TODO: 所选的业务单位属性
@@ -84,11 +70,9 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
      * @param params    参数
      * @returns
      */
-    async function handleQueryBUP (params: APISearchBUPParams){
+    async function handleQueryBUP (params: APISearchBUParams){
         setLoading(true);
-        // params.CTName = params.NameFull;
         const result: API.Result = await queryBusinessUnitProperty(params);
-        // const result: APIManager.CVResultInfo = await getGetCTPByStr(params);
         if (result.success) {
             setBUPListVO(result.data);
             console.log(result.data)
@@ -163,10 +147,13 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
         setNextButtonDisabled(value === ''); // Disable the button if the input value is empty
     };*/
 
-    const onFinish = async (val: APIBUP) => {
-        console.log(searchParams)
-        console.log(val)
-        await handleQueryBUP(searchParams);
+    const onFinish = async (val: APISearchBUParams) => {
+        console.log(searchParams);
+        console.log(val);
+        const params: APISearchBUParams = {...searchParams, ...val, bupType: val.bupType};
+        console.log(params);
+        setSearchParams(params);
+        await handleQueryBUP(params);
     }
 
     const onFinishFailed = (val: any) => {
@@ -185,9 +172,8 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
     const columns: ProColumns<APIBUP>[] = [
         {
             title: 'BUP Type',
-            dataIndex: 'type',
-            valueType: 'select',
-            width: '8%',
+            dataIndex: 'bupType',
+            width: '13%',
             align: 'center',
             /*search: {
                 transform: (value) => ({ cvCenterNumber: value }), // 将输入值封装成 { city: value } 对象
@@ -217,35 +203,40 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
             title: 'BUP Identity',
             dataIndex: 'taxNum',
             width: '15%',
+            ellipsis: true,
             align: 'center',
         },
         {
             title: 'BUP Name',
             dataIndex: 'nameFullEn',
-            // width: '20%',
+            ellipsis: true,
         },
         {
             title: 'MDM Number',
             dataIndex: 'mdmCode',
             width: '15%',
+            ellipsis: true,
             align: 'center',
         },
         {
             title: 'CV-Center Number',
             dataIndex: 'cvCenterNumber',
             width: '15%',
+            ellipsis: true,
             align: 'center',
         },
         {
             title: 'OracleID(C)',
             dataIndex: 'oracleCustomerCode',
             width: '8%',
+            ellipsis: true,
             align: 'center',
         },
         {
             title: 'OracleID(V)',
             dataIndex: 'oracleSupplierCode',
             width: '8%',
+            ellipsis: true,
             align: 'center',
         },
         /*{
@@ -273,6 +264,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
                     submitter={false}
                     // TODO: 焦点给到第一个控件
                     autoFocusFirstInput
+                    initialValues={searchParams}
                     // TODO: 设置默认值
                     // formKey={'business-unit-information'}
                     // TODO: 空间有改数据时触动
@@ -286,15 +278,16 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
                             <Row gutter={rowGrid}>
                                 <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={4}>
                                     <ProFormSelect
-                                        name='type'
+                                        name='bupType'
                                         label='BUP Type'
                                         placeholder=''
-                                        initialValue={{label: 'ALL', value: 'ALL'}}
+                                        // initialValue={{value: 0}}
                                         options={[
-                                            {label: 'ALL', value: 'ALL'},
-                                            {label: 'Customer', value: 'Customer'},
-                                            {label: 'Vendor', value: 'Vendor'},
+                                            {label: 'ALL', value: 0},
+                                            {label: 'Customer', value: 1},
+                                            {label: 'Vendor', value: 2},
                                         ]}
+                                        // fieldProps={{ onChange: (e) => searchParams.bupType = e }}
                                     />
                                 </Col>
                                 <Col xs={24} sm={24} md={12} lg={8} xl={10} xxl={9}>
@@ -302,6 +295,12 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
                                         name='name'
                                         placeholder=''
                                         label='BUP Name'
+                                        fieldProps={{
+                                            onChange: (e) => {
+                                                // console.log(e.target.value)
+                                                // searchParams.name = e
+                                            }
+                                        }}
                                     />
                                 </Col>
                                 <Col xs={24} sm={24} md={24} lg={16} xl={10} xxl={11}>
@@ -313,6 +312,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
                                             <ProFormDatePicker
                                                 placeholder=''
                                                 name="createTimeStart"
+                                                dataFormat="YYYY-MM-DD"
                                             />
                                         </Col>
                                         <Col>
@@ -322,6 +322,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
                                             <ProFormDatePicker
                                                 placeholder=''
                                                 name="createTimeEnd"
+                                                dataFormat="YYYY-MM-DD"
                                             />
                                         </Col>
                                     </Row>
@@ -402,7 +403,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
             {/*<ProCard className={'ant-card ant-card-pro-table'}>*/}
                 {renderSearch()}
                 <ProTable<APIBUP>
-                    rowKey={'ID'}
+                    rowKey={'id'}
                     options={false}
                     bordered={true}
                     loading={loading}
@@ -427,7 +428,7 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
                             setSearchParams(searchParams);
                         },
                     }}
-                    // request={(params: APISearchBUPParams)=> handleQueryBUP(params)}
+                    // request={(params: APISearchBUParams)=> handleQueryBUP(params)}
                     request={handleQueryBUP}
                 />
             {/*</ProCard>*/}
@@ -437,13 +438,10 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
 
             <Modal
                 className={'ant-add-modal'}
-                // className={styles.addServiceModal}
                 open={visible}
                 bodyStyle={{height: 170}}
                 onOk={handleModal}
                 onCancel={handleModal}
-                // onOk={handleAddService}
-                // onCancel={handleCancel}
                 title={'Add Business Unit Property'}
                 width={540}
                 footer={[
@@ -460,7 +458,6 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
                         Next
                     </Button>,
                 ]}
-                // footer={null}
             >
                 {/*<ProForm
                     form={form}
@@ -497,6 +494,8 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
                             label="BU Name"
                             id={'parentCompanyId'}
                             name={'parentCompanyId'}
+                            filedValue={'buId'}
+                            filedLabel={'buName'}
                             url={"/apiBase/businessUnit/queryBusinessUnitCommon"}
                             handleChangeData={(val: any, option: any) => handleChange(val, option)}
                         />
@@ -512,4 +511,4 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
         </PageContainer>
     )
 }
-export default CVCenterList;
+export default BusinessUnitPropertyListIndex;

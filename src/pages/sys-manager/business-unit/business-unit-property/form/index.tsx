@@ -13,21 +13,22 @@ import {
     ProFormText,
     ProFormTextArea,
 } from '@ant-design/pro-components'
-import {Button, Col, Form, Row, Tag, Checkbox, Divider} from 'antd'
+import {Button, Col, Form, Row, Tag, Divider} from 'antd'
 import {getUserID} from '@/utils/auths'
 import SearchModal from '@/components/SearchModal'
 import {message} from 'antd/es'
 import ls from 'lodash';
 import {useModel, history} from 'umi'
-import {getFormErrorMsg, IconFont, rowGrid} from "@/utils/units";
+import {getFormErrorMsg, IconFont, rowGrid, getLabelByValue} from "@/utils/units";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
 import {NATURE_OF_COMPANY} from "@/utils/common-data";
+import type { CheckboxValueType } from 'antd/lib/checkbox/Group';
 
 export type LocationState = Record<string, unknown>;
 type APIBUP = APIManager.BUP;
 type APIBUAndBUPCommonInfo = APIManager.BUAndBUPCommonInfo;
 
-const BUPForm: React.FC<RouteChildrenProps> = (props) => {
+const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}, location: {state}} = props;
     // console.log(state)
@@ -39,7 +40,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
     const {
         addBusinessUnitProperty, queryBusinessUnitPropertyInfo,
         BUInfo,
-    } = useModel('manager.cv-center', (res: any) => ({
+    } = useModel('manager.business-unit', (res: any) => ({
         BUInfo: res.BUInfo,
 
         addBusinessUnitProperty: res.addBusinessUnitProperty,
@@ -59,18 +60,19 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
     const [BUAndBUPCommonInfoVO, setBUAndBUPCommonInfoVO] = useState<APIBUAndBUPCommonInfo>((state as LocationState)?.BUParams as APIBUAndBUPCommonInfo || {});
     const [ClientVO, setClientVO] = useState<API.APIKey$Value[]>(BUInfo.CTList);
     // const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
-    const [companyNameEN, setCompanyNameEN] = useState<API.APIValue$Label>({
+    /*const [companyNameEN, setCompanyNameEN] = useState<API.APIValue$Label>({
         label: BUInfo.NameFullEN, value: BUInfo.ID
-    });
+    });*/
     const [loading, setLoading] = useState<boolean>(false);
+    const [customerTypeDisabled, setCustomerTypeDisabled] = useState(true);
 
     // TODO: 客户类型
-    const [customerTypeID, setCustomerTypeID] = useState<number | null>(BUInfo.CTTypeItemClient);
+    // const [customerTypeID, setCustomerTypeID] = useState<number | null>(BUInfo.CTTypeItemClient);
     // TODO: 供应商类型
-    const [vendorTypeList, setVendorTypeList] = useState<number[] | null>(BUInfo.CTTypeItemListSupplier);
+    // const [vendorTypeList, setVendorTypeList] = useState<number[] | null>(BUInfo.CTTypeItemListSupplier);
     //endregion
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (BUInfo.CTList?.length !== ClientVO?.length) {
             setClientVO(BUInfo.CTList);
         }
@@ -80,7 +82,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
         if (BUInfo.CTTypeItemListSupplier?.length > 0 && vendorTypeList?.length === 0) {
             setVendorTypeList(BUInfo.CVInfo.CTTypeItemListSupplier);
         }
-    }, [BUInfo.CTList, ClientVO?.length])
+    }, [BUInfo.CTList, ClientVO?.length])*/
 
     useEffect(() => {
         setTimeout(async () => {
@@ -109,8 +111,12 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
         setLoading(true);
         const result: any = await queryBusinessUnitPropertyInfo({id});
         if (result.success) {
-            console.log(BUAndBUPCommonInfoVO);
-            const newData = result.data || BUAndBUPCommonInfoVO
+            // TODO: Nature of a Company 根据后台传回来的natureOfCompany参数，找到对应的label名称
+            const natureOfCompanyLabel: APIBUAndBUPCommonInfo = getLabelByValue(NATURE_OF_COMPANY, BUAndBUPCommonInfoVO.natureOfCompany);
+            const newInfoVO: APIBUAndBUPCommonInfo = {...BUAndBUPCommonInfoVO, ...natureOfCompanyLabel};
+            setBUAndBUPCommonInfoVO(newInfoVO)
+            const newData = result.data || newInfoVO;
+            // TODO: 业务线数据转化
             if (id !== '0') {
                 newData.businessLine = [`${newData.businessLine}`];
             }
@@ -189,12 +195,9 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
         })
     }*/
 
-    const handleChangeData = (val: any, filedName: string) => {
-        console.log(val);
-        if (filedName === 'name_full_en') {
-            setCompanyNameEN(val);
-        }
-    }
+    const onChange = (checkedValues: CheckboxValueType[]) => {
+        setCustomerTypeDisabled(checkedValues.length === 0)
+    };
 
     /**
      * @Description: TODO: 保存数据
@@ -208,7 +211,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
         let result: API.Result;
         if (id === '0') {
             // TODO: 新增业务单位属性
-            val.businessUnitId = BUAndBUPCommonInfoVO?.value;
+            val.businessUnitId = BUAndBUPCommonInfoVO?.buId;
             val.branchId = "1665596906844135426";
             val.businessLine = val.businessLine?.toString();
             val.payerFlag = val.payerFlag ? 1 : 0;
@@ -244,6 +247,16 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
         const errInfo = getFormErrorMsg(val);
         message.error(errInfo);
     }
+
+    // 计算选项内容中最长的文本长度
+    /*const maxLabelWidth = Math.max(...VendorTypeList.map((option: any) => option.label.length));
+    console.log(maxLabelWidth)
+    // 设置所有选项的宽度为最长文本长度
+    const optionsWithWidth = VendorTypeList.map((option: any) => ({
+        ...option,
+        // style: { width: `${maxLabelWidth}ch` },
+        style: { width: '20ch' },
+    }));*/
 
     return (
         <PageContainer
@@ -282,7 +295,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 disabled={true}
                                 placeholder=''
                                 label='BU Name'
-                                name='label'
+                                name='buName'
                             />
                             {/*<SearchProFormSelect
                                 required
@@ -303,18 +316,18 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 label='Name(EN)'
                                 name='nameFullEn'
                                 tooltip='length: 500'
-                                initialValue={BUAndBUPCommonInfoVO?.label}
+                                initialValue={BUAndBUPCommonInfoVO?.buName}
                                 rules={[{required: true, message: 'Name(EN)'}, {max: 500, message: 'length: 500'}]}
                             />
                         </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                        <Col xs={24} sm={24} md={24} lg={8} xl={6} xxl={5}>
                             <ProFormText
                                 required
                                 placeholder=''
                                 label='Short Name'
                                 name='nameShort'
                                 tooltip='length: 100'
-                                initialValue={BUAndBUPCommonInfoVO?.label}
+                                initialValue={BUAndBUPCommonInfoVO?.buName}
                                 rules={[{required: true, message: 'Short Name'}, {max: 100, message: 'length: 100'}]}
                             />
                         </Col>
@@ -325,7 +338,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 label='Name(CN)'
                                 name='nameFullCn'
                                 tooltip='length: 500'
-                                initialValue={BUAndBUPCommonInfoVO?.label}
+                                initialValue={BUAndBUPCommonInfoVO?.buName}
                                 rules={[{required: true, message: 'Name(CN)'}, {max: 500, message: 'length: 500'}]}
                             />
                         </Col>
@@ -336,7 +349,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 label='Name(For Print)'
                                 name='namePrint'
                                 tooltip='length: 500'
-                                initialValue={BUAndBUPCommonInfoVO?.label}
+                                initialValue={BUAndBUPCommonInfoVO?.buName}
                                 rules={[{max: 500, message: 'length: 500'}]}
                             />
                         </Col>
@@ -377,14 +390,14 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 tooltip='length: 20'
                                 rules={[{max: 20, message: 'length: 20'}]}
                             />
-                            <ProFormSelect
-                                readonly
+                            <ProFormText
+                                disabled={true}
                                 placeholder=''
                                 label='Located in (City)'
                                 name='cityId'
                             />
                         </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormText
                                 placeholder=''
                                 label='Email'
@@ -392,14 +405,14 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 tooltip='length: 30'
                                 rules={[{max: 30, message: 'length: 30'}]}
                             />
-                            <ProFormSelect
-                                readonly
+                            <ProFormText
+                                disabled={true}
                                 placeholder=''
                                 label='Parent Company (Belongs to Group)'
                                 name='parentCompanyId'
                             />
                         </Col>
-                        <Col xs={24} sm={24} md={24} lg={16} xl={18} xxl={9}>
+                        <Col xs={24} sm={24} md={24} lg={16} xl={18} xxl={8}>
                             <ProFormTextArea
                                 required
                                 name='address'
@@ -422,10 +435,18 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                     <Row gutter={rowGrid}>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormText
-                                readonly
-                                name='mdmCode'
+                                disabled={true}
+                                placeholder=''
+                                label='BU Identity'
+                                name='taxNum'
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                disabled={true}
                                 placeholder=''
                                 label='MDM Number'
+                                name='mdmCode'
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
@@ -455,6 +476,14 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 rules={[{max: 15, message: 'length: 15'}]}
                             />
                         </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                disabled={true}
+                                placeholder=''
+                                label='Sinotrans Company ID'
+                                name='sinotransCompanyID'
+                            />
+                        </Col>
                     </Row>
                 </ProCard>
 
@@ -465,10 +494,10 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                     collapsible
                 >
                     <Row gutter={rowGrid}>
-                        <Col xs={3} sm={3} md={3} lg={3} xl={4} xxl={3} className={'ant-cv-center-properties-label'}>
+                        <Col xs={24} sm={24} md={6} lg={5} xl={4} xxl={3} className={'ant-cv-center-properties-label'}>
                             <label className={'ant-form-label-required'}>Business Line : </label>
                         </Col>
-                        <Col xs={20} sm={20} md={20} lg={20} xl={20} xxl={20}>
+                        <Col xs={12} sm={9} md={18} lg={19} xl={20} xxl={20}>
                             <ProFormCheckbox.Group
                                 required
                                 name='businessLine'
@@ -476,25 +505,25 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 rules={[{required: true, message: 'Business Line'}]}
                             />
                         </Col>
-                        <Col xs={20} sm={20} md={20} lg={20} xl={22} xxl={14}>
+                        <Col xs={24} sm={23} md={24} lg={24} xl={24} xxl={19}>
                             <Divider style={{marginTop: '-6px'}}/>
                         </Col>
                     </Row>
                     <Row gutter={rowGrid}>
-                        <Col xs={3} sm={3} md={3} lg={3} xl={4} xxl={3} className={'ant-cv-center-properties-label'}>
+                        <Col xs={24} sm={24} md={6} lg={5} xl={4} xxl={3} className={'ant-cv-center-properties-label'}>
                             <label>Nature of a Company : </label>
                         </Col>
-                        <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={10}>
+                        <Col xs={24} sm={24} md={18} lg={19} xl={12} xxl={10}>
                             <Row>
-                                <Col span={8}>
+                                <Col xs={10} sm={9} md={9} lg={8} xl={9} xxl={8}>
                                     <ProFormSelect
                                         disabled={true}
                                         name="enterpriseType"
                                         placeholder=''
-                                        options={NATURE_OF_COMPANY.map((option) => ({
+                                        /*options={NATURE_OF_COMPANY.map((option) => ({
                                             value: option.value,
                                             label: option.label,
-                                        }))}
+                                        }))}*/
                                         /*fieldProps={{
                                             onChange: (e) => {
                                                 setParentValue(e)
@@ -506,12 +535,12 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 <Col>
                                     <span className={'ant-space-span'}/>
                                 </Col>
-                                <Col span={8}>
+                                <Col xs={10} sm={9} md={9} lg={8} xl={9} xxl={8}>
                                     <ProFormSelect
                                         disabled={true}
                                         name="natureOfCompany"
                                         placeholder=''
-                                        options={[]}
+                                        /*options={[]}
                                         dependencies={['enterpriseType']}
                                         shouldUpdate={(prevValues, curValues) => prevValues.enterpriseType !== curValues.enterpriseType}
                                         request={async () => {
@@ -523,7 +552,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                                 }));
                                             }
                                             return [];
-                                        }}
+                                        }}*/
                                     />
                                 </Col>
                             </Row>
@@ -557,15 +586,15 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 ]}
                             />
                         </Col>*/}
-                        <Col xs={20} sm={20} md={20} lg={20} xl={22} xxl={14}>
+                        <Col xs={24} sm={23} md={24} lg={24} xl={24} xxl={19}>
                             <Divider style={{marginTop: '-6px'}}/>
                         </Col>
                     </Row>
                     <Row gutter={rowGrid}>
-                        <Col xs={3} sm={3} md={3} lg={3} xl={4} xxl={3} className={'ant-cv-center-properties-label'}>
+                        <Col xs={24} sm={24} md={6} lg={5} xl={4} xxl={3} className={'ant-cv-center-properties-label'}>
                             <label>Property (as Customer) : </label>
                         </Col>
-                        <Col xs={20} sm={20} md={20} lg={20} xl={18} xxl={15}>
+                        <Col xs={14} sm={10} md={15} lg={16} xl={18} xxl={13}>
                             <ProFormRadio.Group
                                 name="customerType"
                                 options={[
@@ -590,45 +619,53 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                         value: 5,
                                     },
                                 ]}
+                                rules={[{required: customerTypeDisabled, message: 'Property (as Customer)、Property (as Vendor) Must Choose One'}]}
                             />
                         </Col>
-                        <Col xs={2} sm={2} md={2} lg={2} xl={1} xxl={2}>
+                        <Col xs={24} sm={24} md={1} lg={1} xl={1} xxl={1}>
                             <Button icon={<IconFont type={'icon-clear'} />}
-                                    style={{border: "none", padding: '0 10px'}}
+                                    className={'ant-clear-button'}
                                     onClick={() => handleClearCustomer('customerType')}
                             >
                                 Clear
                             </Button>
                         </Col>
-                        <Col xs={20} sm={20} md={20} lg={20} xl={22} xxl={14}>
+                        <Col xs={24} sm={23} md={24} lg={24} xl={24} xxl={19}>
                             <Divider style={{marginTop: '-6px'}}/>
                         </Col>
                     </Row>
                     <Row gutter={rowGrid}>
-                        <Col xs={3} sm={3} md={3} lg={3} xl={4} xxl={3} className={'ant-cv-center-properties-label'}>
+                        <Col xs={24} sm={24} md={6} lg={5} xl={4} xxl={3} className={'ant-cv-center-properties-label'}>
                             <label>Property (as Vendor) : </label>
                         </Col>
-                        <Col xs={20} sm={20} md={20} lg={20} xl={20} xxl={20}>
-                            {/*<ProFormCheckbox.Group
+                        <Col xs={12} sm={7} md={18} lg={19} xl={20} xxl={17} className={'custom-checkbox-group'}>
+                            <ProFormCheckbox.Group
                                 name='vendorTypeList'
                                 options={VendorTypeList}
-                            />*/}
-                            <ProFormCheckbox.Group name='vendorTypeList'>
+                                fieldProps={{
+                                    onChange: onChange
+                                }}
+                                // options={optionsWithWidth}
+                            />
+                            {/*<ProFormCheckbox.Group
+                                name='vendorTypeList'
+                            >
                                 <Row>
                                     {
-                                        VendorTypeList && VendorTypeList.length > 0 ? VendorTypeList.map((x: any) => {
-                                            return <Col span={4}><Checkbox key={x.value} value={x.value}>{x.label}</Checkbox></Col>
+                                        VendorTypeList && VendorTypeList.length > 0 ? VendorTypeList.map((option: any) => {
+                                            // return <Col span={4}><Checkbox key={x.value} value={x.value}>{x.label}</Checkbox></Col>
+                                            return <Col span={4} key={option.value}><ProFormCheckbox name={option.value} fieldProps={{ value: option.value }}>{option.label}</ProFormCheckbox></Col>
                                         }) : null
                                     }
                                 </Row>
-                            </ProFormCheckbox.Group>
+                            </ProFormCheckbox.Group>*/}
                         </Col>
-                        <Col xs={20} sm={20} md={20} lg={20} xl={22} xxl={14}>
+                        <Col xs={24} sm={23} md={24} lg={24} xl={24} xxl={19}>
                             <Divider style={{marginTop: '-6px'}}/>
                         </Col>
                     </Row>
                     <Row gutter={rowGrid}>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                        <Col xs={24} sm={22} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormSelect
                                 disabled={true}
                                 placeholder=''
@@ -646,7 +683,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 </Col>
                             </Row>
                         </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                        <Col xs={24} sm={22} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormSelect
                                 required
                                 placeholder=''
@@ -669,7 +706,7 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                                 </Col>
                             </Row>
                         </Col>
-                        <Col xs={24} sm={24} md={24} lg={16} xl={11} xxl={9}>
+                        <Col xs={24} sm={22} md={24} lg={16} xl={11} xxl={9}>
                             <ProFormTextArea
                                 name='remark'
                                 placeholder=''
@@ -681,141 +718,6 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
                         </Col>
                     </Row>
                 </ProCard>
-
-                {/*<ProCard title={'Properties'} className={'ant-card ant-business-unit-properties'}>
-                     // TODO: Business Line
-                    <Row gutter={24}>
-                        <Col span={3} className={'ant-business-unit-properties-label'}>
-                            <label>Business Line : </label>
-                        </Col>
-                        <Col span={20}>
-                            <ProFormCheckbox.Group
-                                required
-                                // label='Business Line'
-                                name='BusinessLineList'
-                                colProps={{span: 5,}}
-                                // options={BusinessLineList}
-                            />
-                        </Col>
-                    </Row>
-                    * // TODO: Nature of a Company
-                    <Row gutter={24}>
-                        <Col span={3} className={'ant-business-unit-properties-label'}>
-                            <label>Nature of a Company : </label>
-                        </Col>
-                        <Col span={20}>
-                            <ProFormRadio.Group
-                                name='CustomerPropertyID'
-                                options={CustomerPropertyList}
-                            />
-                        </Col>
-                        <Col span={1} className={'ant-business-unit-properties-clear'}>
-                            <CloseOutlined
-                                // TODO: 未保存的客户属性是可以被清空的
-                                // hidden={!!BUPInfoVO.CustomerPropertyID}
-                                onClick={() => handleClearCustomer('CustomerPropertyID')}
-                            />
-                        </Col>
-                    </Row>
-                    * // TODO: Property (as Customer)
-                    <Row gutter={24}>
-                        <Col span={3} className={'ant-business-unit-properties-label'}>
-                            <label>Property (as Customer) : </label>
-                        </Col>
-                        <Col span={20}>
-                            <ProFormRadio.Group
-                                name='CTTypeItemClient'
-                                options={CustomerTypeList}
-                            />
-                        </Col>
-                        <Col span={1} className={'ant-business-unit-properties-clear'}>
-                            <CloseOutlined
-                                // TODO: 为保存的客户类型是可以被清空的
-                                // hidden={!!BUPInfoVO.CTTypeItemClient}
-                                onClick={() => handleClearCustomer('CTTypeItemClient')}
-                            />
-                        </Col>
-                    </Row>
-                    * // TODO: Property (as Vendor)
-                    <Row gutter={24}>
-                        <Col span={3} className={'ant-business-unit-properties-label'}>
-                            <label>Property (as Vendor) : </label>
-                        </Col>
-                        <Col span={20}>
-                            <ProFormCheckbox.Group
-                                name='CTTypeItemListSupplier'
-                                options={VendorTypeList}
-                            />
-                        </Col>
-                    </Row>
-                    * // TODO: Industry、、、、、、、
-                    <Row gutter={24}>
-                        <Col span={8}>
-                            <ProFormTreeSelect
-                                name='IndustryID'
-                                required
-                                placeholder=''
-                                label='Industry'
-                                request={async () => IndustryList}
-                                fieldProps={{
-                                    treeDefaultExpandAll: true,
-                                    dropdownMatchSelectWidth: false,
-                                }}
-                            />
-                        </Col>
-                        <Col span={5}>
-                            <ProFormSelect
-                                name='Settlement'
-                                required
-                                placeholder=''
-                                label='Payment Terms'
-                                request={async () => [
-                                    {label: 'Cash Account - No Credit', value: 1},
-                                    {label: 'Credit Sale', value: 2},
-                                ]}
-                                fieldProps={{
-                                    dropdownMatchSelectWidth: false,
-                                }}
-                            />
-                        </Col>
-                         TODO: 是否是仅付款方
-                        <Col span={2}>
-                            <ProFormSwitch
-                                name='IsOnlySettlement'
-                                label='Is Payer'
-                            />
-                        </Col>
-                         TODO: 是否是仅代收代付
-                        <Col span={3}>
-                            <ProFormSwitch
-                                name='IsReimbursement'
-                                label='Is Reimbursement'
-                            />
-                        </Col>
-                         TODO: 满足是船公司时显示
-                        <Col span={3} hidden={!(customerTypeID === 14 || vendorTypeList?.includes(5))}>
-                            <ProFormText
-                                placeholder=''
-                                name='SCAC'
-                                label='SCAC'
-                            />
-                        </Col>
-                         TODO: 满足是航空公司时显示
-                        <Col span={3} hidden={!(vendorTypeList?.includes(6))}>
-                            <ProFormText
-                                placeholder=''
-                                name='IATA'
-                                label='IATA'
-                            />
-                        </Col>
-                    </Row>
-                     // TODO: 客户备注
-                    <Row gutter={24}>
-                        <Col span={24}>
-                            <ProFormTextArea name='CVRemark' placeholder='' label='Remark'/>
-                        </Col>
-                    </Row>
-                </ProCard>*/}
 
                 {/* // TODO: 相关付款客户 */}
                 <ProCard title={'Payers'} className={'ant-card ant-card-payers'} extra={
@@ -859,4 +761,4 @@ const BUPForm: React.FC<RouteChildrenProps> = (props) => {
         </PageContainer>
     )
 }
-export default BUPForm;
+export default BusinessUnitPropertyForm;

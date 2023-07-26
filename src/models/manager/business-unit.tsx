@@ -7,7 +7,7 @@ import {
     queryBusinessUnitPropertyInfoAPI,
     addBusinessUnitPropertyAPI,
     queryBusinessUnitPropertyAPI
-} from '@/services/smart/manager/cv-center';
+} from '@/services/smart/manager/business-unit';
 import type React from "react";
 import {useCallback, useState} from "react";
 import {getLabel$Value, getTransIndustryListToLine} from '@/utils/units'
@@ -134,7 +134,7 @@ export default (callback: T, deps: React.DependencyList) => {
 
     //region TODO: 业务单位属性 接口
     // TODO: 获取 业务单位属性 列表
-    const queryBusinessUnitProperty = useCallback(async (params: APIManager.SearchBUPParams) => {
+    const queryBusinessUnitProperty = useCallback(async (params: APIManager.SearchBUParams) => {
         const response = await queryBusinessUnitPropertyAPI(params);
         if (!response) return;
         return response;

@@ -42,7 +42,7 @@ export async function addBusinessUnitAPI(body: APIManager.BUInfo, options?: { [k
 }
 
 /** TODO: 获取 业务单位属性 列表 */
-export async function queryBusinessUnitPropertyAPI(body: APIManager.SearchBUPParams, options?: { [key: string]: any }) {
+export async function queryBusinessUnitPropertyAPI(body: APIManager.SearchBUParams, options?: { [key: string]: any }) {
     return request(`/apiBase/businessUnitProperty/queryBusinessUnitProperty`, {
         method: 'POST',
         body,

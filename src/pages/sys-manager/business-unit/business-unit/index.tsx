@@ -35,13 +35,13 @@ const initPagination = {
     total: 0,
 }
 
-const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
+const BusinessUnitListIndex: React.FC<RouteChildrenProps> = (props) => {
     const searchQueryBranch = ls.cloneDeep(initSearchParam)
     const searchLocation = props.location.state ? (props.location.state as LocationState)?.searchParams : '';
 
     const {
         CVInfoList, getGetCTPByStr
-    } = useModel('manager.cv-center', (res: any)=> ({
+    } = useModel('manager.business-unit', (res: any)=> ({
         CVInfoList: res.CVInfoList,
         getGetCTPByStr: res.getGetCTPByStr,
     }));
@@ -219,4 +219,4 @@ const CVCenterList: React.FC<RouteChildrenProps> = (props) => {
         </PageContainer>
     )
 }
-export default CVCenterList;
+export default BusinessUnitListIndex;

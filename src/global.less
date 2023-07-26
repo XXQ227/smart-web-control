@@ -648,16 +648,39 @@ ol {
   }
 }
 
-.ant-cv-center-properties {
-  .ant-cv-center-properties-label {
-    padding-left: 2px!important;
-    padding-right: 2px!important;
-    label {
-      line-height: 30px;
-      text-align: right;
-      float: right;
+@media (min-width: 768px) {
+  .ant-cv-center-properties {
+    .ant-cv-center-properties-label {
+      padding-left: 2px !important;
+      padding-right: 2px !important;
+      label {
+        line-height: 30px;
+        text-align: right;
+        float: right;
+      }
     }
   }
+  .ant-clear-button {
+    border: none;
+    padding: 0 10px;
+  }
+}
+
+@media (max-width: 767px) {
+  .ant-cv-center-properties {
+    .ant-cv-center-properties-label {
+      margin-bottom: 10px;
+    }
+  }
+  .ant-clear-button {
+    border: none;
+    padding: 0;
+    margin: -20px 0 10px 0;
+  }
+}
+
+.custom-checkbox-group .ant-checkbox-wrapper {
+  margin-right: 20px;
 }
 
 // TODO: label 组件必填红色标识
@@ -809,15 +832,35 @@ ol {
 
     .ant-modal-body {
       padding: 0 35px 30px 30px;
-
       .ant-col-23 {
         margin-top: 20px;
         margin-left: 8px;
       }
-
       .ant-select-selector {
         margin-left: 5px;
         border-radius: 5px !important;
+      }
+      .ant-pro-card-body {
+        padding: 0!important;
+      }
+
+      //Payer添加客户搜索框
+      .ant-input-search-customer {
+        border-radius: 6px;
+        height: 35px;
+      }
+
+      //表格行被点击时的样式<背景颜色>
+      .blue-bg, .blue-bg .ant-table-cell-row-hover {
+        background-color: rgb(211, 158, 89) !important;
+        .ant-table-cell {
+          border-right: 1px solid #000 !important;
+          border-bottom: 1px solid #000 !important;
+          border-top: 1px solid #000 !important;
+        }
+        .ant-table-cell:first-child {
+          border-left: 1px solid #000 !important;
+        }
       }
     }
 
@@ -825,18 +868,22 @@ ol {
       height: 80px;
       border: none !important;
       padding-right: 35px;
-
-      .ant-btn {
+      .ant-btn:not(.ant-modal-relationship-add-customer) {
         width: 90px;
         height: 35px;
         border: none;
         font-size: 14px;
         border-radius: 5px;
       }
-
-      .ant-btn-default {
+      .ant-btn-default:not(.ant-modal-relationship-add-customer) {
         background-color: rgb(45, 45, 49);
         margin-right: 15px;
+      }
+      .ant-modal-relationship-add-customer {
+        border: none;
+        background: none;
+        float: left;
+        margin-left: 25px;
       }
     }
   }

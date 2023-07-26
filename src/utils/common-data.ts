@@ -58,7 +58,7 @@ export const aasDemo = [
 
 export const NATURE_OF_COMPANY = [
     {
-        value: 1,
+        value: 21,
         label: '政府机构',
         children: [
             {
@@ -72,7 +72,7 @@ export const NATURE_OF_COMPANY = [
         ],
     },
     {
-        value: 2,
+        value: 22,
         label: '央国企',
         children: [
             {
@@ -94,7 +94,7 @@ export const NATURE_OF_COMPANY = [
         ],
     },
     {
-        value: 3,
+        value: 23,
         label: '民营企业',
         children: [
             {
@@ -120,7 +120,7 @@ export const NATURE_OF_COMPANY = [
         ],
     },
     {
-        value: 4,
+        value: 24,
         label: '外企',
         children: [
             {
@@ -130,7 +130,7 @@ export const NATURE_OF_COMPANY = [
         ],
     },
     {
-        value: 5,
+        value: 25,
         label: '境外',
         children: [
             {

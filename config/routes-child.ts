@@ -184,6 +184,13 @@ const manager_route = {
                     path: '/manager/business-unit/property/form/:id',
                     component: './sys-manager/business-unit/business-unit-property/form',
                 },
+                // TODO: 付款方
+                {
+                    name: 'payer_list',
+                    icon: 'icon-cv-approval',
+                    path: '/manager/business-unit/payer',
+                    component: './sys-manager/business-unit/payer',
+                },
                 // TODO: 客户审批
                 {
                     hideInMenu: true,   // 隐藏不显示

@@ -1,7 +1,7 @@
 declare namespace APIManager {
     //region TODO:  BU BUP
-    type SearchBUPParams = {
-        type?: number,
+    type SearchBUParams = {
+        bupType?: number,
         name?: string,
         createTimeStart?: string,
         createTimeEnd?: string,
@@ -10,6 +10,7 @@ declare namespace APIManager {
         cvCenterNumber?: string,
         oracleCustomerCode?: string,
         oracleSupplierCode?: string,
+        payerFlag?: number,
         currentPage?: number,
         pageSize?: number,
     };
@@ -49,10 +50,13 @@ declare namespace APIManager {
     };
 
     type BUAndBUPCommonInfo = {
-        value?: string,                   // TODO: BU ID
-        label?: string,                   // TODO: BU 全称(英文，统一名称必填)
+        buId?: string,                    // TODO: BU ID
+        buName?: string,                  // TODO: BU 全称(英文，统一名称必填)
         industryName?: string;            // TODO: 行业名称
         taxNum?: string;                  // TODO: 税号
+        enterpriseType?: string;          // TODO: 企业类型
+        natureOfCompany?: string;         // TODO: 所有制性质
+        sinotransCompanyID?: string;      // TODO: 内部公司组织代码
     };
 
     type BUInfo = {
