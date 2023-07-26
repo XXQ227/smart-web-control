@@ -4,7 +4,7 @@ import {createFromIconfontCN} from '@ant-design/icons';
 import {Descriptions} from "antd";
 import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 
-export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_b818u1uuw6w.js';
+export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_s4fs29svmrg.js';
 
 // TODO: 系统五字码
 export const SYSTEM_ID = 99003;
@@ -881,4 +881,30 @@ export function getCreditScore (target: any, op_node: number, op_value: any) {
     target.score = score;
     target.totalScore = score * percentage;
     return target;
+}
+
+/**
+ * @Description: TODO: Nature of a Company 根据后台传回来的natureOfCompany参数，找到对应的label名称
+ * @author LLS
+ * @date 2023/7/25
+ * @param data    数据集合
+ * @param natureOfCompany   natureOfCompany参数
+ * @returns
+ */
+export function getLabelByValue (data: any[], natureOfCompany?: string): any {
+    const value = Number(natureOfCompany);
+    if (natureOfCompany) {
+        for (const item of data) {
+            if (item.value === value) {
+                return item.label;
+            }
+            if (item.children) {
+                const label = getLabelByValue(item.children, natureOfCompany);
+                if (label) {
+                    return {enterpriseType: item.label, natureOfCompany: label};
+                }
+            }
+        }
+    }
+    return null;
 }
