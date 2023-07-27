@@ -18,7 +18,7 @@ import {NATURE_OF_COMPANY} from '@/utils/common-data'
 import BusinessUnitListIndex from "@/pages/sys-manager/business-unit/business-unit";
 
 export type LocationState = Record<string, unknown>;
-type APICVInfo = APIManager.BUInfo;
+type APICVInfo = APIManager.BU;
 
 const cityList = [
     {label: 'HONG KONG', value: 1},

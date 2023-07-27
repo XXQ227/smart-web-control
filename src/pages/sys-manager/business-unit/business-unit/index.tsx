@@ -9,7 +9,7 @@ import {history} from '@@/core/history'
 import {EditOutlined, PlusCircleOutlined, PlusOutlined} from '@ant-design/icons'
 import ls from "lodash";
 
-type APIBUInfo = APIManager.BUInfo;
+type APIBU = APIManager.BU;
 type APIBUSearchParams = APIManager.BUSearchParams;
 
 export type LocationState = Record<string, unknown>;
@@ -46,7 +46,7 @@ const BusinessUnitListIndex: React.FC<RouteChildrenProps> = (props) => {
         getGetCTPByStr: res.getGetCTPByStr,
     }));
     const [loading, setLoading] = useState<boolean>(false);
-    const [cvInfoList, setCVInfoList] = useState<APIBUInfo[]>(CVInfoList);
+    const [cvInfoList, setCVInfoList] = useState<APIBU[]>(CVInfoList);
     const [searchParams, setSearchParams] = useState<APIBUSearchParams>(searchLocation || searchQueryBranch);
     const [pagination, setPagination] = useState<any>(initPagination)
 
@@ -97,7 +97,7 @@ const BusinessUnitListIndex: React.FC<RouteChildrenProps> = (props) => {
      * @param record    操作当前 行
      * @returns
      */
-    const handleEditBU = (record: APIBUInfo) => {
+    const handleEditBU = (record: APIBU) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
         history.push({
             pathname: `/manager/business-unit/form/${btoa(record.id)}`,
@@ -122,7 +122,7 @@ const BusinessUnitListIndex: React.FC<RouteChildrenProps> = (props) => {
         history.push({pathname: url})
     }
 
-    const columns: ProColumns<APIBUInfo>[] = [
+    const columns: ProColumns<APIBU>[] = [
         {
             title: 'BU Name',
             dataIndex: 'nameFullEn',
@@ -177,7 +177,7 @@ const BusinessUnitListIndex: React.FC<RouteChildrenProps> = (props) => {
             }}
         >
             {/*<ProCard className={'ant-card ant-card-pro-table'}>*/}
-                <ProTable<APIBUInfo>
+                <ProTable<APIBU>
                     rowKey={'id'}
                     options={false}
                     bordered={true}

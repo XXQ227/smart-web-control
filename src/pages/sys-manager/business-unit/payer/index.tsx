@@ -9,17 +9,14 @@ import {
     ProFormText,
     ProFormDatePicker
 } from '@ant-design/pro-components';
-import {Button, Form, message, Row, Col, Modal, Divider, Steps, Input, Table} from 'antd';
+import {Button, Form, message, Row, Col, Modal, Divider} from 'antd';
 import {useModel} from 'umi';
 import {history} from '@@/core/history'
 import {EditOutlined, PlusCircleOutlined, SearchOutlined} from '@ant-design/icons'
 import ls from "lodash";
-import {CustomizeIcon, getFormErrorMsg, IconFont, rowGrid} from "@/utils/units";
+import {CustomizeIcon, getFormErrorMsg, rowGrid} from "@/utils/units";
 import DividerCustomize from "@/components/Divider";
-import SearchTable from "@/components/SearchTable";
-import {ColumnsType} from "antd/es/table";
 import AddCustomerModal from "@/pages/sys-manager/business-unit/payer/AddCustomerModal";
-import AddServiceModal from "@/components/AddServiceModal";
 
 export type LocationState = Record<string, unknown>;
 type APIPayer = APIManager.BUP;
@@ -68,8 +65,8 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
 
     const [highlightedRow, setHighlightedRow] = useState(null);
     const [modalPosition, setModalPosition] = useState({ top: 200 });
-    const [fetching, setFetching] = useState(false);            // TODO: 搜索Customer Loading 状态
-    const [dataSourceList, setDataSourceList] = useState([]);   // TODO: 搜索Customer返回数据
+    // const [fetching, setFetching] = useState(false);            // TODO: 搜索Customer Loading 状态
+    // const [dataSourceList, setDataSourceList] = useState([]);   // TODO: 搜索Customer返回数据
 
     /**
      * @Description: TODO 获取 付款方 集合
@@ -97,15 +94,22 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
     }
 
     /**
-     * @Description: TODO: 编辑 BU 信息
+     * @Description: TODO: 编辑 BUP 信息
      * @author LLS
-     * @date 2023/7/12
+     * @date 2023/7/26
      * @param record    操作当前 行
      * @returns
      */
     const handleEditBUP = (record: APIPayer) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        history.push({pathname: `/manager/business-unit/property/form/${btoa(record.id)}`});
+        // history.push({pathname: `/manager/business-unit/property/form/${btoa(record.id)}`});
+        history.push({
+            pathname: `/manager/business-unit/property/form/${btoa(record.id)}`,
+            state: {
+                searchParams: searchParams,
+                payer: true,
+            },
+        });
     }
 
     const onFinish = async (val: APIPayer) => {
@@ -369,7 +373,7 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
      * @param record
      * @returns
      */
-    const handleChange = (record: any) => {
+    /*const handleChange = (record: any) => {
         console.log(record)
     }
 
@@ -385,7 +389,7 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
             dataIndex: 'nameFullEn',
             // width: '20%',
         },
-    ];
+    ];*/
 
     const handleOk = (val: any) => {
         handleModal(2);

@@ -30,7 +30,7 @@ declare namespace APIManager {
     };
 
     type CVResultInfo = {
-        data: BUInfo[];
+        data: BU[];
         /** 列表的内容总数 */
         total: number | null;
         success: boolean;
@@ -42,24 +42,14 @@ declare namespace APIManager {
     };
 
     type GetCVInfoResult = {
-        CTDetailDto: BUInfo;
+        CTDetailDto: BU;
         CTTypeOpts: CTTypeOpts[];
         Industrys: Industrys[];
         CustomerPropertyList: CustomerProperty[];
         BusinessLine: BusinessLine[];
     };
 
-    type BUAndBUPCommonInfo = {
-        buId?: string,                    // TODO: BU ID
-        buName?: string,                  // TODO: BU 全称(英文，统一名称必填)
-        industryName?: string;            // TODO: 行业名称
-        taxNum?: string;                  // TODO: 税号
-        enterpriseType?: string;          // TODO: 企业类型
-        natureOfCompany?: string;         // TODO: 所有制性质
-        sinotransCompanyID?: string;      // TODO: 内部公司组织代码
-    };
-
-    type BUInfo = {
+    type BU = {
         id: string,                       // TODO: 主键 ID
         nameFullEn?: string;              // TODO: 全称(英文，统一名称必填)
         taxNum?: string;                  // TODO: 税号
@@ -127,7 +117,14 @@ declare namespace APIManager {
         enableFlag?: number | null;       // TODO: 启用标识
         deleteFlag?: number | null;       // TODO: 删除标识
 
-        label?: string,                    // TODO: BU 全称(英文，统一名称必填)
+        buId?: string,                    // TODO: BU ID
+        buName?: string,                  // TODO: BU 全称(英文，统一名称必填)
+        industryName?: string;            // TODO: 行业名称
+        taxNum?: string;                  // TODO: 税号
+        enterpriseType?: string;          // TODO: 企业类型
+        natureOfCompany?: string;         // TODO: 所有制性质
+        sinotransCompanyID?: string;      // TODO: 内部公司组织代码
+
     };
 
     // TODO: 行业

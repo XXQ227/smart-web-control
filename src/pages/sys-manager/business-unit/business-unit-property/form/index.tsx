@@ -14,8 +14,8 @@ import {
     ProFormTextArea,
 } from '@ant-design/pro-components'
 import {Button, Col, Form, Row, Tag, Divider} from 'antd'
-import {getUserID} from '@/utils/auths'
-import SearchModal from '@/components/SearchModal'
+// import {getUserID} from '@/utils/auths'
+// import SearchModal from '@/components/SearchModal'
 import {message} from 'antd/es'
 import ls from 'lodash';
 import {useModel, history} from 'umi'
@@ -23,10 +23,11 @@ import {getFormErrorMsg, IconFont, rowGrid, getLabelByValue} from "@/utils/units
 import SearchProFormSelect from "@/components/SearchProFormSelect";
 import {NATURE_OF_COMPANY} from "@/utils/common-data";
 import type { CheckboxValueType } from 'antd/lib/checkbox/Group';
+import {ArrowLeftOutlined, SaveOutlined} from "@ant-design/icons";
 
 export type LocationState = Record<string, unknown>;
 type APIBUP = APIManager.BUP;
-type APIBUAndBUPCommonInfo = APIManager.BUAndBUPCommonInfo;
+// type APIBUAndBUPCommonInfo = APIManager.BUAndBUPCommonInfo;
 
 const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
@@ -38,13 +39,15 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
     // const {current} = formRef;
     //region TODO: 数据层
     const {
-        addBusinessUnitProperty, queryBusinessUnitPropertyInfo,
+        queryBusinessUnitPropertyInfo, addBusinessUnitProperty, editBusinessUnitProperty, operateBusinessUnitProperty,
         BUInfo,
     } = useModel('manager.business-unit', (res: any) => ({
         BUInfo: res.BUInfo,
 
-        addBusinessUnitProperty: res.addBusinessUnitProperty,
         queryBusinessUnitPropertyInfo: res.queryBusinessUnitPropertyInfo,
+        addBusinessUnitProperty: res.addBusinessUnitProperty,
+        editBusinessUnitProperty: res.editBusinessUnitProperty,
+        operateBusinessUnitProperty: res.operateBusinessUnitProperty,
     }));
 
     const {
@@ -57,14 +60,15 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
 
     const [BUPInfoVO, setBUPInfoVO] = useState<any>({});
 
-    const [BUAndBUPCommonInfoVO, setBUAndBUPCommonInfoVO] = useState<APIBUAndBUPCommonInfo>((state as LocationState)?.BUParams as APIBUAndBUPCommonInfo || {});
+    const [BUAndBUPCommonInfoVO, setBUAndBUPCommonInfoVO] = useState<APIBUP>((state as LocationState)?.BUParams as APIBUP || {});
     const [ClientVO, setClientVO] = useState<API.APIKey$Value[]>(BUInfo.CTList);
     // const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
     /*const [companyNameEN, setCompanyNameEN] = useState<API.APIValue$Label>({
         label: BUInfo.NameFullEN, value: BUInfo.ID
     });*/
     const [loading, setLoading] = useState<boolean>(false);
-    const [customerTypeDisabled, setCustomerTypeDisabled] = useState(true);
+    const [customerTypeRequired, setCustomerTypeRequired] = useState(true);
+    const [payerFlagDisabled, setPayerFlagDisabled] = useState(true);    // Payer 仅限 Customer，在供应商层面暂不考虑
 
     // TODO: 客户类型
     // const [customerTypeID, setCustomerTypeID] = useState<number | null>(BUInfo.CTTypeItemClient);
@@ -103,8 +107,8 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
 
     /**
      * @Description: TODO: 获取 BUP 详情
-     * @author XXQ
-     * @date 2023/5/5
+     * @author LLS
+     * @date 2023/7/26
      * @returns
      */
     const handleGetBUPInfo = async () => {
@@ -112,13 +116,17 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
         const result: any = await queryBusinessUnitPropertyInfo({id});
         if (result.success) {
             // TODO: Nature of a Company 根据后台传回来的natureOfCompany参数，找到对应的label名称
-            const natureOfCompanyLabel: APIBUAndBUPCommonInfo = getLabelByValue(NATURE_OF_COMPANY, BUAndBUPCommonInfoVO.natureOfCompany);
-            const newInfoVO: APIBUAndBUPCommonInfo = {...BUAndBUPCommonInfoVO, ...natureOfCompanyLabel};
+            console.log(BUAndBUPCommonInfoVO.natureOfCompany)
+            const natureOfCompanyLabel: APIBUP = getLabelByValue(NATURE_OF_COMPANY, BUAndBUPCommonInfoVO.natureOfCompany || result.data.natureOfCompany);
+            const newInfoVO: APIBUP = {...BUAndBUPCommonInfoVO, ...natureOfCompanyLabel};
             setBUAndBUPCommonInfoVO(newInfoVO)
-            const newData = result.data || newInfoVO;
+            let newData = result.data || newInfoVO;
             // TODO: 业务线数据转化
             if (id !== '0') {
-                newData.businessLine = [`${newData.businessLine}`];
+                newData = {...newData, ...natureOfCompanyLabel}
+                setPayerFlagDisabled(!newData.customerType)
+                // newData.businessLine = [`${newData.businessLine}`];
+                // newData.businessLine = newData.businessLineList;
             }
             console.log(newData);
             setBUPInfoVO(newData);
@@ -129,7 +137,7 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
         return result;
     }
 
-    const handleSelectPayers = (val: any, option: any) => {
+    /*const handleSelectPayers = (val: any, option: any) => {
         const clientObj: API.APIKey$Value = ClientVO?.find((item: API.APIKey$Value) => item.Key === val) || {};
         if (clientObj.Key) {
             message.success('success!');
@@ -139,7 +147,7 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
             message.success('success!');
             setClientVO(clientArr);
         }
-    }
+    }*/
 
     /**
      * @Description: TODO: 删除相关付款方
@@ -155,13 +163,14 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
 
     /**
      * @Description: TODO: 清空为保存的客户属性
-     * @author XXQ
-     * @date 2023/5/8
-     * @param clearFiledName    需要被清空的字段
+     * @author LLS
+     * @date 2023/7/26
      * @returns
      */
-    const handleClearCustomer = (clearFiledName: string) => {
-        form?.setFieldsValue({[clearFiledName]: null});
+    const handleClearCustomer = () => {
+        form?.setFieldsValue({['customerType']: null});
+        setPayerFlagDisabled(true)
+        form?.setFieldsValue({['payerFlag']: false});
     }
 
     /**
@@ -196,35 +205,42 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
     }*/
 
     const onChange = (checkedValues: CheckboxValueType[]) => {
-        setCustomerTypeDisabled(checkedValues.length === 0)
+        setCustomerTypeRequired(checkedValues.length === 0)
     };
 
     /**
      * @Description: TODO: 保存数据
      * @author LLS
-     * @date 2023/7/13
+     * @date 2023/7/25
      * @param val
      * @returns
      */
     const onFinish = async (val: APIBUP) => {
         setLoading(true);
         let result: API.Result;
+        delete val.buName;
+        delete val?.industryName;
+        delete val?.taxNum;
+        delete val?.enterpriseType;
+        delete val?.natureOfCompany;
+        delete val?.sinotransCompanyID;
+        val.businessLine = val.businessLine?.toString();
+        val.vendorTypeList = val.vendorTypeList?.toString();
+        val.vendorFlag = val.vendorTypeList ? 1 : 0;
+        val.customerFlag = val.customerType ? 1 : 0;
+        val.payerFlag = val.payerFlag ? 1 : 0;
+        val.reimbursementFlag = val.reimbursementFlag ? 1 : 0;
         if (id === '0') {
             // TODO: 新增业务单位属性
             val.businessUnitId = BUAndBUPCommonInfoVO?.buId;
             val.branchId = "1665596906844135426";
-            val.businessLine = val.businessLine?.toString();
-            val.payerFlag = val.payerFlag ? 1 : 0;
-            val.reimbursementFlag = val.reimbursementFlag ? 1 : 0;
-            val.customerFlag = val.customerType ? 1 : 0;
-            val.vendorFlag = val.vendorTypeList ? 1 : 0;
-            delete val.label;
             console.log(val)
             result = await addBusinessUnitProperty(val);
         } else {
             // TODO: 编辑业务单位属性
             val.id = id;
-            result = await addBusinessUnitProperty(val);
+            console.log(val)
+            result = await editBusinessUnitProperty(val);
         }
         if (result.success) {
             message.success('Success');
@@ -258,6 +274,45 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
         style: { width: '20ch' },
     }));*/
 
+    /**
+     * @Description: TODO: 启用或禁用业务单位属性
+     * @author LLS
+     * @date 2023/7/26
+     * @returns
+     */
+    const handleOperateBUP = async () => {
+        setLoading(true);
+        const newData: APIBUP = ls.cloneDeep(BUPInfoVO);
+        // TODO: 冻结取反上传数据
+        const param: any = {
+            id: newData.id,
+            operate: newData.enableFlag ? 0 : 1
+        };
+        const result: API.Result = await operateBusinessUnitProperty(param);
+        if (result.success) {
+            message.success(param.operate ? 'Freeze Success' : 'UnFreeze Success');
+        } else {
+            message.error(result.message);
+        }
+        setLoading(false);
+    }
+
+    /**
+     * @Description: TODO: 返回
+     * @author LLS
+     * @date 2023/7/26
+     * @returns
+     */
+    const handleBack = () => {
+        const url = (state as LocationState)?.payer ? '/manager/business-unit/payer' : '/manager/business-unit/property';
+        history.push({
+            pathname: url,
+            state: {
+                searchParams: state ? (state as LocationState)?.searchParams : '',
+            },
+        })
+    }
+
     return (
         <PageContainer
             loading={loading}
@@ -266,6 +321,7 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
             }}
         >
             <ProForm
+                disabled={!!BUPInfoVO?.enableFlag}
                 form={form}
                 formRef={formRef}
                 // TODO: 不显示提交、重置按键
@@ -619,13 +675,14 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                                         value: 5,
                                     },
                                 ]}
-                                rules={[{required: customerTypeDisabled, message: 'Property (as Customer)、Property (as Vendor) Must Choose One'}]}
+                                rules={[{required: customerTypeRequired, message: 'Property (as Customer)、Property (as Vendor) Must Choose One'}]}
+                                fieldProps={{ onChange: () => setPayerFlagDisabled(false) }}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={1} lg={1} xl={1} xxl={1}>
                             <Button icon={<IconFont type={'icon-clear'} />}
                                     className={'ant-clear-button'}
-                                    onClick={() => handleClearCustomer('customerType')}
+                                    onClick={handleClearCustomer}
                             >
                                 Clear
                             </Button>
@@ -672,9 +729,11 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                                 label="Industry"
                                 name={'industryName'}
                             />
+                            {/* TODO: Payer 仅限 Customer，在供应商层面暂不考虑 */}
                             <Row>
                                 <Col span={6}>
                                     <ProFormSwitch
+                                        disabled={payerFlagDisabled}
                                         name="payerFlag"
                                     />
                                 </Col>
@@ -719,45 +778,55 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                     </Row>
                 </ProCard>
 
-                {/* // TODO: 相关付款客户 */}
-                <ProCard title={'Payers'} className={'ant-card ant-card-payers'} extra={
-                    <SearchModal
-                        qty={10}
-                        isBtn={true}
-                        title={'Payer'}
-                        id={'search-payer'}
-                        btnName={'Add Payer'}
-                        url={'/api/MCommon/GetCTNameByStrOrType'}
-                        query={{
-                            CTType: 1, PageSize: 10, UserID: getUserID(),
-                            SystemID: 8, IsJobCustomer: true, searchPayer: true
-                        }}
-                        handleChangeData={handleSelectPayers}
-                    />
-                }>
-                    <Row gutter={24}>
-                        <Col span={24}>
-                            {ClientVO?.map((item: any) =>
-                                <Tag key={item.Key} closable style={{margin: 6}}
-                                     onClose={() => handleModalClose(item.Key)}>
-                                    {item.Value}
-                                </Tag>
-                            )}
-                        </Col>
-                    </Row>
-                </ProCard>
-                <FooterToolbar
-                    extra={<Button
-                        onClick={() => history.push({
-                            pathname: '/manager/business-unit/property',
-                            state: {
-                                searchParams: state ? (state as LocationState)?.searchParams : '',
-                            },
-                        })}
-                    >Back</Button>}>
-                    <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
-                </FooterToolbar>
+                {/* TODO: 相关付款客户 */}
+                {
+                    id !== '0' && !BUPInfoVO?.payerFlag ?
+                        <ProCard
+                            className={'ant-card ant-card-payers'}
+                            title={'Payers'}
+                            headerBordered
+                            collapsible
+                            /*extra={
+                                <SearchModal
+                                    qty={10}
+                                    isBtn={true}
+                                    title={'Payer'}
+                                    id={'search-payer'}
+                                    btnName={'Add Payer'}
+                                    url={'/api/MCommon/GetCTNameByStrOrType'}
+                                    query={{
+                                        CTType: 1, PageSize: 10, UserID: getUserID(),
+                                        SystemID: 8, IsJobCustomer: true, searchPayer: true
+                                    }}
+                                    handleChangeData={handleSelectPayers}
+                                />
+                            }*/
+                        >
+                            <Row gutter={24}>
+                                <Col span={24}>
+                                    {ClientVO?.map((item: any) =>
+                                        <Tag key={item.Key} closable style={{margin: 6}}
+                                             onClose={() => handleModalClose(item.Key)}>
+                                            {item.Value}
+                                        </Tag>
+                                    )}
+                                </Col>
+                            </Row>
+                        </ProCard> : null
+                }
             </ProForm>
+
+            <FooterToolbar extra={<Button onClick={handleBack} icon={<ArrowLeftOutlined/>}>Back</Button>}>
+                <Button
+                    onClick={handleOperateBUP}
+                    icon={<IconFont type={!!BUPInfoVO?.enableFlag ? 'icon-unfreeze' : 'icon-freeze'}/>}
+                    className={!!BUPInfoVO?.enableFlag ? 'ant-unfreeze-button' : 'ant-freeze-button'}
+                    style={{marginRight: 15}}
+                >
+                    Freeze
+                </Button>
+                <Button key={'submit'} type={'primary'} htmlType={'submit'} icon={<SaveOutlined/>}>Save</Button>
+            </FooterToolbar>
         </PageContainer>
     )
 }

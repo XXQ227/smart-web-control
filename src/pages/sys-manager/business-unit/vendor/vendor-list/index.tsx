@@ -8,7 +8,7 @@ import {getUserID} from '@/utils/auths';
 import {history} from '@@/core/history'
 import {EditOutlined} from '@ant-design/icons'
 
-type APICVInfo = APIManager.BUInfo;
+type APICVInfo = APIManager.BU;
 type APICVSearchParams = APIManager.CVSearchParams;
 
 // TODO: 获取单票集的请求参数

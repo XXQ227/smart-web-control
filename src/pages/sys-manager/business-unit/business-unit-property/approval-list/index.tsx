@@ -9,11 +9,11 @@ import {getUserID} from '@/utils/auths';
 import {history} from '@@/core/history'
 import {EditOutlined} from '@ant-design/icons'
 
-type APICVInfo = APIManager.BUInfo;
-type APICVSearchParams = APIManager.CVSearchParams;
+type APIBU = APIManager.BU;
+type APISearchBUParams = APIManager.SearchBUParams;
 
 // TODO: 获取单票集的请求参数
-const searchParams: APICVSearchParams = {
+const searchParams: APISearchBUParams = {
     OracleID: "",
     OracleIDSupplier: "",
     CustomerUBSID: "",
@@ -41,7 +41,7 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
 
     const [activeKey, setActiveKey] = useState<string>('10');
     const [loading, setLoading] = useState<boolean>(false);
-    const [cvInfoList, setCVInfoList] = useState<APICVInfo[]>(CVInfoList);
+    const [cvInfoList, setCVInfoList] = useState<APIBU[]>(CVInfoList);
 
 
     /**
@@ -51,7 +51,7 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
      * @param params    参数
      * @returns
      */
-    async function handleGetGetCTPByStr (params: APICVSearchParams){
+    async function handleGetGetCTPByStr (params: APISearchBUParams){
         setLoading(true);
         params.CTName = params.NameFull;
         params.CTType = activeKey;
@@ -83,7 +83,7 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
         setActiveKey(key);
     };
 
-    const columns: ProColumns<APICVInfo>[] = [
+    const columns: ProColumns<APIBU>[] = [
         {
             title: 'CV Identity',
             dataIndex: 'InternalCompanyCode',
@@ -149,7 +149,7 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
     }
 
     const CVProTable = (key: string) => (
-        <ProTable<APICVInfo>
+        <ProTable<APIBU>
             rowKey={'ID'}
             search={false}
             options={false}
@@ -159,7 +159,7 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
             params={searchParams}
             dataSource={cvInfoList}
             // @ts-ignore
-            request={(params: APICVSearchParams)=> activeKey === key ? handleGetGetCTPByStr(params) : null}
+            request={(params: APISearchBUParams)=> activeKey === key ? handleGetGetCTPByStr(params) : null}
         />
     );
 

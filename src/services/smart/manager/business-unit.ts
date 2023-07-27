@@ -33,7 +33,7 @@ export async function UploadCTCenter(body: any, options?: { [key: string]: any }
 
 
 /** TODO: 新增业务单位 */
-export async function addBusinessUnitAPI(body: APIManager.BUInfo, options?: { [key: string]: any }) {
+export async function addBusinessUnitAPI(body: APIManager.BU, options?: { [key: string]: any }) {
     return request(`/apiBase/businessUnit/addBusinessUnit`, {
         method: 'POST',
         body,
@@ -62,6 +62,24 @@ export async function queryBusinessUnitPropertyInfoAPI(body: APIManager.BUP, opt
 /** TODO: 新增业务单位属性 */
 export async function addBusinessUnitPropertyAPI(body: APIManager.BUP, options?: { [key: string]: any }) {
     return request(`/apiBase/businessUnitProperty/addBusinessUnitProperty`, {
+        method: 'POST',
+        body,
+        ...(options || {}),
+    });
+}
+
+/** TODO: 编辑业务单位属性 */
+export async function editBusinessUnitPropertyAPI(body: APIManager.Branch, options?: { [key: string]: any }) {
+    return request(`/apiBase/businessUnitProperty/editBusinessUnitProperty`, {
+        method: 'POST',
+        body,
+        ...(options || {}),
+    });
+}
+
+/** TODO: 启用或禁用业务单位属性 */
+export async function operateBusinessUnitPropertyAPI(body: APIManager.Branch, options?: { [key: string]: any }) {
+    return request(`/apiBase/businessUnitProperty/operateBusinessUnitProperty`, {
         method: 'POST',
         body,
         ...(options || {}),
