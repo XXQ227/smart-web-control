@@ -5,7 +5,7 @@ import {
     editUserAPI,
     modifyPwdAPI,
     operateUserAPI,
-    queryUserAPI
+    queryUserAPI, queryUserCommonAPI
 } from '@/services/smart/manager/users'
 
 type APIUser = APIManager.User;
@@ -17,6 +17,9 @@ export default () => {
 
     // TODO: 数据
     const [UserList, setUserList] = useState<APIUser[]>([]);
+
+    // TODO: 销售数据
+    const [SalesList, setSalesList] = useState<any[]>([]);
 
     //region TODO: 接口
     // TODO: 获取部门列表<详细数据>请求
@@ -53,6 +56,12 @@ export default () => {
         return await modifyPwdAPI(params);
     }, []);
 
+    /** 修改密码 */
+    const queryUserCommon = useCallback(async (params: APIUser) => {
+        const response: API.Result =  await queryUserCommonAPI(params);
+        setSalesList(response.data);
+    }, []);
+
     return {
         queryUser,
         UserList,
@@ -61,5 +70,8 @@ export default () => {
         deleteUser,
         operateUser,
         modifyPwd,
+
+        queryUserCommon,
+        SalesList,
     }
 }

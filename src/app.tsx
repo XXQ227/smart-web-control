@@ -38,7 +38,7 @@ export async function getInitialState(): Promise<{
     const {push, location: {search, pathname, query}} = history;
     const fetchUserInfo = async () => {
         try {
-            console.log(history);
+            // console.log(history);
             // TODO: 拿到 code 的值
             if (search) {
                 // TODO: 从地址栏拿到 IAM 返回的 code 请求后台 API, 获取当前用户信息
@@ -117,15 +117,15 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
             if (!getUserID() && newPathname !== loginPath) {
                 // history.push(loginPath);
             } else {
-                initInfo.isJobEditPage = history?.location?.pathname?.indexOf('/job/job/') > -1;
+                /*initInfo.isJobEditPage = history?.location?.pathname?.indexOf('/job/job/') > -1;
                 setInitialState(initInfo);
                 const newPathnameArr = newPathname?.split('/') ?? [];
                 const oldPathParamsArr = oldPathname.split('/') ?? [];
                 // 当路径为 <route.ts> 中定义的路径时，重新配置路径
-                if (newPathname.indexOf('/job/job/') > -1 && newPathnameArr[4] === ':id') {
+                if (newPathname.indexOf('/job/job-info/') > -1 && newPathnameArr[4] === ':id') {
                     // 参数用旧的，路径用新的
-                    history.push({pathname: `/job/job/${newPathnameArr[3]}/${oldPathParamsArr[4]}/${oldPathParamsArr[5]}`});
-                }
+                    history.push({pathname: `/job/job-info/${newPathnameArr[3]}/${oldPathParamsArr[4]}`});
+                }*/
             }
         },
         // TODO: 左侧菜单拦的点击设置

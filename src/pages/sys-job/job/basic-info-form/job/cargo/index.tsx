@@ -1,158 +1,113 @@
-import React, {useEffect, useMemo, useState} from 'react';
-import {ProCard,  ProFormRadio, ProFormSelect, ProFormText, ProFormTextArea} from '@ant-design/pro-components';
-import {Col, Row, InputNumber, Select} from 'antd';
+import React from 'react';
+import {
+    ProCard,
+    ProFormDigit,
+    ProFormRadio,
+    ProFormSelect,
+    ProFormText,
+    ProFormTextArea
+} from '@ant-design/pro-components';
+import {Col, Row} from 'antd';
 import {rowGrid} from '@/utils/units';
 
-const { Option } = Select;
 interface Props {
-    formRef?: any,
-    formCurrent?: any,
     title: string,
-    CargoInfo: APIModel.CargoInfo,
-    NBasicInfo: APIModel.NBasicInfo,
 }
 
 const Cargo: React.FC<Props> = (props) => {
-    const  {
-        title,
-        CargoInfo,
-        NBasicInfo,
-    } = props;
-
-    const [cargoInfo, setCargo] = useState<APIModel.CargoInfo>(CargoInfo);
-
-    useMemo(()=> {
-
-    }, [])
-
-    useEffect(() => {
-
-    }, [])
-
-    const selectAfter = (
-        <Select defaultValue="KG" style={{ width: 70 }}>
-            <Option value="KG">KG</Option>
-        </Select>
-    );
-    const selectCargoValue = (
-        <Select defaultValue="HKD" style={{ width: 70 }}>
-            <Option value="HKD">HKD</Option>
-        </Select>
-    );
+    const {title,} = props;
 
     return (
-        <ProCard
-            title={title}
-            bordered={true}
-            headerBordered
-            collapsible
-        >
+        <ProCard title={title} bordered={true} headerBordered collapsible className={'ant-card'}>
             <Row gutter={rowGrid}>
-                <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={4}>
-                    <ProFormRadio.Group
-                        name="OceanTransportTypeID"
-                        label="Cargo Type"
-                        initialValue={NBasicInfo?.OceanTransportTypeID}
-                        options={[
-                            {
-                                label: 'FCL',
-                                value: 1,
-                            },
-                            {
-                                label: 'LCL',
-                                value: 2,
-                            },
-                            {
-                                label: 'BULK',
-                                value: 3,
-                            },
-                        ]}
-                    />
-                    <ProFormText
+                <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={24}>
+                    <Row gutter={rowGrid}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6}>
+                            <ProFormRadio.Group
+                                label="Cargo Type"
+                                name={['cargoInfo', 'cargoTypeId']}
+                                // initialValue={NBasicInfo?.OceanTransportTypeID}
+                                options={[
+                                    {label: 'FCL', value: 1,},
+                                    {label: 'LCL', value: 2,},
+                                    {label: 'BULK', value: 3,},
+                                ]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6}>
+                            <ProFormText placeholder='' label="HS Code" name={['cargoInfo', 'HSCode']}/>
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6} className={'custom-input'}>
+                            <ProFormDigit
+                                placeholder='' label={'Chargeable Weight'} min={0}
+                                name={['cargoInfo', 'chargeableWeight']} fieldProps={{addonAfter: 'HKD'}}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6} className={'custom-input'}>
+                            <ProFormDigit placeholder='' label={'QTY'} name={['cargoInfo', 'pieces']} min={0}/>
+                        </Col>
+
+                        <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={5} className={'custom-input'}>
+                            <ProFormDigit
+                                placeholder='' label={'G.W.'} min={0}
+                                name={['cargoInfo', 'grossWeight']} fieldProps={{addonAfter: 'KG'}}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={5} className={'custom-input'}>
+                            <ProFormDigit
+                                placeholder='' label={'N.W.'} min={0}
+                                name={['cargoInfo', 'netWeight']} fieldProps={{addonAfter: 'KG'}}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={5} className={'custom-input'}>
+                            <ProFormDigit
+                                placeholder='' label={'Cargo Value'} min={0}
+                                name={['cargoInfo', 'cargoValue']} fieldProps={{addonAfter: 'KG'}}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={5} className={'custom-input'}>
+                            <ProFormDigit
+                                placeholder='' label={'Meas. (cbm)'} min={0}
+                                name={['cargoInfo', 'measurement']} fieldProps={{addonAfter: 'CBM'}}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={4}>
+                            <ProFormSelect
+                                placeholder=''
+                                name={['cargoInfo', 'PackagingMethods']}
+                                label="Packaging Methods"
+                                options={[
+                                    {label: 'Wooden Boxes', value: 1},
+                                    {label: 'Stack Pack', value: 2},
+                                    {label: 'Palletizing', value: 3},
+                                ]}
+                            />
+                        </Col>
+                    </Row>
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={24} xl={8} xxl={8}>
+                    <ProFormTextArea
                         placeholder=''
-                        name="HSCode"
-                        initialValue={cargoInfo?.HSCode}
-                        label="HS Code"
+                        label='Shipping Mark'
+                        fieldProps={{rows: 5}}
+                        name={['cargoInfo', 'marks']}
+                        // initialValue={cargoInfo?.marks}
                     />
                 </Col>
-                <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={6}>
+                <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={8}>
                     <ProFormTextArea
                         placeholder=''
                         fieldProps={{rows: 5}}
-                        name="DescriptionEN"
                         label="Description of Goods"
-                        initialValue={cargoInfo?.Description}
+                        name={['cargoInfo', 'description']}
                     />
                 </Col>
-                <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={6}>
+                <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={8}>
                     <ProFormTextArea
                         placeholder=''
                         fieldProps={{rows: 5}}
-                        name="DescriptionCN"
                         label="Description of Goods (CN)"
-                        initialValue={cargoInfo?.DescriptionCN}
-                    />
-                </Col>
-                <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={6}>
-                    <ProFormTextArea
-                        placeholder=''
-                        fieldProps={{rows: 5}}
-                        name="Mark"
-                        label="Shipping Mark"
-                        initialValue={cargoInfo?.Mark}
-                    />
-                </Col>
-            </Row>
-            <Row gutter={rowGrid} style={{ marginTop: 7 }}>
-                <Col xs={13} sm={13} md={8} lg={7} xl={6} xxl={4} className={'custom-input'}>
-                    <label>G.W.</label>
-                    <InputNumber
-                        addonAfter={selectAfter}
-                        defaultValue={cargoInfo?.GrossWeight}
-                    />
-                    <label>Chargeable Weight</label>
-                    <InputNumber
-                        addonAfter={selectAfter}
-                        defaultValue={cargoInfo?.GrossWeight}
-                    />
-                </Col>
-                <Col xs={13} sm={13} md={8} lg={7} xl={6} xxl={4} className={'custom-input'}>
-                    <label>N.W.</label>
-                    <InputNumber
-                        addonAfter={selectAfter}
-                        defaultValue={cargoInfo?.GrossWeight}
-                    />
-                    <label>Cargo Value</label>
-                    <InputNumber
-                        addonAfter={selectCargoValue}
-                        defaultValue={cargoInfo?.GrossWeight}
-                    />
-                </Col>
-                <Col xs={13} sm={13} md={8} lg={7} xl={6} xxl={4}>
-                    <div className={'proFormTextContainer'}>
-                        <ProFormText
-                            placeholder=''
-                            name="Measurement"
-                            initialValue={cargoInfo?.Measurement}
-                            label="Meas. (cbm)"
-                        />
-                        <ProFormText
-                            placeholder=''
-                            name="Pieces"
-                            initialValue={cargoInfo?.Pieces}
-                            label="QTY."
-                        />
-                    </div>
-                    <ProFormSelect
-                        placeholder=''
-                        name="PackagingMethods"
-                        label="Packaging Methods"
-                        initialValue={{label: 'Wooden Boxes', value: 'Measurement'}}
-                        options={[
-                            {label: 'Wooden Boxes', value: 'Measurement'},
-                            {label: 'Stack Pack', value: 'GrossWeight'},
-                            {label: 'Palletizing', value: 'NetWeight'},
-                        ]}
+                        name={['cargoInfo', 'commodity']}
                     />
                 </Col>
             </Row>

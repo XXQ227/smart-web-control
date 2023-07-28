@@ -9,15 +9,12 @@ import {getUserID} from '@/utils/auths';
 type APICJobListItem = APIModel.CJobListItem;
 
 // TODO: 获取单票集的请求参数
-const cjobListParams: APIModel.GetCJobListInfo = {
-    Key: '',
-    TimeLimitType: 1,
-    AuthorityType: 2,
-    TabID: 1,
-    UserID: getUserID(),
-    IsClickSearch: false,
-    PageSize: 20,
-    PageNum: 1,
+const cjobListParams: APIModel.SearchJobParams = {
+    searchKey: '',
+    customerOrCargoId: '',
+    branchId: '0',
+    currentPage: 1,
+    pageSize: 20,
 };
 
 const operationList = [
@@ -30,7 +27,11 @@ const operationList = [
 const columnsStateStr = '{"Code":{"fixed":"left"},"PrincipalNameEN":{"show":true},"MBOLNum":{"show":true},"OceanTransportType":{"show":true},"CreateDate":{"show":true},"option":{"show":true}}';
 
 const JobList: React.FC<RouteChildrenProps> = () => {
-    const joblist = useModel('job.joblist');
+    const {
+        queryJobList,
+    } = useModel('job.joblist', (res: any) => ({
+        queryJobList: res.queryJobList,
+    }));
     const initInfo = useModel('@@initialState');
     const initialState: any = initInfo?.initialState || {};
     // 拿到所选的分组信息
@@ -59,18 +60,17 @@ const JobList: React.FC<RouteChildrenProps> = () => {
     const handleOperateJob = (type: number, record: any) => {
         if (type === 1 || type === 2 || type === 4) {
             // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-            const url = `/job/job/job-${type === 4 ? 'charge' : 'info'}/${btoa(record?.ID)}/${btoa(record?.BizType4ID)}`;
-            // const url = `/job/job/${btoa(record?.ID)}/${btoa(record?.BizType4ID)}`;
+            const url = `/job/job-info/${type === 4 ? 'charge' : 'form'}/${btoa(record?.id || '0')}`;
             // TODO: 跳转页面<带参数>
             // @ts-ignore
             history.push({
                 pathname: url,
                 // TODO: 不用 query 的原因：query 的参数会拼接到 url 地址栏上，用 params (可以是其他名<自定义>)，则可以隐藏
-                // pathname: `/job/job/job-info`,
-                // query: {
-                //     id: btoa(record?.ID),
-                //     bizType4ID: record?.BizType4ID,
-                // },
+                // pathname: `/job/job-info`,
+                /*query: {
+                    id: btoa(record?.id || '0'),
+                    bizType4ID: btoa(record?.BizType4ID || '0'),
+                },*/
             })
         } else if (type === 3) {
             console.log('此处调用退关方法');
@@ -91,7 +91,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
         if (isLoading) {
             // TODO: 分页查询【参数页】
             params.PageNum = params.current || 1;
-            result = (await joblist.getCJobList(params as APIModel.GetCJobListInfo)) || {};
+            result = (await queryJobList(params as APIModel.SearchJobParams)) || {};
             setJobList(result.data || []);
         }
         setLoading(false);
@@ -154,7 +154,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
         <PageContainer
             header={{breadcrumb: {}}}
             extra={[
-                <IconFont key={1} type={'icon-create'} onClick={()=> {console.log(123456)}} />,
+                <IconFont key={1} type={'icon-create'} style={{fontSize: 24}} onClick={()=> handleOperateJob(1, {})} />,
             ]}
         >
             <ProTable className={'ant-card-pro-table'}>

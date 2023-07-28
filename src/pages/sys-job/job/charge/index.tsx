@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
-import {FooterToolbar, PageContainer, ProCard} from '@ant-design/pro-components';
+import {FooterToolbar, PageContainer, ProCard, ProForm} from '@ant-design/pro-components';
 import {Button, Col, Form, message, Row} from 'antd';
 import {history, useModel} from 'umi';
 import {getFormErrorMsg} from '@/utils/units';
@@ -38,23 +38,13 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
     const [updateState, setUpdateState] = useState(false);
 
     useEffect(() => {
-        // TODO: 当【没有 ID && isLoadingData == false】时调用接口获取数据
-        if (!jobID && !isLoadingData && params?.id !== ':id') {
-            isLoadingData = true;
-            setLoading(true);
-            getCJobCGByID({CJobID: Number(atob(params?.id))})
-                // @ts-ignore
-                .then((res: API.NJobDetailDto) => {
-                    // TODO: 设置 ID 且初始化数据
-                    setJobID(res?.ID);
-                    setPayCGList(res.PayCGList || []);
-                    setReceiveCGList(res.ReceiveCGList || []);
-                    setProxyCGList(res.ProxyCGList || []);
-                    isLoadingData = false;
-                    setLoading(false);
-                })
-        }
-    }, [getCJobCGByID, jobID, params?.id])
+
+    }, [])
+
+    async function handleQueryJobChargeInfo() {
+        alert('loading job charge info !!!');
+        return {};
+    }
 
     /**
      * @Description: TODO: 操作数据
@@ -79,7 +69,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
      * @date 2023/4/11
      * @returns
      */
-    const handleSave = (values: any) => {
+    const handleSave = async (values: any) => {
         console.log(values);
         form.validateFields()
             .then(async () => {
@@ -117,76 +107,70 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
     // console.log(initialValues)
 
     return (
-        <PageContainer
-            loading={loading}
-            header={{
-                breadcrumb: {},
-            }}
+        <ProForm
+            form={form}
+            name={'formCharge'}
+            autoComplete={'off'}
+            onFinish={handleSave}
+            onFinishFailed={handleSave}
+            // initialValues={initialValues}
+            // @ts-ignore
+            request={async () => handleQueryJobChargeInfo()}
         >
-            <Form
-                form={form}
-                name={'formCharge'}
-                autoComplete={'off'}
-                onFinish={handleSave}
-                onFinishFailed={handleSave}
-                // initialValues={initialValues}
-                // request={async ()=> initialValues}
+            <ProCard
+                title={'AR'}
+                bordered={true}
+                headerBordered
+                className={'ant-card'}
             >
-                <ProCard
-                    title={'AR'}
-                    bordered={true}
-                    headerBordered
-                    className={'ant-card'}
-                >
-                    <Row gutter={24} className={'ant-margin-bottom-24'}>
-                        <Col span={24}>
-                            <ChargeTable
-                                CGType={1}
-                                {...baseCGDON}
-                                CGList={receiveCGList}
-                            />
-                        </Col>
-                    </Row>
-                </ProCard>
+                <Row gutter={24} className={'ant-margin-bottom-24'}>
+                    <Col span={24}>
+                        <ChargeTable
+                            CGType={1}
+                            {...baseCGDON}
+                            CGList={receiveCGList}
+                        />
+                    </Col>
+                </Row>
+            </ProCard>
 
-                <ProCard
-                    title={'AP'}
-                    bordered={true}
-                    headerBordered
-                    className={'ant-card'}
-                >
-                    <Row gutter={24}>
-                        <Col span={24}>
-                            <ChargeTable
-                                CGType={2}
-                                {...baseCGDON}
-                                CGList={payCGList}
-                            />
-                        </Col>
-                    </Row>
-                </ProCard>
+            <ProCard
+                title={'AP'}
+                bordered={true}
+                headerBordered
+                className={'ant-card'}
+            >
+                <Row gutter={24}>
+                    <Col span={24}>
+                        <ChargeTable
+                            CGType={2}
+                            {...baseCGDON}
+                            CGList={payCGList}
+                        />
+                    </Col>
+                </Row>
+            </ProCard>
 
-                <ProCard
-                    title={'Reimbursement'}
-                    bordered={true}
-                    headerBordered
-                    className={'ant-card'}
-                >
-                    <Row gutter={24}>
-                        <Col span={24}>
-                            <Agent
-                                CGType={3}
-                                {...baseCGDON}
-                                CGList={proxyCGList}
-                            />
-                        </Col>
-                    </Row>
-                </ProCard>
-                <FooterToolbar extra={<Button onClick={() => history.goBack()}>Back</Button>}>
-                    <Button type={'primary'} htmlType={'submit'}>保存</Button>
-                </FooterToolbar>
-            </Form>
-        </PageContainer>
+            <ProCard
+                title={'Reimbursement'}
+                bordered={true}
+                headerBordered
+                className={'ant-card'}
+            >
+                <Row gutter={24}>
+                    <Col span={24}>
+                        <Agent
+                            CGType={3}
+                            {...baseCGDON}
+                            CGList={proxyCGList}
+                        />
+                    </Col>
+                </Row>
+            </ProCard>
+            <FooterToolbar extra={<Button onClick={() => history.goBack()}>Back</Button>}>
+                <Button type={'primary'} htmlType={'submit'}>保存</Button>
+            </FooterToolbar>
+        </ProForm>
     )
 }
 export default JobChargeInfo;

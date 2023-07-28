@@ -19,7 +19,7 @@ export async function fetchData(
     searchVal: any, url: string, query: any = {}, qty: number = 5,
     resValue: string, resLabel: string, isShowSecondLabel?: boolean
 ) {
-    const params = {...query, name: searchVal, pageSize: qty, currentPage: 1};
+    const params = {name: searchVal, pageSize: qty, currentPage: 1, ...query, };
     const options: any = {
         body: params,
         method: 'POST',

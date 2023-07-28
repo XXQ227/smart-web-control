@@ -33,15 +33,12 @@ declare namespace APIModel {
     //region TODO: 单票列表页
     type responseAny = object | any;
 
-    type GetCJobListInfo = {
-        Key: string,
-        AuthorityType: number,
-        TimeLimitType?: number,
-        TabID: number,
-        UserID: number,
-        IsClickSearch: boolean,
-        PageNum: number,
-        PageSize: number,
+    type SearchJobParams = {
+        searchKey: string,
+        customerOrCargoId?: string,
+        branchId?: string,
+        currentPage?: number,
+        pageSize?: number,
     };
 
     type CJobListItem  = {
@@ -167,13 +164,17 @@ declare namespace APIModel {
         HBSCN?: HBSCN,
     }
     type CargoInfo = {
+        marks?: string,
+        description?: string,
+        descriptionCN?: string,
+        commodity?: string,
+        pieces?: number,
+        grossWeight?: number,
+        measurement?: number,
+        chargeableWeight?: number,
+        netWeight?: number,
+        cargoValue?: number,
         HSCode?: string,
-        Description?: string,
-        DescriptionCN?: string,
-        Mark?: string,
-        GrossWeight?: number,
-        Pieces?: number,
-        Measurement?: number,
     }
     type Principal = {
         ClientInvoNum?: string,
@@ -235,11 +236,12 @@ declare namespace APIModel {
         PortName?: string,
     }
     type Terms = {
-        IncotermsID: number,
-        ServiceTypeID: number,
-        ServiceTypeName: string,
-        PayableAtID: number,
-        PayableAtName: string,
+        incotermsId?: number,
+        serviceTypeId?: string,
+        serviceTypeName?: string,
+        payMethod?: number,
+        payableAtId?: string,
+        payableAtName?: string,
     }
     type MBSCN = {
         Shipper?: string,
