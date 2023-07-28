@@ -1,4 +1,4 @@
-import {GetCJobByKeyAPI, queryJobListAPI} from '@/services/smart/job/job-list';
+import {GetCJobByKeyAPI, queryJobInfoAPI, queryJobListAPI} from '@/services/smart/job/job-list';
 import type React from "react";
 import {useCallback, useState} from "react";
 
@@ -18,9 +18,10 @@ export default (callback: T, deps: React.DependencyList) => {
     const [resResult, setResResult] = useState({});
 
 
+
     //region TODO: 接口
     // TODO: 获取单票集
-    const getCJobList = useCallback(async (params: APIModel.GetCJobListInfo) => {
+    const getCJobList = useCallback(async (params: APIModel.SearchJobParams) => {
         // TODO: 请求后台 API
         const response: APIModel.APIGetCJobListResult = await GetCJobByKeyAPI(params);
         if (!response) return;
@@ -44,7 +45,7 @@ export default (callback: T, deps: React.DependencyList) => {
 
 
     // TODO: 获取单票集
-    const queryJobList = useCallback(async (params: APIModel.GetCJobListInfo) => {
+    const queryJobList = useCallback(async (params: APIModel.SearchJobParams) => {
         // TODO: 请求后台 API
         const response: API.Result = await queryJobListAPI(params);
         if (!response) return;
@@ -60,6 +61,12 @@ export default (callback: T, deps: React.DependencyList) => {
         }
         return result;
     }, deps);
+
+    // TODO: 获取单票集
+    const queryJobInfo = useCallback(async (params: {id: string } ) => {
+        // TODO: 请求后台 API
+        return await queryJobInfoAPI(params);
+    }, deps);
     //endregion
 
 
@@ -71,5 +78,6 @@ export default (callback: T, deps: React.DependencyList) => {
 
 
         queryJobList,
+        queryJobInfo,
     }
 }

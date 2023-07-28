@@ -39,24 +39,24 @@ const job_route = {
         {
             name: 'job',
             icon: 'icon-job-ship',
-            path: '/job/job',
+            path: '/job/job-info',
             // 只有在编辑页面时，才显示
             access: 'isJobEditPage',
             routes: [
                 {
-                    path: '/job/job',
-                    redirect: '/job/job/job-info/:id/:bizType4id',
+                    path: '/job/job-info',
+                    redirect: '/job/job-info/form/:id',
                 },
                 {
                     name: 'job-info',
                     icon: 'icon-job-ship',
-                    path: '/job/job/job-info/:id/:bizType4id',
-                    component: './sys-job/job/basic-info-form',
+                    path: '/job/job-info/form/:id',
+                    component: './sys-job/job',
                 },
                 {
                     name: 'job-charge',
                     icon: 'icon-job-ship',
-                    path: '/job/job/job-charge/:id/:bizType4id',
+                    path: '/job/job-info/charge/:id/:bizType4id',
                     component: './sys-job/job/charge',
                 },
             ],

@@ -3,7 +3,6 @@ import {history, useModel} from 'umi';
 import type {RouteChildrenProps} from 'react-router';
 import {FooterToolbar, PageContainer, ProForm} from '@ant-design/pro-components';
 import {Button, message, Modal} from 'antd';
-import {getUserID} from '@/utils/auths';
 import Job from './job';
 import SeaExport from './sea-export';
 import SeaImport from './sea-import';
@@ -31,15 +30,16 @@ const initialTabList = [
 const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}} = props;
+    const id = atob(params?.id);
     //region TODO: 数据层
     const {
         CommonBasicInfo: {SalesManList, FinanceDates},
         CJobInfo, CJobInfo: {NBasicInfo, NBasicInfo: {Principal, Carrier, Port}, LockDate, CTNPlanList, CTNActualList, HouseBill},
-        getCJobInfoByID
+        queryJobInfo
     } = useModel('job.job', (res: any) => ({
         CJobInfo: res.CJobInfo,
         CommonBasicInfo: res.CommonBasicInfo,
-        getCJobInfoByID: res.getCJobInfoByID,
+        queryJobInfo: res.queryJobInfo,
     }));
     //endregion
 
@@ -48,27 +48,17 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
     const [activeKey, setActiveKey] = useState(initialTabList[0].key);
     const [tabList, setTabList] = useState(initialTabList);
     const [jobID, setJobID] = useState(0);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     useEffect(() => {
         // TODO: 当【没有 ID && isLoadingData == false】时调用接口获取数据
         if (!jobID && !isLoadingData && params?.id !== ':id') {
             isLoadingData = true;
-            getCJobInfoByID({
-                CJobID: Number(atob(params?.id)),
-                BizType4ID: Number(atob(params?.bizType4id)),
-                UserID: getUserID()
-            })
-                // @ts-ignore
-                .then((res: APIModel.NJobDetailDto) => {
-                    // TODO: 设置 ID 且初始化数据
-                    setJobID(res?.ID);
-                    setLoading(false);
-                    isLoadingData = false;
-                })
         }
-    }, [getCJobInfoByID, jobID, params?.bizType4id, params?.id])
+    }, [queryJobInfo, jobID, params?.bizType4id, params?.id])
     //endregion
+
+
 
     const handleTabChange = (key: string) => {
         setActiveKey(key);
@@ -199,8 +189,8 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
 
     return (
         <PageContainer
-            className={`${styles.pageContainer} ${styles.stickyTabs}`}
             title={false}
+            className={`${styles.pageContainer} ${styles.stickyTabs}`}
             content={HeaderInfo(NBasicInfo, LockDate, Principal?.SalesManName)}
             loading={loading}
             header={{
@@ -218,8 +208,8 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
             }}
         >
             <ProForm
-                className={styles.basicInfoProForm}
                 layout="vertical"
+                className={styles.basicInfoProForm}
                 submitter={{
                     // 完全自定义整个区域
                     render: () => {
@@ -234,6 +224,8 @@ const BasicInfoForm: React.FC<RouteChildrenProps> = (props) => {
                 }}
                 onFinish={handleFinish}
                 initialValues={CJobInfo}
+                // @ts-ignore
+                // request={async () => handleQueryJobInfo({id})}
             >
                 <ProForm.Group>
                     {activeKey === 'Job' && (

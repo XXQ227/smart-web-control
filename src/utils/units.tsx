@@ -757,7 +757,7 @@ export function getFormErrorMsg(errorInfo: any = []) {
     return errInfo;
 }
 
-export function HeaderInfo(NBasicInfo: APIModel.NBasicInfo, LockDate: string, SalesManName?: string) {
+export function HeaderInfo(NBasicInfo: any, LockDate: string, SalesManName?: string) {
     return (
         <Descriptions className={styles.headerList} size="small" column={{xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 7}}>
             <Descriptions.Item
