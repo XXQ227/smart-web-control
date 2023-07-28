@@ -116,6 +116,7 @@ declare namespace APIManager {
         creditExpiryEndTime?: string;     // TODO: 授信有限期结束日
         enableFlag?: number | null;       // TODO: 启用标识
         deleteFlag?: number | null;       // TODO: 删除标识
+        isAdd?: boolean;                 // TODO: 是否添加过
 
         buId?: string,                    // TODO: BU ID
         buName?: string,                  // TODO: BU 全称(英文，统一名称必填)
@@ -124,7 +125,6 @@ declare namespace APIManager {
         enterpriseType?: string;          // TODO: 企业类型
         natureOfCompany?: string;         // TODO: 所有制性质
         sinotransCompanyID?: string;      // TODO: 内部公司组织代码
-
     };
 
     // TODO: 行业

@@ -6,11 +6,16 @@ import {
     queryBusinessUnitPropertyCreditInfoAPI,
     queryBusinessUnitPropertyInfoAPI,
     addBusinessUnitPropertyAPI,
-    queryBusinessUnitPropertyAPI, editBusinessUnitPropertyAPI, operateBusinessUnitPropertyAPI
+    queryBusinessUnitPropertyAPI,
+    editBusinessUnitPropertyAPI,
+    operateBusinessUnitPropertyAPI,
+    deletePayCustomerAPI,
+    addPayCustomerAPI
 } from '@/services/smart/manager/business-unit';
 import type React from "react";
 import {useCallback, useState} from "react";
 import {getLabel$Value, getTransIndustryListToLine} from '@/utils/units'
+import {deleteBranchAPI} from "@/services/smart/manager/branch";
 
 type APIBU = APIManager.BU;
 type APIBUP = APIManager.BUP;
@@ -160,6 +165,16 @@ export default (callback: T, deps: React.DependencyList) => {
         return await operateBusinessUnitPropertyAPI(params);
     }, [])
 
+    // TODO: 新增客户与付款方关联
+    const addPayCustomer = useCallback(async (params: APIBUP)=> {
+        return await addPayCustomerAPI(params);
+    }, [])
+
+    // TODO: 删除客户与付款方关联
+    const deletePayCustomer = useCallback(async (params: APIBUP)=> {
+        return await deletePayCustomerAPI(params);
+    }, [])
+
     // TODO: 查询 业务单位属性信控信息 详情
     const queryBusinessUnitPropertyCreditInfo = useCallback(async (params: any)=> {
         return await queryBusinessUnitPropertyCreditInfoAPI(params);
@@ -184,6 +199,8 @@ export default (callback: T, deps: React.DependencyList) => {
         addBusinessUnitProperty,
         editBusinessUnitProperty,
         operateBusinessUnitProperty,
+        addPayCustomer,
+        deletePayCustomer,
         queryBusinessUnitPropertyCreditInfo,
     }
 }

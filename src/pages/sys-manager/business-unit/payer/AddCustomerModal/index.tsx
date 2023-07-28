@@ -9,6 +9,7 @@ import { IconFont} from "@/utils/units";
 import SearchModal from "@/components/SearchModal";
 import {fetchData} from '@/utils/fetch-utils';
 import {debounce} from 'lodash';
+import SearchProFormSelect from "@/components/SearchProFormSelect";
 
 export type LocationState = Record<string, unknown>;
 type APIPayer = APIManager.BUP;
@@ -20,13 +21,13 @@ interface Props {
 }
 
 const AddCustomerModal: React.FC<Props> = (props) => {
-    const [customerVO, setCustomerVO] = useState({});
-    const [curRowIndex, setCurRowIndex] = useState<any>(null);
-    const [fetching, setFetching] = useState(false);            // TODO: 搜索Customer Loading 状态
-    const [dataSourceList, setDataSourceList] = useState([]);   // TODO: 搜索Customer返回数据
-    const [searchVal, setSearchVal] = useState<string>('');     // TODO: 搜索录入参数
+    const [customerVO, setCustomerVO] = useState({});                // TODO: 选择客户行的数据
+    const [curRowIndex, setCurRowIndex] = useState<any>(null);                       // TODO: 选择客户行的位置
+    const [fetching, setFetching] = useState(false);             // TODO: 搜索Customer Loading 状态
+    const [dataSourceList, setDataSourceList] = useState([]);    // TODO: 搜索Customer返回数据
+    const [searchVal, setSearchVal] = useState<string>('');        // TODO: 搜索录入参数
     const [debounceTimeout, setDebounceTimeout] = useState<number>(100);     // TODO: 防抖动时间
-    const [saveButtonDisabled, setSaveButtonDisabled] = useState(true);
+    const [addButtonDisabled, setAddButtonDisabled] = useState(true);
 
     useEffect(() => {
         // TODO: 当第一次加载完后<打开弹框时>，防抖动时间增到到 【1000】
@@ -79,13 +80,12 @@ const AddCustomerModal: React.FC<Props> = (props) => {
          */
         const loadOptions = (val: any) => {
             // TODO: 初始数据，且做【loading】
-            const url = "/apiBase/dict/queryDictDetailCommon";
-            const query = { dictCode: "ctn_model" };
+            const url = "/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon";
+            const query = { bupType: 1, payerFlag: 0 };
             const qty = 10;
             // TODO: 接口返回的键值
-            const resValue: string = 'value';
+            const resValue: string = 'taxNum';
             const resLabel: string = 'label';
-            // setDataSourceList([]);
             fetchData(val, url, query, qty, resValue, resLabel).then((result: any) => {
                 console.log(result)
                 setDataSourceList(result);
@@ -105,24 +105,33 @@ const AddCustomerModal: React.FC<Props> = (props) => {
      */
     const handleChangeInput = (val: any) => {
         setFetching(true);
-        console.log(val)
-        console.log(val?.target?.value)
+        // console.log(val)
+        // console.log(val?.target?.value)
         setSearchVal(val?.target?.value);
+        setCurRowIndex(null)
+        setAddButtonDisabled(true)
         debounceFetcher(val?.target?.value);
     }
 
-    const handleAddCustomer = () => {
+    /**
+     * @Description: TODO: 弹框开启关闭
+     * @author LLS
+     * @date 2023/7/28
+     * @param operationType   1: 添加客户 2: 弹框关闭
+     * @returns
+     */
+    const handleModal = (operationType: number) => {
         console.log(customerVO);
         setSearchVal('');
         setCurRowIndex(null)
         setDataSourceList([]);
-        setSaveButtonDisabled(true)
-        props.onOk(customerVO);
-    }
-
-    const handleCancel = () => {
-        props.onCancel()
-    }
+        setAddButtonDisabled(true)
+        if (operationType === 1) {
+            props.onOk(customerVO);
+        } else {
+            props.onCancel()
+        }
+    };
 
     /**
      * @Description: TODO: change 事件
@@ -135,13 +144,14 @@ const AddCustomerModal: React.FC<Props> = (props) => {
     const handleChange = (record: any, index: number | undefined) => {
         console.log(record)
         if (curRowIndex !== index) {
+            console.log(record.data)
             setCustomerVO(record.data)
             setCurRowIndex(index)
-            setSaveButtonDisabled(false)
+            setAddButtonDisabled(false)
         } else {
             setCustomerVO({})
             setCurRowIndex(null)
-            setSaveButtonDisabled(true)
+            setAddButtonDisabled(true)
         }
     }
 
@@ -153,18 +163,18 @@ const AddCustomerModal: React.FC<Props> = (props) => {
     return (
         <Modal
             className={'ant-add-modal'}
-            style={{ top: 550 }}
+            // style={{ top: 550 }}
             open={props.open}
-            onOk={handleAddCustomer}
-            onCancel={handleCancel}
+            onOk={() => handleModal(1)}
+            onCancel={() => handleModal(2)}
             title={'Add Customer'}
-            width={800}
+            width={760}
             footer={[
-                <Button htmlType={"button"} key="back" onClick={handleCancel}>
+                <Button htmlType={"button"} key="back" onClick={() => handleModal(2)}>
                     Cancel
                 </Button>,
-                <Button htmlType={"submit"} key="submit" type="primary" onClick={handleAddCustomer} disabled={saveButtonDisabled}>
-                    Save
+                <Button htmlType={"submit"} key="submit" type="primary" onClick={() => handleModal(1)} disabled={addButtonDisabled}>
+                    Add
                 </Button>,
             ]}
         >

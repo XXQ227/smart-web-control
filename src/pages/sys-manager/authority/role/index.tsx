@@ -141,12 +141,11 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
         if (result.success) {
             message.success('Success!');
             // TODO: 冻结成功后，当能行不能编辑，或者解冻成功后，当前行可编辑
-            setLoading(false);
             setRoleListVO(newData);
         } else {
             message.error(result.message);
-            setLoading(false);
         }
+        setLoading(false);
     }
 
     const handleDetail = (record: any) => {

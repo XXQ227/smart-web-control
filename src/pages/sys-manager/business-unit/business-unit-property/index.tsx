@@ -175,29 +175,6 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
             dataIndex: 'bupType',
             width: '13%',
             align: 'center',
-            /*search: {
-                transform: (value) => ({ cvCenterNumber: value }), // 将输入值封装成 { city: value } 对象
-            },
-            renderFormItem: (item, { defaultRender }) => {
-                console.log(item);
-                console.log(defaultRender);
-                return (
-                    /!*<Select defaultValue="ALL" placeholder=''>
-                        <Option value="ALL">ALL</Option>
-                        <Option value="Customer">Customer</Option>
-                        <Option value="Vendor">Vendor</Option>
-                    </Select>*!/
-                    <ProFormSelect
-                        placeholder=''
-                        options={[
-                            {label: '34', value: '34'},
-                            {label: 'ALL', value: 'ALL'},
-                            {label: 'Customer', value: 'Customer'},
-                            {label: 'Vendor', value: 'Vendor'},
-                        ]}
-                    />
-                );
-            },*/
         },
         {
             title: 'BUP Identity',
@@ -418,6 +395,7 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
                         // hiddenNum: 1,
                     }}*/
                     // toolbar={{actions: [renderSearch()]}}
+                    rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
                     pagination={{
                         showSizeChanger: true,
                         ...pagination,

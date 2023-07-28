@@ -86,6 +86,24 @@ export async function operateBusinessUnitPropertyAPI(body: APIManager.Branch, op
     });
 }
 
+/** TODO: 新增客户与付款方关联 */
+export async function addPayCustomerAPI(body: APIManager.BUP, options?: { [key: string]: any }) {
+    return request(`/apiBase/businessUnitProperty/addPayCustomer`, {
+        method: 'POST',
+        body,
+        ...(options || {}),
+    });
+}
+
+/** TODO: 删除客户与付款方关联 */
+export async function deletePayCustomerAPI(body: APIManager.Branch, options?: { [key: string]: any }) {
+    return request(`/apiBase/businessUnitProperty/deletePayCustomer`, {
+        method: 'POST',
+        body,
+        ...(options || {}),
+    });
+}
+
 /** TODO: 查询 业务单位属性信控信息 详情 */
 export async function queryBusinessUnitPropertyCreditInfoAPI(body: any, options?: { [key: string]: any }) {
     return request(`/apiBase/businessUnitProperty/queryBusinessUnitPropertyCreditInfo`, {

@@ -814,19 +814,30 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                             </Row>
                         </ProCard> : null
                 }
+
+                <FooterToolbar extra={<Button disabled={false} onClick={handleBack} icon={<ArrowLeftOutlined/>}>Back</Button>}>
+                    <Button
+                        disabled={false}
+                        hidden={id === '0'}
+                        onClick={handleOperateBUP}
+                        icon={<IconFont type={!!BUPInfoVO?.enableFlag ? 'icon-unfreeze' : 'icon-freeze'}/>}
+                        className={!!BUPInfoVO?.enableFlag ? 'ant-unfreeze-button' : 'ant-freeze-button'}
+                        style={{marginRight: 15}}
+                    >
+                        Freeze
+                    </Button>
+                    <Button
+                        key={'submit'}
+                        type={'primary'}
+                        htmlType={'submit'}
+                        icon={<SaveOutlined/>}
+                    >
+                        Save
+                    </Button>
+                </FooterToolbar>
             </ProForm>
 
-            <FooterToolbar extra={<Button onClick={handleBack} icon={<ArrowLeftOutlined/>}>Back</Button>}>
-                <Button
-                    onClick={handleOperateBUP}
-                    icon={<IconFont type={!!BUPInfoVO?.enableFlag ? 'icon-unfreeze' : 'icon-freeze'}/>}
-                    className={!!BUPInfoVO?.enableFlag ? 'ant-unfreeze-button' : 'ant-freeze-button'}
-                    style={{marginRight: 15}}
-                >
-                    Freeze
-                </Button>
-                <Button key={'submit'} type={'primary'} htmlType={'submit'} icon={<SaveOutlined/>}>Save</Button>
-            </FooterToolbar>
+
         </PageContainer>
     )
 }
