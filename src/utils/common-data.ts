@@ -1,5 +1,3 @@
-
-
 // TODO: 行业地位
 import type {ColumnsType} from 'antd/es/table'
 
@@ -30,8 +28,6 @@ export const BUSINESS_TYPE = [
     {value: '6', label: 'Rail Way'},
 ];
 
-
-
 export const COLUMNS_CREDIT_SCORE: ColumnsType<any> = [
     {title: 'Assessment Item', dataIndex: 'assessmentItem', align: 'center', width: '21%',},
     {title: 'Score Weight', dataIndex: 'scoreWeight', align: 'center', width: '8%',},
@@ -56,87 +52,57 @@ export const aasDemo = [
     {value: '', label: ''},
 ];
 
+// TODO: 业务单位属性
 export const NATURE_OF_COMPANY = [
+    {value: 21, label: '政府机构', children: [{value: 1, label: '党政机关',}, {value: 2, label: '事业单位',},],},
     {
-        value: 21,
-        label: '政府机构',
+        value: 22, label: '央国企',
         children: [
-            {
-                value: 1,
-                label: '党政机关',
-            },
-            {
-                value: 2,
-                label: '事业单位',
-            },
+            {value: 3, label: '央企',},
+            {value: 4, label: '国企（省属）',},
+            {value: 5, label: '国企（市属）',},
+            {value: 6, label: '国企（其它）',},
         ],
     },
     {
-        value: 22,
-        label: '央国企',
+        value: 23, label: '民营企业',
         children: [
-            {
-                value: 3,
-                label: '央企',
-            },
-            {
-                value: 4,
-                label: '国企（省属）',
-            },
-            {
-                value: 5,
-                label: '国企（市属）',
-            },
-            {
-                value: 6,
-                label: '国企（其它）',
-            },
+            {value: 7, label: '中国内地',},
+            {value: 8, label: '台湾',},
+            {value: 9, label: '香港',},
+            {value: 10, label: '澳门',},
+            {value: 11, label: '其它',},
         ],
     },
-    {
-        value: 23,
-        label: '民营企业',
-        children: [
-            {
-                value: 7,
-                label: '中国内地',
-            },
-            {
-                value: 8,
-                label: '台湾',
-            },
-            {
-                value: 9,
-                label: '香港',
-            },
-            {
-                value: 10,
-                label: '澳门',
-            },
-            {
-                value: 11,
-                label: '其它',
-            },
-        ],
-    },
-    {
-        value: 24,
-        label: '外企',
-        children: [
-            {
-                value: 12,
-                label: '外资企业',
-            },
-        ],
-    },
-    {
-        value: 25,
-        label: '境外',
-        children: [
-            {
-                value: 13,
-                label: '境外企业',
-            },
-        ],
-    },
+    {value: 24, label: '外企', children: [{value: 12, label: '外资企业',},],},
+    {value: 25, label: '境外', children: [{value: 13, label: '境外企业',},],},
+    {value: 4, label: '外企', children: [{value: 12, label: '外资企业',},],},
+    {value: 5, label: '境外', children: [{value: 13, label: '境外企业',},],},
+];
+
+// TODO: 贸易条款
+export const TERMS_INCOTERMS = [
+    { value: 1, label: 'CFR - COST AND FREIGHT' },
+    { value: 2, label: 'CIF - COST,INSURANCE AND FREIGHT' },
+    { value: 3, label: 'FAS - FREE ALONGSIDE SHIP' },
+    { value: 4, label: 'FOB - FREE ON BOARD' },
+    { value: 5, label: 'CIP - CARRIAGE AND INSURANCE PAID' },
+    { value: 6, label: 'CPT - CARRIAGE PAID TO' },
+    { value: 7, label: 'DAP - DELIVERED AT PLACE' },
+    { value: 8, label: 'DAT - DELIVERED AT TERMINAL' },
+    { value: 9, label: 'DDP - DELIVERED DUTY PAID' },
+    { value: 10, label: 'EXW - EX WORKS' },
+    { value: 11, label: 'FCA - FREE CARRIER' },
+];
+
+export const TERMS_PAYMENT = [
+    {label: '(PP) Freight Prepaid', value: 1},
+    {label: '(CC) Freight Collect', value: 2},
+    {label: '(AA) Freight as arranged', value: 3},
+    {label: '(FF) Freight Free', value: 4},
+    {label: '(OT) Other', value: 5},
+    {label: '(CP) Freight payable as per charter party', value: 6},
+    {label: '(MM) Monthly payment in the third place', value: 7},
+    {label: '(PT) Freight prepaid at the third place', value: 8},
+    {label: '(CT) Freight Collect at the third place', value: 9},
 ];

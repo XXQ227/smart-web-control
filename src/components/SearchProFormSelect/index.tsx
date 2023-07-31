@@ -5,7 +5,7 @@ import {fetchData} from '@/utils/fetch-utils'
 // TODO: 父组件传回来的值
 interface Props {
     id: any,
-    name: string,
+    name: any,
     label?: string,
     isShowLabel?: boolean,
     width?: any,

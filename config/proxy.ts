@@ -25,7 +25,7 @@ export default {
     // TODO: engine：
     '/apiEngine/': {
       // 要代理的地址
-      target: 'http://106.52.125.82:8080/',
+      target: 'http://106.52.125.82:8081/',
       changeOrigin: true,
       pathRewrite: {
         '^/apiEngine': '/engine/web',

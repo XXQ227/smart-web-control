@@ -193,10 +193,10 @@ const SearchModal: React.FC<Props> = (props) => {
                     value={showText}
                     autoComplete={'off'}
                     disabled={disabled}
-                    className={'searchModal-input'}
                     onChange={handleModal}
                     onClick={handleModal}
                     onKeyDown={handleKeyDown}
+                    className={'searchModal-input'}
                 />
                 // <ProFormText
                 //     required={props.required}
@@ -230,10 +230,10 @@ const SearchModal: React.FC<Props> = (props) => {
                             value={searchVal} onChange={handleChangeInput} onKeyDown={handleKeyDown}
                         />
                         <Table
-                            className={'table'}
                             rowKey={'value'}
                             loading={fetching}
                             pagination={false}
+                            className={'table'}
                             dataSource={dataSourceList}
                             columns={props.columns || columns}
                             showHeader={props.showHeader || false}

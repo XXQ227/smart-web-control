@@ -1,12 +1,12 @@
 import React, {Fragment, useEffect, useMemo, useState} from 'react';
 import {Input, Modal, Table} from 'antd';
 import {debounce} from 'lodash'
-import { IconFont } from '@/utils/units';
-import { fetchData } from '@/utils/fetch-utils'
+import {IconFont} from '@/utils/units';
+import {fetchData} from '@/utils/fetch-utils'
 import type {ColumnsType} from 'antd/es/table';
 
 interface Props {
-    name: string,
+    name: any,
     // value?: any,             // ID 数据 / 其他字符
     text?: string,           // 显示 【Name】 数据
     url: string,    // 搜索地址
@@ -16,7 +16,8 @@ interface Props {
     disabled?: boolean,
     modalWidth?: number,
     rowKey?: string,
-    showHeader?: any,
+    showLabel?: boolean,
+    showHeader?: boolean,
     filedValue?: string,    // 用于显示返回结果 【value】 的返回参数
     filedLabel?: string[],    // 用于显示返回结果 【label】 的参数
     prefix?: any,           // 显示前缀图标
@@ -26,7 +27,7 @@ interface Props {
 
 const SearchTable: React.FC<Props> = (props) => {
     const {
-        url, query, qty, filedValue, filedLabel,
+        url, query, qty, filedValue, filedLabel, showLabel,
     } = props;
 
     const [visible, setVisible] = useState<boolean>(false);     // TODO: Modal 隐藏显示开关
@@ -195,16 +196,16 @@ const SearchTable: React.FC<Props> = (props) => {
 
     return (
         <Fragment>
-            <label style={{ display: 'block', marginBottom: 8 }}>{props.title}</label>
+            {showLabel ? <label style={{display: 'block', marginBottom: 8}}>{props.title}</label> : null}
             <Input
-                name={props.name}
-                className={`searchTable-input ${props.className}`}
-                placeholder={'Click'}
                 readOnly={true}
                 value={showText}
+                name={props.name}
                 autoComplete={'off'}
-                prefix={<IconFont type={'icon-search'} />}
+                placeholder={'Click'}
                 onClick={handleModal}
+                prefix={<IconFont type={'icon-search'}/>}
+                className={`searchTable-input ${props.className}`}
             />
             {
                 !visible ? null :
@@ -226,12 +227,12 @@ const SearchTable: React.FC<Props> = (props) => {
                             onKeyDown={handleKeyDown}
                         />
                         <Table
-                            className={'table modal-table'}
-                            rowKey={props.rowKey || 'value'}
+                            columns={columns}
                             loading={fetching}
                             pagination={false}
                             dataSource={dataSourceList}
-                            columns={columns}
+                            className={'table modal-table'}
+                            rowKey={props.rowKey || 'value'}
                             showHeader={props.showHeader || false}
                             rowClassName={(record: any, index) => {
                                 let className = '';

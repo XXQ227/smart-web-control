@@ -1,6 +1,6 @@
 import React, {useEffect, useState, useRef} from 'react';
 import BasicInfo from './basicInfo';
-import {Modal, Tabs} from "antd";
+import {Modal, Tabs, TabsProps} from "antd";
 import styles from "@/pages/sys-job/job/basic-info-form/style.less";
 import {ProCard} from "@ant-design/pro-components";
 import {ExclamationCircleFilled} from "@ant-design/icons";
@@ -55,7 +55,7 @@ const LocalDelivery: React.FC<Props> = (props) => {
         />
     }
 
-    const initialTabList = [
+    const initialTabList: TabsProps['items'] = [
         {
             label: 'SPHK-QY-0012',
             key: '1',
