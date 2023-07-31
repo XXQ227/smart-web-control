@@ -10,7 +10,12 @@ import {
     editBusinessUnitPropertyAPI,
     operateBusinessUnitPropertyAPI,
     deletePayCustomerAPI,
-    addPayCustomerAPI
+    addPayCustomerAPI,
+    queryPayCustomerAPI,
+    queryBusinessUnitAPI,
+    queryBusinessUnitInfoAPI,
+    editBusinessUnitAPI,
+    operateBusinessUnitAPI
 } from '@/services/smart/manager/business-unit';
 import type React from "react";
 import {useCallback, useState} from "react";
@@ -131,11 +136,34 @@ export default (callback: T, deps: React.DependencyList) => {
 
 
 
+    //region TODO: 业务单位 接口
+    // TODO: 获取 业务单位 列表
+    const queryBusinessUnit = useCallback(async (params: APIManager.SearchBUParams) => {
+        const response = await queryBusinessUnitAPI(params);
+        if (!response) return;
+        return response;
+    }, []);
+
+    // TODO: 获取 业务单位 详情
+    const queryBusinessUnitInfo = useCallback(async (params: APIBU)=> {
+        return await queryBusinessUnitInfoAPI(params);
+    }, [])
 
     // TODO: 新增业务单位
     const addBusinessUnit = useCallback(async (params: APIBU)=> {
         return await addBusinessUnitAPI(params);
     }, [])
+
+    // TODO: 编辑业务单位
+    const editBusinessUnit = useCallback(async (params: APIBU)=> {
+        return await editBusinessUnitAPI(params);
+    }, [])
+
+    // TODO: 启用或禁用业务单位
+    const operateBusinessUnit = useCallback(async (params: APIBU)=> {
+        return await operateBusinessUnitAPI(params);
+    }, [])
+    //endregion
 
     //region TODO: 业务单位属性 接口
     // TODO: 获取 业务单位属性 列表
@@ -165,8 +193,15 @@ export default (callback: T, deps: React.DependencyList) => {
         return await operateBusinessUnitPropertyAPI(params);
     }, [])
 
+    // TODO: 查询付款方已关联客户信息
+    const queryPayCustomer = useCallback(async (params: APIBUP) => {
+        const response = await queryPayCustomerAPI(params);
+        if (!response) return;
+        return response;
+    }, []);
+
     // TODO: 新增客户与付款方关联
-    const addPayCustomer = useCallback(async (params: APIBUP)=> {
+    const addPayCustomer = useCallback(async (params: any)=> {
         return await addPayCustomerAPI(params);
     }, [])
 
@@ -193,12 +228,17 @@ export default (callback: T, deps: React.DependencyList) => {
         BusinessLineList,
         uploadCTCenter,
 
+        queryBusinessUnit,
+        queryBusinessUnitInfo,
         addBusinessUnit,
+        editBusinessUnit,
+        operateBusinessUnit,
         queryBusinessUnitProperty,
         queryBusinessUnitPropertyInfo,
         addBusinessUnitProperty,
         editBusinessUnitProperty,
         operateBusinessUnitProperty,
+        queryPayCustomer,
         addPayCustomer,
         deletePayCustomer,
         queryBusinessUnitPropertyCreditInfo,

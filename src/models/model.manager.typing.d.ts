@@ -74,6 +74,7 @@ declare namespace APIManager {
         natureOfCompany?: number | null;  // TODO: 所有制性质 1-合营企业 2-个人独资企业 3-国有企业 4-私营企业 5-全民所有制企业 6-集体所有制企业 7-股份有限公司 8-有限责任企业 9-外商投资企业 10-有限合伙企业
         enableFlag?: number | null;       // TODO: 启用标识
         deleteFlag?: number | null;       // TODO: 删除标识
+        createTime?: string;              // TODO:创建时间
     };
 
     type BUP = {

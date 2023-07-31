@@ -14,7 +14,7 @@ import {useModel} from 'umi';
 import {history} from '@@/core/history'
 import {DeleteOutlined, EditOutlined, PlusCircleOutlined, SearchOutlined} from '@ant-design/icons'
 import ls from "lodash";
-import {CustomizeIcon, getFormErrorMsg, ID_STRING, rowGrid} from "@/utils/units";
+import {CustomizeIcon, getFormErrorMsg, rowGrid} from "@/utils/units";
 import DividerCustomize from "@/components/Divider";
 import AddCustomerModal from "@/pages/sys-manager/business-unit/payer/AddCustomerModal";
 
@@ -25,8 +25,8 @@ type APISearchBUParams = APIManager.SearchBUParams;
 // TODO: 获取BUP列表的请求参数
 const initSearchParam = {
     name: '',
-    createTimeStart: '',
-    createTimeEnd: '',
+    createTimeStart: null,
+    createTimeEnd: null,
     taxNum: '',
     mdmCode: '',
     cvCenterNumber: '',
@@ -50,10 +50,11 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
     const searchLocation = state ? (state as LocationState)?.searchParams : '';
 
     const {
-        queryBusinessUnitProperty, addPayCustomer, deletePayCustomer,
+        queryBusinessUnitProperty, queryPayCustomer, addPayCustomer, deletePayCustomer,
 
     } = useModel('manager.business-unit', (res: any)=> ({
         queryBusinessUnitProperty: res.queryBusinessUnitProperty,
+        queryPayCustomer: res.queryPayCustomer,
         addPayCustomer: res.addPayCustomer,
         deletePayCustomer: res.deletePayCustomer,
     }));
@@ -67,7 +68,8 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
     const [searchParams, setSearchParams] = useState<APISearchBUParams>(searchLocation || searchQueryBUP);
     const [pagination, setPagination] = useState<any>(initPagination)
 
-    const [highlightedRow, setHighlightedRow] = useState(null);
+    const [payerHighlightedRow, setPayerHighlightedRow] = useState(null);
+    const [customerHighlightedRow, setCustomerHighlightedRow] = useState(null);
     const [modalPosition, setModalPosition] = useState({ top: 200 });
     // const [fetching, setFetching] = useState(false);            // TODO: 搜索Customer Loading 状态
     // const [dataSourceList, setDataSourceList] = useState([]);   // TODO: 搜索Customer返回数据
@@ -94,6 +96,26 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
             message.error(result.message);
         }
         setLoading(false);
+        return result;
+    }
+
+    /**
+     * @Description: TODO 查询付款方已关联客户信息
+     * @author LLS
+     * @date 2023/7/28
+     // * @param id    付款方id / 客户id  queryPayCustomer
+     * @returns
+     */
+    async function handleQueryPayerCustomer (){
+        setRelationShipLoading(true);
+        const result: API.Result = await queryPayCustomer({id: payerHighlightedRow});
+        if (result.success) {
+            setCustomerListVO(result.data);
+            console.log(result.data);
+        } else {
+            message.error(result.message);
+        }
+        setRelationShipLoading(false);
         return result;
     }
 
@@ -132,14 +154,14 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
      * @Description: TODO: 弹框开启关闭
      * @author LLS
      * @date 2023/7/28
-     * @param operationType   1: Customer 与 Payer 的关系弹框开启关闭 2: 添加客户弹框开启关闭
+     * @param operationType   1: Customer 与 Payer 的关系弹框开启关闭 2: 添加客户弹框开启关闭 3: 查看客户有哪些 Payer弹框开启关闭
      * @param record          操作当前 行
      * @returns
      */
     const handleModal = (operationType: number, record?: any) => {
         if (operationType === 1) {
             // 1: Customer 与 Payer 的关系弹框开启关闭
-            setHighlightedRow(relationShipVisible ? null : record.id);  // 打开弹框，高亮当前行；否则，取消高亮
+            setPayerHighlightedRow(relationShipVisible ? null : record.id);  // 打开弹框，高亮当前行；否则，取消高亮
             if (!relationShipVisible) {
                 // 获取行在页面上的位置
                 const rowElement = document.getElementById(`row-${record.id}`);
@@ -154,11 +176,14 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
                     }
                     setModalPosition({ top });
                 }
+
             }
             setRelationShipVisible(!relationShipVisible);
-        } else {
+        } else if (operationType === 2) {
             // 2: 添加客户弹框开启关闭
             setAddCustomerVisible(!addCustomerVisible);
+        } else {
+
         }
     };
 
@@ -202,17 +227,17 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
             .filter(customer => customer?.isAdd === false)
             .map(customer => customer.id);
         console.log(filteredCustomerIds);
-        console.log(highlightedRow);
-        /*const param: any = {
-            /!*contactName: newData.id,
-            phone: newData.id,*!/
+        console.log(payerHighlightedRow);
+        const param: any = {
+            customerId: filteredCustomerIds,
+            payerId: payerHighlightedRow,
         };
         const result: API.Result = await addPayCustomer(param);
         if (result.success) {
             message.success('Success!');
         } else {
             message.error(result.message);
-        }*/
+        }
         setRelationShipLoading(false);
     }
 
@@ -329,7 +354,11 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
             render: (text, record, index) => {
                 return (
                     <Fragment>
-                        <EditOutlined hidden={!record.isAdd} color={'#1765AE'} onClick={() => handleEditBUP(record)}/>
+                        <CustomizeIcon
+                            hidden={!record.isAdd}
+                            type={'icon-payers'}
+                            onClick={() => handleModal(3)}
+                        />
                         <Popconfirm
                             onConfirm={() => handleOperateCustomer(record, index)}
                             title="Sure to delete?" okText={'Yes'} cancelText={'No'}
@@ -352,6 +381,7 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
                     submitter={false}
                     // TODO: 焦点给到第一个控件
                     autoFocusFirstInput
+                    initialValues={searchParams}
                     // TODO: 设置默认值
                     // formKey={'business-unit-information'}
                     // TODO: 空间有改数据时触动
@@ -363,7 +393,7 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
                     <Row gutter={rowGrid}>
                         <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={16}>
                             <Row gutter={rowGrid}>
-                                <Col xs={24} sm={24} md={12} lg={8} xl={10} xxl={13}>
+                                <Col xs={24} sm={24} md={12} lg={16} xl={10} xxl={13}>
                                     <ProFormText
                                         name='name'
                                         placeholder=''
@@ -451,10 +481,10 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
 
     /*const rowClassName = (record: any) => {
         // console.log(record.id)
-        // console.log(highlightedRow)
+        // console.log(payerHighlightedRow)
 
-        // return record.id === highlightedRow ? 'ant-table-row-highlight-row' : '';
-        return record.enableFlag ? 'ant-table-row-disabled' : record.id === highlightedRow ? 'ant-table-row-highlight-row' : '';
+        // return record.id === payerHighlightedRow ? 'ant-table-row-highlight-row' : '';
+        return record.enableFlag ? 'ant-table-row-disabled' : record.id === payerHighlightedRow ? 'ant-table-row-highlight-row' : '';
     };*/
 
     /**
@@ -509,7 +539,7 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
                         setSearchParams(searchParams);
                     },
                 }}
-                rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : record.id === highlightedRow ? 'ant-table-row-highlight-row' : ''}
+                rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : record.id === payerHighlightedRow ? 'ant-table-row-highlight-row' : ''}
                 // rowClassName={rowClassName} // 设置每一行的类名，用于实现高亮效果
                 onRow={(record) => ({
                     id: `row-${record.id}`, // 给每一行添加唯一的ref属性
@@ -561,9 +591,11 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
                     bordered={true}
                     loading={relationShipLoading}
                     pagination={false}
+                    rowClassName={(record)=> record.id === customerHighlightedRow ? 'ant-table-row-highlight-row' : ''}
                     columns={customerColumns}
                     dataSource={CustomerListVO}
                     search={false}
+                    request={handleQueryPayerCustomer}
                 />
             </Modal>
 

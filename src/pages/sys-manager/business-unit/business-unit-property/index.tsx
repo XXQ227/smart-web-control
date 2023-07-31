@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import type { RouteChildrenProps } from 'react-router';
 import type { ProColumns} from '@ant-design/pro-components';
 import {
@@ -61,7 +61,21 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
     const [searchParams, setSearchParams] = useState<APISearchBUParams>(searchLocation || searchQueryBUP);
     const [pagination, setPagination] = useState<any>(initPagination)
     const [nextButtonDisabled, setNextButtonDisabled] = useState(true);
-    const [BUParams, setBUParams] = useState(null);  // TODO: 所选的业务单位属性
+    const [BUParams, setBUParams] = useState(null);    // TODO: 所选的业务单位属性
+
+    // 当state有值，页面被刷新的时，重置跳传地址。为了清空原来的搜索参数
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            if (state) {
+                history.push({pathname: '/manager/business-unit/property'});
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [state]);
 
     /**
      * @Description: TODO 获取 业务单位属性 集合
@@ -89,7 +103,7 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
     }
 
     /**
-     * @Description: TODO: 编辑 BU 信息
+     * @Description: TODO: 编辑 BUP 信息
      * @author LLS
      * @date 2023/7/12
      * @param record    操作当前 行
@@ -267,7 +281,7 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
                                         // fieldProps={{ onChange: (e) => searchParams.bupType = e }}
                                     />
                                 </Col>
-                                <Col xs={24} sm={24} md={12} lg={8} xl={10} xxl={9}>
+                                <Col xs={24} sm={24} md={20} lg={16} xl={10} xxl={9}>
                                     <ProFormText
                                         name='name'
                                         placeholder=''
@@ -379,6 +393,7 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
         >
             {/*<ProCard className={'ant-card ant-card-pro-table'}>*/}
                 {renderSearch()}
+
                 <ProTable<APIBUP>
                     rowKey={'id'}
                     options={false}

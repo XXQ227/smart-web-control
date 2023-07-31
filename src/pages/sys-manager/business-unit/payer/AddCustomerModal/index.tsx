@@ -4,12 +4,9 @@ import {
     ProTable,
 } from '@ant-design/pro-components';
 import {Button, Modal, Divider, Input} from 'antd';
-import {history} from '@@/core/history'
 import { IconFont} from "@/utils/units";
-import SearchModal from "@/components/SearchModal";
 import {fetchData} from '@/utils/fetch-utils';
 import {debounce} from 'lodash';
-import SearchProFormSelect from "@/components/SearchProFormSelect";
 
 export type LocationState = Record<string, unknown>;
 type APIPayer = APIManager.BUP;
@@ -42,18 +39,6 @@ const AddCustomerModal: React.FC<Props> = (props) => {
             document?.getElementById('search-input')?.focus();
         }
     }, [debounceTimeout, props.open])
-
-    /**
-     * @Description: TODO: 编辑 BU 信息
-     * @author LLS
-     * @date 2023/7/12
-     * @param record    操作当前 行
-     * @returns
-     */
-    const handleEditBUP = (record: APIPayer) => {
-        // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        history.push({pathname: `/manager/business-unit/property/form/${btoa(record.id)}`});
-    }
 
     const addCustomerColumns: ProColumns<APIPayer>[] = [
         {
@@ -179,16 +164,6 @@ const AddCustomerModal: React.FC<Props> = (props) => {
             ]}
         >
             <Divider />
-            {/*<SearchModal
-                qty={30}
-                // id={`CTNModelID${record.ID}`}
-                // title={'SIZE'}
-                modalWidth={500}
-                // text={record.CTNModelName}
-                query={{ dictCode: "ctn_model" }}
-                url={"/apiBase/dict/queryDictDetailCommon"}
-                handleChangeData={(val: any, option: any)=> handleRowChange(val, option)}
-            />*/}
             <Input
                 id={'search-input'}
                 autoComplete={'off'}
@@ -196,8 +171,6 @@ const AddCustomerModal: React.FC<Props> = (props) => {
                 value={searchVal}
                 placeholder={'Search'}
                 onChange={handleChangeInput}
-                // onKeyDown={handleKeyDown}
-                // style={{borderRadius: '6px'}}
                 className={'ant-input-search-customer'}
                 prefix={<IconFont type={'icon-search'} style={{marginRight: '8px'}}/>}
             />

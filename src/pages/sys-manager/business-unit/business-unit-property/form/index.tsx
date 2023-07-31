@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProFormInstance} from '@ant-design/pro-components';
 import {
@@ -88,17 +88,6 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
         }
     }, [BUInfo.CTList, ClientVO?.length])*/
 
-    useEffect(() => {
-        setTimeout(async () => {
-            if (BusinessLineList?.length === 0) {
-                await queryDictCommon({dictCodes: ['business_line']});
-            }
-            if (VendorTypeList?.length === 0) {
-                await queryDictCommon({dictCodes: ['vendor_type']});
-            }
-        })
-    }, [])
-
     /*useMemo(()=> {
         if (BUPInfoVO.NameFull && BUInfo.NameFull && BUPInfoVO.NameFull !== BUInfo.NameFull) {
             setBUPInfoVO(BUInfo);
@@ -113,6 +102,12 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
      */
     const handleGetBUPInfo = async () => {
         setLoading(true);
+        if (BusinessLineList?.length === 0) {
+            await queryDictCommon({dictCodes: ['business_line']});
+        }
+        if (VendorTypeList?.length === 0) {
+            await queryDictCommon({dictCodes: ['vendor_type']});
+        }
         const result: any = await queryBusinessUnitPropertyInfo({id});
         if (result.success) {
             // TODO: Nature of a Company 根据后台传回来的natureOfCompany参数，找到对应的label名称
@@ -450,7 +445,7 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                                 disabled={true}
                                 placeholder=''
                                 label='Located in (City)'
-                                name='cityId'
+                                name='cityName'
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
@@ -465,7 +460,7 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                                 disabled={true}
                                 placeholder=''
                                 label='Parent Company (Belongs to Group)'
-                                name='parentCompanyId'
+                                name='parentCompanyName'
                             />
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={16} xl={18} xxl={8}>
