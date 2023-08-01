@@ -12,21 +12,20 @@ import {Button, Col, Form, Popover, Row, Space, Radio} from 'antd'
 import {getUserID} from '@/utils/auths'
 import {useModel, history} from 'umi'
 import {message} from 'antd/es'
-import {getFormErrorMsg, rowGrid, IconFont, getValue} from "@/utils/units";
+import {getFormErrorMsg, rowGrid} from "@/utils/units";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
 import {NATURE_OF_COMPANY} from '@/utils/common-data'
-import {ArrowLeftOutlined, SaveOutlined} from "@ant-design/icons";
-import ls from "lodash";
+import BusinessUnitListIndex from "@/pages/sys-manager/business-unit/business-unit";
 
 export type LocationState = Record<string, unknown>;
-type APIBU = APIManager.BU;
+type APICVInfo = APIManager.BU;
 
 const cityList = [
-    {label: 'HONG KONG', value: '1'},
-    {label: 'SHENZHEN', value: '2'},
-    {label: 'SHANGHAI', value: '3'},
-    {label: 'BEIJING', value: '4'},
-    {label: 'GUANGZHOU', value: '5'},
+    {label: 'HONG KONG', value: 1},
+    {label: 'SHENZHEN', value: 2},
+    {label: 'SHANGHAI', value: 3},
+    {label: 'BEIJING', value: 4},
+    {label: 'GUANGZHOU', value: 5},
 ]
 
 const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
@@ -39,14 +38,12 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
     // const {current} = formRef;
     //region TODO: 数据层
     const {
-        queryBusinessUnitInfo, addBusinessUnit, editBusinessUnit, operateBusinessUnit,
-        uploadCTCenter
+        addBusinessUnit,
+        BUInfo, uploadCTCenter
     } = useModel('manager.business-unit', (res: any) => ({
-        queryBusinessUnitInfo: res.queryBusinessUnitInfo,
         addBusinessUnit: res.addBusinessUnit,
-        editBusinessUnit: res.editBusinessUnit,
-        operateBusinessUnit: res.operateBusinessUnit,
 
+        BUInfo: res.BUInfo,
         getGetCTPByID: res.getGetCTPByID,
         uploadCTCenter: res.uploadCTCenter,
     }));
@@ -58,46 +55,44 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
         IndustryList: res.IndustryList,
     }))
 
-    const [BUInfoVO, setBUInfoVO] = useState<any>({});
+    const [CVInfoVO, setCVInfoVO] = useState<APICVInfo>(BUInfo);
     // const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
     const [CTCenterType, setCTCenterType] = useState<number | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [parentValue, setParentValue] = useState<number | null>(null);
-    const [parentCompanyNameValue, setParentCompanyNameValue] = useState<string>('');
     //endregion
 
+    useEffect(() => {
+        setTimeout(async () => {
+            if (IndustryList?.length === 0) {
+                await queryDictCommon({dictCodes: ['industry']});
+            }
+        })
+    }, [])
+
     /**
-     * @Description: TODO: 获取 BU 详情
-     * @author LLS
-     * @date 2023/7/31
+     * @Description: TODO: 获取 CV 详情
+     * @author XXQ
+     * @date 2023/5/5
      * @returns
      */
-    const handleGetBUInfo = async () => {
-        setLoading(true);
-        if (IndustryList?.length === 0) {
-            await queryDictCommon({dictCodes: ['industry']});
-        }
-        const result: any = await queryBusinessUnitInfo({id});
-        if (result.success) {
-            // TODO: Nature of a Company 根据后台传回来的natureOfCompany参数，找到对应的label名称
-            console.log(result?.data?.natureOfCompany)
-            const enterpriseTypeValue: APIBU = getValue(NATURE_OF_COMPANY, result?.data?.natureOfCompany);
-            console.log(enterpriseTypeValue)
-            let newData = result.data;
-            if (id !== '0') {
-                setParentValue(1)
-                console.log(newData?.parentCompanyName)
-                setParentCompanyNameValue(newData?.parentCompanyName)
-                newData = {...newData, ...enterpriseTypeValue}
-            }
-            console.log(newData);
-            setBUInfoVO(newData);
-        } else {
-            message.error(result.message);
-        }
-        setLoading(false);
+    /*const handleGetCTPByID = async () => {
+        const result: any = await getGetCTPByID({UserID: getUserID(), CTPID: Number(atob(params?.id))});
+        setCVInfoVO(result);
         return result;
-    }
+    }*/
+
+    /**
+     * @Description: TODO:
+     * @author XXQ
+     * @date 2023/5/22
+     * @param filedName
+     * @param val
+     * @returns
+     */
+    /*const handleChange = (filedName: string, val: any) => {
+        console.log(filedName, val);
+    }*/
 
     /**
      * @Description: TODO: 当 ProForm 表单修改时，调用此方法
@@ -129,36 +124,29 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
     /**
      * @Description: TODO: 保存数据
      * @author LLS
-     * @date 2023/7/31
+     * @date 2023/7/12
      * @param val
      * @returns
      */
-    const onFinish = async (val: APIBU) => {
+    const onFinish = async (val: APICVInfo) => {
         setLoading(true);
         let result: API.Result;
-        delete val.enterpriseType;
-        val.cityName = cityList.find(city => city.value === val.cityId)?.label ?? '';
-        val.industryName = IndustryList.find((industry: any) => industry.value === val.industryType)?.label ?? '';
-        console.log(parentCompanyNameValue);
-        val.parentCompanyId = val.parentCompanyId ? val.parentCompanyId : null;
-        val.parentCompanyName = parentCompanyNameValue;
-        val.establishedDate = val.establishedDate ? val.establishedDate : '';
         if (id === '0') {
             // TODO: 新增业务单位
-            console.log(val)
+            val.cityName = cityList.find(city => city.value === val.cityId)?.label ?? '';
+            val.industryName = IndustryList.find((industry: any) => industry.value === val.industryType)?.label ?? '';
+            delete val.enterpriseType;
             result = await addBusinessUnit(val);
         } else {
             // TODO: 编辑业务单位
-            val.id = id;
-            console.log(val)
-            result = await editBusinessUnit(val);
+            // param.id = id;
+            result = await addBusinessUnit(val);
         }
-        console.log(result)
-        if (result?.success) {
+        if (result.success) {
             message.success('Success');
             if (id === '0') history.push({pathname: `/manager/business-unit/form/${btoa(result.data)}`});
         } else {
-            message.error(result?.message)
+            message.error(result.message)
         }
         setLoading(false);
     }
@@ -176,28 +164,10 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
         message.error(errInfo);
     }
 
-    /**
-     * @Description: TODO: 启用或禁用业务单位
-     * @author LLS
-     * @date 2023/7/31
-     * @returns
-     */
-    const handleOperateBU = async () => {
-        setLoading(true);
-        const newData: APIBU = ls.cloneDeep(BUInfoVO);
-        // TODO: 冻结取反上传数据
-        const param: any = {
-            id: newData.id,
-            operate: newData.enableFlag ? 0 : 1
-        };
-        const result: API.Result = await operateBusinessUnit(param);
-        if (result.success) {
-            message.success(param.operate ? 'Freeze Success' : 'UnFreeze Success');
-        } else {
-            message.error(result.message);
-        }
-        setLoading(false);
-    }
+    //region TODO: 显示隐藏：{SCAC, IATA}
+    //endregion
+    // TODO: 返回列表集合
+    // const returnURL = pathname.substring(0, pathname.indexOf('/form')) + '/dict';
 
     return (
         <PageContainer
@@ -207,7 +177,6 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
             }}
         >
             <ProForm
-                disabled={!!BUInfoVO?.enableFlag}
                 form={form}
                 formRef={formRef}
                 // TODO: 不显示提交、重置按键
@@ -215,7 +184,7 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
                 // TODO: 焦点给到第一个控件
                 autoFocusFirstInput
                 // TODO: 设置默认值
-                initialValues={BUInfoVO}
+                initialValues={CVInfoVO}
                 formKey={'business-unit-information'}
                 // TODO: 空间有改数据时触动
                 // onValuesChange={handleProFormValueChange}
@@ -223,7 +192,7 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 // TODO: 向后台请求数据
-                request={async () => handleGetBUInfo()}
+                // request={async () => handleGetCTPByID()}
             >
                 <ProCard title={'Name & Code'} className={'ant-card'}>
                     <Row gutter={rowGrid}>
@@ -277,18 +246,31 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormText
+                                name='mdmStatus'
+                                placeholder=''
+                                label='MDM Status'
+                            />
+                        </Col>
+                        {/*<Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormSelect
+                                placeholder=''
+                                label='Nature of a Company'
+                                name='enterpriseType'
+                                options={[
+                                    {label: '私企（民营企业）', value: 1},
+                                    {label: '外企（外资企业）', value: 2},
+                                    {label: '央企', value: 3},
+                                    {label: '地方国企-省属', value: 4},
+                                    {label: '地方国企-市属', value: 5},
+                                    {label: '地方国企-其他', value: 6},
+                                ]}
+                            />
+                        </Col>*/}
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
                                 name='scac'
                                 placeholder=''
                                 label='SCAC'
-                                tooltip='length: 10'
-                                rules={[{max: 10, message: 'length: 10'}]}
-                            />
-                        </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
-                            <ProFormText
-                                name='iataCode'
-                                placeholder=''
-                                label='IATA'
                                 tooltip='length: 10'
                                 rules={[{max: 10, message: 'length: 10'}]}
                             />
@@ -302,11 +284,6 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
                                 id={'parentCompanyId'}
                                 name={'parentCompanyId'}
                                 url={"/apiBase/branch/queryBranchCommon"}
-                                handleChangeData={(val: any, option: any) =>  {
-                                    console.log(option?.label)
-                                    setParentCompanyNameValue(option?.label)
-                                }}
-                                handleClearData={() => setParentCompanyNameValue('')}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
@@ -337,6 +314,15 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                name='iataCode'
+                                placeholder=''
+                                label='IATA'
+                                tooltip='length: 10'
+                                rules={[{max: 10, message: 'length: 10'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormSelect
                                 required
                                 placeholder=''
@@ -346,58 +332,6 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
                                 options={IndustryList}
                                 rules={[{required: true, message: 'Industry'}]}
                             />
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={10}>
-                            <label className={'ant-form-label-required'} style={{ display: 'block', marginBottom: 8 }}>Nature of a Company</label>
-                            <Row>
-                                <Col xs={11} sm={11} md={11} lg={11} xl={11} xxl={8}>
-                                    <ProFormSelect
-                                        required
-                                        name="enterpriseType"
-                                        placeholder=''
-                                        options={NATURE_OF_COMPANY.map((option) => ({
-                                            value: option.value,
-                                            label: option.label,
-                                        }))}
-                                        fieldProps={{
-                                            onChange: (e) => {
-                                                setParentValue(e)
-                                                form.setFieldsValue({natureOfCompany: null});
-                                            }
-                                        }}
-                                        rules={[{required: true, message: 'Nature of a Company'}]}
-                                    />
-                                </Col>
-                                {
-                                    parentValue ?
-                                        <>
-                                            <Col>
-                                                <span className={'ant-space-span'}/>
-                                            </Col>
-                                            <Col xs={11} sm={11} md={11} lg={11} xl={11} xxl={8}>
-                                                <ProFormSelect
-                                                    required
-                                                    name="natureOfCompany"
-                                                    placeholder=''
-                                                    options={[]}
-                                                    dependencies={['enterpriseType']}
-                                                    shouldUpdate={(prevValues, curValues) => prevValues.enterpriseType !== curValues.enterpriseType}
-                                                    request={async () => {
-                                                        const selectedParent = NATURE_OF_COMPANY.find((option) => option.value === form.getFieldValue('enterpriseType'));
-                                                        if (selectedParent) {
-                                                            return selectedParent.children.map((child) => ({
-                                                                value: child.value,
-                                                                label: child.label,
-                                                            }));
-                                                        }
-                                                        return [];
-                                                    }}
-                                                    rules={[{required: true, message: 'Nature of a Company'}]}
-                                                />
-                                            </Col>
-                                        </> : null
-                                }
-                            </Row>
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormText
@@ -432,25 +366,170 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
                                 label="Established Date"
                             />
                         </Col>
+                        <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={10}>
+                            <label className={'ant-form-label-required'} style={{ display: 'block', marginBottom: 8 }}>Nature of a Company</label>
+                            {/*<Space direction="horizontal" align="center" className={styles.siteSpace}>
+                                <ProFormSelect
+                                    // width='md'
+                                    required
+                                    placeholder=''
+                                    name='natureOfCompany'
+                                    rules={[{required: true, message: 'Nature of a Company'}]}
+                                    options={NATURE_OF_COMPANY}
+                                />
+                                <span className={styles.siteSpaceSpan}/>
+                                <ProFormSelect
+                                    required
+                                    placeholder=''
+                                    name='natureOfCompany'
+                                    rules={[{required: true, message: 'Nature of a Company'}]}
+                                    options={[
+                                        {label: '合营企业', value: 1},
+                                        {label: '个人独资企业', value: 2},
+                                        {label: '国有企业', value: 3},
+                                        {label: '私营企业', value: 4},
+                                        {label: '全民所有制企业', value: 5},
+                                        {label: '集体所有制企业', value: 6},
+                                        {label: '股份有限公司', value: 7},
+                                        {label: '有限责任企业', value: 8},
+                                        {label: '外商投资企业', value: 9},
+                                        {label: '有限合伙企业', value: 10},
+                                    ]}
+                                />
+                                <Row>
+                                    <Col span={12}>
+                                        <ProFormSelect
+                                            name="parent"
+                                            placeholder=''
+                                            options={NATURE_OF_COMPANY.map((option) => ({
+                                                value: option.value,
+                                                label: option.label,
+                                            }))}
+                                            fieldProps={{
+                                                onChange: (e) => {
+                                                    setParentValue(e)
+                                                    form.setFieldsValue({natureOfCompany: null});
+                                                }
+                                            }}
+                                        />
+                                    </Col>
+                                    {
+                                        parentValue ?
+                                            <Col span={12}>
+                                                <span className={styles.siteSpaceSpan}/>
+                                                <ProFormSelect
+                                                    name="natureOfCompany"
+                                                    placeholder=''
+                                                    options={[]}
+                                                    dependencies={['parent']}
+                                                    shouldUpdate={(prevValues, curValues) => prevValues.parent !== curValues.parent}
+                                                    request={async () => {
+                                                        console.log(1111111111111111)
+                                                        console.log(form.getFieldValue('parent'))
+                                                        const selectedParent = NATURE_OF_COMPANY.find((option) => option.value === form.getFieldValue('parent'));
+                                                        console.log(selectedParent)
+                                                        if (selectedParent) {
+                                                            return selectedParent.children.map((child) => ({
+                                                                value: child.value.toString(),
+                                                                label: child.label,
+                                                            }));
+                                                        }
+                                                        return [];
+                                                    }}
+                                                />
+                                            </Col> : null
+                                    }
+                                </Row>
+                            </Space>*/}
+                            <Row>
+                                <Col span={8}>
+                                    <ProFormSelect
+                                        required
+                                        name="enterpriseType"
+                                        placeholder=''
+                                        options={NATURE_OF_COMPANY.map((option) => ({
+                                            value: option.value,
+                                            label: option.label,
+                                        }))}
+                                        fieldProps={{
+                                            onChange: (e) => {
+                                                setParentValue(e)
+                                                form.setFieldsValue({natureOfCompany: null});
+                                            }
+                                        }}
+                                        rules={[{required: true, message: 'Nature of a Company'}]}
+                                    />
+                                </Col>
+                                {
+                                    parentValue ?
+                                        <>
+                                            <Col>
+                                                <span className={'ant-space-span'}/>
+                                            </Col>
+                                            <Col span={8}>
+                                                <ProFormSelect
+                                                    required
+                                                    name="natureOfCompany"
+                                                    placeholder=''
+                                                    options={[]}
+                                                    dependencies={['enterpriseType']}
+                                                    shouldUpdate={(prevValues, curValues) => prevValues.enterpriseType !== curValues.enterpriseType}
+                                                    request={async () => {
+                                                        const selectedParent = NATURE_OF_COMPANY.find((option) => option.value === form.getFieldValue('enterpriseType'));
+                                                        if (selectedParent) {
+                                                            return selectedParent.children.map((child) => ({
+                                                                value: child.value,
+                                                                label: child.label,
+                                                            }));
+                                                        }
+                                                        return [];
+                                                    }}
+                                                    rules={[{required: true, message: 'Nature of a Company'}]}
+                                                />
+                                            </Col>
+                                        </> : null
+                                }
+                            </Row>
+                            {/*<ProFormSelect
+                                required
+                                placeholder=''
+                                label='Nature of a Company'
+                                name='natureOfCompany'
+                                rules={[{required: true, message: 'Nature of a Company'}]}
+                                options={[
+                                    {label: '合营企业', value: 1},
+                                    {label: '个人独资企业', value: 2},
+                                    {label: '国有企业', value: 3},
+                                    {label: '私营企业', value: 4},
+                                    {label: '全民所有制企业', value: 5},
+                                    {label: '集体所有制企业', value: 6},
+                                    {label: '股份有限公司', value: 7},
+                                    {label: '有限责任企业', value: 8},
+                                    {label: '外商投资企业', value: 9},
+                                    {label: '有限合伙企业', value: 10},
+                                ]}
+                            />*/}
+                        </Col>
+                        {/*<Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormSwitch
+                                name="enableFlag"
+                                label="Freezen"
+                                checkedChildren="Yes"
+                                unCheckedChildren="No"
+                            />
+                        </Col>*/}
                     </Row>
                 </ProCard>
 
                 <FooterToolbar
-                    extra={
-                        <Button
-                            disabled={false}
-                            onClick={() => history.push({
-                                pathname: '/manager/business-unit/list',
-                                state: {
-                                    searchParams: state ? (state as LocationState)?.searchParams : '',
-                                },
-                            })}
-                            icon={<ArrowLeftOutlined/>}
-                        >
-                            Back
-                        </Button>
-                    }
-                >
+                    extra={<Button
+                        onClick={() => history.push({
+                            pathname: '/manager/business-unit/list',
+                            state: {
+                                searchParams: state ? (state as LocationState)?.searchParams : '',
+                            },
+                        })}
+                    >Back</Button>}>
                     <Space>
                         <Popover
                             title={'Please select the type of merchant center!'}
@@ -472,19 +551,9 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
                                 </>
                             }
                         >
-                            <Button key={'submit'} type={'primary'} style={{marginRight: 7}}>Upload C&V Center</Button>
+                            <Button key={'submit'} type={'primary'}>Upload C&V Center</Button>
                         </Popover>
-                        <Button
-                            disabled={false}
-                            hidden={id === '0'}
-                            onClick={handleOperateBU}
-                            icon={<IconFont type={!!BUInfoVO?.enableFlag ? 'icon-unfreeze' : 'icon-freeze'}/>}
-                            className={!!BUInfoVO?.enableFlag ? 'ant-unfreeze-button' : 'ant-freeze-button'}
-                            style={{marginRight: 7}}
-                        >
-                            Freeze
-                        </Button>
-                        <Button key={'submit'} type={'primary'} htmlType={'submit'} icon={<SaveOutlined/>}>Save</Button>
+                        <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
                     </Space>
                 </FooterToolbar>
             </ProForm>
