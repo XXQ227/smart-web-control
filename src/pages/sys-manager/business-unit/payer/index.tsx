@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 import type { RouteChildrenProps } from 'react-router';
 import type { ProColumns} from '@ant-design/pro-components';
 import {
@@ -51,7 +51,6 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
 
     const {
         queryBusinessUnitProperty, queryPayCustomer, addPayCustomer, deletePayCustomer,
-
     } = useModel('manager.business-unit', (res: any)=> ({
         queryBusinessUnitProperty: res.queryBusinessUnitProperty,
         queryPayCustomer: res.queryPayCustomer,
@@ -74,10 +73,24 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
     // const [fetching, setFetching] = useState(false);            // TODO: 搜索Customer Loading 状态
     // const [dataSourceList, setDataSourceList] = useState([]);   // TODO: 搜索Customer返回数据
 
+    // 当state有值，页面被刷新的时，重置跳传地址。为了清空原来的搜索参数
+    useEffect(() => {
+        const handleBeforeUnload = () => {
+            if (state) {
+                history.push({pathname: '/manager/business-unit/payer'});
+            }
+        };
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [state]);
+
     /**
      * @Description: TODO 获取 付款方 集合
      * @author LLS
-     * @date 2023/7/19
+     * @date 2023/7/28
      * @param params    参数
      * @returns
      */
@@ -103,7 +116,6 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
      * @Description: TODO 查询付款方已关联客户信息
      * @author LLS
      * @date 2023/7/28
-     // * @param id    付款方id / 客户id  queryPayCustomer
      * @returns
      */
     async function handleQueryPayerCustomer (){
@@ -128,7 +140,6 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
      */
     const handleEditBUP = (record: APIPayer) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        // history.push({pathname: `/manager/business-unit/property/form/${btoa(record.id)}`});
         history.push({
             pathname: `/manager/business-unit/property/form/${btoa(record.id)}`,
             state: {
@@ -138,10 +149,18 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
         });
     }
 
-    const onFinish = async (val: APIPayer) => {
-        console.log(searchParams)
-        console.log(val)
-        await handleQueryPayer(searchParams);
+    const onFinish = async (val: APISearchBUParams) => {
+        console.log(searchParams);
+        console.log(val);
+        const params: APISearchBUParams = {
+            ...searchParams,
+            ...val,
+            createTimeStart: val.createTimeStart,
+            createTimeEnd: val.createTimeEnd,
+        };
+        console.log(params);
+        setSearchParams(params);
+        await handleQueryPayer(params);
     }
 
     const onFinishFailed = (val: any) => {
@@ -277,10 +296,12 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
             dataIndex: 'taxNum',
             width: '15%',
             align: 'center',
+            ellipsis: true,
         },
         {
             title: 'Payer Name',
             dataIndex: 'nameFullEn',
+            ellipsis: true,
             // width: '20%',
         },
         {
@@ -288,24 +309,28 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
             dataIndex: 'mdmCode',
             width: '15%',
             align: 'center',
+            ellipsis: true,
         },
         {
             title: 'CV-Center Number',
             dataIndex: 'cvCenterNumber',
             width: '15%',
             align: 'center',
+            ellipsis: true,
         },
         {
             title: 'OracleID(C)',
             dataIndex: 'oracleCustomerCode',
             width: '8%',
             align: 'center',
+            ellipsis: true,
         },
         {
             title: 'OracleID(V)',
             dataIndex: 'oracleSupplierCode',
             width: '8%',
             align: 'center',
+            ellipsis: true,
         },
         /*{
             title: 'Status',

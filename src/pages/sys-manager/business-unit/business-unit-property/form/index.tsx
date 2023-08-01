@@ -69,6 +69,7 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [customerTypeRequired, setCustomerTypeRequired] = useState(true);
     const [payerFlagDisabled, setPayerFlagDisabled] = useState(true);    // Payer 仅限 Customer，在供应商层面暂不考虑
+    const [salesNameValue, setSalesNameValue] = useState<string>('');
 
     // TODO: 客户类型
     // const [customerTypeID, setCustomerTypeID] = useState<number | null>(BUInfo.CTTypeItemClient);
@@ -120,6 +121,8 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
             if (id !== '0') {
                 newData = {...newData, ...natureOfCompanyLabel}
                 setPayerFlagDisabled(!newData.customerType)
+                setCustomerTypeRequired(newData?.vendorTypeList.length === 0)
+                setSalesNameValue(newData?.salesName)
                 // newData.businessLine = [`${newData.businessLine}`];
                 // newData.businessLine = newData.businessLineList;
             }
@@ -223,8 +226,11 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
         val.vendorTypeList = val.vendorTypeList?.toString();
         val.vendorFlag = val.vendorTypeList ? 1 : 0;
         val.customerFlag = val.customerType ? 1 : 0;
+        val.customerType = val.customerType ? val.customerType : null;
         val.payerFlag = val.payerFlag ? 1 : 0;
         val.reimbursementFlag = val.reimbursementFlag ? 1 : 0;
+        val.salesId = val.salesId ? val.salesId : null;
+        val.salesName = salesNameValue;
         if (id === '0') {
             // TODO: 新增业务单位属性
             val.businessUnitId = BUAndBUPCommonInfoVO?.buId;
@@ -431,6 +437,11 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                                 id={'salesId'}
                                 name={'salesId'}
                                 url={"/apiBase/user/queryUserCommon"}
+                                handleChangeData={(val: any, option: any) =>  {
+                                    console.log(option?.label)
+                                    setSalesNameValue(option?.label)
+                                }}
+                                handleClearData={() => setSalesNameValue('')}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4}>
@@ -571,16 +582,6 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                                         disabled={true}
                                         name="enterpriseType"
                                         placeholder=''
-                                        /*options={NATURE_OF_COMPANY.map((option) => ({
-                                            value: option.value,
-                                            label: option.label,
-                                        }))}*/
-                                        /*fieldProps={{
-                                            onChange: (e) => {
-                                                setParentValue(e)
-                                                form.setFieldsValue({natureOfCompany: null});
-                                            }
-                                        }}*/
                                     />
                                 </Col>
                                 <Col>
@@ -591,52 +592,10 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                                         disabled={true}
                                         name="natureOfCompany"
                                         placeholder=''
-                                        /*options={[]}
-                                        dependencies={['enterpriseType']}
-                                        shouldUpdate={(prevValues, curValues) => prevValues.enterpriseType !== curValues.enterpriseType}
-                                        request={async () => {
-                                            const selectedParent = NATURE_OF_COMPANY.find((option) => option.value === form.getFieldValue('enterpriseType'));
-                                            if (selectedParent) {
-                                                return selectedParent.children.map((child) => ({
-                                                    value: child.value,
-                                                    label: child.label,
-                                                }));
-                                            }
-                                            return [];
-                                        }}*/
                                     />
                                 </Col>
                             </Row>
                         </Col>
-                        {/*<Col xs={20} sm={20} md={20} lg={20} xl={6} xxl={8}>
-                            <ProFormSelect
-                                width='md'
-                                placeholder=''
-                                name='enterpriseType'
-                                options={[
-                                    {label: '私企（民营企业）', value: 1},
-                                    {label: '外企（外资企业）', value: 2},
-                                    {label: '央企', value: 3},
-                                    {label: '地方国企-省属', value: 4},
-                                    {label: '地方国企-市属', value: 5},
-                                    {label: '地方国企-其他', value: 6},
-                                ]}
-                            />
-                            <ProFormText name="name" label="姓名" />
-                            <ProFormSelect
-                                name="addr"
-                                width="md"
-                                label="与 name 联动的选择器"
-                                // dependencies 的内容会注入 request 中
-                                dependencies={['name']}
-                                request={async (param) => [
-                                    { label: param.name, value: 'all' },
-                                    { label: 'Unresolved', value: 'open' },
-                                    { label: 'Resolved', value: 'closed' },
-                                    { label: 'Resolving', value: 'processing' },
-                                ]}
-                            />
-                        </Col>*/}
                         <Col xs={24} sm={23} md={24} lg={24} xl={24} xxl={19}>
                             <Divider style={{marginTop: '-6px'}}/>
                         </Col>

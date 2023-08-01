@@ -19,7 +19,8 @@ interface Props {
     placeholder?: string,   // 提示信息
     required?: boolean,
     allowClear?: boolean,
-    handleChangeData?: (val: any, option?: any) => void,   // 选中后，返回的结果
+    handleChangeData?: (val?: any, option?: any) => void,   // 选中后，返回的结果
+    handleClearData?: () => void,                           // 清楚选中的结果
 }
 
 // TODO: isSearch === 0：开始第一次搜索；isSearch === 1 时，可搜索；isSearch === 2：搜索完后，选中结果
@@ -89,6 +90,7 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
                         isSearch = 0;
                     }
                 },
+                onClear: props.handleClearData,
             }}
             rules={[{ required: !!required, message: label }]}
             // @ts-ignore
