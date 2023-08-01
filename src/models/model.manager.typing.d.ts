@@ -53,12 +53,13 @@ declare namespace APIManager {
         id: string,                       // TODO: 主键 ID
         nameFullEn?: string;              // TODO: 全称(英文，统一名称必填)
         taxNum?: string;                  // TODO: 税号
-        cityId?: number | null;           // TODO: 城市id
+        cityId?: string;                  // TODO: 城市id
         cityName?: string;                // TODO: 城市名称
         internalCode?: string;            // TODO: 由6位数字组成的内部编码,(用于上传BMS)
         mdmCode?: string;                 // TODO: MDM代码
         mdmStatus?: number | null;        // TODO: MDM-认证状态 1-未提交  2-审批中  3-审批通过  4-审批失败
         parentCompanyId?: number | null;  // TODO: 上级公司ID
+        parentCompanyName?: string;       // TODO: 上级公司名称
         scac?: string;                    // TODO: 船公司代码
         organizationCode?: string;        // TODO: 组织机构代码
         internalCompanyCode?: string;     // TODO: 内部公司组织代码

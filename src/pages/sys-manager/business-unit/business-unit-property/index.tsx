@@ -164,7 +164,13 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
     const onFinish = async (val: APISearchBUParams) => {
         console.log(searchParams);
         console.log(val);
-        const params: APISearchBUParams = {...searchParams, ...val, bupType: val.bupType};
+        const params: APISearchBUParams = {
+            ...searchParams,
+            ...val,
+            bupType: val.bupType,
+            createTimeStart: val.createTimeStart,
+            createTimeEnd: val.createTimeEnd,
+        };
         console.log(params);
         setSearchParams(params);
         await handleQueryBUP(params);
@@ -485,8 +491,8 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
                             allowClear={false}
                             isShowLabel={true}
                             label="BU Name"
-                            id={'parentCompanyId'}
-                            name={'parentCompanyId'}
+                            id={'buNameId'}
+                            name={'buNameId'}
                             filedValue={'buId'}
                             filedLabel={'buName'}
                             url={"/apiBase/businessUnit/queryBusinessUnitCommon"}

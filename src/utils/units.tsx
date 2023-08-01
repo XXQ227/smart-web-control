@@ -884,6 +884,32 @@ export function getCreditScore (target: any, op_node: number, op_value: any) {
 }
 
 /**
+ * @Description: TODO: Nature of a Company 根据后台传回来的natureOfCompany参数，找到对应的enterpriseType的值
+ * @author LLS
+ * @date 2023/7/25
+ * @param data    数据集合
+ * @param natureOfCompany   natureOfCompany参数
+ * @returns
+ */
+export function getValue (data: any[], natureOfCompany?: string): any {
+    const value = Number(natureOfCompany);
+    if (natureOfCompany) {
+        for (const item of data) {
+            if (item.value === value) {
+                return item.label;
+            }
+            if (item.children) {
+                const label = getLabelByValue(item.children, natureOfCompany);
+                if (label) {
+                    return {enterpriseType: item.value};
+                }
+            }
+        }
+    }
+    return null;
+}
+
+/**
  * @Description: TODO: Nature of a Company 根据后台传回来的natureOfCompany参数，找到对应的label名称
  * @author LLS
  * @date 2023/7/25

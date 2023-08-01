@@ -116,7 +116,12 @@ const BusinessUnitListIndex: React.FC<RouteChildrenProps> = (props) => {
     const onFinish = async (val: APISearchBUParams) => {
         console.log(searchParams);
         console.log(val);
-        const params: APISearchBUParams = {...searchParams, ...val, bupType: val.bupType};
+        const params: APISearchBUParams = {
+            ...searchParams,
+            ...val,
+            createTimeStart: val.createTimeStart,
+            createTimeEnd: val.createTimeEnd,
+        };
         console.log(params);
         setSearchParams(params);
         await handleQueryBU(params);
