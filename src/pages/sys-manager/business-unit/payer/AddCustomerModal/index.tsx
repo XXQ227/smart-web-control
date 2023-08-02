@@ -70,7 +70,7 @@ const AddCustomerModal: React.FC<Props> = (props) => {
             const qty = 10;
             // TODO: 接口返回的键值
             const resValue: string = 'taxNum';
-            const resLabel: string = 'label';
+            const resLabel: string = 'nameFullEn';
             fetchData(val, url, query, qty, resValue, resLabel).then((result: any) => {
                 console.log(result)
                 setDataSourceList(result);

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProFormInstance} from '@ant-design/pro-components';
 import {
@@ -140,7 +140,7 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
         val.cityName = cityList.find(city => city.value === val.cityId)?.label ?? '';
         val.industryName = IndustryList.find((industry: any) => industry.value === val.industryType)?.label ?? '';
         console.log(parentCompanyNameValue);
-        val.parentCompanyId = val.parentCompanyId ? val.parentCompanyId : null;
+        val.parentCompanyId = val.parentCompanyId ? val.parentCompanyId : '';
         val.parentCompanyName = parentCompanyNameValue;
         val.establishedDate = val.establishedDate ? val.establishedDate : '';
         if (id === '0') {

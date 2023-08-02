@@ -132,6 +132,15 @@ export async function queryPayCustomerAPI(body: APIManager.BUP, options?: { [key
     });
 }
 
+/** TODO: 查询客户已关联付款方信息 */
+export async function queryCustomerPayerAPI(body: APIManager.BUP, options?: { [key: string]: any }) {
+    return request(`/apiBase/businessUnitProperty/queryCustomerPayer`, {
+        method: 'POST',
+        body,
+        ...(options || {}),
+    });
+}
+
 /** TODO: 新增客户与付款方关联 */
 export async function addPayCustomerAPI(body: any, options?: { [key: string]: any }) {
     return request(`/apiBase/businessUnitProperty/addPayCustomer`, {

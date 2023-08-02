@@ -15,7 +15,7 @@ import {
     queryBusinessUnitAPI,
     queryBusinessUnitInfoAPI,
     editBusinessUnitAPI,
-    operateBusinessUnitAPI
+    operateBusinessUnitAPI, queryCustomerPayerAPI
 } from '@/services/smart/manager/business-unit';
 import type React from "react";
 import {useCallback, useState} from "react";
@@ -200,6 +200,13 @@ export default (callback: T, deps: React.DependencyList) => {
         return response;
     }, []);
 
+    // TODO: 查询客户已关联付款方信息
+    const queryCustomerPayer = useCallback(async (params: APIBUP) => {
+        const response = await queryCustomerPayerAPI(params);
+        if (!response) return;
+        return response;
+    }, []);
+
     // TODO: 新增客户与付款方关联
     const addPayCustomer = useCallback(async (params: any)=> {
         return await addPayCustomerAPI(params);
@@ -239,6 +246,7 @@ export default (callback: T, deps: React.DependencyList) => {
         editBusinessUnitProperty,
         operateBusinessUnitProperty,
         queryPayCustomer,
+        queryCustomerPayer,
         addPayCustomer,
         deletePayCustomer,
         queryBusinessUnitPropertyCreditInfo,
