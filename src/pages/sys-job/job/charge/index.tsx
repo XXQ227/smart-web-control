@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import {FooterToolbar, PageContainer, ProCard, ProForm} from '@ant-design/pro-components';
 import {Button, Col, Form, message, Row} from 'antd';
-import {history, useModel} from 'umi';
+import {history, useModel, useParams} from 'umi';
 import {getFormErrorMsg} from '@/utils/units';
 import ChargeTable from '@/pages/sys-job/job/charge/chargeTable';
 import Agent from '@/pages/sys-job/job/charge/agent';
@@ -14,8 +14,8 @@ type APICGInfo = APIModel.PRCGInfo;
 
 let isLoadingData = false;
 const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
-    // @ts-ignore
-    const {match: {params}} = props;
+    const params: any = useParams();
+    const id = atob(params.id);
     //region TODO: 数据层
     const {
         JobChargeInfo: {PayCGList, ReceiveCGList, ProxyCGList}, getCJobCGByID
@@ -28,7 +28,6 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
     /** 实例化Form */
     const [form] = Form.useForm();
 
-    const [jobID, setJobID] = useState(0);
     // TODO: 用来判断是否是第一次加载数据
     const [loading, setLoading] = useState(false);
 
