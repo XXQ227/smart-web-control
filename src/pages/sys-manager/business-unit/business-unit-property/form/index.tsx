@@ -117,14 +117,14 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
             const newInfoVO: APIBUP = {...BUAndBUPCommonInfoVO, ...natureOfCompanyLabel};
             setBUAndBUPCommonInfoVO(newInfoVO)
             let newData = result.data || newInfoVO;
-            // TODO: 业务线数据转化
             if (id !== '0') {
                 newData = {...newData, ...natureOfCompanyLabel}
                 setPayerFlagDisabled(!newData.customerType);
                 setCustomerTypeRequired(newData?.vendorTypeList.length === 0);
                 setSalesNameValue(newData?.salesName);
-                // newData.businessLine = [`${newData.businessLine}`];
-                // newData.businessLine = newData.businessLineList;
+                // TODO: 业务线和供应商类型数据转化
+                newData.businessLine = newData?.businessLine.split(",").map((item: string) => item.trim());
+                newData.vendorTypeList = newData?.vendorTypeList.split(",").map((item: string) => item.trim());
             }
             console.log(newData);
             setBUPInfoVO(newData);
@@ -221,21 +221,21 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
         delete val?.taxNum;
         delete val?.enterpriseType;
         delete val?.natureOfCompany;
-        delete val?.sinotransCompanyID;
+        delete val?.internalCompanyCode;
         val.businessLine = val.businessLine?.toString();
         val.vendorTypeList = val.vendorTypeList?.toString();
         val.vendorFlag = val.vendorTypeList ? 1 : 0;
         val.customerFlag = val.customerType ? 1 : 0;
-        val.customerType = val.customerType ? val.customerType : null;
+        val.customerType = val.customerType ? val.customerType : '';
         val.payerFlag = val.payerFlag ? 1 : 0;
         val.reimbursementFlag = val.reimbursementFlag ? 1 : 0;
-        val.salesId = val.salesId ? val.salesId : null;
+        val.salesId = val.salesId ? val.salesId : '';
         val.salesName = salesNameValue;
         if (id === '0') {
             // TODO: 新增业务单位属性
             val.businessUnitId = BUAndBUPCommonInfoVO?.buId;
             val.branchId = "1665596906844135426";
-            console.log(val)
+            console.log(val);
             result = await addBusinessUnitProperty(val);
         } else {
             // TODO: 编辑业务单位属性
@@ -538,12 +538,13 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                                 rules={[{max: 15, message: 'length: 15'}]}
                             />
                         </Col>
+                        {/* TODO: 内部公司组织代码 */}
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormText
                                 disabled={true}
                                 placeholder=''
                                 label='Sinotrans Company ID'
-                                name='sinotransCompanyID'
+                                name='internalCompanyCode'
                             />
                         </Col>
                     </Row>

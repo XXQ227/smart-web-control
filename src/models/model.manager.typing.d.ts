@@ -58,7 +58,7 @@ declare namespace APIManager {
         internalCode?: string;            // TODO: 由6位数字组成的内部编码,(用于上传BMS)
         mdmCode?: string;                 // TODO: MDM代码
         mdmStatus?: number | null;        // TODO: MDM-认证状态 1-未提交  2-审批中  3-审批通过  4-审批失败
-        parentCompanyId?: number | null;  // TODO: 上级公司ID
+        parentCompanyId?: string;         // TODO: 上级公司ID
         parentCompanyName?: string;       // TODO: 上级公司名称
         scac?: string;                    // TODO: 船公司代码
         organizationCode?: string;        // TODO: 组织机构代码
@@ -89,7 +89,7 @@ declare namespace APIManager {
         payerFlag?: number | null;        // TODO: 付款方标识
         reimbursementFlag?: number | null;// TODO: 代收代付标识
         customerFlag?: number | null;     // TODO: 客户标识
-        customerType?: number | null;     // TODO: 客户类型  1-直客  2-同行  3-招商  4-中外运公司  5-船公司
+        customerType?: string;            // TODO: 客户类型  1-直客  2-同行  3-招商  4-中外运公司  5-船公司
         vendorFlag?: number | null;       // TODO: 供应商标识
         vendorTypeList?: string;          // TODO: 供应商类型（多选） 1-订舱代理 2-船公司（承运） 3-航空公司 4-班列公司 5-目的港代理 6-仓库 7-堆场 8-码头 9-报关公司 10-运输公司 11-政府机构 12-个人
         address?: string;                 // TODO: 地址(默认英文)
@@ -106,7 +106,7 @@ declare namespace APIManager {
         originalMessage?: string;         // TODO: 客商返回原始报文
         businessLine?: string;            // TODO: 业务线 1-货代 2-工程 3-合同物流 4-电商 5-船代 6-仓储
         remark?: string;                  // TODO: 备注
-        salesId?: number | null;          // TODO: 销售人员id
+        salesId?: string;                 // TODO: 销售人员id
         salesName?: string;               // TODO: 销售人员名称
         cdhStatus?: number | null;        // TODO: CDH申请状态 1-客户 2-供应商 3-客户&供应商 4-申请中
         cssStatus?: number | null;        // TODO: CSS申请状态 0-申请中 3-成功 4-失败
@@ -126,7 +126,7 @@ declare namespace APIManager {
         taxNum?: string;                  // TODO: 税号
         enterpriseType?: string;          // TODO: 企业类型
         natureOfCompany?: string;         // TODO: 所有制性质
-        sinotransCompanyID?: string;      // TODO: 内部公司组织代码
+        internalCompanyCode?: string;     // TODO: 内部公司组织代码
     };
 
     // TODO: 行业

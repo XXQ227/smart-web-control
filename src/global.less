@@ -740,16 +740,19 @@ ol {
   }
 }
 // TODO: 港口
-.antd-pro-table-port-list{
-  .ant-pro-card-body{
+.antd-pro-table-port-list {
+  .ant-pro-card-body {
     padding: 0!important;
   }
-  .ant-table-content{
-    .ant-table-tbody{
-      .ant-table-cell{
+  .ant-table-content, .ant-table-body {
+    .ant-table-tbody {
+      .ant-table-cell {
         padding: 8px 6px!important;
       }
     }
+  }
+  .cursorStyle span {
+    cursor: pointer;
   }
 }
 .ant-footer-tool-bar{
@@ -883,7 +886,7 @@ ol {
     }
 
     .ant-modal-footer {
-      height: 80px;
+      height: 75px;
       border: none !important;
       padding-right: 35px;
       .ant-btn:not(.ant-modal-relationship-add-customer) {
@@ -905,4 +908,8 @@ ol {
       }
     }
   }
+}
+
+.ant-modal-customer-payer .ant-modal-content .ant-modal-footer {
+  height: 60px !important;
 }

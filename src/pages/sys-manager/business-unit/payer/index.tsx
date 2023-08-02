@@ -50,28 +50,32 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
     const searchLocation = state ? (state as LocationState)?.searchParams : '';
 
     const {
-        queryBusinessUnitProperty, queryPayCustomer, addPayCustomer, deletePayCustomer,
+        queryBusinessUnitProperty, queryPayCustomer, queryCustomerPayer, addPayCustomer, deletePayCustomer,
     } = useModel('manager.business-unit', (res: any)=> ({
         queryBusinessUnitProperty: res.queryBusinessUnitProperty,
         queryPayCustomer: res.queryPayCustomer,
+        queryCustomerPayer: res.queryCustomerPayer,
         addPayCustomer: res.addPayCustomer,
         deletePayCustomer: res.deletePayCustomer,
     }));
 
-    const [relationShipVisible, setRelationShipVisible] = useState<boolean>(false);
-    const [addCustomerVisible, setAddCustomerVisible] = useState<boolean>(false);
+    const [payerCustomerVisible, setPayerCustomerVisible] = useState<boolean>(false);    // Payer 与 Customer 的关系弹框
+    const [addCustomerVisible, setAddCustomerVisible] = useState<boolean>(false);        // 添加客户弹框
+    const [customerPayerVisible, setCustomerPayerVisible] = useState<boolean>(false);    // 查看 Customer 有哪些 Payer 弹框
     const [loading, setLoading] = useState<boolean>(false);
-    const [relationShipLoading, setRelationShipLoading] = useState<boolean>(false);
+    const [payerCustomerLoading, setPayerCustomerLoading] = useState<boolean>(false);
+    const [customerPayerLoading, setCustomerPayerLoading] = useState<boolean>(false);
     const [PayerListVO, setPayerListVO] = useState<APIPayer[]>([]);
     const [CustomerListVO, setCustomerListVO] = useState<APIPayer[]>([]);
+    const [modalPayerListVO, setModalPayerListVO] = useState<APIPayer[]>([]);
     const [searchParams, setSearchParams] = useState<APISearchBUParams>(searchLocation || searchQueryBUP);
     const [pagination, setPagination] = useState<any>(initPagination)
 
     const [payerHighlightedRow, setPayerHighlightedRow] = useState(null);
     const [customerHighlightedRow, setCustomerHighlightedRow] = useState(null);
-    const [modalPosition, setModalPosition] = useState({ top: 200 });
-    // const [fetching, setFetching] = useState(false);            // TODO: 搜索Customer Loading 状态
-    // const [dataSourceList, setDataSourceList] = useState([]);   // TODO: 搜索Customer返回数据
+    const [payerCustomerModalPosition, setPayerCustomerModalPosition] = useState({ top: 100 });
+    const [customerPayerModalPosition, setCustomerPayerModalPosition] = useState({ top: 100 });
+    const [saveButtonDisabled, setSaveButtonDisabled] = useState(CustomerListVO.length === 0);
 
     // 当state有值，页面被刷新的时，重置跳传地址。为了清空原来的搜索参数
     useEffect(() => {
@@ -87,6 +91,36 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
         };
     }, [state]);
 
+    useEffect(() => {
+        const newData: APIPayer[] = ls.cloneDeep(CustomerListVO);
+        // TODO: 过滤出没有添加过的客户列表
+        const filteredCustomerIds: APIPayer[] = newData.filter(customer => customer?.isAdd === true)
+        if (filteredCustomerIds.length === 0) {
+            setSaveButtonDisabled(true)
+        } else {
+            // TODO：当有 没有添加过的客户 时，保存按钮可以使用
+            setSaveButtonDisabled(false)
+        }
+    }, [CustomerListVO]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (payerCustomerVisible && payerHighlightedRow !== null) {
+                await handleQueryPayerCustomer();
+            }
+        };
+        fetchData();
+    }, [payerCustomerVisible, payerHighlightedRow]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (customerPayerVisible && customerHighlightedRow !== null) {
+                await handleQueryCustomerPayer();
+            }
+        };
+        fetchData();
+    }, [customerPayerVisible, customerHighlightedRow]);
+
     /**
      * @Description: TODO 获取 付款方 集合
      * @author LLS
@@ -99,7 +133,6 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
         const result: API.Result = await queryBusinessUnitProperty(params);
         if (result.success) {
             setPayerListVO(result.data);
-            console.log(result.data)
             setPagination({
                 current: result.current,
                 pageSize: result.size,
@@ -119,15 +152,32 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     async function handleQueryPayerCustomer (){
-        setRelationShipLoading(true);
+        setPayerCustomerLoading(true);
         const result: API.Result = await queryPayCustomer({id: payerHighlightedRow});
         if (result.success) {
             setCustomerListVO(result.data);
-            console.log(result.data);
         } else {
             message.error(result.message);
         }
-        setRelationShipLoading(false);
+        setPayerCustomerLoading(false);
+        return result;
+    }
+
+    /**
+     * @Description: TODO 查询客户已关联付款方信息
+     * @author LLS
+     * @date 2023/8/2
+     * @returns
+     */
+    async function handleQueryCustomerPayer (){
+        setCustomerPayerLoading(true);
+        const result: API.Result = await queryCustomerPayer({id: customerHighlightedRow});
+        if (result.success) {
+            setModalPayerListVO(result.data);
+        } else {
+            message.error(result.message);
+        }
+        setCustomerPayerLoading(false);
         return result;
     }
 
@@ -150,21 +200,17 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
     }
 
     const onFinish = async (val: APISearchBUParams) => {
-        console.log(searchParams);
-        console.log(val);
         const params: APISearchBUParams = {
             ...searchParams,
             ...val,
             createTimeStart: val.createTimeStart,
             createTimeEnd: val.createTimeEnd,
         };
-        console.log(params);
         setSearchParams(params);
         await handleQueryPayer(params);
     }
 
     const onFinishFailed = (val: any) => {
-        console.log(val);
         const errInfo = getFormErrorMsg(val);
         message.error(errInfo);
     }
@@ -173,62 +219,74 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
      * @Description: TODO: 弹框开启关闭
      * @author LLS
      * @date 2023/7/28
-     * @param operationType   1: Customer 与 Payer 的关系弹框开启关闭 2: 添加客户弹框开启关闭 3: 查看客户有哪些 Payer弹框开启关闭
+     * @param operationType   1: Payer 与 Customer 的关系弹框开启关闭 2: 添加客户弹框开启关闭 3: 查看 Customer 有哪些 Payer 弹框开启关闭
      * @param record          操作当前 行
      * @returns
      */
     const handleModal = (operationType: number, record?: any) => {
         if (operationType === 1) {
-            // 1: Customer 与 Payer 的关系弹框开启关闭
-            setPayerHighlightedRow(relationShipVisible ? null : record.id);  // 打开弹框，高亮当前行；否则，取消高亮
-            if (!relationShipVisible) {
+            // 1: Payer 与 Customer 的关系弹框开启关闭
+            setPayerHighlightedRow(payerCustomerVisible ? null : record.id);  // 打开弹框，高亮当前行；否则，取消高亮
+            if (!payerCustomerVisible) {
                 // 获取行在页面上的位置
                 const rowElement = document.getElementById(`row-${record.id}`);
                 if (rowElement) {
                     const rowRect = rowElement.getBoundingClientRect();
-                    // console.log('Row Position:', rowRect);
                     let top = rowRect.top
                     if (rowRect.top > 630) {
-                        top = top - 425;
+                        top = top - 440;
                     } else {
                         top = top + 57;
                     }
-                    setModalPosition({ top });
+                    setPayerCustomerModalPosition({ top });
                 }
-
             }
-            setRelationShipVisible(!relationShipVisible);
+            setPayerCustomerVisible(!payerCustomerVisible);
         } else if (operationType === 2) {
             // 2: 添加客户弹框开启关闭
             setAddCustomerVisible(!addCustomerVisible);
         } else {
-
+            // 3: 查看 Customer 有哪些 Payer 弹框开启关闭
+            setCustomerHighlightedRow(customerPayerVisible ? null : record.id);  // 打开弹框，高亮当前行；否则，取消高亮
+            if (!customerPayerVisible) {
+                // 获取行在页面上的位置
+                const rowElement = document.getElementById(`row-${record.id}`);
+                if (rowElement) {
+                    const rowRect = rowElement.getBoundingClientRect();
+                    let top = rowRect.top
+                    if (rowRect.top < 500) {
+                        top = top + 60;
+                    } else {
+                        top = 100;
+                    }
+                    setCustomerPayerModalPosition({ top });
+                }
+            }
+            setCustomerPayerVisible(!customerPayerVisible);
         }
     };
 
     // 判断客户是否已经存在列表中
     const isDuplicate = (newData: APIPayer[], val: APIPayer): boolean => {
-        return newData.some((item) => item.taxNum === val.taxNum);
+        return newData.some((item) => item.id === val.id);
     };
 
-    // 关闭添加客户弹框，把客户行数据更新到 Customer 与 Payer 的关系弹框列表中
-    const handleOk = (val: any) => {
+    // 关闭添加客户弹框，把客户行数据更新到 Payer 与 Customer 的关系弹框列表中
+    const handleOk = (val: APIPayer) => {
         handleModal(2);
         const newData: APIPayer[] = ls.cloneDeep(CustomerListVO);
         if (isDuplicate(newData, val)) {
             message.error("This customer has already been added.");
         } else {
             const customerData: APIPayer = {
-                id: val.value,
+                id: val.id,
                 taxNum: val.taxNum,
-                nameFullEn: val.label,
-                isAdd: false,
+                nameFullEn: val.nameFullEn,
+                isAdd: true,
             };
             newData.push(customerData);
             setCustomerListVO(newData);
         }
-        // console.log(val);
-        // console.log(CustomerListVO)
     };
 
     /**
@@ -238,26 +296,25 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const handleAddRelationShip = async () => {
-        setRelationShipLoading(true);
+        setPayerCustomerLoading(true);
         const newData: APIPayer[] = ls.cloneDeep(CustomerListVO);
-        console.log(newData)
         // 过滤出没有添加过的客户Id
         const filteredCustomerIds: string[] = newData
-            .filter(customer => customer?.isAdd === false)
+            .filter(customer => customer?.isAdd === true)
             .map(customer => customer.id);
-        console.log(filteredCustomerIds);
-        console.log(payerHighlightedRow);
         const param: any = {
             customerId: filteredCustomerIds,
             payerId: payerHighlightedRow,
         };
         const result: API.Result = await addPayCustomer(param);
         if (result.success) {
+            const customersWithoutIsAdd: APIPayer[] = CustomerListVO.map(({ isAdd, ...rest }) => rest);
+            setCustomerListVO(customersWithoutIsAdd)
             message.success('Success!');
         } else {
             message.error(result.message);
         }
-        setRelationShipLoading(false);
+        setPayerCustomerLoading(false);
     }
 
     /**
@@ -269,14 +326,18 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const handleOperateCustomer = async (record: APIPayer, index: number) => {
-        setRelationShipLoading(true);
+        setPayerCustomerLoading(true);
         let result: API.Result = {success: false};
         const newData: APIPayer[] = ls.cloneDeep(CustomerListVO);
         // TODO: 【删除】 操作
-        if (!record?.isAdd) {
+        if (record?.isAdd) {
             result.success = true;
         } else {
-            result = await deletePayCustomer({id: record.id});
+            const param: any = {
+                customerId: record.id,
+                payerId: payerHighlightedRow,
+            };
+            result = await deletePayCustomer(param);
         }
         // TODO: 删除当前行，更新本地数据
         newData.splice(index, 1);
@@ -287,7 +348,7 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
         } else {
             message.error(result.message);
         }
-        setRelationShipLoading(false);
+        setPayerCustomerLoading(false);
     }
 
     const columns: ProColumns<APIPayer>[] = [
@@ -302,7 +363,6 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
             title: 'Payer Name',
             dataIndex: 'nameFullEn',
             ellipsis: true,
-            // width: '20%',
         },
         {
             title: 'MDM Number',
@@ -376,24 +436,40 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
             title: 'Action',
             width: 75,
             align: 'center',
+            className: 'cursorStyle',
             render: (text, record, index) => {
                 return (
                     <Fragment>
                         <CustomizeIcon
-                            hidden={!record.isAdd}
+                            hidden={record.isAdd}
                             type={'icon-payers'}
-                            onClick={() => handleModal(3)}
+                            onClick={() => handleModal(3, record)}
                         />
                         <Popconfirm
                             onConfirm={() => handleOperateCustomer(record, index)}
                             title="Sure to delete?" okText={'Yes'} cancelText={'No'}
                         >
-                            <DividerCustomize hidden={!record.isAdd}/>
+                            <DividerCustomize hidden={record.isAdd}/>
                             <DeleteOutlined color={'red'}/>
                         </Popconfirm>
                     </Fragment>
                 )
             }
+        },
+    ];
+
+    const payerColumns: ProColumns<APIPayer>[] = [
+        {
+            title: 'Payer Identity',
+            dataIndex: 'taxNum',
+            width: '25%',
+            align: 'center',
+            ellipsis: true,
+        },
+        {
+            title: 'Payer Name',
+            dataIndex: 'nameFullEn',
+            ellipsis: true,
         },
     ];
 
@@ -407,10 +483,6 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
                     // TODO: 焦点给到第一个控件
                     autoFocusFirstInput
                     initialValues={searchParams}
-                    // TODO: 设置默认值
-                    // formKey={'business-unit-information'}
-                    // TODO: 空间有改数据时触动
-                    // onValuesChange={handleProFormValueChange}
                     // TODO: 提交数据
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
@@ -504,39 +576,6 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
         )
     }
 
-    /*const rowClassName = (record: any) => {
-        // console.log(record.id)
-        // console.log(payerHighlightedRow)
-
-        // return record.id === payerHighlightedRow ? 'ant-table-row-highlight-row' : '';
-        return record.enableFlag ? 'ant-table-row-disabled' : record.id === payerHighlightedRow ? 'ant-table-row-highlight-row' : '';
-    };*/
-
-    /**
-     * @Description: TODO: change 事件
-     * @author LLS
-     * @date 2023/7/24
-     * @param record
-     * @returns
-     */
-    /*const handleChange = (record: any) => {
-        console.log(record)
-    }
-
-    const addCustomerColumns: ProColumns<APIPayer>[] = [
-        {
-            title: 'Customer Identity',
-            dataIndex: 'taxNum',
-            width: '25%',
-            align: 'center',
-        },
-        {
-            title: 'Customer Name',
-            dataIndex: 'nameFullEn',
-            // width: '20%',
-        },
-    ];*/
-
     return (
         <PageContainer
             header={{
@@ -565,25 +604,21 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
                     },
                 }}
                 rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : record.id === payerHighlightedRow ? 'ant-table-row-highlight-row' : ''}
-                // rowClassName={rowClassName} // 设置每一行的类名，用于实现高亮效果
                 onRow={(record) => ({
                     id: `row-${record.id}`, // 给每一行添加唯一的ref属性
                 })}
                 request={handleQueryPayer}
             />
 
+            {/* TODO: Payer 与 Customer 的关系弹框 */}
             <Modal
                 className={'ant-add-modal'}
-                style={{ top: modalPosition.top }}
-                // className={styles.addServiceModal}
-                open={relationShipVisible}
-                // open={true}
+                style={{ top: payerCustomerModalPosition.top }}
+                open={payerCustomerVisible}
                 onOk={() => handleModal(1)}
                 onCancel={() => handleModal(1)}
-                // onOk={handleAddService}
-                // onCancel={handleCancel}
                 title={'RelationShip'}
-                bodyStyle={{height: 260}}
+                bodyStyle={{height: 275}}
                 width={900}
                 footer={[
                     <Button
@@ -597,7 +632,7 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
                         Cancel
                     </Button>,
                     <Button
-                        disabled={CustomerListVO.length === 0}
+                        disabled={saveButtonDisabled}
                         htmlType={"submit"}
                         key="submit"
                         type="primary"
@@ -606,17 +641,21 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
                         Save
                     </Button>,
                 ]}
-                // footer={null}
             >
                 <Divider />
                 <ProTable<APIPayer>
                     className={'antd-pro-table-port-list'}
+                    // 最多显示五行，超过就出现滑条
+                    scroll={{ y: 195 }}
                     rowKey={'id'}
                     options={false}
                     bordered={true}
-                    loading={relationShipLoading}
+                    loading={payerCustomerLoading}
                     pagination={false}
                     rowClassName={(record)=> record.id === customerHighlightedRow ? 'ant-table-row-highlight-row' : ''}
+                    onRow={(record) => ({
+                        id: `row-${record.id}`, // 给每一行添加唯一的ref属性
+                    })}
                     columns={customerColumns}
                     dataSource={CustomerListVO}
                     search={false}
@@ -624,86 +663,51 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
                 />
             </Modal>
 
-            {/*添加客户弹框*/}
+            {/* TODO: 添加客户弹框 */}
             <AddCustomerModal
                 open={addCustomerVisible}
                 onOk={handleOk}
                 onCancel={() => handleModal(2)}
             />
-            {/*<Modal
-                className={'ant-add-modal'}
-                style={{ top: 550 }}
-                open={addCustomerVisible}
-                onOk={() => handleModal(2)}
-                onCancel={() => handleModal(2)}
-                title={'Add Customer'}
-                width={800}
+
+            {/* TODO: 查看 Customer 有哪些 Payer 弹框 */}
+            <Modal
+                className={'ant-add-modal ant-modal-customer-payer'}
+                style={{ top: customerPayerModalPosition.top }}
+                open={customerPayerVisible}
+                onCancel={() => handleModal(3)}
+                title={' '}
+                bodyStyle={{height: 243}}
+                width={760}
+                closable={false}
                 footer={[
-                    <Button htmlType={"button"} key="back" onClick={() => handleModal(2)}>
-                        Cancel
-                    </Button>,
-                    <Button
-                        htmlType={"submit"}
-                        key="submit"
-                        type="primary"
-                        onClick={()=> handleEditBUP({id: '0'})}
-                    >
-                        Save
-                    </Button>,
+                    <div key="footer-wrapper" style={{ display: 'flex', justifyContent: 'center' }}>
+                        <Button
+                            htmlType={"button"}
+                            key="back"
+                            type="primary"
+                            onClick={() => handleModal(3)}
+                        >
+                            Close
+                        </Button>
+                    </div>
                 ]}
             >
-                <Divider />
-
-                <Input
-                    id={'search-input'}
-                    autoComplete={'off'}
-                    autoFocus={true}
-                    // value={searchVal}
-                    placeholder={'Search'}
-                    // onChange={handleChangeInput}
-                    // onKeyDown={handleKeyDown}
-                    style={{borderRadius: '5px'}}
-                    prefix={<IconFont type={'icon-search'} style={{marginRight: '8px'}}/>}
-                />
-                {
-                    dataSourceList.length > 0 ?
-                        <ProTable<APIPayer>
-                            rowKey={'id'}
-                            options={false}
-                            bordered={true}
-                            loading={loading}
-                            pagination={false}
-                            columns={addCustomerColumns}
-                            dataSource={dataSourceList}
-                            search={false}
-                            showHeader={false}
-                            onRow={(record) => {
-                                return {
-                                    onClick: () => {
-                                        handleChange(record)
-                                    },
-                                }
-                            }}
-                        /> : null
-                }
-                <Table
-                    className={'table modal-table'}
+                <ProTable<APIPayer>
+                    className={'antd-pro-table-port-list'}
+                    // 最多显示五行，超过就出现滑条
+                    scroll={{ y: 195 }}
                     rowKey={'id'}
-                    loading={fetching}
+                    options={false}
+                    bordered={true}
+                    loading={customerPayerLoading}
                     pagination={false}
-                    dataSource={dataSourceList}
-                    columns={addCustomerColumns}
-                    showHeader={false}
-                    onRow={(record) => {
-                        return {
-                            onClick: () => {
-                                handleChange(record)
-                            },
-                        }
-                    }}
+                    columns={payerColumns}
+                    dataSource={modalPayerListVO}
+                    search={false}
+                    request={handleQueryCustomerPayer}
                 />
-
-            </Modal>*/}
+            </Modal>
         </PageContainer>
     )
 }
