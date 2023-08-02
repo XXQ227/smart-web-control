@@ -1,0 +1,564 @@
+@import '~antd/es/style/variable.less';
+
+.pageContainer {
+  padding: 20px 20px 0 20px;
+
+  .ant-pro-page-container-warp, .ant-page-header {
+    border-radius: 5.5px;
+  }
+
+  .ant-pro-page-container-children-content {
+    margin: 24px 0;
+  }
+
+  /*.ant-page-header {
+    padding: 0;
+  }
+  .ant-page-header-content {
+    padding: 28px 24px 0;
+  }*/
+
+  /*.ant-pro-page-container-warp, .ant-page-header {
+    padding: 0;
+    background-color: transparent !important;
+  }
+
+  .ant-page-header-content {
+    padding: 16px 24px;
+    background-color: #242525  !important;
+  }
+
+  .ant-page-header .ant-pro-page-container-detail {
+    padding: 16px 24px;
+    background-color: rgb(16, 19, 30);
+    border-radius: 5.5px;
+  }*/
+
+  .ant-page-header-footer {
+    .ant-tabs-nav-wrap .ant-tabs-nav-list {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .ant-tabs-nav-wrap .ant-tabs-tab, .ant-tabs-nav-add {
+      justify-content: center;
+      flex-grow: 1;
+    }
+
+    .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+      background-color: @primary-color !important;
+    }
+
+    .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn, .ant-tabs-tab-remove {
+      color: #fff;
+    }
+  }
+}
+
+// Tabs实现吸顶效果
+.stickyTabs {
+  .ant-page-header-content {
+    //padding-top: 35px;
+  }
+
+  .ant-pro-page-container-warp {
+    position: sticky;
+    //top: 0;
+    top: 35px;
+    z-index: 1;
+  }
+}
+
+.headerList {
+  margin-bottom: 4px;
+  :global {
+    .ant-descriptions-item-label {
+      color: #9699a6;
+    }
+
+    .ant-descriptions-item-content {
+      color: #d5d8df;
+    }
+  }
+}
+
+.basicInfoProForm {
+  :global {
+    .ant-space {
+      display: block;
+    }
+
+    .ant-space-item .ant-pro-card {
+      margin-bottom: 24px;
+    }
+  }
+
+  //region TODO: Job Payment表单样式
+  .pro-form-payment {
+    .site-space {
+      display: inline-flex !important;
+      gap: 0 !important;
+
+      @media (max-width: 768px) {
+        margin-top: 24px;
+      }
+
+      .ant-input-affix-wrapper {
+        border: 1px dashed rgb(151, 157, 155);
+      }
+
+      .site-space-span {
+        display: inline-block;
+        border-top: #797979 dashed 1px;
+        width: 30px;
+      }
+
+    }
+  }
+  //endregion TODO: Job Payment表单样式
+
+  //region TODO: Sea (Export) Basic表单样式
+  .seaExportBasic {
+    .completeDate label {
+      font-weight: bold;
+      color: rgb(211, 158, 89) !important;;
+    }
+
+    .siteSpace {
+      display: inline-flex !important;
+      gap: 0 !important;
+
+      :global {
+        .ant-picker {
+          border: 1px dashed rgb(151, 157, 155);
+        }
+      }
+
+      .siteSpaceSpan {
+        margin-bottom: 18px;
+        display: inline-block;
+        border-top: #797979 dashed 1px;
+        width: 30px;
+      }
+    }
+  }
+  //endregion TODO: Sea (Export) Basic表单样式
+
+
+  //region TODO: Sea (Export) Port表单样式
+  .seaExportPort {
+    padding-bottom: 20px;
+
+    .siteSpace {
+      display: inline-flex !important;
+      gap: 0 !important;
+
+      :global {
+        //.ant-form-item-control-input-content .ant-input {
+        //  border: 1px dashed rgb(151, 157, 155);
+        //}
+
+        .ant-form-item-control-input-content .pro-field-sm {
+          @media (min-width: 1900px) {
+            width: 265px;
+          }
+
+          @media (min-width: 2200px) {
+            width: 310px;
+          }
+
+          @media (min-width: 2400px) {
+            width: 350px;
+          }
+        }
+      }
+
+      .siteSpaceSpan {
+        display: inline-block;
+        border-top: #797979 dashed 1px;
+        width: 25px;
+      }
+
+      :global {
+        .ant-space-item {
+          &:last-child {
+            .ant-form-item-control-input-content .ant-input {
+              border: 1px dashed rgb(151, 157, 155);
+            }
+          }
+        }
+      }
+    }
+
+    .transhipmentPortTable {
+      :global {
+        .ant-table-tbody .ant-form-item {
+          margin: 0 !important;
+        }
+
+        .ant-table-tbody > tr > td {
+          padding: 0 !important;
+          border: none;
+        }
+
+        .ant-select-selector {
+          border-radius: 0 !important;
+        }
+
+        .ant-table-tbody tr:not(:first-child) td .ant-select-selector {
+          border-top: none !important;
+        }
+      }
+    }
+  }
+  //endregion TODO: Sea (Export) Port表单样式
+
+  //region TODO: Sea (Export) Containers表单样式
+  .seaExportContainers {
+    .tableHeaderContainer {
+      margin-bottom: 7px;
+      button {
+        border: none;
+        margin-right: 20px;
+      }
+
+      .ant-btn[disabled] {
+        background: transparent !important;
+      }
+    }
+
+    .summary {
+      .siteSpace {
+        display: inline-flex !important;
+        gap: 0 !important;
+
+        .siteSpaceSpan {
+          display: inline-block;
+          border-top: #797979 solid 1px;
+          width: 50px;
+        }
+
+        .loading, .cargo {
+          border: #797979 solid 1px;
+          border-radius: 6px;
+          padding: 3px 10px;
+
+          span {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+          }
+
+          span:not(:last-child) {
+            margin-right: 15px;
+          }
+
+          span b {
+            margin-left: 5px;
+            font-size: 18px;
+          }
+        }
+
+        .loading span b {
+          color: rgb(211, 158, 89) !important;
+        }
+      }
+
+      .iconfont {
+        margin-left: 15px;
+        margin-right: 15px;
+
+        svg {
+          width: 40px !important;
+          height: 40px !important;
+        }
+      }
+
+      @media (max-width: 1199px) {
+        .siteSpace {
+          display: flex !important;
+          justify-content: center;
+          align-items: center;
+
+          .siteSpaceSpan {
+            display: inline-block;
+            border-top: #797979 solid 1px;
+            width: 50px;
+          }
+        }
+
+        .iconfont {
+          display: block;
+          margin: 5px 0;
+        }
+      }
+
+      @media (min-width: 1200px) {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+  //endregion TODO: Sea (Export) Containers表单样式
+
+  //region TODO: Sea (Export) Containers表单样式
+  .seaExportBillOfLoading {
+    /*:global {
+      .ant-form-item:first-child {
+        margin-bottom: 7px !important;
+      }
+
+      .ant-form-item:not(:first-child) {
+        margin-bottom: 15px !important;
+      }
+
+      .ant-form-item-row {
+        flex-direction: row !important;
+      }
+
+      .ant-row .ant-form-item-label{
+        width: 25%;
+
+        @media (max-width: 600px) {
+          width: 33% !important;
+        }
+      }
+
+      .ant-row .ant-form-item-control {
+        width: 75%;
+
+        @media (max-width: 600px) {
+          width: 67% !important;
+        }
+
+      }
+    }*/
+
+    :global {
+      .ant-form-shipperInfoItem {
+        margin-bottom: 7px;
+
+        label {
+          display: inline-block;
+          width: 25% !important;
+
+          @media (max-width: 600px) {
+            width: 33% !important;
+          }
+        }
+
+        span.ant-input-affix-wrapper {
+          width: 75%;
+
+          @media (max-width: 600px) {
+            width: 67% !important;
+          }
+        }
+
+        .ant-select-dropdown {
+
+        }
+      }
+    }
+
+    /*:global {
+      .ant-form-shipperInfoItem {
+        margin-bottom: 7px;
+
+        !*label {
+          display: inline-block;
+          width: 25% !important;
+
+          @media (max-width: 600px) {
+            width: 33% !important;
+          }
+        }
+
+        span.ant-input-affix-wrapper {
+          width: 75%;
+
+          @media (max-width: 600px) {
+            width: 67% !important;
+          }
+        }*!
+
+        .ant-select-dropdown {
+
+        }
+      }
+    }*/
+
+  }
+  //endregion TODO: Sea (Export) Containers表单样式
+
+  //region TODO: Local Delivery样式
+  .localDelivery {
+    :global {
+      .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+        background-color: rgb(211, 158, 89) !important;
+      }
+
+      .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn, .ant-tabs-tab-remove {
+        color: #fff;
+      }
+    }
+
+    .antProCard {
+      margin-top: 20px;
+
+      :global {
+        .ant-pro-card-header {
+          padding: 10px 0;
+        }
+
+        .ant-pro-card-body {
+          padding: 24px 0;
+        }
+      }
+    }
+
+    // containerLayout表单样式
+    .containerLayout {
+      margin-top: 20px;
+      margin-bottom: 0;
+
+      .title {
+        margin-bottom: 40px;
+        :global {
+          button {
+            border: none;
+          }
+
+          .ant-btn[disabled] {
+            background: transparent !important;
+          }
+        }
+      }
+
+      :global {
+        .ant-space {
+          display: inline-flex;
+        }
+      }
+
+
+    }
+
+    .nonContainerLayout {
+      margin-bottom: 0;
+
+      .siteSpace {
+        display: inline-flex !important;
+        gap: 0 !important;
+
+        .siteSpaceSpan {
+          display: inline-block;
+          border-top: #797979 solid 1px;
+          width: 20px;
+        }
+
+      }
+    }
+
+    /*.tableStyle {
+      :global {
+        .ant-table.ant-table-bordered > .ant-table-container {
+          border-left: 1px solid #fff !important;
+        }
+
+        .ant-table-thead > tr > th {
+          color: #fff;
+          background-color: @primary-color !important;
+          border-top: 1px solid #fff !important;
+          border-right: 1px solid #fff !important;
+          border-bottom: 1px solid #fff !important;
+        }
+
+        .ant-table.ant-table-bordered > .ant-table-container > .ant-table-content > table > tbody > tr > td {
+          padding: 0;
+          border-right: 1px solid #fff !important;
+          border-bottom: 1px solid #fff !important;
+        }
+
+        .ant-table-tbody .ant-form-item {
+          margin: 0 !important;
+        }
+
+        .ant-table-empty .ant-table-tbody > tr.ant-table-placeholder td {
+          padding: 10px !important;
+        }
+
+        .ant-input, .ant-input-affix-wrapper, .ant-picker {
+          border: none;
+        }
+
+        // 被选中
+        .ant-table-tbody > tr.ant-table-row-selected > td,
+        .ant-table-tbody > tr.ant-table-row-selected > td .ant-input,
+        .ant-table-tbody > tr.ant-table-row-selected > td .ant-input-affix-wrapper,
+        .ant-table-tbody > tr.ant-table-row-selected > td .ant-picker
+        {
+          background: #12394a;
+        }
+
+      }
+    }*/
+
+    .remark {
+      .title {
+        :global {
+          button {
+            border: none;
+          }
+        }
+      }
+
+      .photoRemarkTable {
+        :global {
+          .textColor {
+            div {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+
+            a {
+              color:  rgb(211, 158, 89);
+            }
+
+            a:hover {
+              color: @primary-color;
+            }
+
+            .vertical-line {
+              display: inline-block;
+              height: 15px;
+              width: 1px;
+              background-color: rgb(211, 158, 89);
+              margin: 0 5px 0 6px;
+            }
+          }
+        }
+      }
+    }
+  }
+  //endregion TODO: Local Delivery样式
+
+  // Container List 表格
+  .containerTable {
+    margin-bottom: 25px;
+    :global {
+      .textCenter .ant-input, .textCenter .ant-input-affix-wrapper {
+        text-align: center;
+      }
+
+      .textRight .ant-input{
+        text-align: right;
+      }
+    }
+  }
+
+}
+

@@ -6,7 +6,7 @@ import {fetchData} from '@/utils/fetch-utils'
 import type {ColumnsType} from 'antd/es/table';
 
 interface Props {
-    name: any,
+    name?: any,
     // value?: any,             // ID 数据 / 其他字符
     text?: string,           // 显示 【Name】 数据
     url: string,    // 搜索地址
@@ -82,7 +82,6 @@ const SearchTable: React.FC<Props> = (props) => {
             // TODO: 初始数据，且做【loading】
             // setDataSourceList([]);
             fetchData(val, url, query, qty, resValue, resLabel).then((result: any) => {
-                console.log(result)
                 setDataSourceList(result);
                 setFetching(false);
             });
@@ -123,8 +122,10 @@ const SearchTable: React.FC<Props> = (props) => {
      * @returns
      */
     const handleChange = (record: any) => {
-        setShowText(record.label);
-        if (props.handleChangeData) props.handleChangeData(record.value, record);
+        setShowText(record.Name);
+        if (props.handleChangeData) props.handleChangeData(record.ID, record);
+        // setShowText(record.label);
+        // if (props.handleChangeData) props.handleChangeData(record.value, record);
         handleModal('');
     }
 
@@ -187,11 +188,11 @@ const SearchTable: React.FC<Props> = (props) => {
     }
 
     const columns: ColumnsType<any> = [
-        { title: 'Port', dataIndex: 'Name', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.Name},
-        { title: 'Code', align: 'center', width: 120, dataIndex: 'PortCode', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.PortCode},
-        { title: 'City', align: 'center', width: 260, dataIndex: 'City', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.City},
-        { title: 'Country', dataIndex: 'Country', width: 260, align: 'center', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.Country},
-        { title: 'Type', dataIndex: 'TypeCN', width: 60, align: 'center', className: 'columnsStyle', render: (_: any, record: any)=> record.data?.TypeEN}
+        { title: 'Port', dataIndex: 'Name', className: 'columnsStyle'},
+        { title: 'Code', align: 'center', width: 120, dataIndex: 'PortCode', className: 'columnsStyle',},
+        { title: 'City', align: 'center', width: 260, dataIndex: 'City', className: 'columnsStyle', },
+        { title: 'Country', dataIndex: 'Country', width: 260, align: 'center', className: 'columnsStyle', },
+        { title: 'Type', dataIndex: 'TypeCN', width: 60, align: 'center', className: 'columnsStyle', }
     ];
 
     return (
@@ -205,7 +206,8 @@ const SearchTable: React.FC<Props> = (props) => {
                 placeholder={'Click'}
                 onClick={handleModal}
                 prefix={<IconFont type={'icon-search'}/>}
-                className={`searchTable-input ${props.className}`}
+                // className={`searchTable-input ${props.className}`}
+                className={props.className}
             />
             {
                 !visible ? null :
