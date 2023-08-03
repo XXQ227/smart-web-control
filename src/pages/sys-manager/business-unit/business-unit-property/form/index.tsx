@@ -13,9 +13,7 @@ import {
     ProFormText,
     ProFormTextArea,
 } from '@ant-design/pro-components'
-import {Button, Col, Form, Row, Tag, Divider} from 'antd'
-// import {getUserID} from '@/utils/auths'
-// import SearchModal from '@/components/SearchModal'
+import {Button, Col, Form, Row, Divider} from 'antd'
 import {message} from 'antd/es'
 import ls from 'lodash';
 import {useModel, history} from 'umi'
@@ -27,27 +25,24 @@ import {ArrowLeftOutlined, SaveOutlined} from "@ant-design/icons";
 
 export type LocationState = Record<string, unknown>;
 type APIBUP = APIManager.BUP;
-// type APIBUAndBUPCommonInfo = APIManager.BUAndBUPCommonInfo;
 
 const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
     // @ts-ignore
     const {match: {params}, location: {state}} = props;
-    // console.log(state)
     const id = atob(params?.id);
     const [form] = Form.useForm();
     const formRef = useRef<ProFormInstance>();
     // const {current} = formRef;
     //region TODO: 数据层
     const {
-        queryBusinessUnitPropertyInfo, addBusinessUnitProperty, editBusinessUnitProperty, operateBusinessUnitProperty,
-        BUInfo,
+        queryBusinessUnitPropertyInfo, addBusinessUnitProperty, editBusinessUnitProperty,
+        operateBusinessUnitProperty, queryCustomerPayer,
     } = useModel('manager.business-unit', (res: any) => ({
-        BUInfo: res.BUInfo,
-
         queryBusinessUnitPropertyInfo: res.queryBusinessUnitPropertyInfo,
         addBusinessUnitProperty: res.addBusinessUnitProperty,
         editBusinessUnitProperty: res.editBusinessUnitProperty,
         operateBusinessUnitProperty: res.operateBusinessUnitProperty,
+        queryCustomerPayer: res.queryCustomerPayer,
     }));
 
     const {
@@ -61,11 +56,8 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
     const [BUPInfoVO, setBUPInfoVO] = useState<any>({});
 
     const [BUAndBUPCommonInfoVO, setBUAndBUPCommonInfoVO] = useState<APIBUP>((state as LocationState)?.BUParams as APIBUP || {});
-    const [ClientVO, setClientVO] = useState<API.APIKey$Value[]>(BUInfo.CTList);
+    const [PayerListVO , setPayerListVO] = useState<APIBUP[]>([]);
     // const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
-    /*const [companyNameEN, setCompanyNameEN] = useState<API.APIValue$Label>({
-        label: BUInfo.NameFullEN, value: BUInfo.ID
-    });*/
     const [loading, setLoading] = useState<boolean>(false);
     const [customerTypeRequired, setCustomerTypeRequired] = useState(true);
     const [payerFlagDisabled, setPayerFlagDisabled] = useState(true);    // Payer 仅限 Customer，在供应商层面暂不考虑
@@ -78,8 +70,8 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
     //endregion
 
     /*useEffect(() => {
-        if (BUInfo.CTList?.length !== ClientVO?.length) {
-            setClientVO(BUInfo.CTList);
+        if (BUInfo.CTList?.length !== PayerListVO?.length) {
+            setPayerListVO(BUInfo.CTList);
         }
         if (!!BUInfo.CTTypeItemClient && !customerTypeID) {
             setCustomerTypeID(BUInfo.CTTypeItemClient);
@@ -87,7 +79,7 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
         if (BUInfo.CTTypeItemListSupplier?.length > 0 && vendorTypeList?.length === 0) {
             setVendorTypeList(BUInfo.CVInfo.CTTypeItemListSupplier);
         }
-    }, [BUInfo.CTList, ClientVO?.length])*/
+    }, [BUInfo.CTList, PayerListVO?.length])*/
 
     /*useMemo(()=> {
         if (BUPInfoVO.NameFull && BUInfo.NameFull && BUPInfoVO.NameFull !== BUInfo.NameFull) {
@@ -110,53 +102,29 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
             await queryDictCommon({dictCodes: ['vendor_type']});
         }
         const result: any = await queryBusinessUnitPropertyInfo({id});
-        if (result.success) {
+        const payersResult: any = await queryCustomerPayer({id});
+        if (result.success && payersResult.success) {
             // TODO: Nature of a Company 根据后台传回来的natureOfCompany参数，找到对应的label名称
-            console.log(BUAndBUPCommonInfoVO.natureOfCompany)
-            const natureOfCompanyLabel: APIBUP = getLabelByValue(NATURE_OF_COMPANY, BUAndBUPCommonInfoVO.natureOfCompany || result.data.natureOfCompany);
+            const natureOfCompanyLabel: APIBUP = getLabelByValue(NATURE_OF_COMPANY, BUAndBUPCommonInfoVO.natureOfCompany || result.data?.natureOfCompany);
             const newInfoVO: APIBUP = {...BUAndBUPCommonInfoVO, ...natureOfCompanyLabel};
-            setBUAndBUPCommonInfoVO(newInfoVO)
+            setBUAndBUPCommonInfoVO(newInfoVO);
             let newData = result.data || newInfoVO;
             if (id !== '0') {
                 newData = {...newData, ...natureOfCompanyLabel}
-                setPayerFlagDisabled(!newData.customerType);
-                setCustomerTypeRequired(newData?.vendorTypeList.length === 0);
+                setPayerFlagDisabled(!newData?.customerType);
+                setCustomerTypeRequired(newData?.vendorTypeList?.length === 0);
                 setSalesNameValue(newData?.salesName);
                 // TODO: 业务线和供应商类型数据转化
                 newData.businessLine = newData?.businessLine.split(",").map((item: string) => item.trim());
-                newData.vendorTypeList = newData?.vendorTypeList.split(",").map((item: string) => item.trim());
+                newData.vendorTypeList = newData?.vendorTypeList?.split(",").map((item: string) => item.trim());
             }
-            console.log(newData);
             setBUPInfoVO(newData);
+            setPayerListVO(payersResult.data);
         } else {
-            message.error(result.message);
+            message.error(!result.success ? result.message : payersResult.message);
         }
         setLoading(false);
         return result;
-    }
-
-    /*const handleSelectPayers = (val: any, option: any) => {
-        const clientObj: API.APIKey$Value = ClientVO?.find((item: API.APIKey$Value) => item.Key === val) || {};
-        if (clientObj.Key) {
-            message.success('success!');
-        } else {
-            const clientArr: API.APIKey$Value[] = ls.cloneDeep(ClientVO)
-            clientArr.push({Key: val, Value: option.label});
-            message.success('success!');
-            setClientVO(clientArr);
-        }
-    }*/
-
-    /**
-     * @Description: TODO: 删除相关付款方
-     * @author XXQ
-     * @date 2023/5/6
-     * @param payerID   相关付款方 id
-     * @returns
-     */
-    const handleModalClose = (payerID: number) => {
-        const ClientOpt = ClientVO.filter((item: any) => item.Key !== payerID);
-        setClientVO(ClientOpt);
     }
 
     /**
@@ -235,12 +203,10 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
             // TODO: 新增业务单位属性
             val.businessUnitId = BUAndBUPCommonInfoVO?.buId;
             val.branchId = "1665596906844135426";
-            console.log(val);
             result = await addBusinessUnitProperty(val);
         } else {
             // TODO: 编辑业务单位属性
             val.id = id;
-            console.log(val)
             result = await editBusinessUnitProperty(val);
         }
         if (result.success) {
@@ -260,7 +226,6 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const onFinishFailed = (val: any) => {
-        console.log(val);
         const errInfo = getFormErrorMsg(val);
         message.error(errInfo);
     }
@@ -291,7 +256,8 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
         };
         const result: API.Result = await operateBusinessUnitProperty(param);
         if (result.success) {
-            message.success(param.operate ? 'Freeze Success' : 'UnFreeze Success');
+            message.success(param.operate ? 'Freeze Success' : 'Unfreeze Success');
+            setBUPInfoVO({...newData, enableFlag: param.operate});
         } else {
             message.error(result.message);
         }
@@ -332,8 +298,6 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                 // TODO: 设置默认值
                 initialValues={BUPInfoVO}
                 formKey={'business-unit-information'}
-                // TODO: 空间有改数据时触动
-                // onValuesChange={handleProFormValueChange}
                 // TODO: 提交数据
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
@@ -354,15 +318,6 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                                 label='BU Name'
                                 name='buName'
                             />
-                            {/*<SearchProFormSelect
-                                required
-                                qty={10}
-                                isShowLabel={true}
-                                label="BU Name"
-                                id={'parentCompanyId'}
-                                name={'parentCompanyId'}
-                                url={"/apiBase/businessUnit/queryBusinessUnitCommon"}
-                            />*/}
                         </Col>
                     </Row>
                     <Row gutter={rowGrid}>
@@ -438,7 +393,6 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                                 name={'salesId'}
                                 url={"/apiBase/user/queryUserCommon"}
                                 handleChangeData={(val: any, option: any) =>  {
-                                    console.log(option?.label)
                                     setSalesNameValue(option?.label)
                                 }}
                                 handleClearData={() => setSalesNameValue('')}
@@ -741,29 +695,11 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                             title={'Payers'}
                             headerBordered
                             collapsible
-                            /*extra={
-                                <SearchModal
-                                    qty={10}
-                                    isBtn={true}
-                                    title={'Payer'}
-                                    id={'search-payer'}
-                                    btnName={'Add Payer'}
-                                    url={'/api/MCommon/GetCTNameByStrOrType'}
-                                    query={{
-                                        CTType: 1, PageSize: 10, UserID: getUserID(),
-                                        SystemID: 8, IsJobCustomer: true, searchPayer: true
-                                    }}
-                                    handleChangeData={handleSelectPayers}
-                                />
-                            }*/
                         >
-                            <Row gutter={24}>
-                                <Col span={24}>
-                                    {ClientVO?.map((item: any) =>
-                                        <Tag key={item.Key} closable style={{margin: 6}}
-                                             onClose={() => handleModalClose(item.Key)}>
-                                            {item.Value}
-                                        </Tag>
+                            <Row gutter={rowGrid}>
+                                <Col xs={23} sm={22} md={23} lg={16} xl={21} xxl={15}>
+                                    {PayerListVO?.map((item: any) =>
+                                        <u key={item.id}>{item.nameFullEn}</u>
                                     )}
                                 </Col>
                             </Row>
@@ -779,7 +715,7 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                         className={!!BUPInfoVO?.enableFlag ? 'ant-unfreeze-button' : 'ant-freeze-button'}
                         style={{marginRight: 15}}
                     >
-                        Freeze
+                        {!!BUPInfoVO?.enableFlag ? 'Unfreeze' : 'Freeze'}
                     </Button>
                     <Button
                         key={'submit'}
@@ -791,8 +727,6 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                     </Button>
                 </FooterToolbar>
             </ProForm>
-
-
         </PageContainer>
     )
 }
