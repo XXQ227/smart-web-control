@@ -55,8 +55,10 @@ const Containers: React.FC<Props> = (props) => {
     const [cTNActualList, setCTNActualList] = useState<APIModel.CTNActualList[]>(CTNActualList || []);
 
     function handleRowChange(index: number, rowID: any, filedName: string, val: any, option?: any) {
+        console.log(index, rowID, filedName, val?.target?.value)
         const newData: any[] = ls.cloneDeep(containerList);
-        const target = newData.find((item: any)=> item.id === rowID);
+        const target = newData.find((item: any)=> item.id === rowID) || {};
+        console.log(target);
         target[filedName] = val?.target ? val.target.value : val;
 
         newData.splice(index, 1, target);

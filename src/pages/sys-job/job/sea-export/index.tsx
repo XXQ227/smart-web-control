@@ -12,12 +12,12 @@ import {Button, Form, message, Spin} from 'antd'
 import {LeftOutlined, SaveOutlined} from '@ant-design/icons'
 import {history} from '@@/core/history'
 import {getFormErrorMsg} from '@/utils/units'
-import {useParams} from 'umi'
-import {useModel} from '@@/plugin-model/useModel'
+import {useParams, useModel} from 'umi'
 
 const FormItem = Form.Item;
 
 const SeaExport: React.FC<RouteChildrenProps> = (props) => {
+    const [form] = Form.useForm();
     const params: any = useParams();
     const id = atob(params.id);
 
@@ -29,7 +29,6 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
         querySeaExportInfo: res.querySeaExportInfo,
     }));
 
-    const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
     const [SeaExportInfo, setSeaExportInfo] = useState<any>({});
 
@@ -60,6 +59,12 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
     const handleFinish = async (values: Record<string, any>) => {
         try {
             console.log(values)
+            // @ts-ignore
+            for (const item: string in values) {
+                if (item.indexOf('_table_') > -1) {
+                    delete values[item];
+                }
+            }
             // await fakeSubmitForm(values);
             message.success('提交成功');
         } catch {

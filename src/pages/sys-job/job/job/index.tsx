@@ -40,8 +40,8 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
         },
         terms: {
             incotermsId: 1,
-            serviceTypeId: '15',
-            serviceTypeName: 'CFS/DOOR',
+            shipmentTermId: '15',
+            shipmentTermName: 'CFS/DOOR',
             payMethod: 1,
             payableAtId: '',
             payableAtName: '',

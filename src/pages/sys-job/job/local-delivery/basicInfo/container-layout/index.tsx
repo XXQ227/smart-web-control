@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {ProCard, ProFormText, ProFormSwitch, ProFormDateTimePicker} from '@ant-design/pro-components';
 import {Col, Row, Form, Space, Button, Table, Popconfirm} from 'antd';
 import {getBranchID} from '@/utils/auths';
-import styles from "@/pages/sys-job/job/style.less";
 import {PlusCircleOutlined, DeleteOutlined} from "@ant-design/icons";
 import type { ColumnsType } from 'antd/es/table';
 import SearchModal from "@/components/SearchModal";
@@ -23,19 +22,19 @@ const FormItem = Form.Item;
 
 const initialContainerList: APIModel.ContainerList[] = [
     {
-        ID: 'ID1',
-        CTNModelID: 1,
-        CTNModelName: "20GP",
-        QTY: 1,
+        id: 'ID1',
+        ctnModelId: 1,
+        ctnModelName: "20GP",
+        qty: 1,
         IsSOC: false,
         Owner: "码头箱主",
         Remark: "abcde",
     },
     {
-        ID: 'ID2',
-        CTNModelID: 2,
-        CTNModelName: "40GP",
-        QTY: 2,
+        id: 'ID2',
+        ctnModelId: 2,
+        ctnModelName: "40GP",
+        qty: 2,
         IsSOC: true,
         Owner: "Owner456",
         Remark: "123",
@@ -54,25 +53,25 @@ const ContainerLayout: React.FC<Props> = (props) => {
     const columns: ColumnsType<APIModel.ContainerList> = [
         {
             title: 'SIZE',
-            dataIndex: 'CTNModelID',
-            key: 'CTNModelID',
+            dataIndex: 'ctnModelId',
+            key: 'ctnModelId',
             width: '10%',
             className: "textCenter",
             render: (text: any, record, index) => {
                 return (
                     <FormItem
-                        name={`CTNModelID${record.ID}`}
-                        initialValue={record.CTNModelName}>
+                        name={`CTNModelID${record.id}`}
+                        initialValue={record.ctnModelName}>
                         <SearchModal
                             qty={30}
-                            id={`CTNModelID${record.ID}`}
+                            id={`CTNModelID${record.id}`}
                             title={'SIZE'}
                             modalWidth={500}
-                            // value={record.CTNModelName}
-                            text={record.CTNModelName}
+                            // value={record.ctnModelName}
+                            text={record.ctnModelName}
                             query={{ Type: [6, 7].includes(NBasicInfo.OceanTransportTypeID) ? 5 : null, BranchID: getBranchID(), BizType1ID: NBasicInfo.BizType1ID }}
                             url={"/apiLocal/MCommon/GetCTNModelByStr"}
-                            handleChangeData={(val: any, option: any)=> handleRowChange(index, record.ID, 'CTNModelID', val, option)}
+                            handleChangeData={(val: any, option: any)=> handleRowChange(index, record.id, 'ctnModelId', val, option)}
                         />
                     </FormItem>
                 );
@@ -80,18 +79,18 @@ const ContainerLayout: React.FC<Props> = (props) => {
         },
         {
             title: 'QTY',
-            dataIndex: 'QTY',
-            key: 'QTY',
+            dataIndex: 'qty',
+            key: 'qty',
             width: '10%',
             className: "textCenter",
             render: (text: any, record, index) => {
                 return (
                     <ProFormText
-                        name={`QTY${record.ID}`}
-                        initialValue={record.QTY}
+                        name={`QTY${record.id}`}
+                        initialValue={record.qty}
                         placeholder={''}
                         fieldProps={{
-                            onChange: (e) => handleRowChange(index, record.ID, 'QTY', e)
+                            onChange: (e) => handleRowChange(index, record.id, 'qty', e)
                         }}
                     />
                 );
@@ -106,12 +105,12 @@ const ContainerLayout: React.FC<Props> = (props) => {
             render: (text: any, record, index) => {
                 return (
                     <ProFormSwitch
-                        name={`IsSOC${record.ID}`}
+                        name={`IsSOC${record.id}`}
                         initialValue={record.IsSOC}
                         checkedChildren="SOC"
                         unCheckedChildren="COC"
                         fieldProps={{
-                            onChange: (e) => handleRowChange(index, record.ID, 'IsSOC', e)
+                            onChange: (e) => handleRowChange(index, record.id, 'IsSOC', e)
                         }}
                     />
                 );
@@ -124,11 +123,11 @@ const ContainerLayout: React.FC<Props> = (props) => {
             render: (text: any, record, index) => {
                 return (
                     <ProFormText
-                        name={`Owner${record.ID}`}
+                        name={`Owner${record.id}`}
                         initialValue={record.Owner}
                         placeholder={''}
                         fieldProps={{
-                            onChange: (e) => handleRowChange(index, record.ID, 'Owner', e)
+                            onChange: (e) => handleRowChange(index, record.id, 'Owner', e)
                         }}
                     />
                 );
@@ -141,11 +140,11 @@ const ContainerLayout: React.FC<Props> = (props) => {
             render: (text: any, record, index) => {
                 return (
                     <ProFormText
-                        name={`Remark${record.ID}`}
+                        name={`Remark${record.id}`}
                         initialValue={record.Remark}
                         placeholder={''}
                         fieldProps={{
-                            onChange: (e) => handleRowChange(index, record.ID, 'Remark', e)
+                            onChange: (e) => handleRowChange(index, record.id, 'Remark', e)
                         }}
                     />
                 );
@@ -182,10 +181,10 @@ const ContainerLayout: React.FC<Props> = (props) => {
 
     const handleAdd = () => {
         const newData: APIModel.ContainerList = {
-            ID: ID_STRING(),
-            CTNModelID: 0,
-            CTNModelName: "",
-            QTY: 1,
+            id: ID_STRING(),
+            ctnModelId: 0,
+            ctnModelName: "",
+            qty: 1,
             IsSOC: false,
             Owner: "",
             Remark: "",
@@ -194,20 +193,20 @@ const ContainerLayout: React.FC<Props> = (props) => {
     };
 
     const handleDelete = () => {
-        const newData = containerList.filter(item => !selectedRowIDs.includes(item.ID));
+        const newData = containerList.filter(item => !selectedRowIDs.includes(item.id));
         setContainerList(newData);
     };
 
     return (
         <ProCard
-            className={styles.containerLayout}
+            className={'containerLayout'}
             title={'Task'}
             headerBordered
             collapsible
         >
             <Row gutter={24}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={22} xxl={20}>
-                    <div className={styles.title}>
+                    <div className={'title'}>
                         <div className={'ant-div-left'}>
                             <span>Container List</span>
                         </div>
@@ -226,14 +225,14 @@ const ContainerLayout: React.FC<Props> = (props) => {
                         </div>
                     </div>
                     <Table
-                        rowKey={'ID'}
+                        rowKey={'id'}
                         bordered
                         pagination={false}
                         columns={columns}
                         dataSource={containerList}
                         locale={{emptyText: "NO DATA"}}
                         rowSelection={rowSelection}
-                        className={`tableStyle ${styles.containerTable}`}
+                        className={`tableStyle containerTable`}
                     />
                 </Col>
             </Row>

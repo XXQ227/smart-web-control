@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Col, Form, Popconfirm, Row, Space, Table} from "antd";
+import {Button, Col, Form, Popconfirm, Row, Table} from "antd";
 import {ProCard, ProFormSwitch, ProFormText} from "@ant-design/pro-components";
 import {
     DeleteOutlined,
@@ -56,7 +56,6 @@ const ProBooking: React.FC<Props> = (props) => {
     const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
 
     function onChange(index: number, rowID: any, filedName: string, val: any, option?: any) {
-        console.log(index)
         handleRowChange(index, rowID, filedName, val, option)
     }
 
@@ -69,17 +68,18 @@ const ProBooking: React.FC<Props> = (props) => {
             render: (text: any, record, index) => {
                 return (
                     <FormItem
-                        name={`ctnModelId${record.id}`}
-                        initialValue={record.ctnModelName}>
+                        name={`ctnModelId_ctn_table_${record.id}`}
+                        initialValue={record.ctnModelName} required
+                        rules={[{required: true, message: 'SIZE'}]}
+                    >
                         <SearchModal
                             qty={30}
-                            id={`ctnModelId${record.id}`}
                             title={'SIZE'}
                             modalWidth={500}
                             // value={record.ctnModelName}
                             text={record.ctnModelName}
-                            query={{Type: 5, BranchID: getBranchID(), BizType1ID: 1}}
                             url={"/apiLocal/MCommon/GetCTNModelByStr"}
+                            query={{Type: 5, BranchID: getBranchID(), BizType1ID: 1}}
                             handleChangeData={(val: any, option: any) => onChange(index, record.id, 'ctnModelId', val, option)}
                         />
                     </FormItem>
@@ -87,16 +87,18 @@ const ProBooking: React.FC<Props> = (props) => {
             },
         },
         {
-            title: 'qty',
+            title: 'QTY',
             dataIndex: 'qty',
             width: '10%',
             className: "textCenter",
             render: (text: any, record, index) => {
                 return (
                     <ProFormText
-                        name={`QTY${record.id}`}
-                        initialValue={record.qty}
+                        required
                         placeholder={''}
+                        initialValue={record.qty}
+                        name={`qty_ctn_table_${record.id}`}
+                        rules={[{required: true, message: 'QTY'}]}
                         fieldProps={{
                             onChange: (e) => onChange(index, record.id, 'qty', e)
                         }}
@@ -112,10 +114,10 @@ const ProBooking: React.FC<Props> = (props) => {
             render: (text: any, record, index) => {
                 return (
                     <ProFormSwitch
-                        name={`IsFCL${record.id}`}
-                        initialValue={record.IsFCL}
                         checkedChildren="FCL"
                         unCheckedChildren="LCL"
+                        initialValue={record.IsFCL}
+                        name={`IsFCL_ctn_table_${record.id}`}
                         fieldProps={{
                             onChange: (e) => onChange(index, record.id, 'IsFCL', e)
                         }}
@@ -131,10 +133,10 @@ const ProBooking: React.FC<Props> = (props) => {
             render: (text: any, record, index) => {
                 return (
                     <ProFormSwitch
-                        name={`IsSOC${record.id}`}
-                        initialValue={record.IsSOC}
                         checkedChildren="SOC"
                         unCheckedChildren="COC"
+                        initialValue={record.IsSOC}
+                        name={`IsSOC_ctn_table_${record.id}`}
                         fieldProps={{
                             onChange: (e) => onChange(index, record.id, 'IsSOC', e)
                         }}
@@ -148,9 +150,9 @@ const ProBooking: React.FC<Props> = (props) => {
             render: (text: any, record, index) => {
                 return (
                     <ProFormText
-                        name={`Remark${record.id}`}
-                        initialValue={record.Remark}
                         placeholder={''}
+                        initialValue={record.Remark}
+                        name={`Remark_ctn_table_${record.id}`}
                         fieldProps={{
                             onChange: (e) => onChange(index, record.id, 'Remark', e)
                         }}
@@ -190,7 +192,7 @@ const ProBooking: React.FC<Props> = (props) => {
         <ProCard hidden={type === 'import'} title={'Pre-booking Containers'} collapsible headerBordered bordered>
             <Row gutter={24}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={20}>
-                    <Space className={'tableHeaderContainer'}>
+                    <div className={'tableHeaderContainer'}>
                         <Button onClick={handleAdd}><PlusCircleOutlined/>Add</Button>
                         <Popconfirm
                             disabled={selectedRowIDs.length === 0}
@@ -201,7 +203,7 @@ const ProBooking: React.FC<Props> = (props) => {
                             <Button disabled={selectedRowIDs.length === 0}><DeleteOutlined/>Remove</Button>
                         </Popconfirm>
                         <Button><DownloadOutlined/>Export Manifest</Button>
-                    </Space>
+                    </div>
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={20}>
                     <Table

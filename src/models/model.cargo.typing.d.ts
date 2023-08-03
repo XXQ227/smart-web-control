@@ -237,8 +237,8 @@ declare namespace APIModel {
     }
     type Terms = {
         incotermsId?: number,
-        serviceTypeId?: string,
-        serviceTypeName?: string,
+        shipmentTermId?: string,
+        shipmentTermName?: string,
         payMethod?: number,
         payableAtId?: string,
         payableAtName?: string,

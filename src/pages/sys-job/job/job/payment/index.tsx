@@ -52,17 +52,17 @@ const Payment: React.FC<Props> = (props) => {
                 <Col xs={24} sm={24} md={12} lg={12} xl={6} xxl={6}>
                     <FormItem
                         label={'Shipment Term'}
-                        name={['terms', 'serviceTypeId']}
+                        name={['terms', 'shipmentTermId']}
                     >
                         <SearchModal
                             qty={20}
                             modalWidth={500}
-                            id={'serviceTypeId'}
+                            id={'shipmentTermId'}
                             title={'Shipment Term'}
-                            text={terms?.serviceTypeName}
+                            text={terms?.shipmentTermName}
                             url={"/apiBase/dict/queryDictDetailCommon"}
                             query={{dictCode: 'services', pageSize: 13, currentPage: 1}}
-                            handleChangeData={(val: any) => handleChange('serviceTypeId', val)}
+                            handleChangeData={(val: any) => handleChange('shipmentTermId', val)}
                         />
                     </FormItem>
                 </Col>
@@ -70,12 +70,12 @@ const Payment: React.FC<Props> = (props) => {
                     <ProFormSelect
                         placeholder=''
                         label='Payment Term'
-                        name={['terms', 'payMethod']}
+                        name={['terms', 'paymentTermId']}
                         options={TERMS_PAYMENT}
                     />
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={6} xxl={6}>
-                    <Form.Item name={['terms', 'payableAtId']} label={'Payable AT'}>
+                    <Form.Item name={['terms', 'payableAtCode']} label={'Payable AT'}>
                         <SearchTable
                             qty={10}
                             rowKey={'ID'}
@@ -84,9 +84,9 @@ const Payment: React.FC<Props> = (props) => {
                             title={'Payable AT'}
                             className={'textRight'}
                             text={terms?.payableAtName}
-                            name={['terms', 'payableAtId']}
+                            name={['terms', 'payableAtCode']}
                             url={"/apiLocal/MCommon/GetPortCityOrCountry"}
-                            handleChangeData={(val: any) => handleChange('payableAtId', val)}
+                            handleChangeData={(val: any) => handleChange('payableAtCode', val)}
                         />
                     </Form.Item>
                 </Col>

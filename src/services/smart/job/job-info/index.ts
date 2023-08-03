@@ -12,10 +12,20 @@ export async function queryJobInfoAPI(body: APIModel.GetCJobByID) {
 }
 
 
-// TODO: 获取单票业务详情数据
+// TODO: 获取出口业务信息
 export async function querySeaExportInfoAPI(body: {id: string}) {
     // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
     return request(`/apiEngine/seaExport/querySeaExportInfo/`, {
+        method: 'POST',
+        body,
+    });
+}
+
+
+// TODO: 获取进口业务信息
+export async function querySeaImportInfoAPI(body: {id: string}) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiEngine/seaImport/querySeaImportInfo/`, {
         method: 'POST',
         body,
     });

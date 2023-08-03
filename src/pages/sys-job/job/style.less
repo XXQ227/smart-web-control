@@ -84,14 +84,12 @@
 }
 
 .basicInfoProForm {
-  :global {
-    .ant-space {
-      display: block;
-    }
+  .ant-space {
+    display: block;
+  }
 
-    .ant-space-item .ant-pro-card {
-      margin-bottom: 24px;
-    }
+  .ant-space-item .ant-pro-card {
+    margin-bottom: 24px;
   }
 
   //region TODO: Job Payment表单样式
@@ -129,10 +127,8 @@
       display: inline-flex !important;
       gap: 0 !important;
 
-      :global {
-        .ant-picker {
-          border: 1px dashed rgb(151, 157, 155);
-        }
+      .ant-picker {
+        border: 1px dashed rgb(151, 157, 155);
       }
 
       .siteSpaceSpan {
@@ -145,7 +141,6 @@
   }
   //endregion TODO: Sea (Export) Basic表单样式
 
-
   //region TODO: Sea (Export) Port表单样式
   .seaExportPort {
     padding-bottom: 20px;
@@ -154,23 +149,21 @@
       display: inline-flex !important;
       gap: 0 !important;
 
-      :global {
-        //.ant-form-item-control-input-content .ant-input {
-        //  border: 1px dashed rgb(151, 157, 155);
-        //}
+      //.ant-form-item-control-input-content .ant-input {
+      //  border: 1px dashed rgb(151, 157, 155);
+      //}
 
-        .ant-form-item-control-input-content .pro-field-sm {
-          @media (min-width: 1900px) {
-            width: 265px;
-          }
+      .ant-form-item-control-input-content .pro-field-sm {
+        @media (min-width: 1900px) {
+          width: 265px;
+        }
 
-          @media (min-width: 2200px) {
-            width: 310px;
-          }
+        @media (min-width: 2200px) {
+          width: 310px;
+        }
 
-          @media (min-width: 2400px) {
-            width: 350px;
-          }
+        @media (min-width: 2400px) {
+          width: 350px;
         }
       }
 
@@ -180,35 +173,27 @@
         width: 25px;
       }
 
-      :global {
-        .ant-space-item {
-          &:last-child {
-            .ant-form-item-control-input-content .ant-input {
-              border: 1px dashed rgb(151, 157, 155);
-            }
+      .ant-space-item {
+        &:last-child {
+          .ant-form-item-control-input-content .ant-input {
+            border: 1px dashed rgb(151, 157, 155);
           }
         }
       }
     }
 
     .transhipmentPortTable {
-      :global {
-        .ant-table-tbody .ant-form-item {
-          margin: 0 !important;
-        }
+      .ant-table-tbody .ant-form-item {
+        margin: 0 !important;
+        border: none;
+      }
 
-        .ant-table-tbody > tr > td {
-          padding: 0 !important;
-          border: none;
-        }
+      .ant-select-selector {
+        border-radius: 0 !important;
+      }
 
-        .ant-select-selector {
-          border-radius: 0 !important;
-        }
-
-        .ant-table-tbody tr:not(:first-child) td .ant-select-selector {
-          border-top: none !important;
-        }
+      .ant-table-tbody tr:not(:first-child) td .ant-select-selector {
+        border-top: none !important;
       }
     }
   }
@@ -336,30 +321,28 @@
       }
     }*/
 
-    :global {
-      .ant-form-shipperInfoItem {
-        margin-bottom: 7px;
+    .ant-form-shipperInfoItem {
+      margin-bottom: 7px;
 
-        label {
-          display: inline-block;
-          width: 25% !important;
+      label {
+        display: inline-block;
+        width: 25% !important;
 
-          @media (max-width: 600px) {
-            width: 33% !important;
-          }
+        @media (max-width: 600px) {
+          width: 33% !important;
         }
+      }
 
-        span.ant-input-affix-wrapper {
-          width: 75%;
+      span.ant-input-affix-wrapper {
+        width: 75%;
 
-          @media (max-width: 600px) {
-            width: 67% !important;
-          }
+        @media (max-width: 600px) {
+          width: 67% !important;
         }
+      }
 
-        .ant-select-dropdown {
+      .ant-select-dropdown {
 
-        }
       }
     }
 
@@ -549,16 +532,14 @@
   // Container List 表格
   .containerTable {
     margin-bottom: 25px;
-    :global {
-      .textCenter .ant-input, .textCenter .ant-input-affix-wrapper {
-        text-align: center;
-      }
+    .textCenter .ant-input, .textCenter .ant-input-affix-wrapper {
+      text-align: center;
+    }
 
-      .textRight .ant-input{
-        text-align: right;
-      }
+    .textRight .ant-input{
+      text-align: right;
     }
   }
-
 }
+
 
