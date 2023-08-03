@@ -1,4 +1,4 @@
-import {queryJobInfoAPI, querySeaExportInfoAPI} from '@/services/smart/job/job-info';
+import {queryJobInfoAPI, querySeaExportInfoAPI, querySeaImportInfoAPI} from '@/services/smart/job/job-info';
 import type React from "react";
 import {useCallback} from "react";
 
@@ -32,11 +32,18 @@ export default (callback: T, deps: React.DependencyList) => {
         // TODO: 请求后台 API
         return await querySeaExportInfoAPI(params);
     }, []);
+
+    // TODO: 获取单票业务详情请求
+    const querySeaImportInfo = useCallback(async (params: {id: string}) => {
+        // TODO: 请求后台 API
+        return await querySeaImportInfoAPI(params);
+    }, []);
     //endregion
 
 
     return {
         queryJobInfo,
         querySeaExportInfo,
+        querySeaImportInfo,
     }
 }

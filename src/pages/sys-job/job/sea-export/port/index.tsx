@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {Button, Col, Divider, Row, Space, Table} from "antd";
 import {IconFont, rowGrid} from "@/utils/units";
 import {ProCard, ProFormText} from "@ant-design/pro-components";
-import styles from "@/pages/sys-job/job/style.less";
 import SearchTable from "@/components/SearchTable";
 import {PlusCircleOutlined} from "@ant-design/icons";
 import type {ColumnsType} from "antd/es/table";
@@ -120,12 +119,12 @@ const Ports: React.FC<Props> = (props) => {
             headerBordered
             bordered={true}
             title={props.title}
-            className={styles.seaExportPort}
+            className={'seaExportPort'}
         >
             <Row gutter={rowGrid}>
                 {/*装货港、卸货港*/}
                 <Col xs={24} sm={24} md={24} lg={20} xl={12} xxl={8}>
-                    <Space direction="horizontal" align="center" className={styles.siteSpace}>
+                    <Space direction="horizontal" align="center" className={'siteSpace'}>
                         <FormItem label={'Port of Loading'} name={['port', 'polId']}>
                             <SearchTable
                                 qty={20}
@@ -143,7 +142,7 @@ const Ports: React.FC<Props> = (props) => {
                                 handleChangeData={(val: any, option: any) => handleChange('polId', val, option)}
                             />
                         </FormItem>
-                        <span className={styles.siteSpaceSpan}/>
+                        <span className={'siteSpaceSpan'}/>
                         <ProFormText
                             width={'sm'}
                             placeholder=""
@@ -155,7 +154,7 @@ const Ports: React.FC<Props> = (props) => {
                             }}
                         />
                     </Space>
-                    <Space direction="horizontal" align="center" className={styles.siteSpace}>
+                    <Space direction="horizontal" align="center" className={'siteSpace'}>
                         <FormItem label={'Port of Discharge'} name={['port', 'podId']}>
                             <SearchTable
                                 qty={20}
@@ -173,7 +172,7 @@ const Ports: React.FC<Props> = (props) => {
                                 handleChangeData={(val: any, option: any) => handleChange('podId', val, option)}
                             />
                         </FormItem>
-                        <span className={styles.siteSpaceSpan}/>
+                        <span className={'siteSpaceSpan'}/>
                         <ProFormText
                             width={'sm'}
                             placeholder=""
@@ -191,7 +190,7 @@ const Ports: React.FC<Props> = (props) => {
                 </Col>
                 {/*交货地、目的地*/}
                 <Col xs={24} sm={24} md={24} lg={20} xl={11} xxl={8}>
-                    <Space direction="horizontal" align="center" className={styles.siteSpace}>
+                    <Space direction="horizontal" align="center" className={'siteSpace'}>
                         <FormItem label={'Place of Receipt'} name={['port', 'porId']}>
                             <SearchTable
                                 qty={20}
@@ -209,7 +208,7 @@ const Ports: React.FC<Props> = (props) => {
                                 handleChangeData={(val: any, option: any) => handleChange('porId', val, option)}
                             />
                         </FormItem>
-                        <span className={styles.siteSpaceSpan}/>
+                        <span className={'siteSpaceSpan'}/>
                         <ProFormText
                             width={'sm'}
                             placeholder=""
@@ -221,7 +220,7 @@ const Ports: React.FC<Props> = (props) => {
                             }}
                         />
                     </Space>
-                    <Space direction="horizontal" align="center" className={styles.siteSpace}>
+                    <Space direction="horizontal" align="center" className={'siteSpace'}>
                         <FormItem label={'Final Destination'} name={['port', 'placeOfDeliveryId']}>
                             <SearchTable
                                 qty={20}
@@ -239,7 +238,7 @@ const Ports: React.FC<Props> = (props) => {
                                 handleChangeData={(val: any, option: any) => handleChange('placeOfDeliveryId', val, option)}
                             />
                         </FormItem>
-                        <span className={styles.siteSpaceSpan}/>
+                        <span className={'siteSpaceSpan'}/>
                         <ProFormText
                             width={'sm'}
                             placeholder=""
@@ -275,7 +274,7 @@ const Ports: React.FC<Props> = (props) => {
                         columns={columns}
                         dataSource={[]}
                         locale={{emptyText: "NO DATA"}}
-                        className={styles.transhipmentPortTable}
+                        className={'transhipmentPortTable'}
                     />
                 </Col>
             </Row>

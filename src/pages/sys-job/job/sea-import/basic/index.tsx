@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from "@/pages/sys-job/job/style.less";
 import {Col, Divider, Row} from "antd";
 import {rowGrid} from "@/utils/units";
 import {
@@ -19,7 +18,7 @@ interface Props {
 
 const Basic: React.FC<Props> = (props) => {
     const  {
-        Carrier, HouseBill
+        Carrier
     } = props;
     //endregion
 
@@ -27,7 +26,7 @@ const Basic: React.FC<Props> = (props) => {
         <ProCard
             title={props.title}
             bordered={true}
-            className={styles.seaExportBasic}
+            className={'seaExportBasic'}
             headerBordered
             collapsible
         >
@@ -111,7 +110,7 @@ const Basic: React.FC<Props> = (props) => {
                             <ProFormSelect
                                 name="SignMethodID"
                                 label="B/L Type"
-                                initialValue={{ value: HouseBill?.SignMethodID || 2 }}
+                                initialValue={1}
                                 options={[
                                     {label: 'Original B/L', value: 1},
                                     {label: 'Telex Release', value: 2},
@@ -150,7 +149,7 @@ const Basic: React.FC<Props> = (props) => {
                     <Divider type="vertical" style={{ height: '100%' }} />
                 </Col>
                 {/* 业务完成日 */}
-                <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4} className={styles.completeDate}>
+                <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4} className={'completeDate'}>
                     <ProFormDatePicker
                         width="md"
                         name="LockDate"

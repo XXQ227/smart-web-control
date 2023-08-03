@@ -148,9 +148,9 @@ const CTNLoading: React.FC<Props> = (props) => {
                     item.grossWeight += grossWeightRemainder;
                     item.measurement += measurementRemainder;
                 }
-                setValueObj[`qty${item.id}`] = item.qty;
-                setValueObj[`grossWeight${item.id}`] = item.grossWeight;
-                setValueObj[`measurement${item.id}`] = item.measurement;
+                setValueObj[`qty_table_${item.id}`] = item.qty;
+                setValueObj[`grossWeight_table_${item.id}`] = item.grossWeight;
+                setValueObj[`measurement_table_${item.id}`] = item.measurement;
                 return item;
             });
 
@@ -171,9 +171,11 @@ const CTNLoading: React.FC<Props> = (props) => {
             render: (text: any, record, index) => {
                 return (
                     <ProFormText
-                        name={`CTNNum${record.id}`}
-                        initialValue={text}
+                        required
                         placeholder={''}
+                        initialValue={text}
+                        name={`CTNNum_table_${record.id}`}
+                        rules={[{required: true, message: 'Container No.'}]}
                         fieldProps={{
                             onChange: (e) => onChange(index, record.id, 'containerNum', e)
                         }}
@@ -186,7 +188,7 @@ const CTNLoading: React.FC<Props> = (props) => {
             render: (text: any, record, index) => {
                 return (
                     <ProFormText
-                        name={`SealNum${record.id}`}
+                        name={`SealNum_table_${record.id}`}
                         initialValue={text}
                         placeholder={''}
                         fieldProps={{
@@ -201,9 +203,11 @@ const CTNLoading: React.FC<Props> = (props) => {
             render: (text: any, record, index) => {
                 return (
                     <ProFormText
+                        required
                         placeholder={''}
                         initialValue={text}
-                        name={`qty${record.id}`}
+                        name={`qty_table_${record.id}`}
+                        rules={[{required: true, message: 'QTY'}]}
                         fieldProps={{
                             onChange: (e) => onChange(index, record.id, 'Pieces', e)
                         }}
@@ -216,9 +220,11 @@ const CTNLoading: React.FC<Props> = (props) => {
             render: (text: any, record, index) => {
                 return (
                     <ProFormText
+                        required
                         placeholder={''}
                         initialValue={text}
-                        name={`grossWeight${record.id}`}
+                        name={`grossWeight_table_${record.id}`}
+                        rules={[{required: true, message: 'G.W.'}]}
                         fieldProps={{
                             onChange: (e) => onChange(index, record.id, 'grossWeight', e)
                         }}
@@ -231,9 +237,11 @@ const CTNLoading: React.FC<Props> = (props) => {
             render: (text: any, record, index) => {
                 return (
                     <ProFormText
+                        required
                         placeholder={''}
                         initialValue={text}
-                        name={`measurement${record.id}`}
+                        name={`measurement_table_${record.id}`}
+                        rules={[{required: true, message: 'Meas.'}]}
                         fieldProps={{
                             onChange: (e) => onChange(index, record.id, 'measurement', e)
                         }}
@@ -248,7 +256,7 @@ const CTNLoading: React.FC<Props> = (props) => {
                     <ProFormText
                         placeholder={''}
                         initialValue={text}
-                        name={`vgm${record.id}`}
+                        name={`vgm_table_${record.id}`}
                         fieldProps={{
                             onChange: (e) => onChange(index, record.id, 'vgm', e)
                         }}
@@ -261,7 +269,7 @@ const CTNLoading: React.FC<Props> = (props) => {
             render: (text: any, record, index) => {
                 return (
                     <FormItem
-                        name={`packagingMethodId${record.id}`}
+                        name={`packagingMethodId_table_${record.id}`}
                         initialValue={record.packagingMethodName}
                     >
                         <SearchModal
@@ -270,7 +278,7 @@ const CTNLoading: React.FC<Props> = (props) => {
                             modalWidth={500}
                             query={{SystemID: 4}}
                             text={record.packagingMethodName}
-                            id={`packagingMethodId${record.id}`}
+                            // id={`packagingMethodId_table_${record.id}`}
                             url={"/apiLocal/MCommon/GetPKGTypeByStr"}
                             handleChangeData={(val: any, option: any) => onChange(index, record.id, 'packagingMethodId', val, option)}
                         />
@@ -289,15 +297,12 @@ const CTNLoading: React.FC<Props> = (props) => {
                 className: "textCenter",
                 render: (text: any, record, index) => {
                     return (
-                        <FormItem
-                            name={`ctnModelId${record.id}`}
-                            initialValue={record.ctnModelName}>
+                        <FormItem name={`ctnModelId_table_${record.id}`} initialValue={record.ctnModelName}>
                             <SearchModal
                                 qty={30}
                                 title={'SIZE'}
                                 modalWidth={500}
                                 text={record.ctnModelName}
-                                id={`ctnModelId${record.id}`}
                                 query={{dictCode: "ctn_model"}}
                                 url={"/apiBase/dict/queryDictDetailCommon"}
                                 handleChangeData={(val: any, option: any) => handleRowChange(index, record.id, 'ctnModelId', val, option)}
@@ -313,9 +318,9 @@ const CTNLoading: React.FC<Props> = (props) => {
                 render: (text: any, record, index) => {
                     return (
                         <ProFormText
-                            name={`YardCTNNum${record.id}`}
-                            initialValue={text}
                             placeholder={''}
+                            initialValue={text}
+                            name={`YardCTNNum_table_${record.id}`}
                             fieldProps={{
                                 onChange: (e) => onChange(index, record.id, 'YardCTNNum', e)
                             }}
@@ -327,16 +332,13 @@ const CTNLoading: React.FC<Props> = (props) => {
         );
         containersLoadingColumns.splice(5, 1);
         containersLoadingColumns.splice(7, 1, {
-            title: 'Tare Weight',
-            dataIndex: "TareWeight",
-            width: '10%',
-            className: "textRight",
+            title: 'Tare Weight',   dataIndex: "TareWeight", width: '10%', className: "textRight",
             render: (text: any, record, index) => {
                 return (
                     <ProFormText
-                        name={`TareWeight${record.id}`}
-                        initialValue={text}
                         placeholder={''}
+                        initialValue={text}
+                        name={`TareWeight_table_${record.id}`}
                         fieldProps={{
                             onChange: (e) => onChange(index, record.id, 'TareWeight', e)
                         }}

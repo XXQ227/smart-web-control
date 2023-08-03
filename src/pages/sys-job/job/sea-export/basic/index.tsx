@@ -1,5 +1,4 @@
 import React from 'react';
-import styles from "@/pages/sys-job/job/style.less";
 import {Col, Divider, Row, Space} from "antd";
 import {rowGrid} from "@/utils/units";
 import {
@@ -23,7 +22,7 @@ const Basic: React.FC<Props> = (props) => {
         <ProCard
             title={props.title}
             bordered={true}
-            className={styles.seaExportBasic}
+            className={'seaExportBasic'}
             headerBordered
             collapsible
         >
@@ -31,12 +30,12 @@ const Basic: React.FC<Props> = (props) => {
                 {/* MB/L No.、HB/L No. */}
                 <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
                     <ProFormText
-                        name="MBOLNum"
+                        name="mblNum"
                         label="MB/L No."
                         placeholder=""
                     />
                     <ProFormText
-                        name="HBOLNum"
+                        name="hblNum"
                         label="HB/L No."
                         placeholder=""
                     />
@@ -48,8 +47,8 @@ const Basic: React.FC<Props> = (props) => {
                         isShowLabel={true}
                         required={false}
                         label="Booking Agent"
-                        id={'BookingAgentID'}
-                        name={'BookingAgentID'}
+                        id={'bookingAgentId'}
+                        name={'bookingAgentId'}
                         url={'/apiLocal/MCommon/GetCTNameShortByStrOrType'}
                         // valueObj={{value: Carrier?.BookingAgentID, label: Carrier?.BookingAgentName}}
                         query={{UserID: getUserID(), CTType: 2, CTTypeItemID: 4, SystemID: 4}}
@@ -60,8 +59,8 @@ const Basic: React.FC<Props> = (props) => {
                         isShowLabel={true}
                         required={false}
                         label="Destination Agent"
-                        id={'PODAgentID'}
-                        name={'PODAgentID'}
+                        id={'destinationAgentId'}
+                        name={'destinationAgentId'}
                         url={'/apiLocal/MCommon/GetCTNameShortByStrOrType'}
                         // valueObj={{value: Carrier?.PODAgentID, label: Carrier?.PODAgentName}}
                         query={{UserID: getUserID(), CTType: 2, CTTypeItemID: 7, SystemID: 4}}
@@ -75,8 +74,8 @@ const Basic: React.FC<Props> = (props) => {
                         isShowLabel={true}
                         required={false}
                         label="Shipping Line (Carrier)"
-                        id={'FreighterID'}
-                        name={'FreighterID'}
+                        id={'carrierId'}
+                        name={'carrierId'}
                         url={'/apiLocal/MCommon/GetCTNameShortByStrOrType'}
                         // valueObj={{value: Carrier?.FreighterID, label: Carrier?.FreighterName}}
                         query={{UserID: getUserID(), CTType: 2, CTTypeItemID: 5, SystemID: 4}}
@@ -87,8 +86,8 @@ const Basic: React.FC<Props> = (props) => {
                         isShowLabel={true}
                         required={false}
                         label="Shipping Agent"
-                        id={'ShippingName'}
-                        name={'ShippingName'}
+                        id={'shippingAgentId'}
+                        name={'shippingAgentId'}
                         url={'/apiLocal/MCommon/GetCTNameShortByStrOrType'}
                         // valueObj={{value: Carrier?.ShippingName, label: Carrier?.ShippingName}}
                         /*query={{
@@ -104,7 +103,7 @@ const Basic: React.FC<Props> = (props) => {
                     <Divider type="vertical" style={{ height: '100%' }} />
                 </Col>
                 {/* 业务完成日 */}
-                <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={3} className={styles.completeDate}>
+                <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={3} className={'completeDate'}>
                     <ProFormDatePicker
                         width="md"
                         name="LockDate"
@@ -218,7 +217,7 @@ const Basic: React.FC<Props> = (props) => {
                         />
                     </div>
                     <label style={{ display: 'block', marginBottom: 8 }}>Place and Date of Issue</label>
-                    <Space direction="horizontal" align="center" className={styles.siteSpace}>
+                    <Space direction="horizontal" align="center" className={'siteSpace'}>
                         <SearchProFormSelect
                             qty={5}
                             isShowLabel={true}
@@ -229,7 +228,7 @@ const Basic: React.FC<Props> = (props) => {
                             // valueObj={{value: HouseBill?.IssuePlaceID, label: HouseBill?.IssuePlaceName}}
                             // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
                         />
-                        <span className={styles.siteSpaceSpan}/>
+                        <span className={'siteSpaceSpan'}/>
                         <ProFormDatePicker name="IssueDate" placeholder=""/>
                     </Space>
                 </Col>
