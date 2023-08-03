@@ -192,7 +192,8 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
         };
         const result: API.Result = await operateBusinessUnit(param);
         if (result.success) {
-            message.success(param.operate ? 'Freeze Success' : 'UnFreeze Success');
+            message.success(param.operate ? 'Freeze Success' : 'Unfreeze Success');
+            setBUInfoVO({...newData, enableFlag: param.operate})
         } else {
             message.error(result.message);
         }
@@ -482,7 +483,7 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
                             className={!!BUInfoVO?.enableFlag ? 'ant-unfreeze-button' : 'ant-freeze-button'}
                             style={{marginRight: 7}}
                         >
-                            Freeze
+                            {!!BUInfoVO?.enableFlag ? 'Unfreeze' : 'Freeze'}
                         </Button>
                         <Button key={'submit'} type={'primary'} htmlType={'submit'} icon={<SaveOutlined/>}>Save</Button>
                     </Space>

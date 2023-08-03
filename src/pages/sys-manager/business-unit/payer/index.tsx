@@ -355,7 +355,7 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
         {
             title: 'Payer Identity',
             dataIndex: 'taxNum',
-            width: '15%',
+            width: '16%',
             align: 'center',
             ellipsis: true,
         },
@@ -366,15 +366,15 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
         },
         {
             title: 'MDM Number',
-            dataIndex: 'mdmCode',
-            width: '15%',
+            dataIndex: 'mdmNumber',
+            width: '11%',
             align: 'center',
             ellipsis: true,
         },
         {
             title: 'CV-Center Number',
             dataIndex: 'cvCenterNumber',
-            width: '15%',
+            width: '14%',
             align: 'center',
             ellipsis: true,
         },

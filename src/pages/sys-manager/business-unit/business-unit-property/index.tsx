@@ -199,7 +199,7 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
         {
             title: 'BUP Identity',
             dataIndex: 'taxNum',
-            width: '15%',
+            width: '16%',
             ellipsis: true,
             align: 'center',
         },
@@ -210,15 +210,15 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
         },
         {
             title: 'MDM Number',
-            dataIndex: 'mdmCode',
-            width: '15%',
+            dataIndex: 'mdmNumber',
+            width: '11%',
             ellipsis: true,
             align: 'center',
         },
         {
             title: 'CV-Center Number',
             dataIndex: 'cvCenterNumber',
-            width: '15%',
+            width: '14%',
             ellipsis: true,
             align: 'center',
         },
