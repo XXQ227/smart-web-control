@@ -153,15 +153,17 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
     /**
      * @Description: TODO: 删除银行
      * @author LLS
-     * @date 2023/7/6
+     * @date 2023/8/3
      * @param bankAccountId
      */
     const handleOperateBank = async (bankAccountId: string) => {
-        const bankAccountIds = (BranchInfoVO.bankAccountIds).replace(new RegExp(`\\b${bankAccountId}\\b,?`), '');
+        const accountIds = (BranchInfoVO.bankAccountIds).replace(new RegExp(`\\b${bankAccountId}\\b,?`), '');
+        // TODO: 防止字符串最后面没有删除到逗号，在添加银行时会报错
+        const bankAccountIds = accountIds.trimEnd().endsWith(",") ? accountIds.slice(0, -1) : accountIds;
         const param: any = {
             branchId: id,
-            bankAccountId,
-            bankAccountIds,
+            bankAccountId,      // TODO: 要删除的银行账户id
+            bankAccountIds,     // TODO: 公司银行id集合（去除了要删除的银行id）
         };
         const result: API.Result = await deleteBank(param)
         if (result.success) {

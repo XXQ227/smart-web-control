@@ -151,7 +151,8 @@ const BankIndex: React.FC<Props> = (props) => {
                 <FormItemSelect
                     required
                     FormItem={Form.Item}
-                    options={getCurrencyList()}
+                    // options={getCurrencyList()}
+                    options={[{value: 'CNY', label: 'CNY'}, {value: 'HKD', label: 'HKD'}]}
                     id={`currencyName${record.id}`}
                     name={`currencyName${record.id}`}
                     initialValue={record.currencyName}
