@@ -25,8 +25,8 @@ const initialContainerList: APIModel.ContainerList[] = [
         ctnModelId: 1,
         ctnModelName: "20GP",
         qty: 2,
-        IsSOC: false,
-        IsFCL: false,
+        socFlag: false,
+        fclFlag: false,
         Remark: "ANL YF62423",
     },
     {
@@ -34,8 +34,8 @@ const initialContainerList: APIModel.ContainerList[] = [
         ctnModelId: 2,
         ctnModelName: "40GP",
         qty: 1,
-        IsSOC: true,
-        IsFCL: true,
+        socFlag: true,
+        fclFlag: true,
         Remark: "CSCLYF85868",
     },
     {
@@ -43,8 +43,8 @@ const initialContainerList: APIModel.ContainerList[] = [
         ctnModelId: 5,
         ctnModelName: "40HQ",
         qty: 1,
-        IsSOC: true,
-        IsFCL: false,
+        socFlag: true,
+        fclFlag: false,
         Remark: "KMTCYF85912",
     },
 ];
@@ -108,7 +108,7 @@ const ProBooking: React.FC<Props> = (props) => {
         },
         {
             title: 'FCL/LCL',
-            dataIndex: 'IsFCL',
+            dataIndex: 'fclFlag',
             align: 'center',
             width: '10%',
             render: (text: any, record, index) => {
@@ -116,10 +116,10 @@ const ProBooking: React.FC<Props> = (props) => {
                     <ProFormSwitch
                         checkedChildren="FCL"
                         unCheckedChildren="LCL"
-                        initialValue={record.IsFCL}
-                        name={`IsFCL_ctn_table_${record.id}`}
+                        initialValue={record.fclFlag}
+                        name={`fclFlag_ctn_table_${record.id}`}
                         fieldProps={{
-                            onChange: (e) => onChange(index, record.id, 'IsFCL', e)
+                            onChange: (e) => onChange(index, record.id, 'fclFlag', e)
                         }}
                     />
                 );
@@ -127,7 +127,7 @@ const ProBooking: React.FC<Props> = (props) => {
         },
         {
             title: 'SOC/COC',
-            dataIndex: 'IsSOC',
+            dataIndex: 'socFlag',
             align: 'center',
             width: '10%',
             render: (text: any, record, index) => {
@@ -135,10 +135,10 @@ const ProBooking: React.FC<Props> = (props) => {
                     <ProFormSwitch
                         checkedChildren="SOC"
                         unCheckedChildren="COC"
-                        initialValue={record.IsSOC}
-                        name={`IsSOC_ctn_table_${record.id}`}
+                        initialValue={record.socFlag}
+                        name={`socFlag_ctn_table_${record.id}`}
                         fieldProps={{
-                            onChange: (e) => onChange(index, record.id, 'IsSOC', e)
+                            onChange: (e) => onChange(index, record.id, 'socFlag', e)
                         }}
                     />
                 );
@@ -173,7 +173,7 @@ const ProBooking: React.FC<Props> = (props) => {
         const newData: APIModel.ContainerList = {
             id: ID_STRING(),
             qty: 1,
-            IsSOC: false,
+            socFlag: false,
             Owner: "",
             Remark: "",
         };

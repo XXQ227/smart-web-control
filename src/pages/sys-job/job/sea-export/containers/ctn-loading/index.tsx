@@ -12,6 +12,10 @@ import {
 import type {ColumnsType} from "antd/es/table";
 import SearchModal from "@/components/SearchModal";
 import {IconFont, ID_STRING, keepDecimal} from "@/utils/units";
+import ls from 'lodash'
+import * as XLSX from 'xlsx'
+import ParseExcel from '@/components/ParseExcel'
+import {useModel} from '@@/plugin-model/useModel'
 
 interface Props {
     type?: string;
@@ -19,7 +23,7 @@ interface Props {
     CTNActualList?: APIModel.CTNActualList[];
     containerList: APIModel.ContainerList[];
     cargoInfo: any;
-    handleCTNEdit: (index: number, rowID: any, filedName: string, val: any, option?: any) => void;
+    handleCTNEdit: (index: number, rowID: any, filedName: string, val: any, option?: any, ctnArr?: APIModel.CTNActualList[]) => void;
     handleDelete: () => void;
 }
 
@@ -33,17 +37,20 @@ const CTNLoading: React.FC<Props> = (props) => {
         handleCTNEdit, handleDelete
     } = props;
 
+    const {queryDictCommonReturn} = useModel('common', (res: any) => ({queryDictCommonReturn: res.queryDictCommonReturn,}))
+
     const [cTNActualList, setCTNActualList] = useState<APIModel.CTNActualList[]>(CTNActualList || []);
     const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
 
     const [loadingSummary, setLoadingSummary] = useState<any>({qty: 0, grossWeight: 0, measurement: 0});
 
-    function handleRowChange(index: number, rowID: any, filedName: string, val: any, option?: any) {
-        console.log(index)
-        console.log(rowID)
-        console.log(filedName)
-    }
-
+    // TODO: 多选
+    const rowSelection = {
+        columnWidth: 30,
+        onChange: (selectedRowKeys: React.Key[]) => {
+            setSelectedRowIDs(selectedRowKeys)
+        },
+    };
     /**
      * @Description: TODO: 实装箱信息修改
      * @author XXQ
@@ -56,15 +63,14 @@ const CTNLoading: React.FC<Props> = (props) => {
      * @returns
      */
     function onChange(index: number, rowID: any, filedName: string, val: any, option?: any) {
-        handleCTNEdit(index, rowID, filedName, val, option);
-    }
+        const newData: any[] = ls.cloneDeep(cTNActualList);
+        const target = newData.find((item: any)=> item.id === rowID);
+        target[filedName] = val?.target ? val.target.value : val;
 
-    const rowSelection = {
-        columnWidth: 30,
-        onChange: (selectedRowKeys: React.Key[]) => {
-            setSelectedRowIDs(selectedRowKeys)
-        },
-    };
+        newData.splice(index, 1, target);
+        setCTNActualList(newData);
+        handleCTNEdit(index, rowID, filedName, val, option, newData);
+    }
 
     const handleAdd = () => {
         const newData: APIModel.CTNActualList = {
@@ -133,7 +139,6 @@ const CTNLoading: React.FC<Props> = (props) => {
             const grossWeightRemainder = keepDecimal(cargoInfo.grossWeight - grossWeightPerPart * ctnQty, 6) || 0;
             const measurementRemainder = keepDecimal(cargoInfo.measurement - measurementPerPart * ctnQty, 6) || 0;
 
-            console.log(grossWeightRemainder, qtyRemainder, measurementRemainder);
             // TODO: 把均分的件重尺放到每一个箱中
             let actualArr: any[] = cTNActualList.map((item: any)=> ({
                 ...item,
@@ -159,6 +164,91 @@ const CTNLoading: React.FC<Props> = (props) => {
             form.setFieldsValue(setValueObj);
         } else {
             message.warn('Please add container details');
+        }
+    }
+
+    /**
+     * @Description: TODO: 解析 excel 数据
+     * @author XXQ
+     * @date 2023/8/3
+     * @param file  文档数据
+     * @returns
+     */
+    const handleParseExcel = (file: any)=> {
+        if (file) {
+            if (file.name?.indexOf('.xls') > -1 || file.name?.indexOf('.xlsx') > -1) {
+                const reader = new FileReader();
+                reader.onload = async (event: any) => {
+                    const data = event.target.result;
+
+                    // TODO: 文档解析数据
+                    const workbook = XLSX.read(data, { type: 'binary' });
+                    // TODO: sheet 页面名
+                    const sheetName = workbook.SheetNames[0];
+                    // TODO: 表格数据
+                    const worksheet = workbook.Sheets[sheetName];
+                    // TODO: 解析完成的 excel 数据
+                    const excelData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                    // TODO: 处理解析后的数据 excelData
+                    if (excelData?.length > 2) {
+                        // TODO: excel 第一行：数据 label 行
+                        const excelTitleRow: string[] = [];
+                        // TODO: 数据转小写
+                        // @ts-ignore
+                        excelData[0].map((item: any) => item?.trim() && excelTitleRow.push(item.trim().toLowerCase()));
+
+                        // TODO: 把 excel 数据生成 json 数据；【slice() 用于提取数组中的一部分元素，创建一个新的数组并返回，而不会修改原始数组】
+                        let targetArray = excelData.slice(1).map((row: any) => {
+                            const [size, ctnNum, sealNum, vgm, qty, grossWeight, measurement] = row;
+                            return {
+                                size, ctnNum, sealNum,
+                                vgm: typeof vgm === "number" ? vgm : null,
+                                qty: typeof qty === "number" ? qty : null,
+                                grossWeight: typeof grossWeight === "number" ? grossWeight : null,
+                                measurement: typeof measurement === "number" ? measurement : null,
+                            };
+                        });
+                        console.log(targetArray);
+
+                        // TODO: 获取箱型的 id 信息
+                        if (targetArray?.length > 0) {
+                            // TODO: 从接口获取数据，找到对应的箱型，匹配上对应的
+                            const ctnSizeApi: any[] = await queryDictCommonReturn({dictCodes: ['ctn_model']});
+                            const ctnSizeResult: any[] = ctnSizeApi.find((item: any) => item.dictCode === 'ctn_model')?.data || [];
+                            // TODO: 当有箱型不在系统存在的箱型，用于弹框提醒
+                            const missCtnSizeArr: string[] = [];
+                            // TODO: 遍历数据，整理箱型信息
+                            targetArray = targetArray.map((item: any) => {
+                                // TODO: 找到对应箱型的 id
+                                const ctnSizeObj: any = ctnSizeResult?.find((x: any) => x.label === item.size) || {};
+                                // TODO: 更新箱型 id 数据
+                                if (ctnSizeObj.value) {
+                                    item.ctnModelId = ctnSizeObj.value;
+                                    item.ctnModelName = ctnSizeObj.label;
+                                    delete item.size;
+                                    return item;
+                                }
+                                // TODO: 获取系统不存在的箱型数据
+                                else if (!missCtnSizeArr.includes(item.size)) {
+                                    missCtnSizeArr.push(item.size);
+                                }
+                            })
+                            targetArray = targetArray.filter(item => !!item);
+                            // TODO: 当有箱型不在系统存在时，做出警告提示
+                            if (missCtnSizeArr?.length > 0) {
+                                message.warn(`【${missCtnSizeArr}】The container type does not exist in the system, please contact the administrator to add it.`);
+                            }
+                            console.log(ctnSizeResult, targetArray);
+                        }
+                    } else {
+                        message.warn(`Please enter container information.`);
+                    }
+                };
+                reader.readAsBinaryString(file);
+            } else {
+                message.error("选择Excel格式的文件导入!");
+            }
         }
     }
 
@@ -288,13 +378,11 @@ const CTNLoading: React.FC<Props> = (props) => {
         }
     ];
 
+    // TODO: 进口显示其他选项
     if (type === 'import') {
         containersLoadingColumns.splice(0, 1,
             {
-                title: 'SIZE',
-                dataIndex: 'ctnModelId',
-                width: '10%',
-                className: "textCenter",
+                title: 'SIZE', dataIndex: 'ctnModelId', width: '10%', className: "textCenter",
                 render: (text: any, record, index) => {
                     return (
                         <FormItem name={`ctnModelId_table_${record.id}`} initialValue={record.ctnModelName}>
@@ -305,38 +393,36 @@ const CTNLoading: React.FC<Props> = (props) => {
                                 text={record.ctnModelName}
                                 query={{dictCode: "ctn_model"}}
                                 url={"/apiBase/dict/queryDictDetailCommon"}
-                                handleChangeData={(val: any, option: any) => handleRowChange(index, record.id, 'ctnModelId', val, option)}
+                                handleChangeData={(val: any, option: any) => onChange(index, record.id, 'ctnModelId', val, option)}
                             />
                         </FormItem>
                     );
                 },
             },
             {
-                title: 'Yard Container No.',
-                dataIndex: "YardCTNNum",
-                className: "textCenter",
+                title: 'Yard Container No.', dataIndex: "YardCTNNum", className: "textCenter",
                 render: (text: any, record, index) => {
                     return (
                         <ProFormText
                             placeholder={''}
+                            allowClear={false}
                             initialValue={text}
                             name={`YardCTNNum_table_${record.id}`}
                             fieldProps={{
                                 onChange: (e) => onChange(index, record.id, 'YardCTNNum', e)
                             }}
-                            allowClear={false}
                         />
                     );
                 },
             }
         );
-        containersLoadingColumns.splice(5, 1);
-        containersLoadingColumns.splice(7, 1, {
+        containersLoadingColumns.splice(7, 2, {
             title: 'Tare Weight',   dataIndex: "TareWeight", width: '10%', className: "textRight",
             render: (text: any, record, index) => {
                 return (
                     <ProFormText
                         placeholder={''}
+                        allowClear={false}
                         initialValue={text}
                         name={`TareWeight_table_${record.id}`}
                         fieldProps={{
@@ -369,16 +455,17 @@ const CTNLoading: React.FC<Props> = (props) => {
                     </div>
                     {/* 进口显示 */}
                     <div hidden={type !== 'import'} className={'tableHeaderContainer'}>
-                        <Button onClick={handleAdd}><PlusCircleOutlined/>Add</Button>
+                        <Button icon={<PlusCircleOutlined/>} onClick={handleAdd}>Add</Button>
                         <Popconfirm
                             disabled={selectedRowIDs.length === 0}
                             title={'Sure to delete?'}
                             okText={'Yes'} cancelText={'No'}
                             onConfirm={() => handleDelete()}
                         >
-                            <Button disabled={selectedRowIDs.length === 0}><DeleteOutlined/>Remove</Button>
+                            <Button icon={<DeleteOutlined/>} disabled={selectedRowIDs.length === 0}>Remove</Button>
                         </Popconfirm>
-                        <Button><DownloadOutlined/>Export Manifest</Button>
+                        <Button icon={<DownloadOutlined/>}>Export Manifest</Button>
+                        <ParseExcel label={'Parse Excel'} onChange={handleParseExcel}/>
                     </div>
                     <Table
                         bordered

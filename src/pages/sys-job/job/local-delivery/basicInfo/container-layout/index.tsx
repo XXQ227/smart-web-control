@@ -26,7 +26,7 @@ const initialContainerList: APIModel.ContainerList[] = [
         ctnModelId: 1,
         ctnModelName: "20GP",
         qty: 1,
-        IsSOC: false,
+        socFlag: false,
         Owner: "码头箱主",
         Remark: "abcde",
     },
@@ -35,7 +35,7 @@ const initialContainerList: APIModel.ContainerList[] = [
         ctnModelId: 2,
         ctnModelName: "40GP",
         qty: 2,
-        IsSOC: true,
+        socFlag: true,
         Owner: "Owner456",
         Remark: "123",
     },
@@ -98,19 +98,19 @@ const ContainerLayout: React.FC<Props> = (props) => {
         },
         {
             title: 'SOC/COC',
-            dataIndex: 'IsSOC',
-            key: 'IsSOC',
+            dataIndex: 'socFlag',
+            key: 'socFlag',
             align: 'center',
             width: '10%',
             render: (text: any, record, index) => {
                 return (
                     <ProFormSwitch
-                        name={`IsSOC${record.id}`}
-                        initialValue={record.IsSOC}
+                        name={`socFlag${record.id}`}
+                        initialValue={record.socFlag}
                         checkedChildren="SOC"
                         unCheckedChildren="COC"
                         fieldProps={{
-                            onChange: (e) => handleRowChange(index, record.id, 'IsSOC', e)
+                            onChange: (e) => handleRowChange(index, record.id, 'socFlag', e)
                         }}
                     />
                 );
@@ -185,7 +185,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
             ctnModelId: 0,
             ctnModelName: "",
             qty: 1,
-            IsSOC: false,
+            socFlag: false,
             Owner: "",
             Remark: "",
         };

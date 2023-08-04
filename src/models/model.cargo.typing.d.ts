@@ -270,8 +270,8 @@ declare namespace APIModel {
         ctnModelId?: number,
         ctnModelName?: string,
         qty?: number,
-        IsSOC?: boolean,
-        IsFCL?: boolean,
+        socFlag?: boolean,
+        fclFlag?: boolean,
         Owner?: string,
         Remark?: string,
     }

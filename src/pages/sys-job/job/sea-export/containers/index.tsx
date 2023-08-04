@@ -18,8 +18,8 @@ const initialContainerList: APIModel.ContainerList[] = [
         ctnModelId: 1,
         ctnModelName: "20GP",
         qty: 2,
-        IsSOC: false,
-        IsFCL: false,
+        socFlag: false,
+        fclFlag: false,
         Remark: "ANL YF62423",
     },
     {
@@ -27,8 +27,8 @@ const initialContainerList: APIModel.ContainerList[] = [
         ctnModelId: 2,
         ctnModelName: "40GP",
         qty: 1,
-        IsSOC: true,
-        IsFCL: true,
+        socFlag: true,
+        fclFlag: true,
         Remark: "CSCLYF85868",
     },
     {
@@ -36,8 +36,8 @@ const initialContainerList: APIModel.ContainerList[] = [
         ctnModelId: 5,
         ctnModelName: "40HQ",
         qty: 1,
-        IsSOC: true,
-        IsFCL: false,
+        socFlag: true,
+        fclFlag: false,
         Remark: "KMTCYF85912",
     },
 ];
@@ -74,15 +74,17 @@ const Containers: React.FC<Props> = (props) => {
      * @param filedName
      * @param val
      * @param option
+     * @param ctnArr
      * @returns
      */
-    function handleCTNEdit(index: number, rowID: any, filedName: string, val: any, option?: any) {
-        const newData: any[] = ls.cloneDeep(cTNActualList);
-        const target = newData.find((item: any)=> item.id === rowID);
-        target[filedName] = val?.target ? val.target.value : val;
-
-        newData.splice(index, 1, target);
-        setCTNActualList(newData);
+    function handleCTNEdit(index: number, rowID: any, filedName: string, val: any, option?: any, ctnArr: APIModel.CTNActualList[]) {
+        // const newData: any[] = ls.cloneDeep(cTNActualList);
+        // const target = newData.find((item: any)=> item.id === rowID);
+        // target[filedName] = val?.target ? val.target.value : val;
+        //
+        // newData.splice(index, 1, target);
+        // setCTNActualList(newData);
+        setCTNActualList(ctnArr);
     }
 
     const handleDelete = () => {
@@ -101,10 +103,12 @@ const Containers: React.FC<Props> = (props) => {
     return (
         <div className={'seaExportContainers'}>
             <PreBooking
+                type={type}
                 handleRowChange={handleRowChange}
             />
             <CTNLoading
                 form={form}
+                type={type}
                 cargoInfo={cargoInfo}
                 containerList={containerList}
                 handleCTNEdit={handleCTNEdit}
