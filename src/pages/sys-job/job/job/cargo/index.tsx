@@ -25,7 +25,7 @@ const Cargo: React.FC<Props> = (props) => {
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6}>
                             <ProFormRadio.Group
                                 label="Cargo Type"
-                                name={['cargoInfo', 'cargoTypeId']}
+                                name={'cargoType'}
                                 // initialValue={NBasicInfo?.OceanTransportTypeID}
                                 options={[
                                     {label: 'FCL', value: 1,},

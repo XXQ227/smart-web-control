@@ -46,7 +46,7 @@ const Containers: React.FC<Props> = (props) => {
     const {
         type, form,
         CTNPlanList,
-        CTNActualList
+        CTNActualList,
     } = props;
 
     const cargoInfo: any = {qty: 168, grossWeight: 1254.8, measurement: 3245.6};
@@ -77,14 +77,14 @@ const Containers: React.FC<Props> = (props) => {
      * @param ctnArr
      * @returns
      */
-    function handleCTNEdit(index: number, rowID: any, filedName: string, val: any, option?: any, ctnArr: APIModel.CTNActualList[]) {
+    function handleCTNEdit(index: number, rowID: any, filedName: string, val: any, option?: any, ctnArr?: APIModel.CTNActualList[]) {
         // const newData: any[] = ls.cloneDeep(cTNActualList);
         // const target = newData.find((item: any)=> item.id === rowID);
         // target[filedName] = val?.target ? val.target.value : val;
         //
         // newData.splice(index, 1, target);
         // setCTNActualList(newData);
-        setCTNActualList(ctnArr);
+        if (ctnArr) setCTNActualList(ctnArr);
     }
 
     const handleDelete = () => {

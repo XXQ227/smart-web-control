@@ -16,6 +16,7 @@ import ls from 'lodash'
 import * as XLSX from 'xlsx'
 import ParseExcel from '@/components/ParseExcel'
 import {useModel} from '@@/plugin-model/useModel'
+import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 
 interface Props {
     type?: string;
@@ -68,22 +69,21 @@ const CTNLoading: React.FC<Props> = (props) => {
         target[filedName] = val?.target ? val.target.value : val;
 
         newData.splice(index, 1, target);
+        // TODO: 当 【件、重、尺】 有编辑时，需要重新计算 【Loading Summary】 的值
+        if (['qty', 'grossWeight', 'measurement'].includes(filedName)) {
+            getCtnBalance(newData);
+        }
         setCTNActualList(newData);
+        form.setFieldsValue({'container-detail': newData});
         handleCTNEdit(index, rowID, filedName, val, option, newData);
     }
 
     const handleAdd = () => {
-        const newData: APIModel.CTNActualList = {
-            id: ID_STRING(),
-            qty: 0,
-            VGM: 0,
-            grossWeight: 0,
-            measurement: 0,
-        };
+        const newData: APIModel.CTNActualList = {id: ID_STRING(),};
         setCTNActualList([...cTNActualList, newData]);
     };
 
-
+    //region TODO: 引入预配箱信息、把货信息的 【件、重、尺】 均分到每个箱中
     /**
      * @Description: TODO: 引入预配箱信息，生成为一个个的实装
      * @author XXQ
@@ -121,7 +121,6 @@ const CTNLoading: React.FC<Props> = (props) => {
      * @returns
      */
     function handleDivideEqually() {
-
         if (cTNActualList?.length > 0) {
             const ctnQty = cTNActualList?.length || 1;
 
@@ -133,7 +132,6 @@ const CTNLoading: React.FC<Props> = (props) => {
             const grossWeightPerPart = Math.floor(cargoInfo.grossWeight / ctnQty);
             const measurementPerPart = Math.floor(cargoInfo.measurement / ctnQty);
 
-            console.log(grossWeightPerPart, qtyPerPart, measurementPerPart);
             // TODO: 计算剩余的值
             const qtyRemainder = keepDecimal(cargoInfo.qty - qtyPerPart * ctnQty, 6) || 0;
             const grossWeightRemainder = keepDecimal(cargoInfo.grossWeight - grossWeightPerPart * ctnQty, 6) || 0;
@@ -158,7 +156,8 @@ const CTNLoading: React.FC<Props> = (props) => {
                 setValueObj[`measurement_table_${item.id}`] = item.measurement;
                 return item;
             });
-
+            setValueObj['container-detail'] = actualArr;
+            getCtnBalance(actualArr);
             setCTNActualList(actualArr);
             setLoadingSummary(cargoInfo);
             form.setFieldsValue(setValueObj);
@@ -166,7 +165,9 @@ const CTNLoading: React.FC<Props> = (props) => {
             message.warn('Please add container details');
         }
     }
+    //endregion
 
+    //region TODO: 解析 excel 数据
     /**
      * @Description: TODO: 解析 excel 数据
      * @author XXQ
@@ -199,17 +200,16 @@ const CTNLoading: React.FC<Props> = (props) => {
                         excelData[0].map((item: any) => item?.trim() && excelTitleRow.push(item.trim().toLowerCase()));
 
                         // TODO: 把 excel 数据生成 json 数据；【slice() 用于提取数组中的一部分元素，创建一个新的数组并返回，而不会修改原始数组】
-                        let targetArray = excelData.slice(1).map((row: any) => {
-                            const [size, ctnNum, sealNum, vgm, qty, grossWeight, measurement] = row;
+                        let targetArray: APIModel.CTNActualList[] = excelData.slice(1).map((row: any) => {
+                            const [ctnModelName, containerNum, sealNum, vgm, qty, grossWeight, measurement] = row;
                             return {
-                                size, ctnNum, sealNum,
+                                ctnModelName, containerNum, sealNum,
                                 vgm: typeof vgm === "number" ? vgm : null,
                                 qty: typeof qty === "number" ? qty : null,
                                 grossWeight: typeof grossWeight === "number" ? grossWeight : null,
                                 measurement: typeof measurement === "number" ? measurement : null,
                             };
                         });
-                        console.log(targetArray);
 
                         // TODO: 获取箱型的 id 信息
                         if (targetArray?.length > 0) {
@@ -219,19 +219,19 @@ const CTNLoading: React.FC<Props> = (props) => {
                             // TODO: 当有箱型不在系统存在的箱型，用于弹框提醒
                             const missCtnSizeArr: string[] = [];
                             // TODO: 遍历数据，整理箱型信息
-                            targetArray = targetArray.map((item: any) => {
+                            targetArray = targetArray.map((item: any, index: number) => {
+                                item.id = ID_STRING() + index;
                                 // TODO: 找到对应箱型的 id
-                                const ctnSizeObj: any = ctnSizeResult?.find((x: any) => x.label === item.size) || {};
+                                const ctnSizeObj: any = ctnSizeResult?.find((x: any) => x.label === item.ctnModelName) || {};
                                 // TODO: 更新箱型 id 数据
                                 if (ctnSizeObj.value) {
                                     item.ctnModelId = ctnSizeObj.value;
                                     item.ctnModelName = ctnSizeObj.label;
-                                    delete item.size;
                                     return item;
                                 }
                                 // TODO: 获取系统不存在的箱型数据
-                                else if (!missCtnSizeArr.includes(item.size)) {
-                                    missCtnSizeArr.push(item.size);
+                                else if (!missCtnSizeArr.includes(item.ctnModelName)) {
+                                    missCtnSizeArr.push(item.ctnModelName);
                                 }
                             })
                             targetArray = targetArray.filter(item => !!item);
@@ -239,7 +239,12 @@ const CTNLoading: React.FC<Props> = (props) => {
                             if (missCtnSizeArr?.length > 0) {
                                 message.warn(`【${missCtnSizeArr}】The container type does not exist in the system, please contact the administrator to add it.`);
                             }
-                            console.log(ctnSizeResult, targetArray);
+                            // TODO: 当存在有数据时，把数据加到箱信息中
+                            if (targetArray?.length > 0) {
+                                setCTNActualList(targetArray);
+                                getCtnBalance(targetArray);
+                                form.setFieldsValue({'container-detail': targetArray});
+                            }
                         }
                     } else {
                         message.warn(`Please enter container information.`);
@@ -251,6 +256,40 @@ const CTNLoading: React.FC<Props> = (props) => {
             }
         }
     }
+    // endregion
+
+    //region // TODO: 算  Loading Summary 的数据
+    /**
+     * @Description: TODO: 获取箱型箱量分配到的件重尺总的数量
+     * @author XXQ
+     * @date 2023/8/7
+     * @param data  箱信息数据集
+     * @returns
+     */
+    function getCtnBalance(data: any[]) {
+        if (data?.length > 0) {
+            // TODO: 计算 ctn 数组中的 qty、grossWeight 和 measurement 总和
+            const ctnQtyTotal = data.reduce((total, item) => total + Number(item.qty), 0);
+            const ctnGrossWeightTotal = data.reduce((total, item) => total + Number(item.grossWeight), 0);
+            const ctnMeasurementTotal = data.reduce((total, item) => total + Number(item.measurement), 0);
+
+            // TODO: 将 cargo 对象的相应属性减去 ctn 数据的总和
+            // const remainingCargo = {
+            //     qty: cargoInfo.qty - ctnQtyTotal,
+            //     grossWeight: cargoInfo.grossWeight - ctnGrossWeightTotal,
+            //     measurement: cargoInfo.measurement - ctnMeasurementTotal
+            // };
+            // console.log("Remaining Cargo:", remainingCargo);
+
+            // TODO: Container 总的 件重尺数量
+            const ctnTotal: any = {
+                qty: ctnQtyTotal,
+                grossWeight: ctnGrossWeightTotal,
+                measurement: ctnMeasurementTotal
+            };
+            setLoadingSummary(ctnTotal);
+        }
+    }
 
     //endregion
 
@@ -260,15 +299,14 @@ const CTNLoading: React.FC<Props> = (props) => {
             title: 'Container No.', dataIndex: "containerNum", width: '15%', className: "textCenter",
             render: (text: any, record, index) => {
                 return (
-                    <ProFormText
+                    <FormItemInput
                         required
                         placeholder={''}
                         initialValue={text}
+                        FormItem={FormItem}
                         name={`CTNNum_table_${record.id}`}
                         rules={[{required: true, message: 'Container No.'}]}
-                        fieldProps={{
-                            onChange: (e) => onChange(index, record.id, 'containerNum', e)
-                        }}
+                        onChange={(val: any) => onChange(index, record.id, 'containerNum', val)}
                     />
                 );
             },
@@ -277,13 +315,12 @@ const CTNLoading: React.FC<Props> = (props) => {
             title: 'Seal No.', dataIndex: "sealNum", width: '15%', className: "textCenter",
             render: (text: any, record, index) => {
                 return (
-                    <ProFormText
-                        name={`SealNum_table_${record.id}`}
-                        initialValue={text}
+                    <FormItemInput
                         placeholder={''}
-                        fieldProps={{
-                            onChange: (e) => onChange(index, record.id, 'sealNum', e)
-                        }}
+                        initialValue={text}
+                        FormItem={FormItem}
+                        name={`SealNum_table_${record.id}`}
+                        onChange={(val: any) => onChange(index, record.id, 'sealNum', val)}
                     />
                 );
             },
@@ -292,15 +329,14 @@ const CTNLoading: React.FC<Props> = (props) => {
             title: 'qty', dataIndex: "qty", width: '8%', className: "textCenter",
             render: (text: any, record, index) => {
                 return (
-                    <ProFormText
+                    <FormItemInput
                         required
                         placeholder={''}
                         initialValue={text}
+                        FormItem={FormItem}
                         name={`qty_table_${record.id}`}
                         rules={[{required: true, message: 'QTY'}]}
-                        fieldProps={{
-                            onChange: (e) => onChange(index, record.id, 'Pieces', e)
-                        }}
+                        onChange={(val: any) => onChange(index, record.id, 'qty', val)}
                     />
                 );
             },
@@ -309,15 +345,14 @@ const CTNLoading: React.FC<Props> = (props) => {
             title: 'G.W. (kg)', dataIndex: "grossWeight", width: '10%', className: "textRight",
             render: (text: any, record, index) => {
                 return (
-                    <ProFormText
+                    <FormItemInput
                         required
                         placeholder={''}
                         initialValue={text}
+                        FormItem={FormItem}
                         name={`grossWeight_table_${record.id}`}
                         rules={[{required: true, message: 'G.W.'}]}
-                        fieldProps={{
-                            onChange: (e) => onChange(index, record.id, 'grossWeight', e)
-                        }}
+                        onChange={(val: any) => onChange(index, record.id, 'grossWeight', val)}
                     />
                 );
             },
@@ -326,15 +361,14 @@ const CTNLoading: React.FC<Props> = (props) => {
             title: 'Meas. (cbm)', dataIndex: "measurement", width: '10%', className: "textRight",
             render: (text: any, record, index) => {
                 return (
-                    <ProFormText
+                    <FormItemInput
                         required
                         placeholder={''}
                         initialValue={text}
+                        FormItem={FormItem}
                         name={`measurement_table_${record.id}`}
                         rules={[{required: true, message: 'Meas.'}]}
-                        fieldProps={{
-                            onChange: (e) => onChange(index, record.id, 'measurement', e)
-                        }}
+                        onChange={(val: any) => onChange(index, record.id, 'measurement', val)}
                     />
                 );
             },
@@ -343,13 +377,12 @@ const CTNLoading: React.FC<Props> = (props) => {
             title: 'VGM (kg)', dataIndex: "vgm", width: '10%', className: "textRight",
             render: (text: any, record, index) => {
                 return (
-                    <ProFormText
+                    <FormItemInput
                         placeholder={''}
                         initialValue={text}
+                        FormItem={FormItem}
                         name={`vgm_table_${record.id}`}
-                        fieldProps={{
-                            onChange: (e) => onChange(index, record.id, 'vgm', e)
-                        }}
+                        onChange={(val: any) => onChange(index, record.id, 'vgm', val)}
                     />
                 );
             },
@@ -403,14 +436,12 @@ const CTNLoading: React.FC<Props> = (props) => {
                 title: 'Yard Container No.', dataIndex: "YardCTNNum", className: "textCenter",
                 render: (text: any, record, index) => {
                     return (
-                        <ProFormText
+                        <FormItemInput
                             placeholder={''}
-                            allowClear={false}
                             initialValue={text}
+                            FormItem={FormItem}
                             name={`YardCTNNum_table_${record.id}`}
-                            fieldProps={{
-                                onChange: (e) => onChange(index, record.id, 'YardCTNNum', e)
-                            }}
+                            onChange={(val: any) => onChange(index, record.id, 'yardCTNNum', val)}
                         />
                     );
                 },
@@ -420,27 +451,26 @@ const CTNLoading: React.FC<Props> = (props) => {
             title: 'Tare Weight',   dataIndex: "TareWeight", width: '10%', className: "textRight",
             render: (text: any, record, index) => {
                 return (
-                    <ProFormText
+                    <FormItemInput
                         placeholder={''}
-                        allowClear={false}
                         initialValue={text}
+                        FormItem={FormItem}
                         name={`TareWeight_table_${record.id}`}
-                        fieldProps={{
-                            onChange: (e) => onChange(index, record.id, 'TareWeight', e)
-                        }}
+                        onChange={(val: any) => onChange(index, record.id, 'tareWeight', val)}
                     />
                 );
             },
         });
     }
 
-    let iconFortStr = 'icon-neq';
+    let iconFortStr = 'icon-neq', isEqual = !(cTNActualList?.length > 0);
     if (
         loadingSummary.qty === cargoInfo.qty
         && loadingSummary.grossWeight === cargoInfo.grossWeight
         && loadingSummary.measurement === cargoInfo.measurement
     ) {
-        iconFortStr = 'icon-equal-to'
+        iconFortStr = 'icon-equal-to';
+        isEqual = true;
     }
 
     return (
@@ -477,6 +507,9 @@ const CTNLoading: React.FC<Props> = (props) => {
                         columns={containersLoadingColumns}
                         className={`tableStyle containerTable`}
                     />
+
+                    {/* // TODO: 用于保存时，获取数据用 */}
+                    <FormItem hidden={true} name={'container-detail'} />
                 </Col>
             </Row>
             <Row gutter={24}>
@@ -500,6 +533,12 @@ const CTNLoading: React.FC<Props> = (props) => {
                         <span className={'siteSpaceSpan'}/>
                         <div style={{margin: '3px 0 0 3px'}}>Cargo Summary</div>
                     </Space>
+                    {/* // TODO: 用于验证箱型的【件重尺】是否跟 【cargoInfo】中的匹配 */}
+                    <ProFormText
+                        hidden={true}
+                        required={!isEqual} name={'requiredCtn'}
+                        rules={[{required: !isEqual, message: 'Loading Summary !== Cargo Summary !!!'}]}
+                    />
                 </Col>
             </Row>
         </ProCard>

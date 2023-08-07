@@ -13,13 +13,14 @@ interface Props {
     required?: boolean,
     rules?: any,
     autoFocus?: boolean,
+    allowClear?: boolean,
     placeholder?: string,
     onChange?: (val: any) => void,
 }
 
 const FormItemInput: React.FC<Props> = (props) => {
     const {
-        id, name, initialValue, onChange, FormItem, label, suffix,
+        id, name, initialValue, onChange, FormItem, label, suffix, allowClear,
         disabled, placeholder, autoFocus, required, rules, className
     } = props;
 
@@ -38,6 +39,7 @@ const FormItemInput: React.FC<Props> = (props) => {
                 disabled={disabled}
                 autoComplete={'off'}
                 suffix={suffix}
+                allowClear={allowClear}
                 placeholder={placeholder || ''}
                 onChange={onChange}
             />

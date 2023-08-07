@@ -36,6 +36,8 @@ const SeaImport: React.FC<RouteChildrenProps> = (props) => {
     const [SeaExportInfo, setSeaExportInfo] = useState<any>({});
 
 
+
+
     /**
      * @Description: TODO: 获取海运出口信息
      * @author XXQ
@@ -59,6 +61,8 @@ const SeaImport: React.FC<RouteChildrenProps> = (props) => {
         return result.data;
     }
 
+
+
     const handleFinish = async (values: Record<string, any>) => {
         try {
             console.log(values)
@@ -74,6 +78,7 @@ const SeaImport: React.FC<RouteChildrenProps> = (props) => {
             // console.log
         }
     };
+
 
     const baseForm = {form, FormItem};
 
@@ -115,7 +120,7 @@ const SeaImport: React.FC<RouteChildrenProps> = (props) => {
                 {/* 港口信息 */}
                 <Ports {...baseForm} title={'Port'}/>
 
-                <Containers {...baseForm} type={'import'}/>
+                <Containers{...baseForm} type={'import'}/>
 
                 <Remark type={'import'} title={'Remark'}/>
             </ProForm>

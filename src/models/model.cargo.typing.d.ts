@@ -276,19 +276,19 @@ declare namespace APIModel {
         Remark?: string,
     }
     type CTNActualList = {
-        id: string,
-        ctnModelId?: number,
-        ctnModelName?: string,
-        YardCTNNum?: string,
-        containerNum?: string,
-        sealNum?: string,
-        qty?: number,
-        VGM?: number,
-        grossWeight?: number,
-        measurement?: number,
-        packagingMethodId?: number,
-        packagingMethodName?: string,
-        TareWeight?: string,
+        id?: string;
+        ctnModelId?: number | null;
+        ctnModelName?: any;
+        YardCTNNum?: string;
+        containerNum?: any;
+        grossWeight?: number | null;
+        sealNum?: any;
+        qty?: number | null;
+        vgm?: number | null;
+        measurement?: number | null;
+        packagingMethodId?: number | null;
+        packagingMethodName?: string;
+        TareWeight?: string;
     }
     type HouseBill = {
         SignMethodID?: number,
