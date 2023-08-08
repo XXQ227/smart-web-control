@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProFormInstance} from '@ant-design/pro-components';
 import {
@@ -7,23 +7,25 @@ import {
     ProCard,
     ProForm,
     ProFormCheckbox,
-    ProFormDateRangePicker,
+    ProFormDateRangePicker, ProFormRadio,
     ProFormText,
     ProFormTextArea
 } from '@ant-design/pro-components';
 import {Button, Col, Descriptions, Form, InputNumber, message, Radio, Row, Space, Table} from 'antd'
 import {history, useModel, useParams} from 'umi'
-import {getCreditScore, getFormErrorMsg, keepDecimal} from '@/utils/units'
+import {getCreditScore, getFormErrorMsg, getLabelByValue, getValue, keepDecimal, rowGrid} from '@/utils/units'
 import {
+    PROPERTY_AS_CUSTOMER,
     BUSINESS_TYPE,
     COLUMNS_CREDIT_SCORE,
     CREDIT_ASSESSMENT_SCORE_DATA,
-    POSITION_IN_INDUSTRY
+    POSITION_IN_INDUSTRY, NATURE_OF_COMPANY, CREDIT_STANDING
 } from '@/utils/common-data'
 import ls from 'lodash'
 import FormItemSelect from '@/components/FormItemComponents/FormItemSelect'
 import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 import moment from 'moment'
+import {ArrowLeftOutlined, SaveOutlined, SendOutlined} from "@ant-design/icons";
 
 const FormItem = Form.Item;
 
@@ -44,9 +46,13 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
         queryCreditControlInfo: res.queryCreditControlInfo,
         editCreditControl: res.editCreditControl,
     }));
-    const {queryBusinessUnitPropertyCreditInfo} = useModel('manager.business-unit', (res: any) => ({
+
+    const {
+        queryBusinessUnitPropertyCreditInfo
+    } = useModel('manager.business-unit', (res: any) => ({
         queryBusinessUnitPropertyCreditInfo: res.queryBusinessUnitPropertyCreditInfo,
     }));
+
     const {
         queryDictCommon, BusinessLineList
     } = useModel('common', (res: any) => ({
@@ -66,7 +72,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
      * @date 2023/5/5
      * @returns
      */
-    async function handleGetCreditByID(paramsVal: APICredit) {
+    async function handleGetCreditInfo(paramsVal: APICredit) {
         setLoading(true);
         if (BusinessLineList?.length === 0) {
             await queryDictCommon({dictCodes: ['business_line']});
@@ -74,7 +80,13 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
         if (buId && buId !== '0') {
             const result: API.Result = await queryBusinessUnitPropertyCreditInfo({id: buId});
             result.data = getCreditScoreInfo(result.data);
-            setCreditInfoVO(result.data || {});
+            const newData = result.data;
+            const customerProperty = PROPERTY_AS_CUSTOMER.find(item => item.value === newData.customerProperty)
+            const enterpriseTypeValue = getLabelByValue(NATURE_OF_COMPANY, newData.natureOfCompany);
+            newData.customerProperty = customerProperty?.label;
+            newData.natureOfCompany = enterpriseTypeValue?.natureOfCompany;
+            console.log(newData)
+            setCreditInfoVO(newData);
             setLoading(false);
             return result.data;
         } else if (id !== '0') {
@@ -132,7 +144,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
             let op_value: any = null;
             switch (item.id) {
                 case 1: // TODO: 注册资金
-                    op_value = keepDecimal(result.annualRevenue*needDivided);
+                    op_value = keepDecimal(result.registeredCapital*needDivided);
                     break;
                 case 2: // TODO: 注册时间（年限）
                     op_value = result.establishedDate;
@@ -276,21 +288,20 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
      * @Description: TODO: 保存模板数据
      * @author XXQ
      * @date 2023/6/25
-     * @param values    模板数据
+     * @param val    模板数据
      * @returns
      */
-    const handleSave = async (values: any) => {
+    const onFinish = async (val: any) => {
         setLoading(true);
-
         const saveResult: any = {
             id,
             branchId: '0',
-            ...values,
-            businessType: values.businessType.toString(),
-            cooperationStartTime: values.cooperationTime[0],
-            cooperationEndTime: values.cooperationTime[1],
-            creditExpiryStartTime: values.creditExpiryTime[1],
-            creditExpiryEndTime: values.creditExpiryTime[1],
+            ...val,
+            businessType: val.businessType.toString(),
+            cooperationStartTime: val.cooperationTime[0],
+            cooperationEndTime: val.cooperationTime[1],
+            creditExpiryStartTime: val.creditExpiryTime[1],
+            creditExpiryEndTime: val.creditExpiryTime[1],
             lastYearPaymentOnCredit: form.getFieldValue('lastYearPaymentOnCreditNumber') || 0,
             customerId: CreditInfoVO.customerId || buId,
             score1: CreditInfoVO.score1,
@@ -303,32 +314,45 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
             creditLevel: CreditInfoVO.creditLevel,
             bizApproveDept: 0,
             creditBusinessList: '',
-
-            annualRevenue: keepDecimal(values.annualRevenue * 10000),
-            lastYearAnnualRevenue: keepDecimal(values.lastYearAnnualRevenue * 10000),
-            lastYearGrossProfit: keepDecimal(values.lastYearGrossProfit * 10000),
-            lastYearCreditLine: keepDecimal(values.lastYearCreditLine * 10000),
-            estimatedAnnualRevenue: keepDecimal(values.estimatedAnnualRevenue * 10000),
-            estimatedGrossProfit: keepDecimal(values.estimatedGrossProfit * 10000),
-            creditLine: keepDecimal(values.creditLine * 10000),
+            annualRevenue: keepDecimal(val.annualRevenue * 10000),
+            lastYearAnnualRevenue: keepDecimal(val.lastYearAnnualRevenue * 10000),
+            lastYearGrossProfit: keepDecimal(val.lastYearGrossProfit * 10000),
+            lastYearCreditLine: keepDecimal(val.lastYearCreditLine * 10000),
+            estimatedAnnualRevenue: keepDecimal(val.estimatedAnnualRevenue * 10000),
+            estimatedGrossProfit: keepDecimal(val.estimatedGrossProfit * 10000),
+            creditLine: keepDecimal(val.creditLine * 10000),
         };
-        delete values.cooperationTime;
-        delete values.creditExpiryTime;
+        delete saveResult.cooperationTime;
+        delete saveResult.creditExpiryTime;
+        delete saveResult.businessLine;
+        console.log(saveResult)
         let result: API.Result;
         if (id === '0') {
             result = await addCreditControl(saveResult);
         } else {
             result = await editCreditControl(saveResult);
         }
-        setLoading(false);
         if (result.success) {
-            message.success('Success!');
+            message.success('Success');
             if (id === '0') {
                 history.push({pathname: `/manager/charge-template/form/${btoa(result.data)}`});
             }
         } else {
             message.error(result.message);
         }
+        setLoading(false);
+    }
+
+    /**
+     * @Description: TODO: 验证错误信息
+     * @author XXQ
+     * @date 2023/5/24
+     * @param val
+     * @returns
+     */
+    const onFinishFailed = (val: any) => {
+        const errInfo = getFormErrorMsg(val);
+        message.error(errInfo);
     }
 
     const suffix = <span className={'ant-input-suffix-span'}>10K CNY</span>;
@@ -348,26 +372,27 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                 // TODO: 焦点给到第一个控件
                 autoFocusFirstInput
                 // TODO: 设置默认值
-                initialValues={CreditInfoVO || {}}
-                formKey={'branch-information'}
+                initialValues={CreditInfoVO}
+                formKey={'credit-information'}
                 // TODO: 提交数据
-                onFinish={handleSave}
-                onFinishFailed={async (values: any) => {
-                    if (values.errorFields?.length > 0) {
-                        /** TODO: 错误信息 */
-                        message.error(getFormErrorMsg(values));
-                        setLoading(false);
-                    }
-                }}
+                onFinish={onFinish}
+                onFinishFailed={onFinishFailed}
                 // @ts-ignore
-                request={async () => handleGetCreditByID({id})}
+                // request={async () => handleGetCreditInfo({id})}
+                // TODO: 向后台请求数据
+                request={async () => handleGetCreditInfo()}
             >
-                <ProCard title={'Company Qualification'} className={'ant-card'}>
-                    <Row gutter={24} style={{marginBottom: 12}}>
+                <ProCard
+                    className={'ant-card'}
+                    title={'Company Qualification'}
+                    headerBordered
+                    collapsible
+                >
+                    <Row gutter={rowGrid}>
                         <Col span={24}>
-                            <Descriptions column={4}>
-                                <Descriptions.Item label="Customer">{CreditInfoVO.customerName}</Descriptions.Item>
-                                <Descriptions.Item label="Property">{CreditInfoVO.customer}</Descriptions.Item>
+                            <Descriptions className={'headerList'} column={{xs: 1, sm: 1, md: 1, lg: 2, xl: 3, xxl: 4}}>
+                                <Descriptions.Item label="Customer Name">{CreditInfoVO.customerName}</Descriptions.Item>
+                                <Descriptions.Item label="Property (as Customer)">{CreditInfoVO.customerProperty}</Descriptions.Item>
                                 <Descriptions.Item
                                     label="Nature of Company">{CreditInfoVO.natureOfCompany}</Descriptions.Item>
                                 <Descriptions.Item label="Industry">{CreditInfoVO.industryName}</Descriptions.Item>
@@ -376,12 +401,14 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 <Descriptions.Item
                                     label="Registered Capital">{CreditInfoVO.registeredCapital}</Descriptions.Item>
                                 <Descriptions.Item
+                                    label="Paid-in Capital">{CreditInfoVO.paidInCapital}</Descriptions.Item>
+                                <Descriptions.Item
                                     label="Legal Person/ Director">{CreditInfoVO.legalPersonDirector}</Descriptions.Item>
                             </Descriptions>
                         </Col>
                     </Row>
-                    <Row gutter={24}>
-                        <Col span={8}>
+                    <Row gutter={rowGrid}>
+                        <Col xs={23} sm={23} md={12} lg={8} xl={8} xxl={5}>
                             <ProFormText
                                 required
                                 placeholder=''
@@ -391,22 +418,24 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 rules={[{required: true, message: 'Annual Revenue'}]}
                             />
                         </Col>
-                        <Col span={5}>
+                        <Col xs={23} sm={23} md={12} lg={8} xl={8} xxl={5}>
                             <FormItemSelect
                                 required
-                                name={'positionIndustry'}
-                                label={'Position in industry'}
-                                options={POSITION_IN_INDUSTRY} FormItem={FormItem}
+                                label='Position in Industry'
+                                name='positionIndustry'
+                                options={POSITION_IN_INDUSTRY}
+                                FormItem={FormItem}
                                 onSelect={(e: any) => handleScoreChange(e, 'positionIndustry', 3)}
-                                rules={[{required: true, message: 'Position in industry'}]}
+                                rules={[{required: true, message: 'Position in Industry'}]}
                             />
                         </Col>
-                        <Col span={5}>
+                        <Col xs={23} sm={23} md={12} lg={8} xl={8} xxl={5}>
                             <FormItemSelect
                                 required
                                 label='Credit Standing'
-                                name={'creditStanding'}
-                                options={POSITION_IN_INDUSTRY} FormItem={FormItem}
+                                name='creditStanding'
+                                options={CREDIT_STANDING}
+                                FormItem={FormItem}
                                 onSelect={(e: any) => handleScoreChange(e, 'creditStanding', 4)}
                                 rules={[{required: true, message: 'Credit Standing'}]}
                             />
@@ -414,30 +443,38 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                     </Row>
                 </ProCard>
 
-                <ProCard title={'Cooperation Review'} className={'ant-card'}>
-                    <Row gutter={24}>
-                        <Col span={6}>
+                <ProCard
+                    className={'ant-card'}
+                    title={'Cooperation Review'}
+                    headerBordered
+                    collapsible
+                >
+                    <Row gutter={rowGrid}>
+                        <Col xs={24} sm={24} md={12} lg={9} xl={6} xxl={5}>
                             <ProFormDateRangePicker
-                                name="cooperationTime" label="In cooperation time"
+                                required
+                                name="cooperationTime"
+                                label="In cooperation time"
                                 placeholder={['Start', 'End']}
+                                rules={[{required: true, message: 'In cooperation time'}]}
                             />
                         </Col>
-                        <Col span={8}>
+                        <Col xs={24} sm={24} md={18} lg={15} xl={8} xxl={8}>
                             <ProFormText
                                 name='teams'
                                 placeholder=''
                                 label='Our Team'
                             />
                         </Col>
-                        <Col span={8}>
+                        <Col xs={24} sm={24} md={18} lg={23} xl={10} xxl={8}>
                             <ProFormCheckbox.Group
                                 placeholder=''
                                 name='businessType'
-                                label='Business Typ'
+                                label='Business Type'
                                 options={BUSINESS_TYPE}
                             />
                         </Col>
-                        <Col span={24}>
+                        <Col xs={24} sm={24} md={23} lg={24} xl={23} xxl={21}>
                             <ProFormTextArea
                                 placeholder=''
                                 label='Remark'
@@ -448,16 +485,21 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                     </Row>
                 </ProCard>
 
-                <ProCard title={'Last year\'s Summary'} className={'ant-card'}>
-                    <Row gutter={24}>
-                        <Col span={8}>
+                <ProCard
+                    className={'ant-card'}
+                    title={'Last year\'s Summary'}
+                    headerBordered
+                    collapsible
+                >
+                    <Row gutter={rowGrid}>
+                        <Col xs={24} sm={24} md={24} lg={12} xl={9} xxl={8}>
                             <ProFormText
                                 placeholder=''
                                 name='lastYearTotalShipmentVolume'
                                 label='Total Shipment Volume'
                             />
                         </Col>
-                        <Col span={4}>
+                        <Col xs={24} sm={24} md={12} lg={6} xl={5} xxl={4}>
                             <ProFormText
                                 placeholder=''
                                 label='Annual Revenue'
@@ -469,7 +511,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 }}
                             />
                         </Col>
-                        <Col span={4}>
+                        <Col xs={24} sm={24} md={12} lg={6} xl={5} xxl={4}>
                             <ProFormText
                                 placeholder=''
                                 name='lastYearGrossProfit'
@@ -481,14 +523,14 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 }}
                             />
                         </Col>
-                        <Col span={4}>
+                        <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
                             <FormItem label={'Gross Profit Rate'} className={'ant-form-span-center'}>
                                 <span> {lastYearMarginProfit || CreditInfoVO.lastYearMarginProfit} % </span>
                             </FormItem>
                         </Col>
                     </Row>
-                    <Row gutter={24}>
-                        <Col span={4}>
+                    <Row gutter={rowGrid}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={4}>
                             <ProFormText
                                 placeholder=''
                                 name='lastYearCreditLine'
@@ -497,50 +539,68 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 fieldProps={{suffix}}
                             />
                         </Col>
-                        <Col span={4}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={4}>
                             <ProFormText
                                 placeholder=''
                                 name='lastYearCreditDays'
                                 label='Credit Days'
                             />
                         </Col>
-                        <Col span={4}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={4}>
                             <ProFormText
                                 placeholder=''
                                 name='lastYearActualCreditDays'
                                 label='Actual Credit Days'
                             />
                         </Col>
-                        <Col span={12} className={'ant-col-payment-credit'}>
-                            <Space>
-                                <FormItem label='Payment On Credit' name={'lastYearPaymentOnCredit'}>
+                        <Col xs={16} sm={24} md={24} lg={24} xl={10} xxl={10} className={'ant-col-payment-credit'}>
+                            <Space direction="horizontal" align="center" className={'siteSpace'}>
+                                {/*<FormItem label='Payment On Credit' name={'lastYearPaymentOnCredit'} style={{border: '1px solid green'}}>
                                     <Radio.Group
                                         name='lastYearPaymentOnCredit'
                                         onChange={handleLastYearPaymentOnCredit}
                                         options={[
-                                            {value: 0, label: 'in good condition'},
+                                            {value: 0, label: 'In good condition'},
                                             {value: 1, label: 'Overdue payments'},
                                         ]}
                                     />
-                                </FormItem>
+                                </FormItem>*/}
+                                <ProFormRadio.Group
+                                    label="Payment On Credit"
+                                    name={'lastYearPaymentOnCredit'}
+                                    options={[
+                                        {value: 0, label: 'In good condition'},
+                                        {value: 1, label: 'Overdue payments'},
+                                    ]}
+                                    fieldProps={{
+                                        onChange: handleLastYearPaymentOnCredit
+                                    }}
+                                />
                                 <FormItem
                                     className={'payment-credit-number'}
                                     name={'lastYearPaymentOnCreditNumber'}
                                 >
                                     <InputNumber
-                                        min={1} max={10}
+                                        min={1}
+                                        max={10}
                                         onChange={handleLastYearPaymentOnCreditNumber}
                                         onStep={handleLastYearPaymentOnCreditNumber}
                                     />
                                 </FormItem>
+                                <label>times</label>
                             </Space>
                         </Col>
                     </Row>
                 </ProCard>
 
-                <ProCard title={'Estimated income for this year'} className={'ant-card'}>
-                    <Row gutter={24}>
-                        <Col span={8}>
+                <ProCard
+                    className={'ant-card'}
+                    title={'Estimated income for this year'}
+                    headerBordered
+                    collapsible
+                >
+                    <Row gutter={rowGrid}>
+                        <Col xs={23} sm={23} md={18} lg={12} xl={9} xxl={8}>
                             <ProFormText
                                 required
                                 placeholder=''
@@ -552,8 +612,19 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 }]}
                             />
                         </Col>
-                        <Col span={4}>
-                            <FormItemInput
+                        <Col xs={23} sm={23} md={9} lg={6} xl={5} xxl={4}>
+                            <ProFormText
+                                required
+                                placeholder=''
+                                name='estimatedAnnualRevenue'
+                                label='Annual Revenue'
+                                rules={[{required: true, message: 'Annual Revenue'}, {max: 12, message: 'length: 12'}]}
+                                fieldProps={{
+                                    suffix,
+                                    onChange: (e: any) => handleScoreChange(e?.target?.value, 'estimatedAnnualRevenue', 5)
+                                }}
+                            />
+                            {/*<FormItemInput
                                 required
                                 placeholder=''
                                 id={'estimatedAnnualRevenue'}
@@ -564,10 +635,21 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 FormItem={FormItem}
                                 onChange={(e: any) => handleScoreChange(e?.target?.value, 'estimatedAnnualRevenue', 5)}
                                 rules={[{required: true, message: 'Annual Revenue'}]}
-                            />
+                            />*/}
                         </Col>
-                        <Col span={4}>
-                            <FormItemInput
+                        <Col xs={23} sm={23} md={9} lg={6} xl={5} xxl={4}>
+                            <ProFormText
+                                required
+                                placeholder=''
+                                name='estimatedGrossProfit'
+                                label='Gross Profit'
+                                rules={[{required: true, message: 'Gross Profit'}, {max: 12,message: 'length: 12'}]}
+                                fieldProps={{
+                                    suffix,
+                                    onChange: (e: any) => handleScoreChange(e?.target?.value, 'estimatedGrossProfit', 6)
+                                }}
+                            />
+                            {/*<FormItemInput
                                 required
                                 placeholder=''
                                 id={'estimatedGrossProfit'}
@@ -578,9 +660,9 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 FormItem={FormItem}
                                 onChange={(e: any) => handleScoreChange(e?.target?.value, 'estimatedGrossProfit', 6)}
                                 rules={[{required: true, message: 'Gross Profit'}]}
-                            />
+                            />*/}
                         </Col>
-                        <Col span={4}>
+                        <Col xs={23} sm={23} md={6} lg={8} xl={5} xxl={4}>
                             <FormItem label={'Gross Profit Rate'} className={'ant-form-span-center'}>
                                 <span> {estimatedMarginProfit || CreditInfoVO.estimatedMarginProfit} % </span>
                             </FormItem>
@@ -588,32 +670,50 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                     </Row>
                 </ProCard>
 
-                <ProCard title={'Credit Assessment'} className={'ant-card'}>
+                <ProCard
+                    className={'ant-card'}
+                    title={'Credit Assessment'}
+                    headerBordered
+                    collapsible
+                >
                     <Table
                         rowKey={'id'}
                         bordered={true}
                         pagination={false}
                         dataSource={ScoreData}
                         columns={COLUMNS_CREDIT_SCORE}
-                        className={'ant-pro-table-edit'}
+                        className={'ant-pro-table-edit ant-pro-table-credit'}
                     />
-                    <Row gutter={24} className={'ant-row-score'}>
+                    <Row gutter={rowGrid} className={'ant-row-score'}>
                         <Col span={24}>
                             <label>Assessment Results————</label>
                             <span>
                                 <Space>
-                                    <Space>Score: {CreditInfoVO.totalScore}</Space>
-                                    <label><Space>Credit Level: {CreditInfoVO.creditLevel}</Space></label>
+                                    <Space>Score: <b>{CreditInfoVO.totalScore || null}</b></Space>
+                                    <label><Space>Credit Level: <b>{CreditInfoVO.creditLevel}</b></Space></label>
                                 </Space>
                             </span>
                         </Col>
                     </Row>
                 </ProCard>
 
-                <ProCard title={'Credit Result'} className={'ant-card'}>
-                    <Row gutter={24}>
-                        <Col span={4}>
-                            <FormItemInput
+                <ProCard
+                    className={'ant-card'}
+                    title={'Credit Result'}
+                    headerBordered
+                    collapsible
+                >
+                    <Row gutter={rowGrid}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4} className={'ant-input-text-bold'}>
+                            <ProFormText
+                                required
+                                placeholder=''
+                                name='creditLine'
+                                label='Credit Line'
+                                fieldProps={{suffix}}
+                                rules={[{required: true, message: 'Credit Line'}]}
+                            />
+                            {/*<FormItemInput
                                 required
                                 placeholder=''
                                 id={'creditLine'}
@@ -623,10 +723,18 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 suffix={suffix}
                                 FormItem={FormItem}
                                 rules={[{required: true, message: 'Credit Line'}]}
-                            />
+                            />*/}
                         </Col>
-                        <Col span={4}>
-                            <FormItemInput
+                        <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={4} className={'ant-input-text-center'}>
+                            <ProFormText
+                                required
+                                placeholder=''
+                                name='creditDays'
+                                label='Credit Days'
+                                rules={[{required: true, message: 'Credit Days'}]}
+                                // allowClear={false}
+                            />
+                            {/*<FormItemInput
                                 required
                                 placeholder=''
                                 id={'creditDays'}
@@ -636,28 +744,45 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 suffix={<span className={'ant-input-suffix-span'}> Days</span>}
                                 FormItem={FormItem}
                                 rules={[{required: true, message: 'Credit Days'}]}
-                            />
+                            />*/}
                         </Col>
-                        <Col span={6}>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormDateRangePicker
                                 required
-                                name="creditExpiryTime" label="Period of credit"
+                                name="creditExpiryTime"
+                                label="Period of credit"
                                 placeholder={['Start', 'End']}
+                                rules={[{required: true, message: 'Period of credit'}]}
                             />
                         </Col>
-                        {/*<Col span={8}>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={11}>
                             <ProFormCheckbox.Group
-                                name='businessLine' label="Business Line" options={BusinessLineList}
+                                disabled={true}
+                                name='businessLine'
+                                label="Business Line"
+                                options={BusinessLineList}
                             />
-                        </Col>*/}
-                        <Col span={24}>
-                            <ProFormTextArea placeholder='' name='remark' label='Remark' fieldProps={{rows: 3}}/>
+                        </Col>
+                        <Col span={23}>
+                            <ProFormTextArea
+                                placeholder=''
+                                name='remark'
+                                label='Remark'
+                                fieldProps={{rows: 3}}
+                            />
                         </Col>
                     </Row>
                 </ProCard>
 
-                <FooterToolbar extra={<Button onClick={() => push({pathname: '/manager/credit'})}>Back</Button>}>
-                    <Button type={'primary'} htmlType={'submit'}>提交</Button>
+                <FooterToolbar extra={<Button onClick={() => push({pathname: '/manager/credit'})} icon={<ArrowLeftOutlined/>}>Back</Button>}>
+                    <Button key={'submit'} type={'primary'} htmlType={'submit'} icon={<SaveOutlined/>}>
+                        Save
+                    </Button>
+                    <Button type={'primary'} icon={<SendOutlined/>}
+                        // onClick={handleOperateBUP}
+                    >
+                        Save & Submit
+                    </Button>
                 </FooterToolbar>
             </ProForm>
         </PageContainer>

@@ -9,61 +9,56 @@ import {
     queryCreditControlInfoAPI
 } from '@/services/smart/manager/credit'
 
-type APICreditControl = APIManager.Credit;
+type APICredit = APIManager.Credit;
 
 export default () => {
-    // TODO: 基础数据
-
 
     //region TODO: 接口
-    // TODO: 获取单票业务详情请求
-    const queryCreditControl = useCallback(async (params: APIManager.SearchCreditParams) => {
-        // TODO: 请求后台 API
-        const response: API.Result = await queryCreditControlAPI(params);
-        if (!response) return;
-        return response;
-    }, []);
-
-    // TODO: 获取单票业务详情请求
+    // TODO: 获取 未做信控客户 列表
     const queryUnCreditControl = useCallback(async (params: APIManager.SearchCreditParams) => {
-        // TODO: 请求后台 API
-        const response: API.Result = await queryUnCreditControlAPI(params);
+        const response = await queryUnCreditControlAPI(params);
         if (!response) return;
         return response;
     }, []);
 
-    // TODO: 添加银行公司
-    const addCreditControl = useCallback(async (params: APICreditControl)=> {
-        return await addCreditControlAPI(params);
-    }, [])
+    // TODO: 获取 信控 列表
+    const queryCreditControl = useCallback(async (params: APIManager.SearchCreditParams) => {
+        const response = await queryCreditControlAPI(params);
+        if (!response) return;
+        return response;
+    }, []);
 
-    // TODO: 获取 CreditControl 详情
-    const queryCreditControlInfo = useCallback(async (params: {id: string})=> {
-        // TODO: 请求后台 API
+    // TODO: 获取 信控 详情
+    const queryCreditControlInfo = useCallback(async (params: APICredit)=> {
         return await queryCreditControlInfoAPI(params);
     }, [])
 
-    // TODO: 获取 CreditControl 详情
-    const editCreditControl = useCallback(async (params: APICreditControl)=> {
+    // TODO: 新增信控
+    const addCreditControl = useCallback(async (params: APICredit)=> {
+        return await addCreditControlAPI(params);
+    }, [])
+
+    // TODO: 编辑信控
+    const editCreditControl = useCallback(async (params: APICredit)=> {
         return await editCreditControlAPI(params);
     }, [])
 
-    // TODO: 获取 CreditControl 详情
-    const deleteCreditControl = useCallback(async (params: APICreditControl)=> {
+    // TODO: 删除信控
+    const deleteCreditControl = useCallback(async (params: APICredit)=> {
         return await deleteCreditControlAPI(params);
     }, [])
 
-    // TODO: 获取 CreditControl 详情
-    const operateCreditControl = useCallback(async (params: APICreditControl)=> {
+    // TODO: 启用禁用信控
+    const operateCreditControl = useCallback(async (params: APICredit)=> {
         return await operateCreditControlAPI(params);
     }, [])
     //endregion
 
     return {
-        queryCreditControl,
         queryUnCreditControl,
-        addCreditControl,
+        queryCreditControl,
         queryCreditControlInfo,
+        addCreditControl,
         editCreditControl,
         deleteCreditControl,
         operateCreditControl,

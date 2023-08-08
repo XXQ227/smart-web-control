@@ -3,36 +3,51 @@ import type {RouteChildrenProps} from 'react-router';
 import type {ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
-import {DeleteOutlined, EditOutlined} from '@ant-design/icons'
+import {EditOutlined, PlusOutlined} from '@ant-design/icons'
 import type {TabsProps} from 'antd';
-import {Divider, Input, message, Popconfirm, Tabs} from 'antd'
+import {Divider, Input, message, Tabs} from 'antd'
 import {history} from '@@/core/history'
 import {CustomizeIcon} from '@/utils/units'
+import ls from "lodash";
 
 const {Search} = Input;
 
 type APICredit = APIManager.Credit;
-type APISearchCredit = APIManager.SearchCreditParams;
+type APISearchCreditParams = APIManager.SearchCreditParams;
 
+export type LocationState = Record<string, unknown>;
 
-// TODO: 获取单票集的请求参数
-const searchParams: APISearchCredit = {
-    type: '', currentPage: 1, pageSize: 20, ownershipEntityType: ''
+// TODO: 获取信控列表的请求参数
+const initSearchParam= {
+    customerName: '',
+    applicantId: '',
+    creditStatusTypeList: [],
+    currentPage: 1,
+    pageSize: 20,
 };
 
-const CreditIndex: React.FC<RouteChildrenProps> = () => {
+const initPagination = {
+    current: 1,
+    pageSize: 20,
+    total: 0,
+}
+
+const CreditListIndex: React.FC<RouteChildrenProps> = (props) => {
+    const searchQueryBranch = ls.cloneDeep(initSearchParam)
+    const searchLocation = props.location.state ? (props.location.state as LocationState)?.searchParams : '';
 
     const {
-        queryCreditControl, queryUnCreditControl, deleteCreditControl,
+        queryUnCreditControl, queryCreditControl, deleteCreditControl,
     } = useModel('manager.credit', (res: any) => ({
-        queryCreditControl: res.queryCreditControl,
         queryUnCreditControl: res.queryUnCreditControl,
+        queryCreditControl: res.queryCreditControl,
         deleteCreditControl: res.deleteCreditControl,
     }));
 
-
     const [loading, setLoading] = useState<boolean>(false);
     const [CreditListVO, setCreditListVO] = useState<APICredit[]>([]);
+    const [searchParams, setSearchParams] = useState<APISearchCreditParams>(searchLocation || searchQueryBranch);
+    const [pagination, setPagination] = useState<any>(initPagination)
 
     /**
      * @Description: TODO 获取单票数据集合
@@ -42,17 +57,26 @@ const CreditIndex: React.FC<RouteChildrenProps> = () => {
      * @param params    参数
      * @returns
      */
-    async function handleGetCreditList(tabKey: string = '1', params: APISearchCredit) {
+    async function handleQueryCredit(tabKey: string = '1', params: APISearchCreditParams) {
         setLoading(true);
         let result: API.Result;
         if (tabKey === '1') {
-            // TODO: 分页查询【参数页】
+            // TODO: 获取 未做信控客户 列表
             result = await queryUnCreditControl(params);
-            setCreditListVO(result.data);
         } else {
-            // TODO: 分页查询【参数页】
+            // TODO: 获取 信控 列表
             result = await queryCreditControl(params);
+        }
+        if (result.success) {
             setCreditListVO(result.data);
+            console.log(result.data)
+            setPagination({
+                current: result.current,
+                pageSize: result.size,
+                total: result.total,
+            });
+        } else {
+            message.error(result.message);
         }
         setLoading(false);
         return result;
@@ -90,8 +114,12 @@ const CreditIndex: React.FC<RouteChildrenProps> = () => {
                 url += `/${btoa(record?.id)}`;
             }
             // TODO: 跳转页面<带参数>
-            // @ts-ignore
-            history.push({pathname: url});
+            history.push({
+                pathname: url,
+                state: {
+                    searchParams: searchParams,
+                },
+            });
         }
     }
 
@@ -100,8 +128,23 @@ const CreditIndex: React.FC<RouteChildrenProps> = () => {
     };
 
     const columnsFunc = (tabKey: string) => {
+        const createColumns: ProColumns<APICredit>[] = [
+            {title: 'Customer Name', dataIndex: 'customerName', align: 'left',},
+            {
+                title: 'Action',
+                width: 80,
+                align: 'center',
+                render: (text, record) => {
+                    return (
+                        <Fragment>
+                            <PlusOutlined color={'#1765AE'} onClick={() => handleOperate(tabKey, record)}/>
+                        </Fragment>
+                    )
+                },
+            },
+        ];
         const columns: ProColumns<APICredit>[] = [
-            {title: 'Customer', dataIndex: 'customerName', align: 'left',},
+            {title: 'Customer Name', dataIndex: 'customerName', align: 'left',},
             {title: 'Credit Line/10k', dataIndex: 'creditLine', width: 110, align: 'center',},
             {title: 'Credit Days', dataIndex: 'creditDays', width: 100, align: 'center',},
             {title: 'Expiration Date', dataIndex: 'expiryEndTime', width: 130, align: 'center',},
@@ -114,31 +157,19 @@ const CreditIndex: React.FC<RouteChildrenProps> = () => {
                 align: 'center',
                 render: (text, record) => {
                     return (
-                        tabKey === '1' ?
-                            <Fragment>
-                                <EditOutlined color={'#1765AE'} onClick={() => handleOperate(tabKey, record)}/>
-                                <Divider type='vertical'/>
-                                <Popconfirm
-                                    onConfirm={() => handleOperate(tabKey, record, 'delete')}
-                                    title="Sure to delete?" okText={'Yes'} cancelText={'No'}
-                                >
-                                    <DeleteOutlined color={'red'}/>
-                                </Popconfirm>
-                            </Fragment>
-                            :
-                            <Fragment>
-                                <EditOutlined color={'#1765AE'} onClick={() => handleOperate(tabKey, record)}/>
-                                <Divider type='vertical'/>
-                                <CustomizeIcon
-                                    type={'icon-approval'} color={'#1765AE'}
-                                    onClick={() => handleOperate(tabKey, record, 'approval')}
-                                />
-                            </Fragment>
+                        <Fragment>
+                            <EditOutlined color={'#1765AE'} onClick={() => handleOperate(tabKey, record)}/>
+                            <Divider type='vertical'/>
+                            <CustomizeIcon
+                                type={'icon-approval'} color={'#1765AE'}
+                                onClick={() => handleOperate(tabKey, record, 'approval')}
+                            />
+                        </Fragment>
                     )
                 },
             },
         ];
-        return columns;
+        return tabKey === '1' ? createColumns : columns;
     }
 
     const creditTable = (tabKey: string) => {
@@ -149,22 +180,35 @@ const CreditIndex: React.FC<RouteChildrenProps> = () => {
                 options={false}
                 bordered={true}
                 loading={loading}
+                columns={columnsFunc(tabKey)}
                 params={searchParams}
                 dataSource={CreditListVO}
-                columns={columnsFunc(tabKey)}
                 locale={{emptyText: 'No Data'}}
-                className={'antd-pro-table-port-list'}
                 headerTitle={
-                    <Search
-                        placeholder='' enterButton="Search" loading={loading}
-                        onSearch={async (val: any) => {
-                            // searchParams.name = val;
-                            await handleGetCreditList(tabKey, searchParams);
-                        }}/>
+                    tabKey === '1' ?
+                        <Search
+                            placeholder=''
+                            enterButton="Search"
+                            loading={loading}
+                            // defaultValue={searchValue}
+                            onSearch={async (val: any) => {
+                                // setSearchValue(val);
+                                searchParams.customerName = val;
+                                await handleQueryCredit(tabKey, searchParams);
+                            }}
+                        /> : null
                 }
-                pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
-                // @ts-ignore
-                request={(params: APISearchCredit) => handleGetCreditList(tabKey, params)}
+                pagination={{
+                    showSizeChanger: true,
+                    ...pagination,
+                    pageSizeOptions: [20, 30, 50, 100],
+                    onChange: (page, pageSize) => {
+                        // searchParams.currentPage = page;
+                        searchParams.pageSize = pageSize;
+                        setSearchParams(searchParams);
+                    },
+                }}
+                request={(params: APISearchCreditParams) => handleQueryCredit(tabKey, params)}
             />
         )
     }
@@ -176,7 +220,7 @@ const CreditIndex: React.FC<RouteChildrenProps> = () => {
     // TODO: 4、Insufficient：”授信额度“或”授信天数“超出的客户。
     // TODO: 5、Expired：超期失效的授信，因为太多，所以不显示数量*/
     const items: TabsProps['items'] = [
-        {key: '1', label: `Pending creation`, children: creditTable('1'),},
+        {key: '1', label: `Pending Creation`, children: creditTable('1'),},
         // TODO: 审批到自己的授信任务清单
         {key: '2', label: `Pending List`, children: creditTable('2'),},
         {key: '3', label: `Credit List`, children: creditTable('3'),},
@@ -195,4 +239,4 @@ const CreditIndex: React.FC<RouteChildrenProps> = () => {
         </PageContainer>
     )
 }
-export default CreditIndex;
+export default CreditListIndex;

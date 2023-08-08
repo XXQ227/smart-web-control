@@ -41,6 +41,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = (props) => {
         operateBranch: res.operateBranch,
         deleteBranch: res.deleteBranch,
     }));
+
     const [loading, setLoading] = useState<boolean>(false);
     const [BranchListVO, setBranchListVO] = useState<APIBranch[]>([]);
     const [searchParams, setSearchParams] = useState<APISearchBranchParams>(searchLocation || searchQueryBranch);

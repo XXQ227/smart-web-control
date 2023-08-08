@@ -1,6 +1,7 @@
 // TODO: 行业地位
 import type {ColumnsType} from 'antd/es/table'
 
+// TODO: 行业地位
 export const POSITION_IN_INDUSTRY = [
     {value: 1, label: 'Vary Bad 差'},
     {value: 2, label: 'Bad 较差'},
@@ -18,11 +19,11 @@ export const CREDIT_STANDING = [
     {value: 5, label: 'Pay in time'},
 ];
 
-// TODO: 信控中的主要业务类型
+// TODO: 信控中的业务类型信控业务的主要类型
 export const BUSINESS_TYPE = [
     {value: '1', label: 'FCL'},
     {value: '2', label: 'LCL'},
-    {value: '3', label: 'Bulk'},
+    {value: '3', label: 'Break Bulk'},
     {value: '4', label: 'Air'},
     {value: '5', label: 'Land'},
     {value: '6', label: 'Rail Way'},
@@ -92,6 +93,15 @@ export const NATURE_OF_COMPANY = [
             { value: 13, label: '境外企业',},
         ],
     },
+];
+
+// TODO: 客户类型
+export const PROPERTY_AS_CUSTOMER = [
+    { label: 'Direct Customer 直客', value: 1, },
+    { label: 'Peer 同行', value: 2, },
+    { label: 'CMG 招商', value: 3, },
+    { label: 'Sinotrans 中外运公司', value: 4, },
+    { label: 'Carrier(as Customer) 船公司', value: 5, },
 ];
 
 // TODO: 贸易条款

@@ -250,23 +250,75 @@ ol {
   color: #797979;
 }
 
-.ant-input-suffix{
-  .ant-input-suffix-span{
+.ant-input-suffix {
+  .ant-input-suffix-span {
     color: #9d9d9d;
     border-left: 1px solid #9d9d9d;
     padding-left: 4px;
   }
 }
 
-.ant-form-span-center{
+.ant-input-text-bold, .ant-input-text-center {
+  .ant-input {
+    font-size: 18px;
+    height: 22px;
+    font-weight: bold;
+    color: rgb(211, 158, 89) !important;
+  }
+}
+.ant-input-text-center {
+  .ant-input {
+    text-align: center;
+  }
+}
+
+.ant-form-span-center {
   span{
     padding-left: 23%;
   }
 }
 
-.ant-col-payment-credit{
-  .payment-credit-number{
-    margin-top: 22px;
+.headerList {
+  margin-bottom: 4px;
+  .ant-descriptions-item-label {
+    color: #9699a6;
+  }
+  .ant-descriptions-item-content {
+    color: #d5d8df;
+  }
+}
+
+.ant-col-payment-credit {
+  .siteSpace {
+    display: inline-flex !important;
+    gap: 0 !important;
+    .ant-radio-wrapper:first-child {
+      margin-bottom: 6px;
+    }
+  }
+
+  @media (max-width: 575px) {
+    .payment-credit-number {
+      margin: 33px 9px 0 -10px;
+      .ant-input-number {
+        width: 60px;
+      }
+    }
+    .ant-space-item:nth-child(1) {
+      width: 160px;
+    }
+    .ant-space-item:nth-child(3) {
+      margin-top: 33px;
+    }
+  }
+
+  @media (min-width: 576px) {
+    .payment-credit-number {
+      margin: 0 9px 0 -7px;
+      .ant-input-number {
+        width: 60px;
+      }
+    }
   }
 }
 
@@ -279,18 +331,6 @@ ol {
 
   .cursorStyle span {
     cursor: pointer;
-  }
-}
-
-.ant-row-score {
-  margin-top: 12px;
-  span{
-    padding: 4px 20px;
-    border: 1.5px solid #fff;
-    border-radius: 5px;
-  }
-  label {
-    margin-left: 12px;
   }
 }
 
@@ -335,7 +375,7 @@ ol {
         .ant-input-affix-wrapper{
           padding: 0 10px !important;
         }
-        td, input, select{
+        td, input, select {
           padding: 2px 4px !important;
         }
         .ant-form-item {
@@ -421,6 +461,27 @@ ol {
         }
       }
     }
+  }
+}
+
+// TODO: 信控 Table 行样式
+.ant-pro-table-credit .ant-table .ant-table-content .ant-table-tbody td {
+  padding: 4px 4px !important;
+}
+
+.ant-row-score {
+  margin-top: 17px;
+  span{
+    padding: 6px 20px;
+    border: 1.5px solid #fff;
+    border-radius: 6px;
+  }
+  label {
+    margin-left: 12px;
+  }
+  b {
+    font-size: 18px;
+    color: rgb(211, 158, 89) !important;
   }
 }
 

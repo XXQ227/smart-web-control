@@ -73,6 +73,10 @@ export default {
   // TODO: 费用模板
   'menu.manager.charge_template_list': 'Charge Template - Index',
   'menu.manager.charge_template_info': 'Charge Template - Information',
+  // TODO: 信控数据
+  'menu.manager.credit_list': 'Credit - Index',
+  'menu.manager.credit_info': 'Credit - Information',
+  'menu.manager.credit_approval': 'Credit - Approval',
   // TODO: 报价
   'menu.manager.charge_quotation_list': 'Charge Quotation - Index',
   'menu.manager.charge_quotation_info': 'Charge Quotation - Information',

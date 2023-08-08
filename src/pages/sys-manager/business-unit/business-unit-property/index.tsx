@@ -402,13 +402,13 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
 
                 <ProTable<APIBUP>
                     rowKey={'id'}
+                    search={false}
                     options={false}
                     bordered={true}
                     loading={loading}
                     columns={columns}
                     params={searchParams}
                     dataSource={BUPListVO}
-                    search={false}
                     /*search={{
                         layout: 'vertical',
                         defaultCollapsed: false,

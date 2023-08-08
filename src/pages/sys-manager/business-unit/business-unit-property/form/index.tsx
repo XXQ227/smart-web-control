@@ -19,7 +19,7 @@ import ls from 'lodash';
 import {useModel, history} from 'umi'
 import {getFormErrorMsg, IconFont, rowGrid, getLabelByValue} from "@/utils/units";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
-import {NATURE_OF_COMPANY} from "@/utils/common-data";
+import {NATURE_OF_COMPANY, PROPERTY_AS_CUSTOMER} from "@/utils/common-data";
 import type { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import {ArrowLeftOutlined, SaveOutlined} from "@ant-design/icons";
 
@@ -33,6 +33,7 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
     const [form] = Form.useForm();
     const formRef = useRef<ProFormInstance>();
     // const {current} = formRef;
+
     //region TODO: 数据层
     const {
         queryBusinessUnitPropertyInfo, addBusinessUnitProperty, editBusinessUnitProperty,
@@ -562,36 +563,18 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                         <Col xs={14} sm={10} md={15} lg={16} xl={18} xxl={13}>
                             <ProFormRadio.Group
                                 name="customerType"
-                                options={[
-                                    {
-                                        label: 'Direct Customer 直客',
-                                        value: 1,
-                                    },
-                                    {
-                                        label: 'Peer 同行',
-                                        value: 2,
-                                    },
-                                    {
-                                        label: 'CMG 招商',
-                                        value: 3,
-                                    },
-                                    {
-                                        label: 'Sinotrans 中外运公司',
-                                        value: 4,
-                                    },
-                                    {
-                                        label: 'Carrier(as Customer) 船公司',
-                                        value: 5,
-                                    },
-                                ]}
+                                options={PROPERTY_AS_CUSTOMER}
                                 rules={[{required: customerTypeRequired, message: 'Property (as Customer)、Property (as Vendor) Must Choose One'}]}
                                 fieldProps={{ onChange: () => setPayerFlagDisabled(false) }}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={1} lg={1} xl={1} xxl={1}>
-                            <Button icon={<IconFont type={'icon-clear'} />}
-                                    className={'ant-clear-button'}
-                                    onClick={handleClearCustomer}
+                            {/* 已创建客户不允许清空 */}
+                            <Button
+                                hidden={id !== '0'}
+                                icon={<IconFont type={'icon-clear'} />}
+                                className={'ant-clear-button'}
+                                onClick={handleClearCustomer}
                             >
                                 Clear
                             </Button>
@@ -689,20 +672,23 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
 
                 {/* TODO: 相关付款客户 */}
                 {
-                    id !== '0' && !BUPInfoVO?.payerFlag ?
+                    id !== '0' && !BUPInfoVO?.payerFlag && !payerFlagDisabled ?
                         <ProCard
                             className={'ant-card ant-card-payers'}
                             title={'Payers'}
                             headerBordered
                             collapsible
                         >
-                            <Row gutter={rowGrid}>
-                                <Col xs={23} sm={22} md={23} lg={16} xl={21} xxl={15}>
-                                    {PayerListVO?.map((item: any) =>
-                                        <u key={item.id}>{item.nameFullEn}</u>
-                                    )}
-                                </Col>
-                            </Row>
+                            {
+                                PayerListVO.length === 0 ? null :
+                                    <Row gutter={rowGrid}>
+                                        <Col xs={23} sm={22} md={23} lg={16} xl={21} xxl={15}>
+                                            {PayerListVO?.map((item: any) =>
+                                                <u key={item.id}>{item.nameFullEn}</u>
+                                            )}
+                                        </Col>
+                                    </Row>
+                            }
                         </ProCard> : null
                 }
 
