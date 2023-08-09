@@ -2,6 +2,8 @@ import {useCallback, useState} from "react";
 import {
     queryDictCommonAPI, queryDictDetailCommonAPI
 } from '@/services/smart/common'
+import {queryAccountPeriodCommonAPI, queryStartAccountPeriodInfoAPI} from '@/services/smart/manager/account'
+import {getTransferDate} from '@/utils/units'
 
 
 
@@ -15,8 +17,8 @@ export default () => {
     const [IndustryList, setIndustryList] = useState([]);
     const [VendorTypeList, setVendorTypeList] = useState([]);
     const [CTNModelList, setCTNModelList] = useState([]);
+    const [AccountPeriodList, setAccountPeriodList] = useState([]);
 
-    //region TODO: 接口
     // TODO: 获取字典数据
     const queryDictCommon = useCallback(async (params: {dictCodes: any}) => {
         // TODO: 请求后台 API
@@ -80,6 +82,37 @@ export default () => {
     }, []);
 
 
+    // TODO: 通用账期查询
+    // POST /base/web/accountPeriod/queryAccountPeriodCommon
+    // API ID:98908726
+    // API URL:https://app.apifox.com/project/2684231/apis/api-98908726
+    const queryAccountPeriodCommon = useCallback(async (params: {UserID: number, ID: number}) => {
+        // TODO: 请求后台 API
+        const response: API.Result = await queryAccountPeriodCommonAPI(params);
+        if (!response) return;
+        if (response.success) {
+            if (response.data?.length > 0) {
+                const accountArr: any = response.data.slice(0).map((item: any)=> {
+                    item.oldLabel = item.label;
+                    item.label = getTransferDate(item.label) + (item.type === 2 ? '(APPEND)' : '');
+                    return item;
+                });
+                setAccountPeriodList(accountArr);
+            }
+        }
+    }, []);
+
+    // TODO: 查询当前开启账期
+    // POST /base/web/accountPeriod/queryStartAccountPeriodInfo
+    // API ID:100610076
+    // API URL:https://app.apifox.com/project/2684231/apis/api-100610076
+    const queryStartAccountPeriodInfo = useCallback(async (params: {UserID: number, ID: number}) => {
+        // TODO: 请求后台 API
+        const response = await queryStartAccountPeriodInfoAPI(params);
+        if (!response) return;
+        return response;
+    }, []);
+
     return {
         queryDictCommon,
         queryDictCommonReturn,
@@ -92,5 +125,8 @@ export default () => {
         IndustryList,
         VendorTypeList,
         CTNModelList,
+        queryAccountPeriodCommon,
+        AccountPeriodList,
+        queryStartAccountPeriodInfo,
     }
 }

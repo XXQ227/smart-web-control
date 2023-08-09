@@ -129,7 +129,7 @@ const Ports: React.FC<Props> = (props) => {
                             <SearchTable
                                 qty={20}
                                 // name="POLID"
-                                rowKey={'ID'}
+                                rowKey={'code'}
                                 modalWidth={950}
                                 showHeader={true}
                                 filedValue={'ID'}
@@ -158,7 +158,7 @@ const Ports: React.FC<Props> = (props) => {
                         <FormItem label={'Port of Discharge'} name={['port', 'podId']}>
                             <SearchTable
                                 qty={20}
-                                rowKey={'ID'}
+                                rowKey={'code'}
                                 // name="PODID"
                                 modalWidth={950}
                                 showHeader={true}
@@ -194,7 +194,7 @@ const Ports: React.FC<Props> = (props) => {
                         <FormItem label={'Place of Receipt'} name={['port', 'porId']}>
                             <SearchTable
                                 qty={20}
-                                rowKey={'ID'}
+                                rowKey={'code'}
                                 modalWidth={950}
                                 filedValue={'ID'}
                                 showHeader={true}
@@ -224,7 +224,7 @@ const Ports: React.FC<Props> = (props) => {
                         <FormItem label={'Final Destination'} name={['port', 'placeOfDeliveryId']}>
                             <SearchTable
                                 qty={20}
-                                rowKey={'ID'}
+                                rowKey={'code'}
                                 modalWidth={950}
                                 showHeader={true}
                                 filedValue={'ID'}

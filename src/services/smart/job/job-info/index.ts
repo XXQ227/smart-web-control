@@ -20,11 +20,40 @@ export async function addJobAPI(body: any) {
     });
 }
 
+// TODO: 获取单票业务详情数据
+export async function editJobAPI(body: any) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiEngine/forwardJob/editJob`, {
+        method: 'POST',
+        body
+    });
+}
+
 
 // TODO: 获取出口业务信息
 export async function querySeaExportInfoAPI(body: {id: string}) {
     // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
     return request(`/apiEngine/seaExport/querySeaExportInfo/`, {
+        method: 'POST',
+        body,
+    });
+}
+
+
+// TODO: 获取出口业务信息
+export async function addSeaExportAPI(body: {id: string}) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiEngine/seaExport/addSeaExport/`, {
+        method: 'POST',
+        body,
+    });
+}
+
+
+// TODO: 获取出口业务信息
+export async function editSeaExportAPI(body: {id: string}) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiEngine/seaExport/editSeaExport/`, {
         method: 'POST',
         body,
     });

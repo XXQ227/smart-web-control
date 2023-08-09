@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo} from 'react';
-import {ProCard, ProFormSelect} from '@ant-design/pro-components';
+import {ProCard, ProFormSelect, ProFormText} from '@ant-design/pro-components';
 import {Col, Form, Row} from 'antd';
 import {rowGrid} from '@/utils/units';
 import SearchModal from '@/components/SearchModal';
@@ -9,13 +9,13 @@ import {TERMS_INCOTERMS, TERMS_PAYMENT} from '@/utils/common-data'
 
 interface Props {
     title: string,
-    terms: APIModel.Terms,
+    termsParam: APIModel.Terms,
     form: any,
     FormItem: any,
 }
 
 const Payment: React.FC<Props> = (props) => {
-    const {title, terms, form, FormItem} = props;
+    const {title, termsParam, form, FormItem} = props;
 
     useMemo(() => {
 
@@ -31,10 +31,22 @@ const Payment: React.FC<Props> = (props) => {
      * @date 2023/7/28
      * @param filedName
      * @param val
+     * @param option
      * @returns
      */
-    const handleChange = (filedName: string, val: any) => {
-        form.setFieldsValue({terms: {[filedName]: val}});
+    const handleChange = (filedName: string, val: any, option: any) => {
+        const setValueObj: any = {termsParam: {[filedName]: val}};
+        switch (filedName) {
+            case 'shipmentTermId':
+                setValueObj.termsParam.shipmentTermName = option?.label;
+                break;
+            case 'payableAtCode':
+                setValueObj.termsParam.payableAtNameEn = option?.name;
+                break;
+            default: break;
+        }
+        console.log(setValueObj);
+        form.setFieldsValue(setValueObj);
     }
 
 
@@ -45,24 +57,24 @@ const Payment: React.FC<Props> = (props) => {
                     <ProFormSelect
                         placeholder=''
                         label="Incoterms"
-                        name={['terms', 'incotermsId']}
+                        name={['termsParam', 'incotermsId']}
                         options={TERMS_INCOTERMS}
                     />
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={6} xxl={6}>
                     <FormItem
                         label={'Shipment Term'}
-                        name={['terms', 'shipmentTermId']}
+                        name={['termsParam', 'shipmentTermId']}
                     >
                         <SearchModal
                             qty={20}
                             modalWidth={500}
                             id={'shipmentTermId'}
                             title={'Shipment Term'}
-                            text={terms?.shipmentTermName}
+                            text={termsParam?.shipmentTermName}
                             url={"/apiBase/dict/queryDictDetailCommon"}
                             query={{dictCode: 'services', pageSize: 13, currentPage: 1}}
-                            handleChangeData={(val: any) => handleChange('shipmentTermId', val)}
+                            handleChangeData={(val: any, option: any) => handleChange('shipmentTermId', val, option)}
                         />
                     </FormItem>
                 </Col>
@@ -70,25 +82,37 @@ const Payment: React.FC<Props> = (props) => {
                     <ProFormSelect
                         placeholder=''
                         label='Payment Term'
-                        name={['terms', 'paymentTermId']}
+                        name={['termsParam', 'paymentTermId']}
                         options={TERMS_PAYMENT}
                     />
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={6} xxl={6}>
-                    <Form.Item name={['terms', 'payableAtCode']} label={'Payable AT'}>
+                    <Form.Item name={['termsParam', 'payableAtCode']} label={'Payable AT'}>
                         <SearchTable
                             qty={10}
-                            rowKey={'ID'}
+                            rowKey={'code'}
                             modalWidth={950}
                             showHeader={true}
                             title={'Payable AT'}
-                            className={'textRight'}
-                            text={terms?.payableAtName}
-                            name={['terms', 'payableAtCode']}
-                            url={"/apiLocal/MCommon/GetPortCityOrCountry"}
-                            handleChangeData={(val: any) => handleChange('payableAtCode', val)}
+                            // className={'textRight'}
+                            text={termsParam?.payableAtNameEn}
+                            name={['termsParam', 'payableAtCode']}
+                            url={"/apiBase/sea/querySeaCommon"}
+                            handleChangeData={(val: any, option: any) => handleChange('payableAtCode', val, option)}
                         />
                     </Form.Item>
+                </Col>
+            </Row>
+            <Row gutter={24}>
+                <Col span={24}>
+                    <ProFormText hidden={true} width="md" name={['termsParam', 'id']}/>
+                    <ProFormText hidden={true} width="md" name={['termsParam', 'jobId']}/>
+
+                    {/* // TODO: 运输条款 */}
+                    <ProFormText hidden={true} width="md" name={['termsParam', 'shipmentTermName']}/>
+
+                    {/* // TODO: 付款地点 */}
+                    <ProFormText hidden={true} width="md" name={['termsParam', 'payableAtNameEn']}/>
                 </Col>
             </Row>
         </ProCard>

@@ -24,9 +24,11 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
     const  {} = props;
 
     const {
-        querySeaExportInfo
+        querySeaExportInfo, addSeaExport, editSeaExport,
     } = useModel('job.job', (res: any) => ({
         querySeaExportInfo: res.querySeaExportInfo,
+        addSeaExport: res.addSeaExport,
+        editSeaExport: res.editSeaExport,
     }));
 
     const [loading, setLoading] = useState(false);
@@ -41,8 +43,7 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     async function handleQuerySeaExportInfo(paramsVal: any) {
-        // alert('loading Job Info !!!');
-        // setLoading(true);
+        setLoading(true);
         // TODO: 获取用户数据
         let result: API.Result;
         if (paramsVal.id !== '0') {
@@ -58,7 +59,6 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
 
     const handleFinish = async (values: Record<string, any>) => {
         try {
-            console.log(values);
             // @ts-ignore
             for (const item: string in values) {
                 if (item.indexOf('_table_') > -1) {

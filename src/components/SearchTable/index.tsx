@@ -40,8 +40,8 @@ const SearchTable: React.FC<Props> = (props) => {
     const [activeItem, setActiveItem] = useState(-1);           // TODO: 激活的元素 序号
 
     // TODO: 接口返回的键值
-    const resValue: string = filedValue || 'Key';
-    const resLabel: any = filedLabel || 'Value';
+    const resValue: string = filedValue || 'value';
+    const resLabel: any = filedLabel || 'label';
 
     useEffect(() => {
         // TODO: 当第一次加载完后<打开弹框时>，防抖动时间增到到 【1000】
@@ -60,14 +60,14 @@ const SearchTable: React.FC<Props> = (props) => {
         }
     }, [debounceTimeout, visible])
 
-    useEffect(() => {
+    /*useEffect(() => {
         if (props.name === "PlaceOfReceiptID" && !visible && props.text !== showText) {
             setShowText(props.text || '')
         }
         if (props.name === "PlaceOfDeliveryID" && !visible && props.text !== showText) {
             setShowText(props.text || '')
         }
-    }, [props.text])
+    }, [props.text])*/
 
     // TODO: 防抖动搜索
     const debounceFetcher = useMemo(() => {
@@ -122,8 +122,8 @@ const SearchTable: React.FC<Props> = (props) => {
      * @returns
      */
     const handleChange = (record: any) => {
-        setShowText(record.Name);
-        if (props.handleChangeData) props.handleChangeData(record.ID, record);
+        setShowText(record.name);
+        if (props.handleChangeData) props.handleChangeData(record.code, record);
         // setShowText(record.label);
         // if (props.handleChangeData) props.handleChangeData(record.value, record);
         handleModal('');
@@ -188,11 +188,10 @@ const SearchTable: React.FC<Props> = (props) => {
     }
 
     const columns: ColumnsType<any> = [
-        { title: 'Port', dataIndex: 'Name', className: 'columnsStyle'},
-        { title: 'Code', align: 'center', width: 120, dataIndex: 'PortCode', className: 'columnsStyle',},
-        { title: 'City', align: 'center', width: 260, dataIndex: 'City', className: 'columnsStyle', },
-        { title: 'Country', dataIndex: 'Country', width: 260, align: 'center', className: 'columnsStyle', },
-        { title: 'Type', dataIndex: 'TypeCN', width: 60, align: 'center', className: 'columnsStyle', }
+        { title: 'Port', dataIndex: 'name', className: 'columnsStyle'},
+        { title: 'Code', align: 'center', width: 120, dataIndex: 'code', className: 'columnsStyle',},
+        { title: 'City', align: 'center', width: 260, dataIndex: 'city', className: 'columnsStyle', },
+        { title: 'Country', dataIndex: 'country', width: 260, align: 'center', className: 'columnsStyle', },
     ];
 
     return (

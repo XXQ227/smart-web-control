@@ -41,7 +41,7 @@ export default (callback: T, deps: React.DependencyList) => {
         }
         setResResult(result);
         return result;
-    }, deps);
+    }, []);
 
 
     // TODO: 获取单票集
@@ -59,14 +59,15 @@ export default (callback: T, deps: React.DependencyList) => {
             result.total = JobDto.Page?.ItemTotal;
             result.data = JobDto.Content?.CJobList || [];
         }
-        return result;
-    }, deps);
+        // return result;
+        return response;
+    }, []);
 
     // TODO: 获取单票集
     const queryJobInfo = useCallback(async (params: {id: string } ) => {
         // TODO: 请求后台 API
         return await queryJobInfoAPI(params);
-    }, deps);
+    }, []);
     //endregion
 
 

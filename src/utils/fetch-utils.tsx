@@ -52,7 +52,7 @@ export async function fetchData(
             //     const secondLabel = item[resLabel[1]];
             //     labelValue = firstLabel + "(" + secondLabel + ")"
             // }
-            return {value: item[resValue], label: item[resLabel], data: item}
+            return {value: item[resValue], label: item[resLabel], data: item, ...item}
         });
     } else {
         if (result.message) message.error(result.message);

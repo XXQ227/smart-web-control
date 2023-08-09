@@ -240,8 +240,8 @@ declare namespace APIModel {
         shipmentTermId?: string,
         shipmentTermName?: string,
         payMethod?: number,
-        payableAtId?: string,
-        payableAtName?: string,
+        payableAtCode?: string,
+        payableAtNameEn?: string,
     }
     type MBSCN = {
         Shipper?: string,
