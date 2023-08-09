@@ -11,6 +11,15 @@ export async function queryJobInfoAPI(body: APIModel.GetCJobByID) {
     });
 }
 
+// TODO: 获取单票业务详情数据
+export async function addJobAPI(body: any) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiEngine/forwardJob/addJob`, {
+        method: 'POST',
+        body
+    });
+}
+
 
 // TODO: 获取出口业务信息
 export async function querySeaExportInfoAPI(body: {id: string}) {

@@ -91,23 +91,25 @@ export function request(url: string, options: any) {
                 return setAPIResponse(await response.json());
             }
         })
-        .catch((e) => {
+        .catch((e: any) => {
             message.error(e.message);
             const status = e.name;
+            const result: any = {success: false, message: ''};
             if (status === 401) {
                 // history.push('/user/login');
-                return;
+                return result;
             }
             if (status === 403) {
                 // history.push('/exception/403');
-                return;
+                return result;
             }
             if (status <= 504 && status >= 500) {
                 // history.push('/exception/500');
-                return;
+                return result;
             }
             if (status >= 404 && status < 422) {
                 // history.push('/exception/404');
+                return result;
             }
         });
 }

@@ -14,6 +14,7 @@ export default () => {
     const [BusinessLineList, setBusinessLineList] = useState([]);
     const [IndustryList, setIndustryList] = useState([]);
     const [VendorTypeList, setVendorTypeList] = useState([]);
+    const [CTNModelList, setCTNModelList] = useState([]);
 
     //region TODO: 接口
     // TODO: 获取字典数据
@@ -49,9 +50,25 @@ export default () => {
                     case 'vendor_type':
                         setVendorTypeList(item.data);
                         break;
+                    case 'ctn_model':
+                        setCTNModelList(item.data);
+                        break;
                     default: break;
                 }
             })
+        }
+    }, []);
+
+
+    // TODO: 获取字典数据
+    const queryDictCommonReturn = useCallback(async (params: {dictCodes: any}) => {
+        // TODO: 请求后台 API
+        const response: API.Result = await queryDictCommonAPI(params);
+        if (!response) return;
+        if (response.success) {
+            return response.data
+        } else {
+            return [];
         }
     }, []);
 
@@ -60,12 +77,12 @@ export default () => {
         // TODO: 请求后台 API
         const response = await queryDictDetailCommonAPI(params);
         if (!response) return;
-        console.log(response);
     }, []);
 
 
     return {
         queryDictCommon,
+        queryDictCommonReturn,
         queryDictDetailCommon,
         ServicesList,
         PurposeOfCallList,
@@ -74,5 +91,6 @@ export default () => {
         BusinessLineList,
         IndustryList,
         VendorTypeList,
+        CTNModelList,
     }
 }

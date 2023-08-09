@@ -1,22 +1,51 @@
-// @ts-ignore
-/* eslint-disable */
 import { request } from '@/utils/request';
-import {stringify} from 'querystring'
 
-/** 获取当前的用户 GET /api/currentUser */
-export async function GetAPList(body: APIManager.SearchAccountParams, options?: { [key: string]: any }) {
-  return request(`/api/AccountPeriod/GetAPList?${stringify(body)}`, {
-    method: 'GET',
-    ...(options || {}),
+
+// TODO: 查询账期列表
+export async function queryAccountPeriodAPI(body: APIManager.SearchAccountParams) {
+  return request(`/apiBase/accountPeriod/queryAccountPeriod/`, {
+    method: 'POST',
+    body
   });
 }
 
+// TODO: 新增账期
+export async function addAccountPeriodAPI(body: { ID: number, UserID: number }) {
+  return request(`/apiBase/accountPeriod/addAccountPeriod/`, {
+    method: 'POST',
+    body
+  });
+}
 
-/** 获取当前的用户 GET /api/currentUser */
-export async function GetDetailByID(body: { ID: number, UserID: number }, options?: { [key: string]: any }) {
-  return request(`/api/AccountPeriod/GetDetailByID?${stringify(body)}`, {
-    method: 'GET',
-    ...(options || {}),
+// TODO: 查询账期详情
+export async function queryAccountPeriodInfoAPI(body: { ID: number, UserID: number }) {
+  return request(`/apiBase/accountPeriod/queryAccountPeriodInfo/`, {
+    method: 'POST',
+    body
+  });
+}
+
+// TODO: 编辑账期
+export async function editAccountPeriodAPI(body: { ID: number, UserID: number }) {
+  return request(`/apiBase/accountPeriod/editAccountPeriod/`, {
+    method: 'POST',
+    body
+  });
+}
+
+// TODO: 开启账期
+export async function openAccountPeriodAPI(body: { ID: number, UserID: number }) {
+  return request(`/apiBase/accountPeriod/openAccountPeriod/`, {
+    method: 'POST',
+    body
+  });
+}
+
+// TODO: 开始关账
+export async function startCloseAccountPeriodAPI(body: { ID: number, UserID: number }) {
+  return request(`/apiBase/accountPeriod/startCloseAccountPeriodAPI/`, {
+    method: 'POST',
+    body
   });
 }
 

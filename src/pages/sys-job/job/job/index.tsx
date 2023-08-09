@@ -20,9 +20,10 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
 
 
     const {
-        queryJobInfo
+        queryJobInfo, addJob
     } = useModel('job.job', (res: any) => ({
         queryJobInfo: res.queryJobInfo,
+        addJob: res.addJob,
     }));
 
     const {
@@ -31,13 +32,20 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
         queryUserCommon: res.queryUserCommon,
     }));
 
+    const {
+        queryDictCommon, BusinessLineList
+    } = useModel('common', (res: any)=> ({
+        queryDictCommon: res.queryDictCommon,
+        BusinessLineList: res.BusinessLineList,
+    }))
+
     const [CJobInfo, setCJobInfo] = useState<any>({
-        basicInfo: {
-            businessType: 1,
-            salesId: '1658001055903371265',
-            project: 3,
-            IsSettleJob: true,
-        },
+        businessType: 1,
+        cargoType: 1,
+        salesId: '1664169782143340545',
+        salesName: 'ivy',
+        project: 3,
+        IsSettleJob: false,
         terms: {
             incotermsId: 1,
             shipmentTermId: '15',
@@ -73,6 +81,9 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
         // setLoading(true);
         // TODO: 获取用户数据
         await queryUserCommon({branchId: '0'});
+        if (BusinessLineList?.length === 0) {
+            await queryDictCommon({dictCodes: ['business_line']});
+        }
         let result: API.Result;
         if (paramsVal.id !== '0') {
             result = await queryJobInfo(paramsVal);
@@ -85,11 +96,37 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
         return result.data;
     }
 
-    const handleFinish = async (values: Record<string, any>) => {
+    /**
+     * @Description: TODO: 保存单票信息
+     * @author XXQ
+     * @date 2023/8/7
+     * @param values
+     * @returns
+     */
+    const handleFinish = async (values: any) => {
         try {
             console.log(values)
+            let result: API.Result = {success: false, message: ''};
+            values.branchId = '1665596906844135426';
+            values.businessLine = 1;
+            values.cargoInformationParam = values.cargoInfo;
+            values.termsParam = values.terms;
+            delete values.cargoInfo;
+            delete values.terms;
+            if (id === '0') {
+                result = await addJob(values);
+                console.log(result);
+            } else {
+                delete values.cargoInfo;
+                delete values.terms;
+            }
+            console.log(result);
+            if (result?.success) {
+                message.success('提交成功');
+            } else {
+                message.error(result.message);
+            }
             // await fakeSubmitForm(values);
-            message.success('提交成功');
         } catch {
             // console.log
         }
@@ -108,23 +145,21 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
                 className={styles.basicInfoProForm}
                 submitter={{
                     // 完全自定义整个区域
-                    render: () => {
-                        return (
-                            <FooterToolbar
-                                style={{height: 55}}
-                                extra={
-                                    <Button
-                                        icon={<LeftOutlined/>}
-                                        onClick={() => history.push({pathname: '/job/job-list'})}
-                                    >Back</Button>
-                                }>
+                    render: () =>
+                        <FooterToolbar
+                            style={{height: 55}}
+                            extra={
                                 <Button
-                                    icon={<SaveOutlined/>}
-                                    key={'submit'} type={'primary'} htmlType={'submit'}
-                                >Save</Button>
-                            </FooterToolbar>
-                        );
-                    },
+                                    icon={<LeftOutlined/>}
+                                    onClick={() => history.push({pathname: '/job/job-list'})}
+                                >Back</Button>
+                            }>
+                            <Button
+                                icon={<SaveOutlined/>}
+                                key={'submit'} type={'primary'} htmlType={'submit'}
+                            >Save</Button>
+                        </FooterToolbar>
+                    ,
                 }}
                 onFinish={handleFinish}
                 onFinishFailed={async (values: any) => {
@@ -137,7 +172,7 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
                 // @ts-ignore
                 request={async () => handleQueryJobInfo({id})}
             >
-                <BasicInfo title={'Basic Information'} basicInfo={{BizType3ID: 1}}/>
+                <BasicInfo title={'Basic Information'} CJobInfo={CJobInfo}/>
 
                 <Cargo title={'Cargo'}/>
 
@@ -149,16 +184,13 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
                         <Col span={24}>
                             <ProFormTextArea
                                 placeholder=''
-                                name="BizRemark"
+                                name="remark"
                                 label="Job Remark"
                                 fieldProps={{rows: 4}}
                             />
                         </Col>
                     </Row>
-                </ProCard>
-                <FooterToolbar extra={<Button onClick={() => history.push({pathname: '/job/job-list'})}>返回</Button>}>
-                    <Button key={'submit'} type={'primary'} htmlType={'submit'}>提交</Button>
-                </FooterToolbar>
+                </ProCard>`
             </ProForm>
         </Spin>
     )
