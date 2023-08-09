@@ -175,7 +175,7 @@ declare namespace APIManager {
         creditExpiryEndTime?: string,        // TODO: 有限期结束日
         customerId?: number,                 // TODO: 客户id(BU表)
         bizApproveDept?: number,             // TODO: 业务审批部门 1-事业部-多式联运 2-事业部-集装箱 3-事业部-大宗商品 4-事业部-合同物流 5-事业部-工程物流 6-事业部-电商物流 7-事业部-空运
-        creditBusinessList: string,          // TODO: 授信业务 1-水运货代 2-航空货代 3-公路货代 4-铁路货代 5-专业报关 6-多式联运 7-合同物流 8-项目物流 9-船舶代理 10-船舶承运 11-船代订舱 12-仓库码头 13-汽车运输 14-快件 15-维修 16-电商物流 17-其他
+        creditBusinessList?: string,         // TODO: 授信业务 1-水运货代 2-航空货代 3-公路货代 4-铁路货代 5-专业报关 6-多式联运 7-合同物流 8-项目物流 9-船舶代理 10-船舶承运 11-船代订舱 12-仓库码头 13-汽车运输 14-快件 15-维修 16-电商物流 17-其他
         creditStatus?: number,               // TODO: 授信状态 In Approval：正在授信审批的过程中，还未完成。 ......
         creditResidueFuncAmount?: number | null,// TODO: 授信剩余本位币金额 （授信完成时候赋值） （提交财务时递减，核销新增）
         enableFlag?: number,                 // TODO: 启用标识 0＝停用，1＝啟用
