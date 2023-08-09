@@ -104,6 +104,7 @@ const Containers: React.FC<Props> = (props) => {
         <div className={'seaExportContainers'}>
             <PreBooking
                 type={type}
+                form={form}
                 handleRowChange={handleRowChange}
             />
             <CTNLoading

@@ -10,9 +10,11 @@ import type {ColumnsType} from "antd/es/table";
 import SearchModal from "@/components/SearchModal";
 import {getBranchID} from "@/utils/auths";
 import {ID_STRING} from "@/utils/units";
+import ls from 'lodash'
 
 interface Props {
     type?: string;
+    form?: any;
     CTNPlanList?: APIModel.ContainerList[];
     handleRowChange: (index: number, rowID: any, filedName: string, val: any, option?: any) => void;
 }
@@ -50,13 +52,31 @@ const initialContainerList: APIModel.ContainerList[] = [
 ];
 
 const ProBooking: React.FC<Props> = (props) => {
-    const {type, CTNPlanList, handleRowChange} = props;
+    const {type, form, CTNPlanList, handleRowChange} = props;
 
     const [containerList, setContainerList] = useState<APIModel.ContainerList[]>(CTNPlanList || initialContainerList);
     const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
 
-    function onChange(index: number, rowID: any, filedName: string, val: any, option?: any) {
-        handleRowChange(index, rowID, filedName, val, option)
+    /**
+     * @Description: TODO: 更新预配箱信息
+     * @author XXQ
+     * @date 2023/8/8
+     * @param index
+     * @param rowID
+     * @param filedName
+     * @param val
+     * @returns
+     */
+    function onChange(index: number, rowID: any, filedName: string, val: any) {
+        console.log(index, rowID, filedName, val?.target?.value);
+        const newData: any[] = ls.cloneDeep(containerList);
+        const target = newData.find((item: any)=> item.id === rowID) || {};
+        target[filedName] = val?.target ? val.target.value : val;
+
+        newData.splice(index, 1, target);
+        // TODO: 把数据接口给到 FormItem 表单里
+        form.setFieldsValue({preBookingList: newData});
+        setContainerList(newData);
     }
 
     const preBookingColumns: ColumnsType<APIModel.ContainerList> = [
@@ -65,100 +85,85 @@ const ProBooking: React.FC<Props> = (props) => {
             dataIndex: 'ctnModelId',
             width: '10%',
             className: "textCenter",
-            render: (text: any, record, index) => {
-                return (
-                    <FormItem
-                        name={`ctnModelId_ctn_table_${record.id}`}
-                        initialValue={record.ctnModelName} required
-                        rules={[{required: true, message: 'SIZE'}]}
-                    >
-                        <SearchModal
-                            qty={30}
-                            title={'SIZE'}
-                            modalWidth={500}
-                            // value={record.ctnModelName}
-                            text={record.ctnModelName}
-                            url={"/apiLocal/MCommon/GetCTNModelByStr"}
-                            query={{Type: 5, BranchID: getBranchID(), BizType1ID: 1}}
-                            handleChangeData={(val: any, option: any) => onChange(index, record.id, 'ctnModelId', val, option)}
-                        />
-                    </FormItem>
-                );
-            },
+            render: (text: any, record, index) =>
+                <FormItem
+                    name={`ctnModelId_ctn_table_${record.id}`}
+                    initialValue={record.ctnModelName} required
+                    rules={[{required: true, message: 'SIZE'}]}
+                >
+                    <SearchModal
+                        qty={30}
+                        title={'SIZE'}
+                        modalWidth={500}
+                        // value={record.ctnModelName}
+                        text={record.ctnModelName}
+                        url={"/apiLocal/MCommon/GetCTNModelByStr"}
+                        query={{Type: 5, BranchID: getBranchID(), BizType1ID: 1}}
+                        handleChangeData={(val: any, option: any) => onChange(index, record.id, 'ctnModelId', val, option)}
+                    />
+                </FormItem>
         },
         {
             title: 'QTY',
             dataIndex: 'qty',
             width: '10%',
             className: "textCenter",
-            render: (text: any, record, index) => {
-                return (
-                    <ProFormText
-                        required
-                        placeholder={''}
-                        initialValue={record.qty}
-                        name={`qty_ctn_table_${record.id}`}
-                        rules={[{required: true, message: 'QTY'}]}
-                        fieldProps={{
-                            onChange: (e) => onChange(index, record.id, 'qty', e)
-                        }}
-                    />
-                );
-            },
+            render: (text: any, record, index) =>
+                <ProFormText
+                    required
+                    placeholder={''}
+                    initialValue={record.qty}
+                    name={`qty_ctn_table_${record.id}`}
+                    rules={[{required: true, message: 'QTY'}]}
+                    fieldProps={{
+                        onChange: (e) => onChange(index, record.id, 'qty', e)
+                    }}
+                />,
         },
         {
             title: 'FCL/LCL',
             dataIndex: 'fclFlag',
             align: 'center',
             width: '10%',
-            render: (text: any, record, index) => {
-                return (
-                    <ProFormSwitch
-                        checkedChildren="FCL"
-                        unCheckedChildren="LCL"
-                        initialValue={record.fclFlag}
-                        name={`fclFlag_ctn_table_${record.id}`}
-                        fieldProps={{
-                            onChange: (e) => onChange(index, record.id, 'fclFlag', e)
-                        }}
-                    />
-                );
-            },
+            render: (text: any, record, index) =>
+                <ProFormSwitch
+                    checkedChildren="FCL"
+                    unCheckedChildren="LCL"
+                    initialValue={record.fclFlag}
+                    name={`fclFlag_ctn_table_${record.id}`}
+                    fieldProps={{
+                        onChange: (e) => onChange(index, record.id, 'fclFlag', e)
+                    }}
+                />
         },
         {
             title: 'SOC/COC',
             dataIndex: 'socFlag',
             align: 'center',
             width: '10%',
-            render: (text: any, record, index) => {
-                return (
-                    <ProFormSwitch
-                        checkedChildren="SOC"
-                        unCheckedChildren="COC"
-                        initialValue={record.socFlag}
-                        name={`socFlag_ctn_table_${record.id}`}
-                        fieldProps={{
-                            onChange: (e) => onChange(index, record.id, 'socFlag', e)
-                        }}
-                    />
-                );
-            },
+            render: (text: any, record, index) =>
+                <ProFormSwitch
+                    checkedChildren="SOC"
+                    unCheckedChildren="COC"
+                    initialValue={record.socFlag}
+                    name={`socFlag_ctn_table_${record.id}`}
+                    fieldProps={{
+                        onChange: (e) => onChange(index, record.id, 'socFlag', e)
+                    }}
+                />
         },
         {
             title: 'Remark',
             dataIndex: 'Remark',
-            render: (text: any, record, index) => {
-                return (
-                    <ProFormText
-                        placeholder={''}
-                        initialValue={record.Remark}
-                        name={`Remark_ctn_table_${record.id}`}
-                        fieldProps={{
-                            onChange: (e) => onChange(index, record.id, 'Remark', e)
-                        }}
-                    />
-                );
-            }
+            render: (text: any, record, index) =>
+                <ProFormText
+                    placeholder={''}
+                    initialValue={record.Remark}
+                    name={`Remark_ctn_table_${record.id}`}
+                    fieldProps={{
+                        onChange: (e) => onChange(index, record.id, 'Remark', e)
+                    }}
+                />
         },
     ];
 
@@ -193,16 +198,16 @@ const ProBooking: React.FC<Props> = (props) => {
             <Row gutter={24}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={20}>
                     <div className={'tableHeaderContainer'}>
-                        <Button onClick={handleAdd}><PlusCircleOutlined/>Add</Button>
+                        <Button icon={<PlusCircleOutlined/>} onClick={handleAdd}>Add</Button>
                         <Popconfirm
-                            disabled={selectedRowIDs.length === 0}
                             title={'Sure to delete?'}
                             okText={'Yes'} cancelText={'No'}
                             onConfirm={() => handleDelete()}
+                            disabled={selectedRowIDs.length === 0}
                         >
-                            <Button disabled={selectedRowIDs.length === 0}><DeleteOutlined/>Remove</Button>
+                            <Button icon={<DeleteOutlined/>} disabled={selectedRowIDs.length === 0}>Remove</Button>
                         </Popconfirm>
-                        <Button><DownloadOutlined/>Export Manifest</Button>
+                        <Button icon={<DownloadOutlined/>}>Export Manifest</Button>
                     </div>
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={20}>
@@ -210,12 +215,15 @@ const ProBooking: React.FC<Props> = (props) => {
                         rowKey={'id'}
                         bordered
                         pagination={false}
-                        columns={preBookingColumns}
                         dataSource={containerList}
-                        locale={{emptyText: "NO DATA"}}
                         rowSelection={rowSelection}
+                        columns={preBookingColumns}
+                        locale={{emptyText: "NO DATA"}}
                         className={`tableStyle containerTable`}
                     />
+
+                    {/* // TODO: 用于保存时，获取数据用 */}
+                    <FormItem hidden={true} name={'preBookingList'} />
                 </Col>
             </Row>
         </ProCard>

@@ -23,7 +23,7 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
     ];
 
 
-    const [activeKey, setActiveKey] = useState<string>('sea-import');
+    const [activeKey, setActiveKey] = useState<string>('job');
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [tabList, setTabList] = useState(initialTabList);
 

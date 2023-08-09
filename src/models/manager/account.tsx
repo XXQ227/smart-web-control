@@ -1,63 +1,94 @@
-import {GetAPList, GetDetailByID,} from '@/services/smart/manager/account';
-import type React from "react";
-import {useCallback, useState} from "react";
+import {useCallback} from "react";
+import {
+    addAccountPeriodAPI,
+    editAccountPeriodAPI, openAccountPeriodAPI,
+    queryAccountPeriodAPI,
+    queryAccountPeriodInfoAPI, startCloseAccountPeriodAPI,
+} from '@/services/smart/manager/account';
 
 
-interface T {
 
-}
-
-
-export default (callback: T, deps: React.DependencyList) => {
+export default () => {
     // TODO: 基础数据
 
     //endregion
 
     // TODO: 单票详情
-    const [AccountList, setAccountList] = useState<APIManager.AccountList[]>([]);
-    const [CurrencyList, setCurrencyList] = useState<APIManager.APCurrency[]>([]);
-    const [AccountPeriod, setAccountPeriod] = useState<APIManager.AccountPeriodResult>({
-        AccountPeriod: {
-            AccountMouth: '',
-            BranchID: null,
-            CNYRate: null,
-            EndDate: '',
-            ErrorMes: '',
-            ExRates: [],
-            ID: null,
-            PeriodCode: '',
-            StartDate: '',
-            State: null,
-            StateName: '',
-            Type: null,
-        },
-    });
 
     //region TODO: 接口
-    // TODO: 获取账期集合请求
-    const getAPList = useCallback(async (params: {UserID: number, Year: string}) => {
+    // TODO: 查询账期列表
+    // POST /base/web/accountPeriod/queryAccountPeriod
+    // API ID:95364449
+    // API URL:https://app.apifox.com/project/2684231/apis/api-95364449
+    const queryAccountPeriod = useCallback(async (params: APIManager.SearchAccountParams) => {
         // TODO: 请求后台 API
-        const response = await GetAPList(params);
+        const response: any = await queryAccountPeriodAPI(params);
         if (!response) return;
-        setCurrencyList(response.Content?.Currencys);
-        setAccountList(response.Content?.AccountPriodList);
         return response;
     }, []);
 
-    // TODO: 获取账期详情请求
-    const getDetailByID = useCallback(async (params: {UserID: number, ID: number}) => {
+    // TODO: 新增账期
+    // POST /base/web/accountPeriod/addAccountPeriod
+    // API ID:95364326
+    // API URL:https://app.apifox.com/project/2684231/apis/api-95364326
+    const addAccountPeriod = useCallback(async (params: {UserID: number, ID: number}) => {
         // TODO: 请求后台 API
-        const response = await GetDetailByID(params);
+        const response = await addAccountPeriodAPI(params);
         if (!response) return;
-        setAccountPeriod(response)
+        return response;
+    }, []);
+
+    // TODO: 查询账期详情
+    // POST /base/web/accountPeriod/queryAccountPeriodInfo
+    // API ID:95364645
+    // API URL:https://app.apifox.com/project/2684231/apis/api-95364645
+    const queryAccountPeriodInfo = useCallback(async (params: {UserID: number, ID: number}) => {
+        // TODO: 请求后台 API
+        const response = await queryAccountPeriodInfoAPI(params);
+        if (!response) return;
+        return response;
+    }, []);
+
+    // TODO: 编辑账期
+    // POST /base/web/accountPeriod/editAccountPeriod
+    // API ID:95365549
+    // API URL:https://app.apifox.com/project/2684231/apis/api-95365549
+    const editAccountPeriod = useCallback(async (params: {UserID: number, ID: number}) => {
+        // TODO: 请求后台 API
+        const response = await editAccountPeriodAPI(params);
+        if (!response) return;
+        return response;
+    }, []);
+
+    // TODO: 开启账期
+    // POST /base/web/accountPeriod/openAccountPeriod
+    // API ID:95366751
+    // API URL:https://app.apifox.com/project/2684231/apis/api-95366751
+    const openAccountPeriod = useCallback(async (params: {UserID: number, ID: number}) => {
+        // TODO: 请求后台 API
+        const response = await openAccountPeriodAPI(params);
+        if (!response) return;
+        return response;
+    }, []);
+
+    // TODO: 开始关账
+    // POST /base/web/accountPeriod/startCloseAccountPeriod
+    // API ID:95366924
+    // API URL:https://app.apifox.com/project/2684231/apis/api-95366924
+    const startCloseAccountPeriod = useCallback(async (params: {UserID: number, ID: number}) => {
+        // TODO: 请求后台 API
+        const response = await startCloseAccountPeriodAPI(params);
+        if (!response) return;
+        return response;
     }, []);
 
 
     return {
-        getAPList,
-        AccountList,
-        CurrencyList,
-        getDetailByID,
-        AccountPeriod,
+        queryAccountPeriod,
+        addAccountPeriod,
+        queryAccountPeriodInfo,
+        editAccountPeriod,
+        openAccountPeriod,
+        startCloseAccountPeriod,
     }
 }

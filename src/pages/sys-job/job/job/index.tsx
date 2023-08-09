@@ -109,16 +109,14 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
             let result: API.Result = {success: false, message: ''};
             values.branchId = '1665596906844135426';
             values.businessLine = 1;
+            values.cargoInformationParam = values.cargoInfo;
+            values.termsParam = values.terms;
+            delete values.cargoInfo;
+            delete values.terms;
             if (id === '0') {
-                values.addCargoInformationParam = values.cargoInfo;
-                values.addTermsParam = values.terms;
-                delete values.cargoInfo;
-                delete values.terms;
                 result = await addJob(values);
                 console.log(result);
             } else {
-                values.editCargoInformationParam = values.cargoInfo;
-                values.editTermsParam = values.terms;
                 delete values.cargoInfo;
                 delete values.terms;
             }

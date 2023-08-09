@@ -74,7 +74,7 @@ const CTNLoading: React.FC<Props> = (props) => {
             getCtnBalance(newData);
         }
         setCTNActualList(newData);
-        form.setFieldsValue({'container-detail': newData});
+        form.setFieldsValue({'containerList': newData});
         handleCTNEdit(index, rowID, filedName, val, option, newData);
     }
 
@@ -156,7 +156,7 @@ const CTNLoading: React.FC<Props> = (props) => {
                 setValueObj[`measurement_table_${item.id}`] = item.measurement;
                 return item;
             });
-            setValueObj['container-detail'] = actualArr;
+            setValueObj['containerList'] = actualArr;
             getCtnBalance(actualArr);
             setCTNActualList(actualArr);
             setLoadingSummary(cargoInfo);
@@ -243,7 +243,7 @@ const CTNLoading: React.FC<Props> = (props) => {
                             if (targetArray?.length > 0) {
                                 setCTNActualList(targetArray);
                                 getCtnBalance(targetArray);
-                                form.setFieldsValue({'container-detail': targetArray});
+                                form.setFieldsValue({'containerList': targetArray});
                             }
                         }
                     } else {
@@ -297,117 +297,96 @@ const CTNLoading: React.FC<Props> = (props) => {
         {title: 'SIZE', dataIndex: 'ctnModelName', width: '8%', align: "center",},
         {
             title: 'Container No.', dataIndex: "containerNum", width: '15%', className: "textCenter",
-            render: (text: any, record, index) => {
-                return (
-                    <FormItemInput
-                        required
-                        placeholder={''}
-                        initialValue={text}
-                        FormItem={FormItem}
-                        name={`CTNNum_table_${record.id}`}
-                        rules={[{required: true, message: 'Container No.'}]}
-                        onChange={(val: any) => onChange(index, record.id, 'containerNum', val)}
-                    />
-                );
-            },
+            render: (text: any, record, index) =>
+                <FormItemInput
+                    required
+                    placeholder={''}
+                    initialValue={text}
+                    FormItem={FormItem}
+                    name={`CTNNum_table_${record.id}`}
+                    rules={[{required: true, message: 'Container No.'}]}
+                    onChange={(val: any) => onChange(index, record.id, 'containerNum', val)}
+                />
         },
         {
             title: 'Seal No.', dataIndex: "sealNum", width: '15%', className: "textCenter",
-            render: (text: any, record, index) => {
-                return (
-                    <FormItemInput
-                        placeholder={''}
-                        initialValue={text}
-                        FormItem={FormItem}
-                        name={`SealNum_table_${record.id}`}
-                        onChange={(val: any) => onChange(index, record.id, 'sealNum', val)}
-                    />
-                );
-            },
+            render: (text: any, record, index) =>
+                <FormItemInput
+                    placeholder={''}
+                    initialValue={text}
+                    FormItem={FormItem}
+                    name={`SealNum_table_${record.id}`}
+                    onChange={(val: any) => onChange(index, record.id, 'sealNum', val)}
+                />
         },
         {
             title: 'qty', dataIndex: "qty", width: '8%', className: "textCenter",
-            render: (text: any, record, index) => {
-                return (
-                    <FormItemInput
-                        required
-                        placeholder={''}
-                        initialValue={text}
-                        FormItem={FormItem}
-                        name={`qty_table_${record.id}`}
-                        rules={[{required: true, message: 'QTY'}]}
-                        onChange={(val: any) => onChange(index, record.id, 'qty', val)}
-                    />
-                );
-            },
+            render: (text: any, record, index) =>
+                <FormItemInput
+                    required
+                    placeholder={''}
+                    initialValue={text}
+                    FormItem={FormItem}
+                    name={`qty_table_${record.id}`}
+                    rules={[{required: true, message: 'QTY'}]}
+                    onChange={(val: any) => onChange(index, record.id, 'qty', val)}
+                />
         },
         {
             title: 'G.W. (kg)', dataIndex: "grossWeight", width: '10%', className: "textRight",
-            render: (text: any, record, index) => {
-                return (
-                    <FormItemInput
-                        required
-                        placeholder={''}
-                        initialValue={text}
-                        FormItem={FormItem}
-                        name={`grossWeight_table_${record.id}`}
-                        rules={[{required: true, message: 'G.W.'}]}
-                        onChange={(val: any) => onChange(index, record.id, 'grossWeight', val)}
-                    />
-                );
-            },
+            render: (text: any, record, index) =>
+                <FormItemInput
+                    required
+                    placeholder={''}
+                    initialValue={text}
+                    FormItem={FormItem}
+                    name={`grossWeight_table_${record.id}`}
+                    rules={[{required: true, message: 'G.W.'}]}
+                    onChange={(val: any) => onChange(index, record.id, 'grossWeight', val)}
+                />
         },
         {
             title: 'Meas. (cbm)', dataIndex: "measurement", width: '10%', className: "textRight",
-            render: (text: any, record, index) => {
-                return (
-                    <FormItemInput
-                        required
-                        placeholder={''}
-                        initialValue={text}
-                        FormItem={FormItem}
-                        name={`measurement_table_${record.id}`}
-                        rules={[{required: true, message: 'Meas.'}]}
-                        onChange={(val: any) => onChange(index, record.id, 'measurement', val)}
-                    />
-                );
-            },
+            render: (text: any, record, index) =>
+                <FormItemInput
+                    required
+                    placeholder={''}
+                    initialValue={text}
+                    FormItem={FormItem}
+                    name={`measurement_table_${record.id}`}
+                    rules={[{required: true, message: 'Meas.'}]}
+                    onChange={(val: any) => onChange(index, record.id, 'measurement', val)}
+                />
         },
         {
             title: 'VGM (kg)', dataIndex: "vgm", width: '10%', className: "textRight",
-            render: (text: any, record, index) => {
-                return (
-                    <FormItemInput
-                        placeholder={''}
-                        initialValue={text}
-                        FormItem={FormItem}
-                        name={`vgm_table_${record.id}`}
-                        onChange={(val: any) => onChange(index, record.id, 'vgm', val)}
-                    />
-                );
-            },
+            render: (text: any, record, index) =>
+                <FormItemInput
+                    placeholder={''}
+                    initialValue={text}
+                    FormItem={FormItem}
+                    name={`vgm_table_${record.id}`}
+                    onChange={(val: any) => onChange(index, record.id, 'vgm', val)}
+                />
         },
         {
             title: 'Packaging Methods', dataIndex: "packagingMethodId", className: "textCenter",
-            render: (text: any, record, index) => {
-                return (
-                    <FormItem
-                        name={`packagingMethodId_table_${record.id}`}
-                        initialValue={record.packagingMethodName}
-                    >
-                        <SearchModal
-                            qty={20}
-                            title={'SIZE'}
-                            modalWidth={500}
-                            query={{SystemID: 4}}
-                            text={record.packagingMethodName}
-                            // id={`packagingMethodId_table_${record.id}`}
-                            url={"/apiLocal/MCommon/GetPKGTypeByStr"}
-                            handleChangeData={(val: any, option: any) => onChange(index, record.id, 'packagingMethodId', val, option)}
-                        />
-                    </FormItem>
-                );
-            },
+            render: (text: any, record, index) =>
+                <FormItem
+                    name={`packagingMethodId_table_${record.id}`}
+                    initialValue={record.packagingMethodName}
+                >
+                    <SearchModal
+                        qty={20}
+                        title={'SIZE'}
+                        modalWidth={500}
+                        query={{SystemID: 4}}
+                        text={record.packagingMethodName}
+                        // id={`packagingMethodId_table_${record.id}`}
+                        url={"/apiLocal/MCommon/GetPKGTypeByStr"}
+                        handleChangeData={(val: any, option: any) => onChange(index, record.id, 'packagingMethodId', val, option)}
+                    />
+                </FormItem>
         }
     ];
 
@@ -416,50 +395,41 @@ const CTNLoading: React.FC<Props> = (props) => {
         containersLoadingColumns.splice(0, 1,
             {
                 title: 'SIZE', dataIndex: 'ctnModelId', width: '10%', className: "textCenter",
-                render: (text: any, record, index) => {
-                    return (
-                        <FormItem name={`ctnModelId_table_${record.id}`} initialValue={record.ctnModelName}>
-                            <SearchModal
-                                qty={30}
-                                title={'SIZE'}
-                                modalWidth={500}
-                                text={record.ctnModelName}
-                                query={{dictCode: "ctn_model"}}
-                                url={"/apiBase/dict/queryDictDetailCommon"}
-                                handleChangeData={(val: any, option: any) => onChange(index, record.id, 'ctnModelId', val, option)}
-                            />
-                        </FormItem>
-                    );
-                },
+                render: (text: any, record, index) =>
+                    <FormItem name={`ctnModelId_table_${record.id}`} initialValue={record.ctnModelName}>
+                        <SearchModal
+                            qty={30}
+                            title={'SIZE'}
+                            modalWidth={500}
+                            text={record.ctnModelName}
+                            query={{dictCode: "ctn_model"}}
+                            url={"/apiBase/dict/queryDictDetailCommon"}
+                            handleChangeData={(val: any, option: any) => onChange(index, record.id, 'ctnModelId', val, option)}
+                        />
+                    </FormItem>
             },
             {
                 title: 'Yard Container No.', dataIndex: "YardCTNNum", className: "textCenter",
-                render: (text: any, record, index) => {
-                    return (
-                        <FormItemInput
-                            placeholder={''}
-                            initialValue={text}
-                            FormItem={FormItem}
-                            name={`YardCTNNum_table_${record.id}`}
-                            onChange={(val: any) => onChange(index, record.id, 'yardCTNNum', val)}
-                        />
-                    );
-                },
-            }
-        );
-        containersLoadingColumns.splice(7, 2, {
-            title: 'Tare Weight',   dataIndex: "TareWeight", width: '10%', className: "textRight",
-            render: (text: any, record, index) => {
-                return (
+                render: (text: any, record, index) =>
                     <FormItemInput
                         placeholder={''}
                         initialValue={text}
                         FormItem={FormItem}
-                        name={`TareWeight_table_${record.id}`}
-                        onChange={(val: any) => onChange(index, record.id, 'tareWeight', val)}
+                        name={`YardCTNNum_table_${record.id}`}
+                        onChange={(val: any) => onChange(index, record.id, 'yardCTNNum', val)}
                     />
-                );
-            },
+            }
+        );
+        containersLoadingColumns.splice(7, 2, {
+            title: 'Tare Weight',   dataIndex: "TareWeight", width: '10%', className: "textRight",
+            render: (text: any, record, index) =>
+                <FormItemInput
+                    placeholder={''}
+                    initialValue={text}
+                    FormItem={FormItem}
+                    name={`TareWeight_table_${record.id}`}
+                    onChange={(val: any) => onChange(index, record.id, 'tareWeight', val)}
+                />
         });
     }
 
@@ -509,7 +479,7 @@ const CTNLoading: React.FC<Props> = (props) => {
                     />
 
                     {/* // TODO: 用于保存时，获取数据用 */}
-                    <FormItem hidden={true} name={'container-detail'} />
+                    <FormItem hidden={true} name={'containerList'} />
                 </Col>
             </Row>
             <Row gutter={24}>

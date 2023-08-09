@@ -214,28 +214,20 @@ declare namespace APIManager {
 
     //region TODO: 账期
     type SearchAccountParams = {
-        UserID: number;
-        Year: string | undefined;
+        finaYear: string;
+        branchId: string;
     };
     type AccountList = {
-        AccountState: number;
-        DFStatus: number | null;
-        DFStatusName: string;
-        ESStatus: number | null;
-        ESStatusName: string;
-        EndDate: string;
-        ErrorMes: string;
-        FinaMonth: string;
-        FinaYear: string;
-        ID: number;
-        IsDisplayCloseBtn: boolean;
-        IsDisplayDFBtn: boolean;
-        IsDisplayESBtn: boolean;
-        IsPrepareClose: boolean;
-        PeriodCode: string;
-        StartDate: string;
-        StateName: string;
-        TypeName: string;
+        id: string;
+        code: string;
+        dateEnd: string;
+        dateStart: string;
+        finaYearMonth: string;
+        state: number;
+        statusDeferra: number;
+        statusPredicted: number;
+        type: number;
+        IsPrepareClose?: boolean;
     };
     type AccountPeriodResult = {
         AccountPeriod: AccountPeriod;
@@ -312,59 +304,6 @@ declare namespace APIManager {
         enableFlag?: number,              // TODO: 启用标识
         deleteFlag?: number,              // TODO: 删除标识
         isChange?: boolean;               // TODO: 是否编辑过
-    }
-    //endregion
-
-    //region TODO: 账期
-    type SearchAccountParams = {
-        UserID: number,
-        Year: string | undefined,
-    }
-    type AccountList = {
-        AccountState: number,
-        DFStatus: number | null,
-        DFStatusName: string,
-        ESStatus: number | null,
-        ESStatusName: string,
-        EndDate: string,
-        ErrorMes: string,
-        FinaMonth: string,
-        FinaYear: string,
-        ID: number,
-        IsDisplayCloseBtn: boolean,
-        IsDisplayDFBtn: boolean,
-        IsDisplayESBtn: boolean,
-        IsPrepareClose: boolean,
-        PeriodCode: string,
-        StartDate: string,
-        StateName: string,
-        TypeName: string,
-    };
-    type AccountPeriodResult = {
-        AccountPeriod: AccountPeriod,
-        // Currencys: APCurrency[],
-    }
-    type AccountPeriod = {
-        AccountMouth: string,
-        BranchID: number | null,
-        CNYRate: number | null,
-        EndDate: string,
-        ErrorMes: string,
-        ExRates: APExRate[],
-        ID: number | string | null,
-        PeriodCode: string,
-        StartDate: string,
-        State: number | null,
-        StateName: string,
-        Type: number | null,
-    }
-    type APExRate = {
-        RateValue: number,
-        CurrencyID: number,
-    }
-    type APCurrency = {
-        ID: number,
-        Name: string,
     }
     //endregion
 

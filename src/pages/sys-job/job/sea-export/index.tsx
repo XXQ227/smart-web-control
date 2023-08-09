@@ -58,7 +58,7 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
 
     const handleFinish = async (values: Record<string, any>) => {
         try {
-            console.log(values)
+            console.log(values);
             // @ts-ignore
             for (const item: string in values) {
                 if (item.indexOf('_table_') > -1) {
