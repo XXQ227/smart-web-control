@@ -92,8 +92,6 @@ const PortDrawerForm: React.FC<Props> = (props) => {
             });
     }
 
-
-
     return (
         !open ? null :
             <Drawer

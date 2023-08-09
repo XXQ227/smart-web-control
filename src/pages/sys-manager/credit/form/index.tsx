@@ -1,4 +1,4 @@
-import React, {useRef, useState, useEffect} from 'react';
+import React, {useRef, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProFormInstance} from '@ant-design/pro-components';
 import {
@@ -11,9 +11,9 @@ import {
     ProFormText,
     ProFormTextArea
 } from '@ant-design/pro-components';
-import {Button, Col, Descriptions, Form, InputNumber, message, Radio, Row, Space, Table} from 'antd'
+import {Button, Col, Descriptions, Form, InputNumber, message, Row, Space, Table} from 'antd'
 import {history, useModel, useParams} from 'umi'
-import {getCreditScore, getFormErrorMsg, getLabelByValue, getValue, keepDecimal, rowGrid} from '@/utils/units'
+import {getCreditScore, getFormErrorMsg, getLabelByValue, keepDecimal, rowGrid} from '@/utils/units'
 import {
     PROPERTY_AS_CUSTOMER,
     BUSINESS_TYPE,
@@ -27,14 +27,13 @@ import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 import moment from 'moment'
 import {ArrowLeftOutlined, SaveOutlined, SendOutlined} from "@ant-design/icons";
 
+export type LocationState = Record<string, unknown>;
 const FormItem = Form.Item;
 
-type APICredit = APIManager.Credit;
-
-const CreditForm: React.FC<RouteChildrenProps> = () => {
+const CreditForm: React.FC<RouteChildrenProps> = (props) => {
     const params: any = useParams();
+    const {location: {state}} = props;
     const [form] = Form.useForm();
-    const {push} = history;
     const formRef = useRef<ProFormInstance>();
     const id = atob(params?.id);
     const buId = params?.buId ? atob(params?.buId || '0') : '';
@@ -67,30 +66,31 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
     const [estimatedMarginProfit, setGrossProfitMargin] = useState<number>(0);
 
     /**
-     * @Description: TODO: 获取 港口 详情
+     * @Description: TODO: 获取 信控 详情
      * @author XXQ
-     * @date 2023/5/5
+     * @date 2023/8/9
      * @returns
      */
-    async function handleGetCreditInfo(paramsVal: APICredit) {
+    const handleGetCreditInfo = async () => {
         setLoading(true);
         if (BusinessLineList?.length === 0) {
             await queryDictCommon({dictCodes: ['business_line']});
         }
         if (buId && buId !== '0') {
             const result: API.Result = await queryBusinessUnitPropertyCreditInfo({id: buId});
-            result.data = getCreditScoreInfo(result.data);
-            const newData = result.data;
-            const customerProperty = PROPERTY_AS_CUSTOMER.find(item => item.value === newData.customerProperty)
-            const enterpriseTypeValue = getLabelByValue(NATURE_OF_COMPANY, newData.natureOfCompany);
-            newData.customerProperty = customerProperty?.label;
-            newData.natureOfCompany = enterpriseTypeValue?.natureOfCompany;
-            console.log(newData)
-            setCreditInfoVO(newData);
+            if (result.success) {
+                result.data = getCreditScoreInfo(result.data);
+                const customerProperty = PROPERTY_AS_CUSTOMER.find(item => item.value === result.data.customerProperty)
+                const enterpriseTypeValue = getLabelByValue(NATURE_OF_COMPANY, result.data.natureOfCompany);
+                result.data.customerProperty = customerProperty?.label;
+                result.data.natureOfCompany = enterpriseTypeValue?.natureOfCompany;
+                result.data.businessLineType = result.data?.businessLineType?.split(",").map((item: string) => item.trim());
+                setCreditInfoVO(result.data || {});
+            }
             setLoading(false);
-            return result.data;
+            return result;
         } else if (id !== '0') {
-            const result: API.Result = await queryCreditControlInfo(paramsVal);
+            const result: API.Result = await queryCreditControlInfo({id});
             if (result.success) {
                 form.setFieldsValue({
                     name: result.data.name,
@@ -98,6 +98,11 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                     purposeOfCallType: result.data.purposeOfCallType
                 });
                 result.data.totalScore = result.data.totalScore || 0;
+                // TODO: Company Qualification 的数据
+                const customerProperty = PROPERTY_AS_CUSTOMER.find(item => item.value === result.data.customerProperty)
+                const enterpriseTypeValue = getLabelByValue(NATURE_OF_COMPANY, result.data.natureOfCompany);
+                result.data.customerProperty = customerProperty?.label;
+                result.data.natureOfCompany = enterpriseTypeValue?.natureOfCompany;
                 // TODO: 需要除以 10000 的数据
                 if (result.data.annualRevenue) result.data.annualRevenue = keepDecimal(result.data.annualRevenue / 10000);
                 if (result.data.lastYearAnnualRevenue) result.data.lastYearAnnualRevenue = keepDecimal(result.data.lastYearAnnualRevenue / 10000);
@@ -114,14 +119,17 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                 result.data.estimatedMarginProfit = (result.data.estimatedGrossProfit / result.data.estimatedAnnualRevenue) * 100;
                 // TODO: 赊销次数
                 result.data.lastYearPaymentOnCreditNumber = result.data.lastYearPaymentOnCredit ? result.data.lastYearPaymentOnCredit : null;
-                result.data.lastYearPaymentOnCredit = result.data.lastYearPaymentOnCredit ? 1 : 0;
+                result.data.lastYearPaymentOnCredit = result.data.lastYearPaymentOnCredit === 0 ? 0 : result.data.lastYearPaymentOnCredit ? 1 : result.data.lastYearPaymentOnCredit;
+                // TODO: 业务类型信控业务的主要类型和业务线数据转化
+                result.data.businessType = result.data?.businessType?.split(",").map((item: string) => item.trim());
+                result.data.businessLineType = result.data?.businessLineType?.split(",").map((item: string) => item.trim());
                 result.data = getCreditScoreInfo(result.data);
+                setCreditInfoVO(result.data || {});
             } else {
                 message.error(result.message);
             }
-            setCreditInfoVO(result.data || {});
             setLoading(false);
-            return result.data;
+            return result;
         } else {
             setLoading(false);
             return {totalScore: 0};
@@ -294,48 +302,47 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
     const onFinish = async (val: any) => {
         setLoading(true);
         const saveResult: any = {
-            id,
             branchId: '0',
             ...val,
-            businessType: val.businessType.toString(),
+            annualRevenue: keepDecimal(val.annualRevenue * 10000),
             cooperationStartTime: val.cooperationTime[0],
             cooperationEndTime: val.cooperationTime[1],
-            creditExpiryStartTime: val.creditExpiryTime[1],
-            creditExpiryEndTime: val.creditExpiryTime[1],
-            lastYearPaymentOnCredit: form.getFieldValue('lastYearPaymentOnCreditNumber') || 0,
-            customerId: CreditInfoVO.customerId || buId,
+            businessType: val?.businessType?.toString(),
+            estimatedAnnualRevenue: keepDecimal(val.estimatedAnnualRevenue * 10000),
+            estimatedGrossProfit: keepDecimal(val.estimatedGrossProfit * 10000),
+            totalScore: CreditInfoVO.totalScore,
             score1: CreditInfoVO.score1,
             score2: CreditInfoVO.score2,
             score3: CreditInfoVO.score3,
             score4: CreditInfoVO.score4,
             score5: CreditInfoVO.score5,
             score6: CreditInfoVO.score6,
-            totalScore: CreditInfoVO.totalScore,
             creditLevel: CreditInfoVO.creditLevel,
+            creditExpiryStartTime: val.creditExpiryTime[0],
+            creditExpiryEndTime: val.creditExpiryTime[1],
+            customerId: CreditInfoVO?.customerId || buId,
             bizApproveDept: 0,
-            creditBusinessList: '',
-            annualRevenue: keepDecimal(val.annualRevenue * 10000),
             lastYearAnnualRevenue: keepDecimal(val.lastYearAnnualRevenue * 10000),
             lastYearGrossProfit: keepDecimal(val.lastYearGrossProfit * 10000),
             lastYearCreditLine: keepDecimal(val.lastYearCreditLine * 10000),
-            estimatedAnnualRevenue: keepDecimal(val.estimatedAnnualRevenue * 10000),
-            estimatedGrossProfit: keepDecimal(val.estimatedGrossProfit * 10000),
+            lastYearPaymentOnCredit: form.getFieldValue('lastYearPaymentOnCreditNumber') || 0,
             creditLine: keepDecimal(val.creditLine * 10000),
+            creditStatus: 0,
         };
         delete saveResult.cooperationTime;
         delete saveResult.creditExpiryTime;
-        delete saveResult.businessLine;
-        console.log(saveResult)
+        delete saveResult.businessLineType;
         let result: API.Result;
         if (id === '0') {
             result = await addCreditControl(saveResult);
         } else {
+            saveResult.id = id;
             result = await editCreditControl(saveResult);
         }
         if (result.success) {
             message.success('Success');
             if (id === '0') {
-                history.push({pathname: `/manager/charge-template/form/${btoa(result.data)}`});
+                history.push({pathname: `/manager/credit/form/${btoa(result.data)}`});
             }
         } else {
             message.error(result.message);
@@ -377,8 +384,6 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                 // TODO: 提交数据
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
-                // @ts-ignore
-                // request={async () => handleGetCreditInfo({id})}
                 // TODO: 向后台请求数据
                 request={async () => handleGetCreditInfo()}
             >
@@ -403,7 +408,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 <Descriptions.Item
                                     label="Paid-in Capital">{CreditInfoVO.paidInCapital}</Descriptions.Item>
                                 <Descriptions.Item
-                                    label="Legal Person/ Director">{CreditInfoVO.legalPersonDirector}</Descriptions.Item>
+                                    label="Legal Person/ Director">{CreditInfoVO.corporation}</Descriptions.Item>
                             </Descriptions>
                         </Col>
                     </Row>
@@ -613,7 +618,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                             />
                         </Col>
                         <Col xs={23} sm={23} md={9} lg={6} xl={5} xxl={4}>
-                            <ProFormText
+                            {/*<ProFormText
                                 required
                                 placeholder=''
                                 name='estimatedAnnualRevenue'
@@ -623,8 +628,8 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                     suffix,
                                     onChange: (e: any) => handleScoreChange(e?.target?.value, 'estimatedAnnualRevenue', 5)
                                 }}
-                            />
-                            {/*<FormItemInput
+                            />*/}
+                            <FormItemInput
                                 required
                                 placeholder=''
                                 id={'estimatedAnnualRevenue'}
@@ -635,10 +640,10 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 FormItem={FormItem}
                                 onChange={(e: any) => handleScoreChange(e?.target?.value, 'estimatedAnnualRevenue', 5)}
                                 rules={[{required: true, message: 'Annual Revenue'}]}
-                            />*/}
+                            />
                         </Col>
                         <Col xs={23} sm={23} md={9} lg={6} xl={5} xxl={4}>
-                            <ProFormText
+                            {/*<ProFormText
                                 required
                                 placeholder=''
                                 name='estimatedGrossProfit'
@@ -648,8 +653,8 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                     suffix,
                                     onChange: (e: any) => handleScoreChange(e?.target?.value, 'estimatedGrossProfit', 6)
                                 }}
-                            />
-                            {/*<FormItemInput
+                            />*/}
+                            <FormItemInput
                                 required
                                 placeholder=''
                                 id={'estimatedGrossProfit'}
@@ -660,7 +665,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 FormItem={FormItem}
                                 onChange={(e: any) => handleScoreChange(e?.target?.value, 'estimatedGrossProfit', 6)}
                                 rules={[{required: true, message: 'Gross Profit'}]}
-                            />*/}
+                            />
                         </Col>
                         <Col xs={23} sm={23} md={6} lg={8} xl={5} xxl={4}>
                             <FormItem label={'Gross Profit Rate'} className={'ant-form-span-center'}>
@@ -758,7 +763,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                         <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={11}>
                             <ProFormCheckbox.Group
                                 disabled={true}
-                                name='businessLine'
+                                name='businessLineType'
                                 label="Business Line"
                                 options={BusinessLineList}
                             />
@@ -774,7 +779,21 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                     </Row>
                 </ProCard>
 
-                <FooterToolbar extra={<Button onClick={() => push({pathname: '/manager/credit'})} icon={<ArrowLeftOutlined/>}>Back</Button>}>
+                <FooterToolbar
+                    extra={
+                        <Button
+                            onClick={() => history.push({
+                                pathname: '/manager/credit',
+                                state: {
+                                    searchParams: state ? (state as LocationState)?.searchParams : '',
+                                },
+                            })}
+                            icon={<ArrowLeftOutlined/>}
+                        >
+                            Back
+                        </Button>
+                    }
+                >
                     <Button key={'submit'} type={'primary'} htmlType={'submit'} icon={<SaveOutlined/>}>
                         Save
                     </Button>
