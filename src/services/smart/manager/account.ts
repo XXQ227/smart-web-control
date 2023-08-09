@@ -49,3 +49,19 @@ export async function startCloseAccountPeriodAPI(body: { ID: number, UserID: num
   });
 }
 
+// TODO: 通用账期查询
+export async function queryAccountPeriodCommonAPI(body: { ID: number, UserID: number }) {
+  return request(`/apiBase/accountPeriod/queryAccountPeriodCommon/`, {
+    method: 'POST',
+    body
+  });
+}
+
+// TODO: 查询当前开启账期
+export async function queryStartAccountPeriodInfoAPI(body: { ID: number, UserID: number }) {
+  return request(`/apiBase/accountPeriod/queryStartAccountPeriodInfo/`, {
+    method: 'POST',
+    body
+  });
+}
+

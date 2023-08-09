@@ -20,10 +20,11 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
 
 
     const {
-        queryJobInfo, addJob
+        queryJobInfo, addJob, editJob
     } = useModel('job.job', (res: any) => ({
         queryJobInfo: res.queryJobInfo,
         addJob: res.addJob,
+        editJob: res.editJob,
     }));
 
     const {
@@ -33,34 +34,17 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
     }));
 
     const {
-        queryDictCommon, BusinessLineList
+        queryDictCommon, BusinessLineList,
+        queryAccountPeriodCommon, AccountPeriodList
     } = useModel('common', (res: any)=> ({
         queryDictCommon: res.queryDictCommon,
         BusinessLineList: res.BusinessLineList,
+        queryAccountPeriodCommon: res.queryAccountPeriodCommon,
+        AccountPeriodList: res.AccountPeriodList,
     }))
 
-    const [CJobInfo, setCJobInfo] = useState<any>({
-        businessType: 1,
-        cargoType: 1,
-        salesId: '1664169782143340545',
-        salesName: 'ivy',
-        project: 3,
-        IsSettleJob: false,
-        terms: {
-            incotermsId: 1,
-            shipmentTermId: '15',
-            shipmentTermName: 'CFS/DOOR',
-            payMethod: 1,
-            payableAtId: '',
-            payableAtName: '',
-        },
-        cargoInfo: {
-            qty: 200,
-            grossWeight: 2000,
-            measurement: 3245,
-            packagingMethodId: 1,
-        }
-    });
+
+    const [CJobInfo, setCJobInfo] = useState<any>({});
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -77,22 +61,26 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     async function handleQueryJobInfo(paramsVal: any) {
-        // alert('loading Job Info !!!');
-        // setLoading(true);
+        setLoading(true);
         // TODO: 获取用户数据
         await queryUserCommon({branchId: '0'});
         if (BusinessLineList?.length === 0) {
             await queryDictCommon({dictCodes: ['business_line']});
         }
+        if (AccountPeriodList?.length === 0) {
+            await queryAccountPeriodCommon({branchId: '0', name: ''});
+        }
         let result: API.Result;
         if (paramsVal.id !== '0') {
             result = await queryJobInfo(paramsVal);
+            console.log(result.data);
+            setLoading(false);
+            setCJobInfo(result.data || {});
         } else {
+            setLoading(false);
             result = {success: true, data: {}};
         }
 
-        // setLoading(false);
-        // setCJobInfo(result.data || {});
         return result.data;
     }
 
@@ -104,25 +92,31 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     const handleFinish = async (values: any) => {
+        setLoading(true);
         try {
             console.log(values)
             let result: API.Result = {success: false, message: ''};
             values.branchId = '1665596906844135426';
             values.businessLine = 1;
-            values.cargoInformationParam = values.cargoInfo;
-            values.termsParam = values.terms;
+            values.orderStatus = 0;
             delete values.cargoInfo;
             delete values.terms;
             if (id === '0') {
+                if (values.accountPeriodId) {
+                    const target: any = AccountPeriodList.find((item: any)=> item.value === values.accountPeriodId);
+                    values.accountPeriodInformation = target.oldLabel;
+                }
                 result = await addJob(values);
-                console.log(result);
+                setLoading(false);
             } else {
-                delete values.cargoInfo;
-                delete values.terms;
+                result = await editJob({...CJobInfo,...values});
+                setLoading(false);
             }
-            console.log(result);
             if (result?.success) {
-                message.success('提交成功');
+                message.success('success!!');
+                if (id === '0') {
+                    history.push({pathname: `/job/job-info/form/${btoa(result.data)}`})
+                }
             } else {
                 message.error(result.message);
             }
@@ -172,11 +166,11 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
                 // @ts-ignore
                 request={async () => handleQueryJobInfo({id})}
             >
-                <BasicInfo title={'Basic Information'} CJobInfo={CJobInfo}/>
+                <BasicInfo {...baseForm} title={'Basic Information'} CJobInfo={CJobInfo}/>
 
                 <Cargo title={'Cargo'}/>
 
-                <Payment {...baseForm} terms={CJobInfo.terms} title={'Payment & Shipping Terms'}/>
+                <Payment {...baseForm} termsParam={CJobInfo.termsParam || {}} title={'Payment & Shipping Terms'}/>
 
                 <ProCard title={'Remark'} bordered={true} className={'ant-card pro-form-payment'} headerBordered
                          collapsible>
@@ -190,7 +184,7 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
                             />
                         </Col>
                     </Row>
-                </ProCard>`
+                </ProCard>
             </ProForm>
         </Spin>
     )

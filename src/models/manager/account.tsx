@@ -2,8 +2,8 @@ import {useCallback} from "react";
 import {
     addAccountPeriodAPI,
     editAccountPeriodAPI, openAccountPeriodAPI,
-    queryAccountPeriodAPI,
-    queryAccountPeriodInfoAPI, startCloseAccountPeriodAPI,
+    queryAccountPeriodAPI, queryAccountPeriodCommonAPI,
+    queryAccountPeriodInfoAPI, queryStartAccountPeriodInfoAPI, startCloseAccountPeriodAPI
 } from '@/services/smart/manager/account';
 
 
@@ -82,6 +82,27 @@ export default () => {
         return response;
     }, []);
 
+    // TODO: 通用账期查询
+    // POST /base/web/accountPeriod/queryAccountPeriodCommon
+    // API ID:98908726
+    // API URL:https://app.apifox.com/project/2684231/apis/api-98908726
+    const queryAccountPeriodCommon = useCallback(async (params: {UserID: number, ID: number}) => {
+        // TODO: 请求后台 API
+        const response = await queryAccountPeriodCommonAPI(params);
+        if (!response) return;
+        return response;
+    }, []);
+
+    // TODO: 查询当前开启账期
+    // POST /base/web/accountPeriod/queryStartAccountPeriodInfo
+    // API ID:100610076
+    // API URL:https://app.apifox.com/project/2684231/apis/api-100610076
+    const queryStartAccountPeriodInfo = useCallback(async (params: {UserID: number, ID: number}) => {
+        // TODO: 请求后台 API
+        const response = await queryStartAccountPeriodInfoAPI(params);
+        if (!response) return;
+        return response;
+    }, []);
 
     return {
         queryAccountPeriod,
@@ -90,5 +111,8 @@ export default () => {
         editAccountPeriod,
         openAccountPeriod,
         startCloseAccountPeriod,
+
+        queryAccountPeriodCommon,
+        queryStartAccountPeriodInfo,
     }
 }

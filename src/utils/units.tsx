@@ -934,3 +934,32 @@ export function getLabelByValue (data: any[], natureOfCompany?: string): any {
     }
     return null;
 }
+
+
+/**
+ * @Description: TODO: 把 把 【2023 8】 转成 【2023 August】 显示
+ * @author XXQ
+ * @date 2023/8/9
+ * @param dataString    日期参数
+ * @returns
+ */
+export function getTransferDate (dataString: string) {
+    let result: string = '';
+    if (dataString) {
+        // 创建一个 Date 对象，表示指定日期
+        const currentDate = new Date(dataString);
+        // 获取年份和月份
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth(); // 月份是从 0 开始计数的
+        // 数组存储英文月份名称
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        // 获取对应的英文月份名称
+        const monthName = monthNames[month];
+        // 构造日期字符串
+        result = `${year} ${monthName}`;
+    }
+    return result;
+}

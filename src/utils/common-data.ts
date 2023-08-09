@@ -120,13 +120,13 @@ export const TERMS_INCOTERMS = [
 ];
 
 export const TERMS_PAYMENT = [
-    {label: '(PP) Freight Prepaid', value: 1},
-    {label: '(CC) Freight Collect', value: 2},
-    {label: '(AA) Freight as arranged', value: 3},
-    {label: '(FF) Freight Free', value: 4},
-    {label: '(OT) Other', value: 5},
-    {label: '(CP) Freight payable as per charter party', value: 6},
-    {label: '(MM) Monthly payment in the third place', value: 7},
-    {label: '(PT) Freight prepaid at the third place', value: 8},
-    {label: '(CT) Freight Collect at the third place', value: 9},
+    {value: 1, label: '(PP) Freight Prepaid'},
+    {value: 2, label: '(CC) Freight Collect'},
+    {value: 3, label: '(AA) Freight as arranged'},
+    {value: 4, label: '(FF) Freight Free'},
+    {value: 5, label: '(OT) Other'},
+    {value: 6, label: '(CP) Freight payable as per charter party'},
+    {value: 7, label: '(MM) Monthly payment in the third place'},
+    {value: 8, label: '(PT) Freight prepaid at the third place'},
+    {value: 9, label: '(CT) Freight Collect at the third place'},
 ];

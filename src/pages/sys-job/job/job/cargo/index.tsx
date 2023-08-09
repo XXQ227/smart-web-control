@@ -35,46 +35,46 @@ const Cargo: React.FC<Props> = (props) => {
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6}>
-                            <ProFormText placeholder='' label="HS Code" name={['cargoInfo', 'hsCode']}/>
+                            <ProFormText placeholder='' label="HS Code" name={['cargoInformationParam', 'hsCode']}/>
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6} className={'custom-input'}>
                             <ProFormDigit
                                 placeholder='' label={'Chargeable Weight'} min={0}
-                                name={['cargoInfo', 'chargeableWeight']} fieldProps={{addonAfter: 'HKD'}}
+                                name={['cargoInformationParam', 'chargeableWeight']} fieldProps={{addonAfter: 'HKD'}}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6} className={'custom-input'}>
-                            <ProFormDigit placeholder='' label={'QTY'} name={['cargoInfo', 'qty']} min={0}/>
+                            <ProFormDigit placeholder='' label={'QTY'} name={['cargoInformationParam', 'qty']} min={0}/>
                         </Col>
 
                         <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={5} className={'custom-input'}>
                             <ProFormDigit
                                 placeholder='' label={'G.W.'} min={0}
-                                name={['cargoInfo', 'grossWeight']} fieldProps={{addonAfter: 'KG'}}
+                                name={['cargoInformationParam', 'grossWeight']} fieldProps={{addonAfter: 'KG'}}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={5} className={'custom-input'}>
                             <ProFormDigit
                                 placeholder='' label={'N.W.'} min={0}
-                                name={['cargoInfo', 'netWeight']} fieldProps={{addonAfter: 'KG'}}
+                                name={['cargoInformationParam', 'netWeight']} fieldProps={{addonAfter: 'KG'}}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={5} className={'custom-input'}>
                             <ProFormDigit
                                 placeholder='' label={'Cargo Value'} min={0}
-                                name={['cargoInfo', 'cargoValue']} fieldProps={{addonAfter: 'KG'}}
+                                name={['cargoInformationParam', 'cargoValue']} fieldProps={{addonAfter: 'KG'}}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={5} className={'custom-input'}>
                             <ProFormDigit
                                 placeholder='' label={'Meas. (cbm)'} min={0}
-                                name={['cargoInfo', 'measurement']} fieldProps={{addonAfter: 'CBM'}}
+                                name={['cargoInformationParam', 'measurement']} fieldProps={{addonAfter: 'CBM'}}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={4}>
                             <ProFormSelect
                                 placeholder=''
-                                name={['cargoInfo', 'packagingMethodId']}
+                                name={['cargoInformationParam', 'packagingMethodId']}
                                 label="Packaging Methods"
                                 options={[
                                     {label: 'Wooden Boxes', value: 1},
@@ -90,7 +90,7 @@ const Cargo: React.FC<Props> = (props) => {
                         placeholder=''
                         label='Shipping Mark'
                         fieldProps={{rows: 5}}
-                        name={['cargoInfo', 'shippingMark']}
+                        name={['cargoInformationParam', 'shippingMark']}
                         // initialValue={cargoInfo?.marks}
                     />
                 </Col>
@@ -99,7 +99,7 @@ const Cargo: React.FC<Props> = (props) => {
                         placeholder=''
                         fieldProps={{rows: 5}}
                         label="Description of Goods"
-                        name={['cargoInfo', 'descriptionOfGoods']}
+                        name={['cargoInformationParam', 'descriptionOfGoods']}
                     />
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={8} xxl={8}>
@@ -107,8 +107,14 @@ const Cargo: React.FC<Props> = (props) => {
                         placeholder=''
                         fieldProps={{rows: 5}}
                         label="Description of Goods (CN)"
-                        name={['cargoInfo', 'descriptionOfGoodsCN']}
+                        name={['cargoInformationParam', 'descriptionOfGoodsCn']}
                     />
+                </Col>
+            </Row>
+            <Row gutter={24}>
+                <Col span={24}>
+                    <ProFormText hidden={true} width="md" name={['cargoInformationParam', 'id']}/>
+                    <ProFormText hidden={true} width="md" name={['cargoInformationParam', 'jobId']}/>
                 </Col>
             </Row>
         </ProCard>

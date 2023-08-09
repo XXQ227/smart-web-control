@@ -1,10 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {Fragment, useEffect, useRef, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ActionType, ColumnsState, ProColumns} from '@ant-design/pro-components';
-import {PageContainer, ProTable} from '@ant-design/pro-components';
+import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components';
 import {history, useModel} from 'umi';
 import {IconFont} from '@/utils/units';
-import {getUserID} from '@/utils/auths';
+import {EditOutlined} from '@ant-design/icons'
+import {Divider} from 'antd'
 
 type APICJobListItem = APIModel.CJobListItem;
 
@@ -12,17 +13,11 @@ type APICJobListItem = APIModel.CJobListItem;
 const cjobListParams: APIModel.SearchJobParams = {
     searchKey: '',
     customerOrCargoId: '',
-    branchId: '0',
+    branchId: '1665596906844135426',
     currentPage: 1,
     pageSize: 20,
 };
 
-const operationList = [
-    {key: 'edit', type: 1, label: '编辑'},
-    {key: 'charge', type: 4, label: '费用'},
-    {key: 'copy', type: 2, label: '复制'},
-    {key: 'cancel', type: 3, label: '退关'}
-];
 
 const columnsStateStr = '{"Code":{"fixed":"left"},"PrincipalNameEN":{"show":true},"MBOLNum":{"show":true},"OceanTransportType":{"show":true},"CreateDate":{"show":true},"option":{"show":true}}';
 
@@ -34,20 +29,13 @@ const JobList: React.FC<RouteChildrenProps> = () => {
     }));
     const initInfo = useModel('@@initialState');
     const initialState: any = initInfo?.initialState || {};
-    // 拿到所选的分组信息
-    const groupInfo: {id: any, name: string} = initialState?.groupInfo || {};
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [groupId, setGroupID] = useState(null);
     const [jobList, setJobList] = useState<APICJobListItem[]>([]);
 
     useEffect(()=> {
-        if (groupInfo.id && groupInfo.id !== groupId) {
-            // eslint-disable-next-line @typescript-eslint/no-use-before-define
-            getCJobList(cjobListParams, groupInfo.id !== groupId).then()
-            setGroupID(groupInfo.id);
-        }
-    }, [groupId, groupInfo]);
+
+    }, []);
 
     /**
      * @Description: TODO 单票操作（编辑、复制、退关）
@@ -82,18 +70,17 @@ const JobList: React.FC<RouteChildrenProps> = () => {
      * @author XXQ
      * @date 2023/2/13
      * @param params    参数
-     * @param isLoading 是否调用接口
      * @returns
      */
-    const getCJobList = async (params: any, isLoading: boolean = false) => {
+    const handleQueryJobList = async (params: any) => {
         let result: APIModel.RuleCJobList = {};
         setLoading(true);
-        if (isLoading) {
-            // TODO: 分页查询【参数页】
-            params.PageNum = params.current || 1;
-            result = (await queryJobList(params as APIModel.SearchJobParams)) || {};
-            setJobList(result.data || []);
-        }
+        // TODO: 分页查询【参数页】
+        params.currentPage = params.current || 1;
+        params.pageSize = params.pageSize || 20;
+        result = await queryJobList(params as APIModel.SearchJobParams);
+        console.log(result);
+        setJobList(result.data || []);
         setLoading(false);
         return result;
     }
@@ -102,7 +89,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
     const columns: ProColumns<APICJobListItem>[] = [
         {
             title: 'Job Code',
-            dataIndex: 'Code',
+            dataIndex: 'jobCode',
             width: 140,
         },
         {
@@ -136,10 +123,16 @@ const JobList: React.FC<RouteChildrenProps> = () => {
             key: 'option',
             width: 160,
             render: (text, record) => {
-                return operationList?.map(x=>
-                    <a key={x.key} onClick={() => handleOperateJob(x.type, record)}>
-                        {x.label}
-                    </a>
+                return (
+                    <Fragment>
+                        <EditOutlined color={'#1765AE'} onClick={() => handleOperateJob(1, record)} />
+                        <Divider type={'vertical'} />
+                        {/*<EditOutlined color={'#1765AE'} onClick={() => handleOperateJob(1, record)}/>*/}
+                        {/*<Divider type={'vertical'} />*/}
+                        {/*<EditOutlined color={'#1765AE'} onClick={() => handleOperateJob(1, record)}/>*/}
+                        {/*<Divider type={'vertical'} />*/}
+                        {/*<EditOutlined color={'#1765AE'} onClick={() => handleOperateJob(1, record)}/>*/}
+                    </Fragment>
                 )
             },
         },
@@ -157,20 +150,20 @@ const JobList: React.FC<RouteChildrenProps> = () => {
                 <IconFont key={1} type={'icon-create'} style={{fontSize: 24}} onClick={()=> handleOperateJob(1, {})} />,
             ]}
         >
-            <ProTable className={'ant-card-pro-table'}>
+            <ProCard className={'ant-card-pro-table'}>
                 <ProTable<APICJobListItem>
                     rowKey={'ID'}
-                    search={false}
+                    // search={false}
                     options={false}
                     bordered={true}
+                    loading={loading}
                     columns={columns}
                     dataSource={jobList}
                     actionRef={actionRef}
                     params={cjobListParams}
-                    loading={loading}
                     locale={{emptyText: 'No Data'}}
-                    className={'ant-pro-table-edit antd-pro-table-ant-space'}
-                    request={(params) => getCJobList(params, !!groupInfo.id)}
+                    className={'antd-pro-table-ant-space'}
+                    request={(params) => handleQueryJobList(params)}
                     columnsState={{
                         value: columnsStateMap,
                         onChange: (str) => {
@@ -179,7 +172,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
                         },
                     }}
                 />
-            </ProTable>
+            </ProCard>
         </PageContainer>
     )
 }
