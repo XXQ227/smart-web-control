@@ -1,14 +1,20 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useMemo, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import type {ProColumns} from '@ant-design/pro-components';
-import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
+import {
+    PageContainer,
+    ProCard,
+    ProForm, ProFormCheckbox,
+    ProFormText,
+    ProTable
+} from '@ant-design/pro-components';
 import {useModel} from 'umi';
-import {EditOutlined, PlusOutlined} from '@ant-design/icons'
+import {EditOutlined, PlusOutlined} from '@ant-design/icons';
 import type {TabsProps} from 'antd';
-import {Divider, Input, message, Tabs} from 'antd'
-import {history} from '@@/core/history'
-import {CustomizeIcon} from '@/utils/units'
-import ls from "lodash";
+import {Col, Divider, Input, message, Row, Tabs} from 'antd';
+import {history} from '@@/core/history';
+import {CustomizeIcon, formatNumToMoney, rowGrid} from '@/utils/units';
+import ls, {debounce} from "lodash";
 
 const {Search} = Input;
 
@@ -32,9 +38,8 @@ const initPagination = {
     total: 0,
 }
 
-const CreditListIndex: React.FC<RouteChildrenProps> = (props) => {
-    const searchQueryBranch = ls.cloneDeep(initSearchParam)
-    const searchLocation = props.location.state ? (props.location.state as LocationState)?.searchParams : '';
+const CreditListIndex: React.FC<RouteChildrenProps> = () => {
+    const searchQueryCredit = ls.cloneDeep(initSearchParam)
 
     const {
         queryUnCreditControl, queryCreditControl, deleteCreditControl,
@@ -46,14 +51,14 @@ const CreditListIndex: React.FC<RouteChildrenProps> = (props) => {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [CreditListVO, setCreditListVO] = useState<APICredit[]>([]);
-    const [searchParams, setSearchParams] = useState<APISearchCreditParams>(searchLocation || searchQueryBranch);
-    const [pagination, setPagination] = useState<any>(initPagination)
+    const [searchParams, setSearchParams] = useState<APISearchCreditParams>(searchQueryCredit);
+    const [pagination, setPagination] = useState<any>(initPagination);
 
     /**
-     * @Description: TODO 获取单票数据集合
+     * @Description: TODO 获取 信控 列表
      * @author XXQ
      * @date 2023/2/13
-     * @param tabKey    当前所在的
+     * @param tabKey    当前所在的tab
      * @param params    参数
      * @returns
      */
@@ -116,16 +121,55 @@ const CreditListIndex: React.FC<RouteChildrenProps> = (props) => {
             // TODO: 跳转页面<带参数>
             history.push({
                 pathname: url,
-                state: {
+                /*state: {
                     searchParams: searchParams,
-                },
+                },*/
             });
         }
     }
 
     const onChange = (key: string) => {
-        console.log(key);
+        if (key === '3') {
+            searchParams.creditStatusTypeList= [1, 2, 3, 4, 5];
+            setSearchParams(searchParams);
+        } else {
+            setSearchParams(searchQueryCredit);
+        }
     };
+
+    const debounceFetcher = useMemo(() => {
+        const loadOptions = async () => {
+            await handleQueryCredit('3', searchParams);
+        };
+        // TODO: 返回数据，做防抖动设置
+        return debounce(loadOptions, 2000);
+    }, []);
+
+    /**
+     * @Description: TODO: 当 ProForm 表单修改时，调用此方法
+     * @author LLS
+     * @date 2023/8/10
+     * @param changeValues   ProForm 表单修改的参数
+     * @returns
+     */
+    const handleProFormValueChange = (changeValues: any) => {
+        Object.keys(changeValues).map((item: any) => {
+            // TODO: 客户名称
+            if (item === 'customerName') {
+                searchParams.customerName = changeValues[item];
+            }
+            // TODO: 人+公司
+            else if (item === 'applicantId') {
+                searchParams.applicantId = changeValues[item];
+            }
+            // TODO: 供应商类型
+            else if (item === 'creditStatusTypeList') {
+                searchParams.creditStatusTypeList = changeValues[item];
+            }
+        })
+        // TODO: 返回数据，做防抖动设置
+        debounceFetcher();
+    }
 
     const columnsFunc = (tabKey: string) => {
         const createColumns: ProColumns<APICredit>[] = [
@@ -145,15 +189,17 @@ const CreditListIndex: React.FC<RouteChildrenProps> = (props) => {
         ];
         const columns: ProColumns<APICredit>[] = [
             {title: 'Customer Name', dataIndex: 'customerName', align: 'left',},
-            {title: 'Credit Line/10k', dataIndex: 'creditLine', width: 110, align: 'center',},
-            {title: 'Credit Days', dataIndex: 'creditDays', width: 100, align: 'center',},
-            {title: 'Expiration Date', dataIndex: 'expiryEndTime', width: 130, align: 'center',},
-            {title: 'Credit Rating', dataIndex: 'creditLevel', width: 200, align: 'center',},
-            {title: 'Applied by', dataIndex: 'applicantName', width: 160, align: 'center',},
-            {title: 'Branch by', dataIndex: 'applicantBranchName', width: 110, align: 'center',},
+            {
+                title: 'Credit Line', dataIndex: 'creditLine', width: '10%', align: 'right',
+                render: (text) => {return formatNumToMoney(text)},
+            },
+            {title: 'Credit Days', dataIndex: 'creditDays', width: '9%', align: 'center',},
+            {title: 'Expiration Date', dataIndex: 'creditExpiryEndTime', width: '12%', valueType: 'date', align: 'center',},
+            {title: 'Credit Rating', dataIndex: 'creditLevel', width: '10%', align: 'center',},
+            {title: 'Applied by', dataIndex: 'applicantBy', width: '15%', align: 'center',},
             {
                 title: 'Action',
-                width: 100,
+                width: 80,
                 align: 'center',
                 render: (text, record) => {
                     return (
@@ -174,42 +220,90 @@ const CreditListIndex: React.FC<RouteChildrenProps> = (props) => {
 
     const creditTable = (tabKey: string) => {
         return (
-            <ProTable<APICredit>
-                rowKey={'id'}
-                search={false}
-                options={false}
-                bordered={true}
-                loading={loading}
-                columns={columnsFunc(tabKey)}
-                params={searchParams}
-                dataSource={CreditListVO}
-                locale={{emptyText: 'No Data'}}
-                headerTitle={
-                    tabKey === '1' ?
-                        <Search
-                            placeholder=''
-                            enterButton="Search"
-                            loading={loading}
-                            // defaultValue={searchValue}
-                            onSearch={async (val: any) => {
-                                // setSearchValue(val);
-                                searchParams.customerName = val;
-                                await handleQueryCredit(tabKey, searchParams);
-                            }}
-                        /> : null
+            <>
+                {
+                    tabKey === '3' ?
+                        <ProForm
+                            // form={form}
+                            // TODO: 不显示提交、重置按键
+                            submitter={false}
+                            // TODO: 焦点给到第一个控件
+                            autoFocusFirstInput
+                            initialValues={searchParams}
+                            // TODO: 设置默认值
+                            // formKey={'business-unit-information'}
+                            // TODO: 空间有改数据时触动
+                            onValuesChange={handleProFormValueChange}
+                        >
+                            <Row gutter={rowGrid} style={{marginBottom: 10}}>
+                                <Col xs={24} sm={24} md={20} lg={16} xl={8} xxl={9}>
+                                    <ProFormText
+                                        name='customerName'
+                                        placeholder=''
+                                        label='Customer Name'
+                                    />
+                                </Col>
+                                <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={5}>
+                                    <ProFormText
+                                        name='applicantId'
+                                        placeholder=''
+                                        label='Applied by'
+                                    />
+                                </Col>
+                                <Col xs={24} sm={24} md={18} lg={23} xl={12} xxl={8}>
+                                    <ProFormCheckbox.Group
+                                        placeholder=''
+                                        name='creditStatusTypeList'
+                                        label='Status'
+                                        options={[
+                                            {label: 'Uncredited', value: 1,},
+                                            {label: 'In Approval', value: 2,},
+                                            {label: 'Credited', value: 3,},
+                                            {label: 'Insufficient', value: 4,},
+                                            {label: 'Expired', value: 5,},
+                                        ]}
+                                    />
+                                </Col>
+                            </Row>
+                        </ProForm> : null
                 }
-                pagination={{
-                    showSizeChanger: true,
-                    ...pagination,
-                    pageSizeOptions: [20, 30, 50, 100],
-                    onChange: (page, pageSize) => {
-                        // searchParams.currentPage = page;
-                        searchParams.pageSize = pageSize;
-                        setSearchParams(searchParams);
-                    },
-                }}
-                request={(params: APISearchCreditParams) => handleQueryCredit(tabKey, params)}
-            />
+                <ProTable<APICredit>
+                    rowKey={'id'}
+                    search={false}
+                    options={false}
+                    bordered={true}
+                    loading={loading}
+                    columns={columnsFunc(tabKey)}
+                    params={searchParams}
+                    dataSource={CreditListVO}
+                    locale={{emptyText: 'No Data'}}
+                    headerTitle={
+                        tabKey === '1' ?
+                            <Search
+                                placeholder=''
+                                enterButton="Search"
+                                loading={loading}
+                                // defaultValue={searchValue}
+                                onSearch={async (val: any) => {
+                                    // setSearchValue(val);
+                                    searchParams.customerName = val;
+                                    await handleQueryCredit(tabKey, searchParams);
+                                }}
+                            /> : null
+                    }
+                    pagination={{
+                        showSizeChanger: true,
+                        ...pagination,
+                        pageSizeOptions: [20, 30, 50, 100],
+                        onChange: (page, pageSize) => {
+                            // searchParams.currentPage = page;
+                            searchParams.pageSize = pageSize;
+                            setSearchParams(searchParams);
+                        },
+                    }}
+                    request={(params: APISearchCreditParams) => handleQueryCredit(tabKey, params)}
+                />
+            </>
         )
     }
 

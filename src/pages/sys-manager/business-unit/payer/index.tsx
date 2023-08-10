@@ -46,7 +46,7 @@ const initPagination = {
 const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
     const {location: {state}} = props;
     const [form] = Form.useForm();
-    const searchQueryBUP = ls.cloneDeep(initSearchParam)
+    const searchQueryPayer = ls.cloneDeep(initSearchParam)
     const searchLocation = state ? (state as LocationState)?.searchParams : '';
 
     const {
@@ -68,8 +68,8 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
     const [PayerListVO, setPayerListVO] = useState<APIPayer[]>([]);
     const [CustomerListVO, setCustomerListVO] = useState<APIPayer[]>([]);
     const [modalPayerListVO, setModalPayerListVO] = useState<APIPayer[]>([]);
-    const [searchParams, setSearchParams] = useState<APISearchBUParams>(searchLocation || searchQueryBUP);
-    const [pagination, setPagination] = useState<any>(initPagination)
+    const [searchParams, setSearchParams] = useState<APISearchBUParams>(searchLocation || searchQueryPayer);
+    const [pagination, setPagination] = useState<any>(initPagination);
 
     const [payerHighlightedRow, setPayerHighlightedRow] = useState(null);
     const [customerHighlightedRow, setCustomerHighlightedRow] = useState(null);

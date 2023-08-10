@@ -2,26 +2,22 @@ import React, {useEffect, useState} from 'react';
 import type { RouteChildrenProps } from 'react-router';
 import type { ProColumns} from '@ant-design/pro-components';
 import {
-    FooterToolbar,
     PageContainer,
     ProCard,
     ProForm, ProFormDatePicker,
-    ProFormSelect,
     ProFormText,
     ProTable
 } from '@ant-design/pro-components';
 import {Button, Col, Form, message, Row,} from 'antd';
 import {useModel} from 'umi';
-import {getUserID} from '@/utils/auths';
 import {history} from '@@/core/history'
-import {EditOutlined, PlusCircleOutlined, PlusOutlined, SearchOutlined} from '@ant-design/icons'
+import {EditOutlined, PlusOutlined, SearchOutlined} from '@ant-design/icons'
 import ls from "lodash";
 import {getFormErrorMsg, rowGrid} from "@/utils/units";
 
 export type LocationState = Record<string, unknown>;
 type APIBU = APIManager.BU;
 type APISearchBUParams = APIManager.SearchBUParams;
-
 
 // TODO: 获取BU列表的请求参数
 const initSearchParam = {
@@ -43,7 +39,7 @@ const initPagination = {
 const BusinessUnitListIndex: React.FC<RouteChildrenProps> = (props) => {
     const {location: {state}} = props;
     const [form] = Form.useForm();
-    const searchQueryBranch = ls.cloneDeep(initSearchParam)
+    const searchQueryBU = ls.cloneDeep(initSearchParam)
     const searchLocation = state ? (state as LocationState)?.searchParams : '';
 
     const {
@@ -54,8 +50,8 @@ const BusinessUnitListIndex: React.FC<RouteChildrenProps> = (props) => {
 
     const [loading, setLoading] = useState<boolean>(false);
     const [BUListVO, setBUListVO] = useState<APIBU[]>([]);
-    const [searchParams, setSearchParams] = useState<APISearchBUParams>(searchLocation || searchQueryBranch);
-    const [pagination, setPagination] = useState<any>(initPagination)
+    const [searchParams, setSearchParams] = useState<APISearchBUParams>(searchLocation || searchQueryBU);
+    const [pagination, setPagination] = useState<any>(initPagination);
 
     // 当state有值，页面被刷新的时，重置跳传地址。为了清空原来的搜索参数
     useEffect(() => {
@@ -269,40 +265,30 @@ const BusinessUnitListIndex: React.FC<RouteChildrenProps> = (props) => {
                 breadcrumb: {},
             }}
         >
-            {/*<ProCard className={'ant-card ant-card-pro-table'}>*/}
-                {renderSearch()}
+            {renderSearch()}
 
-                <ProTable<APIBU>
-                    rowKey={'id'}
-                    options={false}
-                    bordered={true}
-                    loading={loading}
-                    columns={columns}
-                    params={searchParams}
-                    dataSource={BUListVO}
-                    search={false}
-                    /*toolbar={{
-                        actions: [
-                            <Button key={'add'} onClick={()=> handleEditBU({id: '0'})} type={'primary'} icon={<PlusOutlined/>}>
-                                Add
-                            </Button>
-                        ]
-                    }}*/
-                    rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
-                    pagination={{
-                        showSizeChanger: true,
-                        ...pagination,
-                        pageSizeOptions: [20, 30, 50, 100],
-                        onChange: (page, pageSize) => {
-                            // searchParams.currentPage = page;
-                            searchParams.pageSize = pageSize;
-                            setSearchParams(searchParams);
-                        },
-                    }}
-                    request={handleQueryBU}
-                />
-            {/*</ProCard>*/}
-            {/*<FooterToolbar extra={<Button onClick={()=> handleEditCT({id: '0'})} style={{border: "none"}}><PlusCircleOutlined />Add</Button>}/>*/}
+            <ProTable<APIBU>
+                rowKey={'id'}
+                options={false}
+                bordered={true}
+                loading={loading}
+                columns={columns}
+                params={searchParams}
+                dataSource={BUListVO}
+                search={false}
+                rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
+                pagination={{
+                    showSizeChanger: true,
+                    ...pagination,
+                    pageSizeOptions: [20, 30, 50, 100],
+                    onChange: (page, pageSize) => {
+                        // searchParams.currentPage = page;
+                        searchParams.pageSize = pageSize;
+                        setSearchParams(searchParams);
+                    },
+                }}
+                request={handleQueryBU}
+            />
         </PageContainer>
     )
 }

@@ -386,7 +386,7 @@ const CreditApproval: React.FC<RouteChildrenProps> = () => {
                         <Col xs={24} sm={24} md={12} lg={8} xl={7} xxl={5}>
                             <Space className={'ant-credit-text'}>
                                 <label>Period of credit : </label>
-                                <span>{CreditInfoVO.cooperationTime}</span>
+                                <span>{CreditInfoVO.creditExpiryTime}</span>
                             </Space>
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={24} xl={7} xxl={10}>
