@@ -10,13 +10,19 @@ import {
 } from '@ant-design/pro-components';
 import {Button, Col, Form, message, Row, Space, Table} from 'antd'
 import {history, useModel, useParams} from 'umi'
-import {getFormErrorMsg} from '@/utils/units'
+import {getFormErrorMsg, getLabelByValue, keepDecimal, rowGrid} from '@/utils/units'
 import '../style.less';
-import {COLUMNS_CREDIT_SCORE, CREDIT_ASSESSMENT_SCORE_DATA} from '@/utils/common-data'
-import {CheckOutlined, CloseOutlined} from '@ant-design/icons'
+import {
+    BUSINESS_TYPE,
+    COLUMNS_CREDIT_SCORE,
+    CREDIT_ASSESSMENT_SCORE_DATA, CREDIT_STANDING,
+    NATURE_OF_COMPANY, POSITION_IN_INDUSTRY,
+    PROPERTY_AS_CUSTOMER
+} from '@/utils/common-data'
+import {ArrowLeftOutlined, CheckOutlined, CloseOutlined} from '@ant-design/icons'
 import arrow from '@/assets/img/left-arrow.png';
-
-type APICredit = APIManager.Credit;
+import moment from "moment/moment";
+import ls from 'lodash'
 
 const CreditApproval: React.FC<RouteChildrenProps> = () => {
     const params: any = useParams();
@@ -44,26 +50,116 @@ const CreditApproval: React.FC<RouteChildrenProps> = () => {
     const [creditApprovalState, setCreditApprovalState] = useState<string>('');
 
     /**
-     * @Description: TODO: 获取 港口 详情
+     * @Description: TODO: 获取 信控 详情
      * @author XXQ
-     * @date 2023/5/5
+     * @date 2023/8/9
      * @returns
      */
-    async function handleGetCreditByID(paramsVal: APICredit) {
+    const handleGetCreditInfo = async () => {
         setLoading(true);
-        if (BusinessLineList?.lengtd === 0) {
+        if (BusinessLineList?.length === 0) {
             await queryDictCommon({dictCodes: ['business_line']});
         }
         if (id !== '0') {
-            const result: API.Result = await queryCreditControlInfo(paramsVal);
-            setCreditInfoVO(result.data);
-            // setScoreData(newData);
+            const result: API.Result = await queryCreditControlInfo({id});
+            if (result.success) {
+                console.log(result.data);
+                // TODO: Company Qualification 的数据
+                const customerProperty = PROPERTY_AS_CUSTOMER.find(item => item.value === result.data.customerProperty)
+                result.data.customerProperty = customerProperty?.label;
+                const enterpriseTypeValue = getLabelByValue(NATURE_OF_COMPANY, result.data.natureOfCompany);
+                result.data.natureOfCompany = enterpriseTypeValue?.natureOfCompany;
+                const creditStanding = CREDIT_STANDING.find(item => item.value === result.data.creditStanding)
+                result.data.creditStanding = creditStanding?.label;
+                const positionIndustry = POSITION_IN_INDUSTRY.find(item => item.value === result.data.positionIndustry)
+                result.data.positionIndustry = positionIndustry?.label;
+                // TODO: 需要除以 10000 的数据
+                if (result.data.registeredCapital) result.data.registeredCapital = keepDecimal(result.data.registeredCapital / 10000);
+                if (result.data.paidInCapital) result.data.paidInCapital = keepDecimal(result.data.paidInCapital / 10000);
+                if (result.data.annualRevenue) result.data.annualRevenue = keepDecimal(result.data.annualRevenue / 10000);
+                if (result.data.lastYearCreditLine) result.data.lastYearCreditLine = keepDecimal(result.data.lastYearCreditLine / 10000);
+                if (result.data.lastYearAnnualRevenue) result.data.lastYearAnnualRevenue = keepDecimal(result.data.lastYearAnnualRevenue / 10000);
+                if (result.data.lastYearGrossProfit) result.data.lastYearGrossProfit = keepDecimal(result.data.lastYearGrossProfit / 10000);
+                if (result.data.estimatedAnnualRevenue) result.data.estimatedAnnualRevenue = keepDecimal(result.data.estimatedAnnualRevenue / 10000);
+                if (result.data.estimatedGrossProfit) result.data.estimatedGrossProfit = keepDecimal(result.data.estimatedGrossProfit / 10000);
+                if (result.data.creditLine) result.data.creditLine = keepDecimal(result.data.creditLine / 10000);
+                // TODO: 时间范围
+                const cooperationStartTime = moment(result.data.cooperationStartTime).format('YYYY-MM');
+                const cooperationEndTime = moment(result.data.cooperationEndTime).format('YYYY-MM');
+                result.data.cooperationTime = `${cooperationStartTime} ~ ${cooperationEndTime}`;
+                const creditExpiryStartTime = moment(result.data.creditExpiryStartTime).format('YYYY-MM');
+                const creditExpiryEndTime = moment(result.data.creditExpiryEndTime).format('YYYY-MM');
+                result.data.creditExpiryTime = `${creditExpiryStartTime} ~ ${creditExpiryEndTime}`;
+                // TODO: 毛利率
+                result.data.lastYearMarginProfit = (result.data.lastYearGrossProfit / result.data.lastYearAnnualRevenue) * 100;
+                result.data.estimatedMarginProfit = (result.data.estimatedGrossProfit / result.data.estimatedAnnualRevenue) * 100;
+
+                result.data.businessType = getBusinessLabels(result.data?.businessType);
+                result.data.lastYearPaymentOnCredit = result.data?.lastYearPaymentOnCredit === 0 ? 'In good condition' : result.data?.lastYearPaymentOnCredit ? `Overdue payments ${result.data?.lastYearPaymentOnCredit} Times` : result.data?.lastYearPaymentOnCredit;
+                result.data = getCreditScoreInfo(result.data);
+                setCreditInfoVO(result.data || {});
+            } else {
+                message.error(result.message);
+            }
             setLoading(false);
-            return result.data;
+            return result;
         } else {
             setLoading(false);
             return {totalScore: 0};
         }
+    }
+
+    function getBusinessLabels(input: string) {
+        if (input) {
+            const selectedValues = input.split(',');
+            const labels: string[] = [];
+            for (const value of selectedValues) {
+                const foundItem = BUSINESS_TYPE.find(item => item.value === value);
+                if (foundItem) {
+                    labels.push(foundItem.label);
+                }
+            }
+            return labels.join(', ');
+        }
+        return ""
+    }
+
+    /**
+     * @Description: TODO: 信控成绩
+     * @author LLS
+     * @date 2023/8/9
+     * @param result 信控数据
+     * @returns
+     */
+    function getCreditScoreInfo(result: any) {
+        const newData = ls.cloneDeep(ScoreData);
+        for (const item of newData) {
+            switch (item.id) {
+                case 1: // TODO: 注册资金
+                    item.score = result.score1
+                    break;
+                case 2: // TODO: 注册时间（年限）
+                    item.score = result.score2
+                    break;
+                case 3: // TODO: 行业地位
+                    item.score = result.score3
+                    break;
+                case 4: // TODO: 信用等级
+                    item.score = result.score4
+                    break;
+                case 5: // TODO: 预计月收入
+                    item.score = result.score5
+                    break;
+                case 6: // TODO: 本年度预计营收毛利率
+                    item.score = result.score6
+                    break;
+                default:
+                    break;
+            }
+        }
+        setScoreData(newData);
+        result.totalScore = result.totalScore.toFixed(1);
+        return result;
     }
 
     const handleOperateCredit = async (state: string)=> {
@@ -92,8 +188,8 @@ const CreditApproval: React.FC<RouteChildrenProps> = () => {
                 // TODO: 不显示提交、重置按键
                 submitter={false}
                 // TODO: 焦点给到第一个控件
-                autoFocusFirstInput={true}
-                formKey={'charge-template'}
+                autoFocusFirstInput
+                formKey={'credit-approval'}
                 // TODO: 设置默认值
                 initialValues={CreditInfoVO}
                 // TODO: 提交数据
@@ -106,161 +202,204 @@ const CreditApproval: React.FC<RouteChildrenProps> = () => {
                     }
                 }}
                 // @ts-ignore
-                request={async () => handleGetCreditByID({id})}
+                request={async () => handleGetCreditInfo({id})}
             >
-                <ProCard title={'Reference Information'} className={'ant-card ant-credit-info-table'}>
+                <ProCard
+                    className={'ant-card ant-credit-info-table'}
+                    title={'Reference Information'}
+                    headerBordered
+                    collapsible
+                >
                     <table>
                         <tbody>
-                        {/*// TODO: 第一行 */}
-                        <tr className={'ant-credit-tr-dark'}>
-                            <td>Customer</td>
-                            <td colSpan={5} className={'ant-value-left'}>
-                                {'Customer'}
-                            </td>
-                            <td>Apply Date</td>
-                            <td colSpan={2} className={'ant-value-left'}>{'2021-05-20'}</td>
-                        </tr>
+                            {/*// TODO: 第一行 */}
+                            <tr className={'ant-credit-tr-dark'}>
+                                <td>Customer Name</td>
+                                <td colSpan={5} className={'ant-value-left'}>
+                                    {CreditInfoVO.customerName}
+                                </td>
+                                <td>Apply Date</td>
+                                <td colSpan={2} className={'ant-value-left'}>{moment(CreditInfoVO.createTime).format("YYYY-MM-DD")}</td>
+                            </tr>
 
-                        {/*// TODO: 第二至五行 */}
-                        <tr>
-                            <td rowSpan={4}>Company <br/>Qualification</td>
-                            <td>Customer Property</td>
-                            <td colSpan={3} className={'ant-value-left'}>{''}</td>
-                            <td>Nature of a Company</td>
-                            <td colSpan={3} className={'ant-value-left'}>{' '}</td>
-                        </tr>
-                        <tr>
-                            <td>Legal Person/ Director</td>
-                            <td colSpan={3} className={'ant-value-left'}>{' '}</td>
-                            <td>Industry</td>
-                            <td colSpan={3} className={'ant-value-left'}>{' '}</td>
-                        </tr>
-                        <tr>
-                            <td>Credit Standing</td>
-                            <td colSpan={3} className={'ant-value-left'}>{' '}</td>
-                            <td>Position in Industry</td>
-                            <td colSpan={3} className={'ant-value-left'}>{' '}</td>
-                        </tr>
-                        <tr>
-                            <td>Registered Capital</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                            <td>Paid-in Capital</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                            <td>Established Date</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                            <td>Annual Revenue</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                        </tr>
+                            {/*// TODO: 第二至五行 */}
+                            <tr>
+                                <td rowSpan={4}>Company <br/>Qualification</td>
+                                <td>Customer Property</td>
+                                <td colSpan={3} className={'ant-value-left'}>{CreditInfoVO.customerProperty}</td>
+                                <td>Nature of a Company</td>
+                                <td colSpan={3} className={'ant-value-left'}>{CreditInfoVO.natureOfCompany}</td>
+                            </tr>
+                            <tr>
+                                <td>Legal Person/ Director</td>
+                                <td colSpan={3} className={'ant-value-left'}>{CreditInfoVO.corporation}</td>
+                                <td>Industry</td>
+                                <td colSpan={3} className={'ant-value-left'}>{CreditInfoVO.industryName}</td>
+                            </tr>
+                            <tr>
+                                <td>Credit Standing</td>
+                                <td colSpan={3} className={'ant-value-left'}>{CreditInfoVO.creditStanding}</td>
+                                <td>Position in Industry</td>
+                                <td colSpan={3} className={'ant-value-left'}>{CreditInfoVO.positionIndustry}</td>
+                            </tr>
+                            <tr>
+                                <td>Registered Capital</td>
+                                <td className={'ant-value-left'}>
+                                    {CreditInfoVO.registeredCapital}
+                                    <span className={'ant-span-unit'}> {CreditInfoVO.registeredCapital ? '(10K CNY)' : null}</span>
+                                </td>
+                                <td>Paid-in Capital</td>
+                                <td className={'ant-value-left'}>
+                                    {CreditInfoVO.paidInCapital}
+                                    <span className={'ant-span-unit'}> {CreditInfoVO.paidInCapital ? '(10K CNY)' : null}</span>
+                                </td>
+                                <td>Established Date</td>
+                                <td className={'ant-value-left'}>{moment(CreditInfoVO.establishedDate).format('YYYY-MM-DD')}</td>
+                                <td>Annual Revenue</td>
+                                <td className={'ant-value-left'}>
+                                    {CreditInfoVO.annualRevenue}
+                                    <span className={'ant-span-unit'}> {CreditInfoVO.annualRevenue ? '(10K CNY)' : null}</span>
+                                </td>
+                            </tr>
 
-                        {/*// TODO: 第六至七行 */}
-                        <tr className={'ant-credit-tr-dark'}>
-                            <td rowSpan={2}>Cooperation <br/>Review</td>
-                            <td>In cooperation time</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                            <td>Business Type</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                            <td>Our Team</td>
-                            <td colSpan={3} className={'ant-value-left'}>{' '}</td>
-                        </tr>
-                        <tr className={'ant-credit-tr-dark'}>
-                            <td>Remark</td>
-                            <td colSpan={7} className={'ant-value-left'}>{' '}</td>
-                        </tr>
+                            {/*// TODO: 第六至七行 */}
+                            <tr className={'ant-credit-tr-dark'}>
+                                <td rowSpan={2}>Cooperation <br/>Review</td>
+                                <td>In cooperation time</td>
+                                <td className={'ant-value-left'}>{CreditInfoVO.cooperationTime}</td>
+                                <td>Business Type</td>
+                                <td className={'ant-value-left'}>{CreditInfoVO.businessType}</td>
+                                <td>Our Team</td>
+                                <td colSpan={3} className={'ant-value-left'}>{CreditInfoVO.teams}</td>
+                            </tr>
+                            <tr className={'ant-credit-tr-dark'}>
+                                <td>Remark</td>
+                                <td colSpan={7} className={'ant-value-left'}>{CreditInfoVO.cooperationRemark}</td>
+                            </tr>
 
-                        {/*// TODO: 第八至九行 */}
-                        <tr>
-                            <td rowSpan={2}>Last year (Summary)</td>
-                            <td>Payment on credit</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                            <td>Credit Line</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                            <td>Credit Days</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                            <td>Actual Credit Days</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                        </tr>
-                        <tr>
-                            <td>Shipment Volume</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                            <td>Annual Revenue</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                            <td>Gross Profit</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                            <td>Gross Profit Rate</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                        </tr>
+                            {/*// TODO: 第八至九行 */}
+                            <tr>
+                                <td rowSpan={2}>Last year (Summary)</td>
+                                <td>Payment On Credit</td>
+                                <td className={'ant-value-left'}>{CreditInfoVO.lastYearPaymentOnCredit}</td>
+                                <td>Credit Line</td>
+                                <td className={'ant-value-left'}>
+                                    {CreditInfoVO.lastYearCreditLine}
+                                    <span className={'ant-span-unit'}> {CreditInfoVO.lastYearCreditLine ? '(10K CNY)' : null}</span>
+                                </td>
+                                <td>Credit Days</td>
+                                <td className={'ant-value-left'}>{CreditInfoVO.lastYearCreditDays}</td>
+                                <td>Actual Credit Days</td>
+                                <td className={'ant-value-left'}>{CreditInfoVO.lastYearActualCreditDays}</td>
+                            </tr>
+                            <tr>
+                                <td>Shipment Volume</td>
+                                <td className={'ant-value-left'}>{CreditInfoVO.lastYearTotalShipmentVolume}</td>
+                                <td>Annual Revenue</td>
+                                <td className={'ant-value-left'}>
+                                    {CreditInfoVO.lastYearAnnualRevenue}
+                                    <span className={'ant-span-unit'}> {CreditInfoVO.lastYearAnnualRevenue ? '(10K CNY)' : null}</span>
+                                </td>
+                                <td>Gross Profit</td>
+                                <td className={'ant-value-left'}>
+                                    {CreditInfoVO.lastYearGrossProfit}
+                                    <span className={'ant-span-unit'}> {CreditInfoVO.lastYearGrossProfit ? '(10K CNY)' : null}</span>
+                                </td>
+                                <td>Gross Profit Rate</td>
+                                <td className={'ant-value-left'}>
+                                    {CreditInfoVO.lastYearMarginProfit ? (Math.round(CreditInfoVO.lastYearMarginProfit * 100) / 100).toFixed(2) + '%' : null}
+                                </td>
+                            </tr>
 
-                        {/*// TODO: 第十行 */}
-                        <tr className={'ant-credit-tr-dark'}>
-                            <td>This year (Estimate)</td>
-                            <td>Shipment Volume</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                            <td>Annual Revenue</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                            <td>Gross Profit</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                            <td>Gross Profit Rate</td>
-                            <td className={'ant-value-left'}>{' '}</td>
-                        </tr>
+                            {/*// TODO: 第十行 */}
+                            <tr className={'ant-credit-tr-dark'}>
+                                <td>This year (Estimate)</td>
+                                <td>Shipment Volume</td>
+                                <td className={'ant-value-left'}>{CreditInfoVO.estimatedTotalShipmentVolume}</td>
+                                <td>Annual Revenue</td>
+                                <td className={'ant-value-left'}>
+                                    {CreditInfoVO.estimatedAnnualRevenue}
+                                    <span className={'ant-span-unit'}> {CreditInfoVO.estimatedAnnualRevenue ? '(10K CNY)' : null}</span>
+                                </td>
+                                <td>Gross Profit</td>
+                                <td className={'ant-value-left'}>
+                                    {CreditInfoVO.estimatedGrossProfit}
+                                    <span className={'ant-span-unit'}> {CreditInfoVO.estimatedGrossProfit ? '(10K CNY)' : null}</span>
+                                </td>
+                                <td>Gross Profit Rate</td>
+                                <td className={'ant-value-left'}>
+                                    {CreditInfoVO.estimatedMarginProfit ? (Math.round(CreditInfoVO.estimatedMarginProfit * 100) / 100).toFixed(2) + '%' : null}
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                 </ProCard>
 
-                <ProCard title={'Credit Assessment'} className={'ant-card ant-credit-result-table'}>
+                <ProCard
+                    className={'ant-card ant-credit-result-table'}
+                    title={'Credit Assessment'}
+                    headerBordered
+                    collapsible
+                >
                     <Table
                         rowKey={'id'}
                         bordered={true}
                         pagination={false}
                         dataSource={ScoreData}
                         columns={COLUMNS_CREDIT_SCORE}
-                        className={'ant-pro-table-edit'}
+                        className={'ant-pro-table-edit ant-pro-table-credit'}
                     />
                     <Row gutter={24} className={'ant-row-score'}>
                         <Col span={24}>
                             <label>Assessment Results————</label>
                             <span>
                                 <Space>
-                                    <Space>Score: {CreditInfoVO.totalScore}</Space>
-                                    <label><Space>Credit Level: {CreditInfoVO.creditLevel}</Space></label>
+                                    <Space>Score: <b>{CreditInfoVO.totalScore || null}</b></Space>
+                                    <label><Space>Credit Level: <b>{CreditInfoVO.creditLevel}</b></Space></label>
                                 </Space>
                             </span>
                         </Col>
                     </Row>
                 </ProCard>
 
-                <ProCard title={'Credit Approval'} className={'ant-card'}>
+                <ProCard
+                    className={'ant-card'}
+                    title={'Credit Approval'}
+                    headerBordered
+                    collapsible
+                >
                     {/* 信控额度显示 */}
-                    <Row gutter={24}>
-                        <Col span={5}>
-                            <Space>
+                    <Row gutter={rowGrid}>
+                        <Col xs={24} sm={24} md={12} lg={9} xl={6} xxl={5}>
+                            <Space className={'ant-credit-text'}>
                                 <label>Credit Line : </label>
-                                <span className={'ant-credit-line-days'}> 10 </span>
-                                <span>  (10K CNY) </span>
+                                <span className={'ant-credit-line-days'}>{CreditInfoVO.creditLine}</span>
+                                <span className={'ant-span-unit'}> {CreditInfoVO.creditLine ? '(10K CNY)' : null}</span>
                             </Space>
                         </Col>
-                        <Col span={5}>
-                            <Space>
+                        <Col xs={24} sm={24} md={12} lg={7} xl={4} xxl={3}>
+                            <Space className={'ant-credit-text'}>
                                 <label>Credit Days : </label>
-                                <span className={'ant-credit-line-days'}> 60 </span>
+                                <span className={'ant-credit-line-days'}> {CreditInfoVO.creditDays} </span>
                             </Space>
                         </Col>
-                        <Col span={7}>
-                            <Space>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={7} xxl={5}>
+                            <Space className={'ant-credit-text'}>
                                 <label>Period of credit : </label>
-                                <label>{}</label>
+                                <span>{CreditInfoVO.cooperationTime}</span>
                             </Space>
                         </Col>
-                        <Col span={7}>
-                            <Space>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={7} xxl={10}>
+                            <Space className={'ant-credit-text'}>
                                 <label>Business Line : </label>
-                                <label>{}</label>
+                                <span>{CreditInfoVO.businessLineName}</span>
                             </Space>
                         </Col>
                     </Row>
 
                     {/* 审批操作 */}
                     <Row gutter={24} className={'ant-credit-approval-operate'}>
-                        <Col span={2}>
+                        <Col xs={24} sm={24} md={24} lg={4} xl={3} xxl={3} className={'ant-credit-approval-operate-left'}>
                             <div
                                 className={creditApprovalState === 'agree' ? 'ant-credit-approval-state-choose' : ''}
                                 onClick={() => handleOperateCredit('agree')}
@@ -274,13 +413,13 @@ const CreditApproval: React.FC<RouteChildrenProps> = () => {
                                 <CloseOutlined/> Disagree
                             </div>
                         </Col>
-                        <Col span={22}>
+                        <Col xs={24} sm={24} md={24} lg={20} xl={21} xxl={21}>
                             <ProFormTextArea
                                 required
                                 name='remark'
                                 label='Remark'
                                 placeholder=''
-                                fieldProps={{rows: 3}}
+                                fieldProps={{rows: 4}}
                                 rules={[{required: true, message: 'Remark'}, {max: 500, message: 'length: 500'}]}
                             />
                         </Col>
@@ -531,7 +670,13 @@ const CreditApproval: React.FC<RouteChildrenProps> = () => {
                     </Row>
                 </ProCard>
 
-                <FooterToolbar extra={<Button onClick={() => history.push('/manager/credit')}>Back</Button>}>
+                <FooterToolbar
+                    extra={
+                        <Button onClick={() => history.push({pathname: '/manager/credit'})} icon={<ArrowLeftOutlined/>}>
+                            Back
+                        </Button>
+                    }
+                >
                     {/*<Button type={'primary'} htmlType={'submit'}>提交</Button>*/}
                 </FooterToolbar>
             </ProForm>
