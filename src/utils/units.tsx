@@ -847,7 +847,7 @@ export function getCreditScore (target: any, op_node: number, op_value: any) {
             percentage = 0.2;
             score = op_value;
             break;
-        case 5: // TODO: 年营收
+        case 5: // TODO: 月营收
             percentage = 0.2;
             if (op_value <= 100000) {
                 score = 1;
@@ -863,15 +863,15 @@ export function getCreditScore (target: any, op_node: number, op_value: any) {
             break;
         case 6: // TODO: 利润率
             percentage = 0.2;
-            if (op_value <= 1) {
+            if (op_value <= 0) {
                 score = 1;
-            } else if (1 < op_value && op_value <= 3) {
+            } else if (0 < op_value && op_value <= 2) {
                 score = 2;
-            } else if (4 < op_value && op_value <= 5) {
+            } else if (2 < op_value && op_value <= 5) {
                 score = 3;
-            } else if (6 < op_value && op_value <= 7) {
+            } else if (5 < op_value && op_value <= 8) {
                 score = 4;
-            } else if (7 < op_value) {
+            } else if (8 < op_value) {
                 score = 5;
             }
             break;

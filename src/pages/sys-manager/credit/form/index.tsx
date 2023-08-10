@@ -27,12 +27,10 @@ import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 import moment from 'moment'
 import {ArrowLeftOutlined, SaveOutlined, SendOutlined} from "@ant-design/icons";
 
-export type LocationState = Record<string, unknown>;
 const FormItem = Form.Item;
 
-const CreditForm: React.FC<RouteChildrenProps> = (props) => {
+const CreditForm: React.FC<RouteChildrenProps> = () => {
     const params: any = useParams();
-    const {location: {state}} = props;
     const [form] = Form.useForm();
     const formRef = useRef<ProFormInstance>();
     const id = atob(params?.id);
@@ -62,8 +60,8 @@ const CreditForm: React.FC<RouteChildrenProps> = (props) => {
     const [loading, setLoading] = useState<boolean>(false);
     const [CreditInfoVO, setCreditInfoVO] = useState<any>({});
     const [ScoreData, setScoreData] = useState<any[]>(CREDIT_ASSESSMENT_SCORE_DATA);
-    const [lastYearMarginProfit, setLastYearMarginProfit] = useState<number>(0);
-    const [estimatedMarginProfit, setGrossProfitMargin] = useState<number>(0);
+    const [lastYearMarginProfit, setLastYearMarginProfit] = useState<any>(0);
+    const [estimatedMarginProfit, setGrossProfitMargin] = useState<any>(0);
 
     /**
      * @Description: TODO: 获取 信控 详情
@@ -163,8 +161,8 @@ const CreditForm: React.FC<RouteChildrenProps> = (props) => {
                 case 4: // TODO: 信用等级
                     op_value = result.creditStanding;
                     break;
-                case 5: // TODO: 本年度预计应收
-                    op_value = keepDecimal(result.estimatedAnnualRevenue*needDivided);
+                case 5: // TODO: 预计月收入
+                    op_value = keepDecimal(result.estimatedAnnualRevenue*needDivided) / 12;
                     break;
                 case 6: // TODO: 本年度预计营收毛利率
                     if (result.estimatedGrossProfit && result.estimatedAnnualRevenue) {
@@ -184,6 +182,7 @@ const CreditForm: React.FC<RouteChildrenProps> = (props) => {
         });
         setScoreData(newData);
         result.creditLevel = getCreditLevel(result.totalScore);
+        result.totalScore = result.totalScore.toFixed(1);
         return result;
     }
 
@@ -234,7 +233,7 @@ const CreditForm: React.FC<RouteChildrenProps> = (props) => {
             // TODO: 计算当年毛利率
             if (annualRevenue && grossProfit) {
                 const profitMargin = keepDecimal(Number(grossProfit) / Number(annualRevenue) * 100);
-                setLastYearMarginProfit(profitMargin);
+                setLastYearMarginProfit((Math.round(profitMargin * 100) / 100).toFixed(2));
             }
         }
     }
@@ -255,13 +254,13 @@ const CreditForm: React.FC<RouteChildrenProps> = (props) => {
         if (['positionIndustry', 'creditStanding'].includes(fieldName)) {
             target.score = val;
             CreditInfoVO[`score${target.id}`] = target.score;
-            target = getCreditScore(target, fieldName === 'positionIndustry' ? 4 : 3, val);
+            target = getCreditScore(target, fieldName === 'positionIndustry' ? 3 : 4, val);
         } else if (['estimatedAnnualRevenue', 'estimatedGrossProfit'].includes(fieldName)) {
             const estimatedAnnualRevenue = form.getFieldValue('estimatedAnnualRevenue');
             const estimatedGrossProfit = form.getFieldValue('estimatedGrossProfit');
-            // TODO: 年营业额
+            // TODO: 月营业额
             if (estimatedAnnualRevenue) {
-                target = getCreditScore(target, 5, Number(estimatedAnnualRevenue) * 10000);
+                target = getCreditScore(target, 5, Number(estimatedAnnualRevenue) * 10000 / 12);
                 CreditInfoVO.score5 = target.score;
             }
             // TODO: 计算当年毛利率
@@ -277,7 +276,7 @@ const CreditForm: React.FC<RouteChildrenProps> = (props) => {
                     // TODO: 否则直接计算毛利率
                     target = getCreditScore(target, 6, profitMargin);
                 }
-                setGrossProfitMargin(profitMargin);
+                setGrossProfitMargin((Math.round(profitMargin * 100) / 100).toFixed(2));
             }
         }
         // TODO: 单独拿到成绩，用来评定客户信控等级
@@ -331,6 +330,7 @@ const CreditForm: React.FC<RouteChildrenProps> = (props) => {
         };
         delete saveResult.cooperationTime;
         delete saveResult.creditExpiryTime;
+        delete saveResult.lastYearPaymentOnCreditNumber;
         delete saveResult.businessLineType;
         let result: API.Result;
         if (id === '0') {
@@ -530,7 +530,7 @@ const CreditForm: React.FC<RouteChildrenProps> = (props) => {
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
                             <FormItem label={'Gross Profit Rate'} className={'ant-form-span-center'}>
-                                <span> {lastYearMarginProfit || CreditInfoVO.lastYearMarginProfit} % </span>
+                                <span> {lastYearMarginProfit || (Math.round(CreditInfoVO.lastYearMarginProfit * 100) / 100).toFixed(2)} % </span>
                             </FormItem>
                         </Col>
                     </Row>
@@ -592,7 +592,7 @@ const CreditForm: React.FC<RouteChildrenProps> = (props) => {
                                         onStep={handleLastYearPaymentOnCreditNumber}
                                     />
                                 </FormItem>
-                                <label>times</label>
+                                <label>Times</label>
                             </Space>
                         </Col>
                     </Row>
@@ -618,17 +618,6 @@ const CreditForm: React.FC<RouteChildrenProps> = (props) => {
                             />
                         </Col>
                         <Col xs={23} sm={23} md={9} lg={6} xl={5} xxl={4}>
-                            {/*<ProFormText
-                                required
-                                placeholder=''
-                                name='estimatedAnnualRevenue'
-                                label='Annual Revenue'
-                                rules={[{required: true, message: 'Annual Revenue'}, {max: 12, message: 'length: 12'}]}
-                                fieldProps={{
-                                    suffix,
-                                    onChange: (e: any) => handleScoreChange(e?.target?.value, 'estimatedAnnualRevenue', 5)
-                                }}
-                            />*/}
                             <FormItemInput
                                 required
                                 placeholder=''
@@ -643,17 +632,6 @@ const CreditForm: React.FC<RouteChildrenProps> = (props) => {
                             />
                         </Col>
                         <Col xs={23} sm={23} md={9} lg={6} xl={5} xxl={4}>
-                            {/*<ProFormText
-                                required
-                                placeholder=''
-                                name='estimatedGrossProfit'
-                                label='Gross Profit'
-                                rules={[{required: true, message: 'Gross Profit'}, {max: 12,message: 'length: 12'}]}
-                                fieldProps={{
-                                    suffix,
-                                    onChange: (e: any) => handleScoreChange(e?.target?.value, 'estimatedGrossProfit', 6)
-                                }}
-                            />*/}
                             <FormItemInput
                                 required
                                 placeholder=''
@@ -669,7 +647,7 @@ const CreditForm: React.FC<RouteChildrenProps> = (props) => {
                         </Col>
                         <Col xs={23} sm={23} md={6} lg={8} xl={5} xxl={4}>
                             <FormItem label={'Gross Profit Rate'} className={'ant-form-span-center'}>
-                                <span> {estimatedMarginProfit || CreditInfoVO.estimatedMarginProfit} % </span>
+                                <span> {estimatedMarginProfit || (Math.round(CreditInfoVO.estimatedMarginProfit * 100) / 100).toFixed(2)} % </span>
                             </FormItem>
                         </Col>
                     </Row>
@@ -781,15 +759,7 @@ const CreditForm: React.FC<RouteChildrenProps> = (props) => {
 
                 <FooterToolbar
                     extra={
-                        <Button
-                            onClick={() => history.push({
-                                pathname: '/manager/credit',
-                                state: {
-                                    searchParams: state ? (state as LocationState)?.searchParams : '',
-                                },
-                            })}
-                            icon={<ArrowLeftOutlined/>}
-                        >
+                        <Button onClick={() => history.push({pathname: '/manager/credit'})} icon={<ArrowLeftOutlined/>}>
                             Back
                         </Button>
                     }
