@@ -1,22 +1,66 @@
 import React from 'react';
-import {Col, Divider, Row, Space} from "antd";
+import {Col, Divider, Form, Row, Space} from "antd";
 import {rowGrid} from "@/utils/units";
 import {
     ProCard,
+    ProFormDateTimePicker ,
     ProFormDatePicker,
     ProFormSelect,
     ProFormText
 } from "@ant-design/pro-components";
-import {getUserID} from "@/utils/auths";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
+import SearchTable from '@/components/SearchTable'
 
 interface Props {
     title: string,
+    form: any,
+    SeaExportInfo: any,
 }
 
 const Basic: React.FC<Props> = (props) => {
-    const  {} = props;
+    const {form, SeaExportInfo} = props;
     //endregion
+
+    /**
+     * @Description: TODO:
+     * @author XXQ
+     * @date 2023/7/26
+     * @param filedName 操作的数据字段
+     * @param val       修改的值
+     * @param option    其他数据
+     * @returns
+     */
+    const handleChange = (filedName: string, val: any, option?: any) => {
+        console.log(val, filedName, option);
+        const setValueObj: any = {[filedName]: val};
+        switch (filedName) {
+            case 'bookingAgentId':
+                setValueObj.bookingAgentNameCn = option?.nameFullCn;
+                setValueObj.bookingAgentNameEn = option?.nameFullEn || option?.nameFullCn;
+                setValueObj.bookingAgentOracleId = option?.oracleCustomerCode;
+                break;
+            case 'carrierId':
+                setValueObj.carrierNameCn = option?.nameFullCn;
+                setValueObj.carrierNameEn = option?.nameFullEn || option?.nameFullCn;
+                setValueObj.carrierOracleId = option?.oracleCustomerCode;
+                break;
+            case 'destinationAgentId':
+                setValueObj.destinationAgentNameCn = option?.nameFullCn;
+                setValueObj.destinationAgentNameEn = option?.nameFullEn || option?.nameFullCn;
+                setValueObj.destinationAgentOracleId = option?.oracleCustomerCode;
+                break;
+            case 'shippingAgentId':
+                setValueObj.shippingAgentNameCn = option?.nameFullCn;
+                setValueObj.shippingAgentNameEn = option?.nameFullEn || option?.nameFullCn;
+                setValueObj.shippingAgentOracleId = option?.oracleCustomerCode;
+                break;
+            case 'placeOfIssueCode':
+                setValueObj.placeOfIssueNameEn = option?.nameFullCn;
+                break;
+            default: break;
+        }
+        form.setFieldsValue(setValueObj);
+    }
 
     return (
         <ProCard
@@ -45,26 +89,24 @@ const Basic: React.FC<Props> = (props) => {
                     <SearchProFormSelect
                         qty={5}
                         isShowLabel={true}
-                        required={false}
                         label="Booking Agent"
                         id={'bookingAgentId'}
                         name={'bookingAgentId'}
-                        url={'/apiLocal/MCommon/GetCTNameShortByStrOrType'}
-                        // valueObj={{value: Carrier?.BookingAgentID, label: Carrier?.BookingAgentName}}
-                        query={{UserID: getUserID(), CTType: 2, CTTypeItemID: 4, SystemID: 4}}
-                        // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
+                        filedValue={'id'} filedLabel={'nameFullEn'}
+                        query={{branchId: '1665596906844135426', buType: 1}}
+                        url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
+                        handleChangeData={(val: any, option: any) => handleChange('bookingAgentId', val, option)}
                     />
                     <SearchProFormSelect
                         qty={5}
                         isShowLabel={true}
-                        required={false}
                         label="Destination Agent"
                         id={'destinationAgentId'}
                         name={'destinationAgentId'}
-                        url={'/apiLocal/MCommon/GetCTNameShortByStrOrType'}
-                        // valueObj={{value: Carrier?.PODAgentID, label: Carrier?.PODAgentName}}
-                        query={{UserID: getUserID(), CTType: 2, CTTypeItemID: 7, SystemID: 4}}
-                        // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
+                        filedValue={'id'} filedLabel={'nameFullEn'}
+                        query={{branchId: '1665596906844135426', buType: 1}}
+                        url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
+                        handleChangeData={(val: any, option: any) => handleChange('destinationAgentId', val, option)}
                     />
                 </Col>
                 {/* 船公司、船代 */}
@@ -72,31 +114,24 @@ const Basic: React.FC<Props> = (props) => {
                     <SearchProFormSelect
                         qty={5}
                         isShowLabel={true}
-                        required={false}
                         label="Shipping Line (Carrier)"
                         id={'carrierId'}
                         name={'carrierId'}
-                        url={'/apiLocal/MCommon/GetCTNameShortByStrOrType'}
-                        // valueObj={{value: Carrier?.FreighterID, label: Carrier?.FreighterName}}
-                        query={{UserID: getUserID(), CTType: 2, CTTypeItemID: 5, SystemID: 4}}
-                        // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
+                        filedValue={'id'} filedLabel={'nameFullEn'}
+                        query={{branchId: '1665596906844135426', buType: 1}}
+                        url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
+                        handleChangeData={(val: any, option: any) => handleChange('carrierId', val, option)}
                     />
                     <SearchProFormSelect
                         qty={5}
                         isShowLabel={true}
-                        required={false}
                         label="Shipping Agent"
                         id={'shippingAgentId'}
                         name={'shippingAgentId'}
-                        url={'/apiLocal/MCommon/GetCTNameShortByStrOrType'}
-                        // valueObj={{value: Carrier?.ShippingName, label: Carrier?.ShippingName}}
-                        /*query={{
-                            UserID: getUserID(),
-                            CTType: 2,
-                            CTTypeItemID: 5,
-                            SystemID: 4
-                        }}*/
-                        // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
+                        filedValue={'id'} filedLabel={'nameFullEn'}
+                        query={{branchId: '1665596906844135426', buType: 1}}
+                        url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
+                        handleChangeData={(val: any, option: any) => handleChange('shippingAgentId', val, option)}
                     />
                 </Col>
                 <Col xs={0} sm={0} md={0} lg={0} xl={1} xxl={1} flex="auto" style={{ textAlign: "center" }}>
@@ -104,12 +139,7 @@ const Basic: React.FC<Props> = (props) => {
                 </Col>
                 {/* 业务完成日 */}
                 <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={3} className={'completeDate'}>
-                    <ProFormDatePicker
-                        width="md"
-                        name="LockDate"
-                        label="COMPLETE DATE"
-                        placeholder=""
-                    />
+                    <ProFormDatePicker width="md" name="complateDate" label="COMPLETE DATE" placeholder=""/>
                 </Col>
             </Row>
 
@@ -117,12 +147,12 @@ const Basic: React.FC<Props> = (props) => {
                 {/* 船名、船公司约号 */}
                 <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
                     <ProFormText
-                        name="VesselName"
+                        name="vesselName"
                         label="Vessel Name"
                         placeholder=""
                     />
                     <ProFormText
-                        name="ContactNum"
+                        name="serviceContractNum"
                         label="Service Contract No."
                         placeholder=""
                     />
@@ -130,12 +160,12 @@ const Basic: React.FC<Props> = (props) => {
                 {/* 航次、码头 */}
                 <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
                     <ProFormText
-                        name="VoyageNum"
+                        name="voyageName"
                         label="Voyage"
                         placeholder=""
                     />
                     <ProFormText
-                        name="TERMINAL"
+                        name="wharf"
                         label="Wharf"
                         placeholder=""
                     />
@@ -147,45 +177,48 @@ const Basic: React.FC<Props> = (props) => {
                 <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={3}>
                     <ProFormDatePicker
                         width="md"
-                        name="ETD"
+                        name="etd"
                         label="ETD"
                         placeholder=""
                     />
-                    <ProFormDatePicker
+                    <ProFormDateTimePicker
                         width="md"
-                        name="CutCustoms"
+                        name="closingTime"
                         label="Closing Time"
                         placeholder=""
+                        fieldProps={{format: 'YYYY-MM-DD hh:mm'}}
                     />
                 </Col>
                 {/* ATD、截港/截重柜 */}
                 <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={3}>
                     <ProFormDatePicker
                         width="md"
-                        name="ATD"
+                        name="atd"
                         label="ATD"
                         placeholder=""
                     />
-                    <ProFormDatePicker
+                    <ProFormDateTimePicker
                         width="md"
-                        name="CutVGM"
+                        name="cyClosingDate"
                         label="CY Closing DATE"
                         placeholder=""
+                        fieldProps={{format: 'YYYY-MM-DD hh:mm'}}
                     />
                 </Col>
                 {/* ETA、截提单补料 */}
                 <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={3}>
                     <ProFormDatePicker
                         width="md"
-                        name="ETAPOD"
+                        name="eta"
                         label="ETA"
                         placeholder=""
                     />
-                    <ProFormDatePicker
+                    <ProFormDateTimePicker
                         width="md"
-                        name="CutSingle"
+                        name="siCutOffTime"
                         label="SI CUT OFF Time"
                         placeholder=""
+                        fieldProps={{format: 'YYYY-MM-DD hh:mm'}}
                     />
                 </Col>
                 <Col xs={0} sm={0} md={0} lg={0} xl={0} xxl={1} flex="auto" style={{ textAlign: "center" }}>
@@ -195,42 +228,60 @@ const Basic: React.FC<Props> = (props) => {
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={5}>
                     <div className={'proFormTextContainer'}>
                         <ProFormSelect
-                            name="SignMethodID"
+                            name="blTypeId"
                             label="B/L Type"
-                            initialValue={2}
+                            style={{minWidth: 150}}
                             options={[
                                 {label: 'Original B/L', value: 1},
                                 {label: 'Telex Release', value: 2},
                                 {label: 'Sea Waybill', value: 3},
                             ]}
                         />
-                        <ProFormSelect
-                            name="SignBillQTY"
-                            label="B/L QTY"
-                            initialValue={3}
-                            options={[
-                                {label: '0', value: 0},
-                                {label: '1', value: 1},
-                                {label: '2', value: 2},
-                                {label: '3', value: 3},
-                            ]}
-                        />
+                        <ProFormText label="B/L QTY" name={'blQty'}/>
                     </div>
-                    <label style={{ display: 'block', marginBottom: 8 }}>Place and Date of Issue</label>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
-                        <SearchProFormSelect
-                            qty={5}
-                            isShowLabel={true}
-                            required={false}
-                            id={'IssuePlaceID'}
-                            name={'IssuePlaceID'}
-                            url={'/apiLocal/MCommon/GetCityByStr/'}
-                            // valueObj={{value: HouseBill?.IssuePlaceID, label: HouseBill?.IssuePlaceName}}
-                            // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
-                        />
+                        <Form.Item name={'placeOfIssueCode'} label={'Place and Date of Issue'}>
+                            <SearchTable
+                                qty={10}
+                                rowKey={'code'}
+                                modalWidth={950}
+                                showHeader={true}
+                                title={'Payable AT'}
+                                text={SeaExportInfo.placeOfIssueNameEn}
+                                url={"/apiBase/sea/querySeaCommon"}
+                                handleChangeData={(val: any, option: any) => handleChange('payableAtCode', val, option)}
+                            />
+                        </Form.Item>
                         <span className={'siteSpaceSpan'}/>
-                        <ProFormDatePicker name="IssueDate" placeholder=""/>
+                        <ProFormDatePicker name="placeOfDate" placeholder=""/>
                     </Space>
+                </Col>
+            </Row>
+
+            <Row gutter={24}>
+                <Col span={24}>
+                    {/* // TODO: 订舱代理 */}
+                    <ProFormText hidden={true} width="md" name={'bookingAgentNameEn'}/>
+                    <ProFormText hidden={true} width="md" name={'bookingAgentNameCn'}/>
+                    <ProFormText hidden={true} width="md" name={'bookingAgentOracleId'}/>
+
+                    {/* // TODO: 船公司 */}
+                    <ProFormText hidden={true} width="md" name={'carrierNameEn'}/>
+                    <ProFormText hidden={true} width="md" name={'carrierNameCn'}/>
+                    <ProFormText hidden={true} width="md" name={'carrierOracleId'}/>
+
+                    {/* // TODO: 目的港代理 */}
+                    <ProFormText hidden={true} width="md" name={'destinationAgentNameEn'}/>
+                    <ProFormText hidden={true} width="md" name={'destinationAgentNameCn'}/>
+                    <ProFormText hidden={true} width="md" name={'destinationAgentOracleId'}/>
+
+                    {/* // TODO: 船代 */}
+                    <ProFormText hidden={true} width="md" name={'shippingAgentNameEn'}/>
+                    <ProFormText hidden={true} width="md" name={'shippingAgentNameCn'}/>
+                    <ProFormText hidden={true} width="md" name={'shippingAgentOracleId'}/>
+
+                    {/* // TODO: 签收地点 */}
+                    <ProFormText hidden={true} width="md" name={'placeOfIssueNameEn'}/>
                 </Col>
             </Row>
         </ProCard>

@@ -18,29 +18,24 @@ import ParseExcel from '@/components/ParseExcel'
 import {useModel} from '@@/plugin-model/useModel'
 import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 
+const FormItem = Form.Item;
+
 interface Props {
     type?: string;
     form?: any;
-    CTNActualList?: APIModel.CTNActualList[];
-    containerList: APIModel.ContainerList[];
-    cargoInfo: any;
-    handleCTNEdit: (index: number, rowID: any, filedName: string, val: any, option?: any, ctnArr?: APIModel.CTNActualList[]) => void;
-    handleDelete: () => void;
+    containerList?: any[];
 }
 
-const FormItem = Form.Item;
-
+const cargoInfo: any = {qty: 168, grossWeight: 1254.8, measurement: 3245.6};
 
 const CTNLoading: React.FC<Props> = (props) => {
     const {
         type, form,
-        CTNActualList, containerList, cargoInfo,
-        handleCTNEdit, handleDelete
     } = props;
 
     const {queryDictCommonReturn} = useModel('common', (res: any) => ({queryDictCommonReturn: res.queryDictCommonReturn,}))
 
-    const [cTNActualList, setCTNActualList] = useState<APIModel.CTNActualList[]>(CTNActualList || []);
+    const [cTNActualList, setCTNActualList] = useState<APIModel.CTNActualList[]>([]);
     const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
 
     const [loadingSummary, setLoadingSummary] = useState<any>({qty: 0, grossWeight: 0, measurement: 0});
@@ -73,14 +68,20 @@ const CTNLoading: React.FC<Props> = (props) => {
         if (['qty', 'grossWeight', 'measurement'].includes(filedName)) {
             getCtnBalance(newData);
         }
+        form.setFieldsValue({'containersLoadingDetailEntityList': newData});
         setCTNActualList(newData);
-        form.setFieldsValue({'containerList': newData});
-        handleCTNEdit(index, rowID, filedName, val, option, newData);
     }
 
     const handleAdd = () => {
         const newData: APIModel.CTNActualList = {id: ID_STRING(),};
+        form.setFieldsValue({'containersLoadingDetailEntityList': newData});
         setCTNActualList([...cTNActualList, newData]);
+    };
+
+    const handleDelete = () => {
+        const newData = cTNActualList.slice(0).filter((item: any)=> !selectedRowIDs.includes(item.id));
+        form.setFieldsValue({'containersLoadingDetailEntityList': newData});
+        setCTNActualList(newData);
     };
 
     //region TODO: 引入预配箱信息、把货信息的 【件、重、尺】 均分到每个箱中
@@ -90,7 +91,8 @@ const CTNLoading: React.FC<Props> = (props) => {
      * @date 2023/8/1
      * @returns
      */
-    function handlePreBooking() {
+    const handlePreBooking = ()=> {
+        const containerList: any[] = form.getFieldValue('preBookingContainersEntityList') || [];
         if (containerList?.length > 0) {
             let actualArr: APIModel.CTNActualList[] = [];
             containerList.map((item: any) => {
@@ -156,7 +158,7 @@ const CTNLoading: React.FC<Props> = (props) => {
                 setValueObj[`measurement_table_${item.id}`] = item.measurement;
                 return item;
             });
-            setValueObj['containerList'] = actualArr;
+            setValueObj['containersLoadingDetailEntityList'] = actualArr;
             getCtnBalance(actualArr);
             setCTNActualList(actualArr);
             setLoadingSummary(cargoInfo);
@@ -243,7 +245,7 @@ const CTNLoading: React.FC<Props> = (props) => {
                             if (targetArray?.length > 0) {
                                 setCTNActualList(targetArray);
                                 getCtnBalance(targetArray);
-                                form.setFieldsValue({'containerList': targetArray});
+                                form.setFieldsValue({'containersLoadingDetailEntityList': targetArray});
                             }
                         }
                     } else {
@@ -479,7 +481,7 @@ const CTNLoading: React.FC<Props> = (props) => {
                     />
 
                     {/* // TODO: 用于保存时，获取数据用 */}
-                    <FormItem hidden={true} name={'containerList'} />
+                    <FormItem hidden={true} name={'containersLoadingDetailEntityList'} />
                 </Col>
             </Row>
             <Row gutter={24}>

@@ -5,13 +5,15 @@ import {
     querySeaExportInfoAPI,
     querySeaImportInfoAPI
 } from '@/services/smart/job/job-info';
-import {useCallback} from "react";
+import {useCallback, useState} from "react";
 
 
 
 export default () => {
     //region TODO: 业务详情结构表
     //endregion
+
+    const [ServiceTypeList, setServiceTypeList] = useState([]);
 
     // TODO: 单票详情
 
@@ -24,8 +26,11 @@ export default () => {
         if (response.success) {
             response.data.cargoInformationParam = response.data.cargoInformationResult || {};
             response.data.termsParam = response.data.termsResult || {};
+            // TODO: job 的服务信息
+            setServiceTypeList(response?.data?.serviceTypeList || []);
             delete response.data.cargoInformationResult;
             delete response.data.termsResult;
+            delete response.data.service;
         }
         return response;
     }, []);
@@ -70,7 +75,10 @@ export default () => {
     // API URL:https://app.apifox.com/project/2684231/apis/api-98135707
     const addSeaExport = useCallback(async (params: {id: string}) => {
         // TODO: 请求后台 API
-        return await addSeaExportAPI(params);
+        const response: API.Result = await addSeaExportAPI(params);
+        if (response.success) {
+        }
+        return response;
     }, []);
 
     // TODO: 编辑海运进口服务信息
@@ -98,6 +106,8 @@ export default () => {
         queryJobInfo,
         addJob,
         editJob,
+
+        ServiceTypeList,
 
         querySeaExportInfo,
         addSeaExport,

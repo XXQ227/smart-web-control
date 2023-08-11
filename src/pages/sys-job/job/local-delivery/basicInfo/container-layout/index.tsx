@@ -14,13 +14,13 @@ interface Props {
     formCurrent?: any,
     batchNo: string,
     data?: APIModel.BatchData,
-    CTNPlanList?: APIModel.ContainerList[],
+    CTNPlanList?: APIModel.PreBookingList[],
     NBasicInfo: APIModel.NBasicInfo,
 }
 
 const FormItem = Form.Item;
 
-const initialContainerList: APIModel.ContainerList[] = [
+const initialContainerList: APIModel.PreBookingList[] = [
     {
         id: 'ID1',
         ctnModelId: 1,
@@ -47,10 +47,10 @@ const ContainerLayout: React.FC<Props> = (props) => {
         batchNo
     } = props;
 
-    const [containerList, setContainerList] = useState<APIModel.ContainerList[]>(CTNPlanList || initialContainerList);
+    const [containerList, setContainerList] = useState<APIModel.PreBookingList[]>(CTNPlanList || initialContainerList);
     const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
 
-    const columns: ColumnsType<APIModel.ContainerList> = [
+    const columns: ColumnsType<APIModel.PreBookingList> = [
         {
             title: 'SIZE',
             dataIndex: 'ctnModelId',
@@ -160,7 +160,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
             if (selectedRowKeys?.length > 0) disabled = false;
             this.setState({selectedRowKeys, disable: disabled});
         },
-        onChange: (selectedRowKeys: React.Key[], selectedRows: APIModel.ContainerList[]) => {
+        onChange: (selectedRowKeys: React.Key[], selectedRows: APIModel.PreBookingList[]) => {
             console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
         },
         */
@@ -180,7 +180,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
     }
 
     const handleAdd = () => {
-        const newData: APIModel.ContainerList = {
+        const newData: APIModel.PreBookingList = {
             id: ID_STRING(),
             ctnModelId: 0,
             ctnModelName: "",

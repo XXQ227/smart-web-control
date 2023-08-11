@@ -263,9 +263,8 @@ declare namespace APIModel {
         driverName: string;
         receivingContac: string;
         phone: string;
-        containerList?: ContainerList[],
     }
-    type ContainerList = {
+    type PreBookingList = {
         id: any,
         ctnModelId?: number,
         ctnModelName?: string,

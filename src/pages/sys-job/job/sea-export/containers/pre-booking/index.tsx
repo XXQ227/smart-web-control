@@ -15,46 +15,16 @@ import ls from 'lodash'
 interface Props {
     type?: string;
     form?: any;
-    CTNPlanList?: APIModel.ContainerList[];
-    handleRowChange: (index: number, rowID: any, filedName: string, val: any, option?: any) => void;
+    CTNPlanList?: APIModel.PreBookingList[];
+    preBookingList: APIModel.PreBookingList[];
 }
 
 const FormItem = Form.Item;
 
-const initialContainerList: APIModel.ContainerList[] = [
-    {
-        id: 'ID1',
-        ctnModelId: 1,
-        ctnModelName: "20GP",
-        qty: 2,
-        socFlag: false,
-        fclFlag: false,
-        Remark: "ANL YF62423",
-    },
-    {
-        id: 'ID2',
-        ctnModelId: 2,
-        ctnModelName: "40GP",
-        qty: 1,
-        socFlag: true,
-        fclFlag: true,
-        Remark: "CSCLYF85868",
-    },
-    {
-        id: 'ID3',
-        ctnModelId: 5,
-        ctnModelName: "40HQ",
-        qty: 1,
-        socFlag: true,
-        fclFlag: false,
-        Remark: "KMTCYF85912",
-    },
-];
-
 const ProBooking: React.FC<Props> = (props) => {
-    const {type, form, CTNPlanList, handleRowChange} = props;
+    const {type, form, preBookingList} = props;
 
-    const [containerList, setContainerList] = useState<APIModel.ContainerList[]>(CTNPlanList || initialContainerList);
+    const [containerList, setContainerList] = useState<APIModel.PreBookingList[]>(preBookingList);
     const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
 
     /**
@@ -65,21 +35,22 @@ const ProBooking: React.FC<Props> = (props) => {
      * @param rowID
      * @param filedName
      * @param val
+     * @param option
      * @returns
      */
-    function onChange(index: number, rowID: any, filedName: string, val: any) {
-        console.log(index, rowID, filedName, val?.target?.value);
+    function onChange(index: number, rowID: any, filedName: string, val: any, option?: any) {
+        console.log(index, rowID, filedName, val?.target?.value, option);
         const newData: any[] = ls.cloneDeep(containerList);
         const target = newData.find((item: any)=> item.id === rowID) || {};
         target[filedName] = val?.target ? val.target.value : val;
 
         newData.splice(index, 1, target);
         // TODO: 把数据接口给到 FormItem 表单里
-        form.setFieldsValue({preBookingList: newData});
+        form.setFieldsValue({preBookingContainersEntityList: newData});
         setContainerList(newData);
     }
 
-    const preBookingColumns: ColumnsType<APIModel.ContainerList> = [
+    const preBookingColumns: ColumnsType<APIModel.PreBookingList> = [
         {
             title: 'SIZE',
             dataIndex: 'ctnModelId',
@@ -87,9 +58,9 @@ const ProBooking: React.FC<Props> = (props) => {
             className: "textCenter",
             render: (text: any, record, index) =>
                 <FormItem
+                    initialValue={record.ctnModelName}
                     name={`ctnModelId_ctn_table_${record.id}`}
-                    initialValue={record.ctnModelName} required
-                    rules={[{required: true, message: 'SIZE'}]}
+                    required rules={[{required: true, message: 'SIZE'}]}
                 >
                     <SearchModal
                         qty={30}
@@ -175,7 +146,7 @@ const ProBooking: React.FC<Props> = (props) => {
     };
 
     const handleAdd = () => {
-        const newData: APIModel.ContainerList = {
+        const newData: APIModel.PreBookingList = {
             id: ID_STRING(),
             qty: 1,
             socFlag: false,
@@ -223,7 +194,7 @@ const ProBooking: React.FC<Props> = (props) => {
                     />
 
                     {/* // TODO: 用于保存时，获取数据用 */}
-                    <FormItem hidden={true} name={'preBookingList'} />
+                    <FormItem hidden={true} name={'preBookingContainersEntityList'} />
                 </Col>
             </Row>
         </ProCard>

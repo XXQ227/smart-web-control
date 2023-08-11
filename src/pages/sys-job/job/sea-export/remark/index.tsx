@@ -26,7 +26,7 @@ const Remark: React.FC<Props> = (props) => {
                             <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
                                 <ProFormTextArea
                                     placeholder=''
-                                    name="bookingRemarkForAgent"
+                                    name="agentBookingRemark"
                                     label="Booking Remark (for Agent)"
                                     fieldProps={{rows: 4}}
                                 />
@@ -34,7 +34,7 @@ const Remark: React.FC<Props> = (props) => {
                             <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
                                 <ProFormTextArea
                                     placeholder=''
-                                    name="bookingRemarkForCustomer"
+                                    name="customerBookingRemark"
                                     label="Booking Remark (for Customer)"
                                     fieldProps={{rows: 4}}
                                 />
@@ -45,7 +45,7 @@ const Remark: React.FC<Props> = (props) => {
                 <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
                     <ProFormTextArea
                         placeholder=''
-                        name="operationRemarkForSelf"
+                        name="operationRemark"
                         label="Operation Remark (for Self)"
                         fieldProps={{rows: 4}}
                     />

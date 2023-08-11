@@ -14,7 +14,7 @@ interface Props {
     formCurrent?: any,
     batchNo: string,
     data?: APIModel.BatchData,
-    CTNPlanList?: APIModel.ContainerList[],
+    CTNPlanList?: APIModel.PreBookingList[],
     PhotoRemarkList?: APIModel.PhotoRemarkList[],
     NBasicInfo: APIModel.NBasicInfo,
     handleChangeLabel: (val: any) => void,   // 选中后，返回的结果

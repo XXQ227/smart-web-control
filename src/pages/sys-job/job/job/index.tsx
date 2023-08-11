@@ -73,7 +73,6 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
         let result: API.Result;
         if (paramsVal.id !== '0') {
             result = await queryJobInfo(paramsVal);
-            console.log(result.data);
             setLoading(false);
             setCJobInfo(result.data || {});
         } else {

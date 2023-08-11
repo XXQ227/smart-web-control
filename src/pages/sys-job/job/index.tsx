@@ -10,8 +10,13 @@ import {message} from 'antd'
 import SeaExport from '@/pages/sys-job/job/sea-export'
 import SeaImport from '@/pages/sys-job/job/sea-import'
 import LocalDelivery from '@/pages/sys-job/job/local-delivery'
+import {useParams} from 'umi'
 
 const TicketForm: React.FC<RouteChildrenProps> = (props) => {
+
+    const params: any = useParams();
+    const id = atob(params.id);
+    const isCreate: boolean = id === '0';
 
     // 动态生成标签页信息
     const initialTabList = [
@@ -23,7 +28,7 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
     ];
 
 
-    const [activeKey, setActiveKey] = useState<string>('job');
+    const [activeKey, setActiveKey] = useState<string>('sea-export');
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [tabList, setTabList] = useState(initialTabList);
 
@@ -94,7 +99,7 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
             }}
         >
             {activeKey === 'job' && <JobInfo {...props}/>}
-            {activeKey === 'charge' && <JobChargeInfo {...props}/>}
+            {activeKey === 'charge' && !isCreate && <JobChargeInfo {...props}/>}
             {activeKey === 'sea-export' && <SeaExport {...props}/>}
             {activeKey === 'sea-import' && <SeaImport {...props}/>}
             {activeKey === 'local-delivery' && <LocalDelivery {...props}/>}

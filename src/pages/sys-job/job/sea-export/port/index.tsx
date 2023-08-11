@@ -1,17 +1,16 @@
 import React, {useState} from 'react';
-import {Button, Col, Divider, Row, Space, Table} from "antd";
+import {Button, Col, Divider, Form, Row, Space, Table} from "antd";
 import {IconFont, rowGrid} from "@/utils/units";
 import {ProCard, ProFormText} from "@ant-design/pro-components";
 import SearchTable from "@/components/SearchTable";
 import {PlusCircleOutlined} from "@ant-design/icons";
 import type {ColumnsType} from "antd/es/table";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
-import ls from 'lodash'
 
 interface Props {
     title: string;
     form: any;
-    FormItem: any;
+    SeaExportInfo: any;
 }
 
 // const initialTranshipmentPortList: APIModel.TranshipmentPortList[] = [
@@ -21,50 +20,57 @@ interface Props {
 // ];
 
 const Ports: React.FC<Props> = (props) => {
-    const {FormItem, form} = props;
+    const {SeaExportInfo, form} = props;
 
-    const [portInfo, setPortInfo] = useState<any>({});
+    const [portNameInfo, setPortNameInfo] = useState({
+        portOfLoadingNameEn: SeaExportInfo.portOfLoadingNameEn,
+        placeOfReceiptNameEn: SeaExportInfo.placeOfReceiptNameEn,
+        portOfDischargeNameEn: SeaExportInfo.portOfDischargeNameEn,
+        finalDestinationNameEn: SeaExportInfo.finalDestinationNameEn,
+    });
 
     const handleChange = (fieldName: string, val: any, option?: any) => {
-        let setPortInfoVal: any = {[fieldName]: val};
-        const portVal: any = ls.cloneDeep(portInfo);
+        let setPortInfoVal: any = {};
         switch (fieldName) {
             // 装货港
-            case "polId":
+            case "portOfLoadingCode":
+                portNameInfo.portOfLoadingNameEn = option?.name;
+                portNameInfo.placeOfReceiptNameEn = option?.name;
                 setPortInfoVal = {
-                    ...setPortInfoVal,
-                    polName: option.Name, porId: val, porName: option.Name,
-                    polBill: option.Name, porBill: option.Name
+                    ...setPortInfoVal, ...portNameInfo, placeOfReceiptCode: val,
+                    portOfLoadingPrintOnBill: option?.name, placeOfReceiptPrintOnBill: option?.name
                 };
                 break;
             // 交货地
-            case "porId":
+            case "placeOfReceiptCode":
+                portNameInfo.placeOfReceiptNameEn = option?.name;
                 setPortInfoVal = {
-                    ...setPortInfoVal,
-                    porId: val, porName: option.Name, porBill: option.Name
+                    ...portNameInfo, placeOfReceiptNameEn: option?.name, placeOfReceiptPrintOnBill: option?.name
                 };
                 break;
             // 卸货港
-            case "podId":
+            case "portOfDischargeCode":
+                portNameInfo.portOfDischargeNameEn = option?.name;
+                portNameInfo.finalDestinationNameEn = option?.name;
                 setPortInfoVal = {
-                    ...setPortInfoVal,
-                    podName: option.Name, placeOfDeliveryId: val, placeOfDeliveryName: option.Name,
-                    podBill: option.Name, destination: option.Name
+                    ...portNameInfo, finalDestinationCode: val,
+                    portOfDischargePrintOnBill: option?.name, finalDestinationPrintOnBill: option?.name
                 };
                 break;
             // 目的地
-            case "placeOfDeliveryId":
+            case "finalDestinationCode":
+                portNameInfo.finalDestinationNameEn = option?.name;
                 setPortInfoVal = {
-                    ...setPortInfoVal,
-                    placeOfDeliveryId: val, placeOfDeliveryName: option.Name,
-                    podBill: option.Name, destination: option.Name
+                    ...portNameInfo,
+                    finalDestinationNameEn: option?.name, finalDestinationPrintOnBill: option?.name
                 };
                 break;
             default:
                 break;
         }
-        form.setFieldsValue({port: setPortInfoVal});
-        setPortInfo({...portVal, ...setPortInfoVal});
+        console.log(portNameInfo, setPortInfoVal);
+        setPortNameInfo(portNameInfo);
+        form.setFieldsValue({[fieldName]: val, ...setPortInfoVal});
     }
 
     const handleAdd = () => {
@@ -125,63 +131,49 @@ const Ports: React.FC<Props> = (props) => {
                 {/*装货港、卸货港*/}
                 <Col xs={24} sm={24} md={24} lg={20} xl={12} xxl={8}>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
-                        <FormItem label={'Port of Loading'} name={['port', 'polId']}>
+                        <Form.Item label={'Port of Loading'} name={'portOfLoadingCode'}>
                             <SearchTable
                                 qty={20}
-                                // name="POLID"
                                 rowKey={'code'}
                                 modalWidth={950}
                                 showHeader={true}
-                                filedValue={'ID'}
-                                text={portInfo.polName}
                                 title={'Port of Loading'}
-                                query={{TransportTypeID: 1}}
                                 className={'input-container'}
-                                filedLabel={['Name', 'Country']}
-                                url={"/apiLocal/MCommon/GetPortCityOrCountry"}
-                                handleChangeData={(val: any, option: any) => handleChange('polId', val, option)}
+                                url={"/apiBase/sea/querySeaCommon"}
+                                text={portNameInfo.portOfLoadingNameEn}
+                                handleChangeData={(val: any, option: any) => handleChange('portOfLoadingCode', val, option)}
                             />
-                        </FormItem>
+                        </Form.Item>
                         <span className={'siteSpaceSpan'}/>
                         <ProFormText
                             width={'sm'}
                             placeholder=""
                             allowClear={false}
-                            name={['port', 'polBill']}
+                            name={'portOfLoadingPrintOnBill'}
                             label="Port of Loading (print on bill)"
-                            fieldProps={{
-                                // onChange: (e) =>
-                            }}
                         />
                     </Space>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
-                        <FormItem label={'Port of Discharge'} name={['port', 'podId']}>
+                        <Form.Item label={'Port of Discharge'} name={'portOfDischargeCode'}>
                             <SearchTable
                                 qty={20}
                                 rowKey={'code'}
-                                // name="PODID"
                                 modalWidth={950}
                                 showHeader={true}
-                                filedValue={'ID'}
-                                text={portInfo.podName}
                                 title={'Port of Discharge'}
-                                query={{TransportTypeID: 1}}
                                 className={'input-container'}
-                                filedLabel={['Name', 'Country']}
-                                url={"/apiLocal/MCommon/GetPortCityOrCountry"}
-                                handleChangeData={(val: any, option: any) => handleChange('podId', val, option)}
+                                url={"/apiBase/sea/querySeaCommon"}
+                                text={portNameInfo.portOfDischargeNameEn}
+                                handleChangeData={(val: any, option: any) => handleChange('portOfDischargeCode', val, option)}
                             />
-                        </FormItem>
+                        </Form.Item>
                         <span className={'siteSpaceSpan'}/>
                         <ProFormText
                             width={'sm'}
                             placeholder=""
                             allowClear={false}
-                            name={['port', 'podBill']}
+                            name={'portOfDischargePrintOnBill'}
                             label="Port of Discharge (print on bill)"
-                            fieldProps={{
-                                // onChange: (e) => setPODBill(e.target.value)
-                            }}
                         />
                     </Space>
                 </Col>
@@ -191,63 +183,51 @@ const Ports: React.FC<Props> = (props) => {
                 {/*交货地、目的地*/}
                 <Col xs={24} sm={24} md={24} lg={20} xl={11} xxl={8}>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
-                        <FormItem label={'Place of Receipt'} name={['port', 'porId']}>
+                        <Form.Item label={'Place of Receipt'} name={'placeOfReceiptCode'}>
                             <SearchTable
                                 qty={20}
                                 rowKey={'code'}
                                 modalWidth={950}
-                                filedValue={'ID'}
                                 showHeader={true}
-                                name="PlaceOfReceiptID"
-                                text={portInfo.porName}
                                 title={'Place of Receipt'}
-                                query={{TransportTypeID: 1}}
+                                id={'placeOfReceiptCode'}
                                 className={'input-container'}
-                                filedLabel={['Name', 'Country']}
-                                url={"/apiLocal/MCommon/GetPortCityOrCountry"}
-                                handleChangeData={(val: any, option: any) => handleChange('porId', val, option)}
+                                url={"/apiBase/sea/querySeaCommon"}
+                                text={portNameInfo.placeOfReceiptNameEn}
+                                handleChangeData={(val: any, option: any) => handleChange('placeOfReceiptCode', val, option)}
                             />
-                        </FormItem>
+                        </Form.Item>
                         <span className={'siteSpaceSpan'}/>
                         <ProFormText
                             width={'sm'}
                             placeholder=""
                             allowClear={false}
-                            name={['port', 'porBill']}
+                            name={'placeOfReceiptPrintOnBill'}
                             label="Place of Receipt (print on bill)"
-                            fieldProps={{
-                                // onChange: (e) => setPlaceOfReceiptBill(e.target.value)
-                            }}
                         />
                     </Space>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
-                        <FormItem label={'Final Destination'} name={['port', 'placeOfDeliveryId']}>
+                        <Form.Item label={'Final Destination'} name={'finalDestinationCode'}>
                             <SearchTable
                                 qty={20}
                                 rowKey={'code'}
                                 modalWidth={950}
                                 showHeader={true}
-                                filedValue={'ID'}
-                                name="PlaceOfDeliveryID"
+                                id={'finalDestinationCode'}
                                 title={'Final Destination'}
-                                query={{TransportTypeID: 1}}
                                 className={'input-container'}
-                                filedLabel={['Name', 'Country']}
-                                text={portInfo.placeOfDeliveryName}
-                                url={"/apiLocal/MCommon/GetPortCityOrCountry"}
-                                handleChangeData={(val: any, option: any) => handleChange('placeOfDeliveryId', val, option)}
+                                url={"/apiBase/sea/querySeaCommon"}
+                                text={portNameInfo.finalDestinationNameEn}
+                                handleChangeData={(val: any, option: any) => handleChange('finalDestinationCode', val, option)}
                             />
-                        </FormItem>
+                        </Form.Item>
                         <span className={'siteSpaceSpan'}/>
                         <ProFormText
                             width={'sm'}
                             placeholder=""
                             allowClear={false}
-                            name={['port', 'destination']}
+                            name={'finalDestinationPrintOnBill'}
                             label="Final Destination (print on bill)"
-                            fieldProps={{
-                                // onChange: (e) => setDestination(e.target.value)
-                            }}
                         />
                     </Space>
                 </Col>
@@ -267,15 +247,30 @@ const Ports: React.FC<Props> = (props) => {
                         </div>
                     </div>
                     <Table
-                        rowKey={'ID'}
-                        // bordered
+                        rowKey={'id'}
+                        columns={columns}
                         showHeader={false}
                         pagination={false}
-                        columns={columns}
                         dataSource={[]}
                         locale={{emptyText: "NO DATA"}}
                         className={'transhipmentPortTable'}
                     />
+                </Col>
+            </Row>
+
+            <Row gutter={24}>
+                <Col span={24}>
+                    {/* // TODO: 订舱代理 */}
+                    <ProFormText hidden={true} width="md" name={'portOfLoadingNameEn'}/>
+
+                    {/* // TODO: 船公司 */}
+                    <ProFormText hidden={true} width="md" name={'portOfDischargeNameEn'}/>
+
+                    {/* // TODO: 目的港代理 */}
+                    <ProFormText hidden={true} width="md" name={'placeOfReceiptNameEn'}/>
+
+                    {/* // TODO: 船代 */}
+                    <ProFormText hidden={true} width="md" name={'finalDestinationNameEn'}/>
                 </Col>
             </Row>
         </ProCard>
