@@ -48,26 +48,27 @@ export const CHARGE_STATE_ENUM = {
     '12': {text: 'Partial Return', status: 'Partial Return', key: 12},
 };
 
-// TODO: 账期类型举值
+// TODO: 账期期间类型举值  1-正常账期 2-补录账期
 export const ACCOUNT_PERIOD_TYPE_ENUM = {
-    0: {text: 'Normal', status: 'Normal', key: 0},
-    1: {text: 'Replenishment', status: 'Replenishment', key: 1},
+    1: {text: 'Normal', status: 'Normal', key: 1},
+    2: {text: 'Additional', status: 'Additional', key: 2},
 };
 
-// TODO: 账期预估状态举值
+// TODO: 账期预估状态举值  0-未生成 1-正在生成 2-成功 3-待导入 -2-失败
 export const ACCOUNT_PERIOD_ES_STATUS_ENUM = {
-    0: {text: 'Unopened', status: 'Unopened', key: 1},
-    1: {text: 'Pending', status: 'Pending', key: 2},
-    2: {text: 'Success', status: 'Success', key: 3},
-    [-2]: {text: 'Failed', status: 'Failed', key: 4},
+    0: {text: 'Unopened', status: 'Unopened', key: 0},
+    1: {text: 'Pending', status: 'Pending', key: 1},
+    2: {text: 'Success', status: 'Success', key: 2},
+    [-2]: {text: 'Failed', status: 'Failed', key: -2},
 };
 
-// TODO: 账期开启状态举值
+// TODO: 账期开启状态举值  -1-正在处理 0-未开启 1-已开启 2-开始关账 3-结束关账
 export const ACCOUNT_PERIOD_STATE_ENUM = {
-    0: {text: 'New', status: 'New', key: 1},
-    1: {text: 'Active', status: 'Active', key: 2},
-    2: {text: 'Closing', status: 'Closing', key: 3},
-    3: {text: 'Closed', status: 'Closed', key: 4},
+    [-1]: {text: 'Locked', status: 'Locked', key: -1},
+    0: {text: 'New', status: 'New', key: 0},
+    1: {text: 'Active', status: 'Active', key: 1},
+    2: {text: 'Closing', status: 'Closing', key: 2},
+    3: {text: 'Closed', status: 'Closed', key: 3},
 };
 
 // TODO: 客商申请状态举值

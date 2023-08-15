@@ -300,23 +300,36 @@ declare namespace APIManager {
         finaYear: string;
         branchId: string;
     };
-    type AccountList = {
-        id: string;
-        code: string;
-        dateEnd: string;
-        dateStart: string;
+
+    type AccountPeriod = {
+        id: string,                          // TODO: 主键 ID
+        code?: string,                       // TODO: 账期代码
+        type?: number,                       // TODO: 期间类型 1-正常账期 2-补录账期
+        branchId?: number,                   // TODO: 用户公司id
+        statusDeferra?: number,              // TODO: 递延状态 0-未生成 1-正在生成 2-成功 -2-失败
+        statusPredicted?: number,            // TODO: 预估状态 0-未生成 1-正在生成 2-成功 3-待导入 -2-失败
+        dateStart?: string,                  // TODO: 开始日
+        dateEnd?: string,                    // TODO: 结束日
+        errorMes?: string,                   // TODO: 上传失败信息
+        finaMonth?: number,                  // TODO: 会计月
+        finaYear?: number,                   // TODO: 会计年
+        state?: number,                      // TODO: 状态 -1-正在处理 0-未开启 1-已开启 2-开始关账 3-结束关账
+        dateClose?: string,                  // TODO: 实际开始关账时间  (点击开始关账时间)
+        dateCloseActual?: string,            // TODO: 实际结束关账时间，（点击结束关账按钮的时间）
+        funcCnyRate?: number,                // TODO: 本位币到人民币统计汇率
+        enableFlag?: number,                 // TODO: 启用标识 0＝停用，1＝啟用
+        deleteFlag?: number,                 // TODO: 删除标识
+
+
         finaYearMonth: string;
-        state: number;
-        statusDeferra: number;
-        statusPredicted: number;
-        type: number;
         IsPrepareClose?: boolean;
+
     };
     type AccountPeriodResult = {
-        AccountPeriod: AccountPeriod;
+        AccountList: AccountList;
         // Currencys: APCurrency[],
     };
-    type AccountPeriod = {
+    type AccountList = {
         AccountMouth: string;
         BranchID: number | null;
         CNYRate: number | null;
