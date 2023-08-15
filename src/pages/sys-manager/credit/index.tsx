@@ -224,7 +224,6 @@ const CreditListIndex: React.FC<RouteChildrenProps> = () => {
                 {
                     tabKey === '3' ?
                         <ProForm
-                            // form={form}
                             // TODO: 不显示提交、重置按键
                             submitter={false}
                             // TODO: 焦点给到第一个控件

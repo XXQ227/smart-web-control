@@ -181,11 +181,13 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                     params={searchParams}
                     dataSource={ProjectListVO}
                     locale={{ emptyText: 'No Data' }}
-                    className={'antd-pro-table-port-sea ant-pro-table-search'}
+                    className={'antd-pro-table-port-sea'}
                     rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
                     headerTitle={
                         <Search
-                            placeholder='' enterButton="Search" loading={loading}
+                            placeholder=''
+                            enterButton="Search"
+                            loading={loading}
                             onSearch={async (val: any) => {
                                 searchParams.code = val;
                                 await handleQueryProject(searchParams);

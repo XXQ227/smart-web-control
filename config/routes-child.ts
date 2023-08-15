@@ -269,8 +269,8 @@ const manager_route = {
         {
             name: 'account_list',
             icon: 'icon-account-manage',
-            path: '/manager/account/list',
-            component: './sys-manager/account/account-list',
+            path: '/manager/account',
+            component: './sys-manager/account/',
         },
         // TODO: 费用名称数据
         {
