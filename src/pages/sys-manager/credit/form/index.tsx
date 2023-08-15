@@ -429,7 +429,6 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 label='Position in Industry'
                                 name='positionIndustry'
                                 options={POSITION_IN_INDUSTRY}
-                                FormItem={FormItem}
                                 onSelect={(e: any) => handleScoreChange(e, 'positionIndustry', 3)}
                                 rules={[{required: true, message: 'Position in Industry'}]}
                             />
@@ -440,7 +439,6 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 label='Credit Standing'
                                 name='creditStanding'
                                 options={CREDIT_STANDING}
-                                FormItem={FormItem}
                                 onSelect={(e: any) => handleScoreChange(e, 'creditStanding', 4)}
                                 rules={[{required: true, message: 'Credit Standing'}]}
                             />
@@ -626,7 +624,6 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 label={'Annual Revenue'}
                                 className={'ant-input-suffix'}
                                 suffix={suffix}
-                                FormItem={FormItem}
                                 onChange={(e: any) => handleScoreChange(e?.target?.value, 'estimatedAnnualRevenue', 5)}
                                 rules={[{required: true, message: 'Annual Revenue'}]}
                             />
@@ -640,7 +637,6 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 label={'Gross Profit'}
                                 className={'ant-input-suffix'}
                                 suffix={suffix}
-                                FormItem={FormItem}
                                 onChange={(e: any) => handleScoreChange(e?.target?.value, 'estimatedGrossProfit', 6)}
                                 rules={[{required: true, message: 'Gross Profit'}]}
                             />
@@ -704,7 +700,6 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 label={'Credit Line'}
                                 className={'ant-input-suffix'}
                                 suffix={suffix}
-                                FormItem={FormItem}
                                 rules={[{required: true, message: 'Credit Line'}]}
                             />*/}
                         </Col>
@@ -725,7 +720,6 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                                 label={'Credit Days'}
                                 className={'ant-input-suffix'}
                                 suffix={<span className={'ant-input-suffix-span'}> Days</span>}
-                                FormItem={FormItem}
                                 rules={[{required: true, message: 'Credit Days'}]}
                             />*/}
                         </Col>

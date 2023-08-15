@@ -97,7 +97,6 @@ const EDIMapperIndex: React.FC<Props> = (props) => {
                     placeholder=''
                     required={true}
                     autoFocus={true}
-                    FormItem={FormItem}
                     id={`code${record.id}`}
                     name={`code${record.id}`}
                     initialValue={record.code}
@@ -113,7 +112,6 @@ const EDIMapperIndex: React.FC<Props> = (props) => {
                 <FormItemInput
                     placeholder=''
                     required={true}
-                    FormItem={FormItem}
                     id={`ediCode${record.id}`}
                     name={`ediCode${record.id}`}
                     initialValue={record.ediCode}

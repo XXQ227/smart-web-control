@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Col, Form, Popconfirm, Row, Table} from "antd";
-import {ProCard, ProFormSwitch, ProFormText} from "@ant-design/pro-components";
+import {ProCard, ProFormText} from "@ant-design/pro-components";
 import {
     DeleteOutlined,
     DownloadOutlined,
@@ -8,9 +8,10 @@ import {
 } from "@ant-design/icons";
 import type {ColumnsType} from "antd/es/table";
 import SearchModal from "@/components/SearchModal";
-import {getBranchID} from "@/utils/auths";
 import {ID_STRING} from "@/utils/units";
 import ls from 'lodash'
+import FormItemInput from '@/components/FormItemComponents/FormItemInput'
+import FormItemSwitch from '@/components/FormItemComponents/FormItemSwitch'
 
 interface Props {
     type?: string;
@@ -39,14 +40,20 @@ const ProBooking: React.FC<Props> = (props) => {
      * @returns
      */
     function onChange(index: number, rowID: any, filedName: string, val: any, option?: any) {
-        console.log(index, rowID, filedName, val?.target?.value, option);
         const newData: any[] = ls.cloneDeep(containerList);
         const target = newData.find((item: any)=> item.id === rowID) || {};
         target[filedName] = val?.target ? val.target.value : val;
-
+        // TODO: 需要存箱型名字
+        if (filedName === 'ctnModelId') {
+            target.ctnModelName = option.label;
+        }
+        console.log(target);
         newData.splice(index, 1, target);
         // TODO: 把数据接口给到 FormItem 表单里
-        form.setFieldsValue({preBookingContainersEntityList: newData});
+        form.setFieldsValue({
+            [`${filedName}_ctn_table_${target.id}`]: target[filedName],
+            preBookingContainersEntityList: newData
+        });
         setContainerList(newData);
     }
 
@@ -66,10 +73,9 @@ const ProBooking: React.FC<Props> = (props) => {
                         qty={30}
                         title={'SIZE'}
                         modalWidth={500}
-                        // value={record.ctnModelName}
                         text={record.ctnModelName}
-                        url={"/apiLocal/MCommon/GetCTNModelByStr"}
-                        query={{Type: 5, BranchID: getBranchID(), BizType1ID: 1}}
+                        query={{dictCode: "ctn_model"}}
+                        url={"/apiBase/dict/queryDictDetailCommon"}
                         handleChangeData={(val: any, option: any) => onChange(index, record.id, 'ctnModelId', val, option)}
                     />
                 </FormItem>
@@ -80,15 +86,13 @@ const ProBooking: React.FC<Props> = (props) => {
             width: '10%',
             className: "textCenter",
             render: (text: any, record, index) =>
-                <ProFormText
+                <FormItemInput
                     required
                     placeholder={''}
                     initialValue={record.qty}
                     name={`qty_ctn_table_${record.id}`}
                     rules={[{required: true, message: 'QTY'}]}
-                    fieldProps={{
-                        onChange: (e) => onChange(index, record.id, 'qty', e)
-                    }}
+                    onChange={(e) => onChange(index, record.id, 'qty', e)}
                 />,
         },
         {
@@ -97,14 +101,12 @@ const ProBooking: React.FC<Props> = (props) => {
             align: 'center',
             width: '10%',
             render: (text: any, record, index) =>
-                <ProFormSwitch
+                <FormItemSwitch
                     checkedChildren="FCL"
                     unCheckedChildren="LCL"
                     initialValue={record.fclFlag}
                     name={`fclFlag_ctn_table_${record.id}`}
-                    fieldProps={{
-                        onChange: (e) => onChange(index, record.id, 'fclFlag', e)
-                    }}
+                    onChange={(e) => onChange(index, record.id, 'fclFlag', e)}
                 />
         },
         {
@@ -113,27 +115,23 @@ const ProBooking: React.FC<Props> = (props) => {
             align: 'center',
             width: '10%',
             render: (text: any, record, index) =>
-                <ProFormSwitch
+                <FormItemSwitch
                     checkedChildren="SOC"
                     unCheckedChildren="COC"
                     initialValue={record.socFlag}
                     name={`socFlag_ctn_table_${record.id}`}
-                    fieldProps={{
-                        onChange: (e) => onChange(index, record.id, 'socFlag', e)
-                    }}
+                    onChange={(e) => onChange(index, record.id, 'socFlag', e)}
                 />
         },
         {
             title: 'Remark',
-            dataIndex: 'Remark',
+            dataIndex: 'remark',
             render: (text: any, record, index) =>
-                <ProFormText
+                <FormItemInput
                     placeholder={''}
-                    initialValue={record.Remark}
+                    initialValue={text}
                     name={`Remark_ctn_table_${record.id}`}
-                    fieldProps={{
-                        onChange: (e) => onChange(index, record.id, 'Remark', e)
-                    }}
+                    onChange={(e) => onChange(index, record.id, 'remark', e)}
                 />
         },
     ];
@@ -149,9 +147,9 @@ const ProBooking: React.FC<Props> = (props) => {
         const newData: APIModel.PreBookingList = {
             id: ID_STRING(),
             qty: 1,
+            fclFlag: false,
             socFlag: false,
-            Owner: "",
-            Remark: "",
+            remark: "",
         };
         setContainerList([...containerList, newData]);
     };
@@ -194,7 +192,7 @@ const ProBooking: React.FC<Props> = (props) => {
                     />
 
                     {/* // TODO: 用于保存时，获取数据用 */}
-                    <FormItem hidden={true} name={'preBookingContainersEntityList'} />
+                    <ProFormText hidden={true} name={'preBookingContainersEntityList'}/>
                 </Col>
             </Row>
         </ProCard>

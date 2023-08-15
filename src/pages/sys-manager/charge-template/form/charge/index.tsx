@@ -185,7 +185,6 @@ const ChargeTemplateCharge: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItemSelect
                     required
-                    FormItem={Form.Item}
                     options={CurrencyList}
                     id={`currencyName${record.id}`}
                     name={`currencyName${record.id}`}
@@ -202,7 +201,6 @@ const ChargeTemplateCharge: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItemSelect
                     required
-                    FormItem={Form.Item}
                     options={PayMethodList}
                     id={`PayMethodID${record.id}`}
                     name={`PayMethodID${record.id}`}

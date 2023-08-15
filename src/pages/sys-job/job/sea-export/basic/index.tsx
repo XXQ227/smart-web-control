@@ -14,11 +14,11 @@ import SearchTable from '@/components/SearchTable'
 interface Props {
     title: string,
     form: any,
-    SeaExportInfo: any,
+    seaExportInfo: any,
 }
 
 const Basic: React.FC<Props> = (props) => {
-    const {form, SeaExportInfo} = props;
+    const {form, seaExportInfo} = props;
     //endregion
 
     /**
@@ -37,22 +37,22 @@ const Basic: React.FC<Props> = (props) => {
             case 'bookingAgentId':
                 setValueObj.bookingAgentNameCn = option?.nameFullCn;
                 setValueObj.bookingAgentNameEn = option?.nameFullEn || option?.nameFullCn;
-                setValueObj.bookingAgentOracleId = option?.oracleCustomerCode;
+                setValueObj.bookingAgentOracleId = option?.oracleSupplierCode;
                 break;
             case 'carrierId':
                 setValueObj.carrierNameCn = option?.nameFullCn;
                 setValueObj.carrierNameEn = option?.nameFullEn || option?.nameFullCn;
-                setValueObj.carrierOracleId = option?.oracleCustomerCode;
+                setValueObj.carrierOracleId = option?.oracleSupplierCode;
                 break;
             case 'destinationAgentId':
                 setValueObj.destinationAgentNameCn = option?.nameFullCn;
                 setValueObj.destinationAgentNameEn = option?.nameFullEn || option?.nameFullCn;
-                setValueObj.destinationAgentOracleId = option?.oracleCustomerCode;
+                setValueObj.destinationAgentOracleId = option?.oracleSupplierCode;
                 break;
             case 'shippingAgentId':
                 setValueObj.shippingAgentNameCn = option?.nameFullCn;
                 setValueObj.shippingAgentNameEn = option?.nameFullEn || option?.nameFullCn;
-                setValueObj.shippingAgentOracleId = option?.oracleCustomerCode;
+                setValueObj.shippingAgentOracleId = option?.oracleSupplierCode;
                 break;
             case 'placeOfIssueCode':
                 setValueObj.placeOfIssueNameEn = option?.nameFullCn;
@@ -73,16 +73,9 @@ const Basic: React.FC<Props> = (props) => {
             <Row gutter={rowGrid}>
                 {/* MB/L No.、HB/L No. */}
                 <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
-                    <ProFormText
-                        name="mblNum"
-                        label="MB/L No."
-                        placeholder=""
-                    />
-                    <ProFormText
-                        name="hblNum"
-                        label="HB/L No."
-                        placeholder=""
-                    />
+                    <ProFormText name="mblNum" label="MB/L No." placeholder=""/>
+
+                    <ProFormText name="hblNum" label="HB/L No." placeholder=""/>
                 </Col>
                 {/* 订舱代理、目的港代理 */}
                 <Col xs={24} sm={24} md={12} lg={12} xl={7} xxl={8}>
@@ -146,79 +139,39 @@ const Basic: React.FC<Props> = (props) => {
             <Row gutter={rowGrid} style={{ marginTop: 15 }}>
                 {/* 船名、船公司约号 */}
                 <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
-                    <ProFormText
-                        name="vesselName"
-                        label="Vessel Name"
-                        placeholder=""
-                    />
-                    <ProFormText
-                        name="serviceContractNum"
-                        label="Service Contract No."
-                        placeholder=""
-                    />
+                    <ProFormText name="vesselName" label="Vessel Name" placeholder=""/>
+                    <ProFormText name="serviceContractNum" label="Service Contract No." placeholder=""/>
                 </Col>
                 {/* 航次、码头 */}
                 <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
-                    <ProFormText
-                        name="voyageName"
-                        label="Voyage"
-                        placeholder=""
-                    />
-                    <ProFormText
-                        name="wharf"
-                        label="Wharf"
-                        placeholder=""
-                    />
+                    <ProFormText name="voyageName" label="Voyage" placeholder=""/>
+                    <ProFormText name="wharf" label="Wharf" placeholder=""/>
                 </Col>
                 <Col xs={0} sm={0} md={0} lg={0} xl={1} xxl={1} flex="auto" style={{ textAlign: "center" }}>
                     <Divider type="vertical" style={{ height: '100%' }} />
                 </Col>
                 {/* ETD、截关 */}
                 <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={3}>
-                    <ProFormDatePicker
-                        width="md"
-                        name="etd"
-                        label="ETD"
-                        placeholder=""
-                    />
+                    <ProFormDatePicker width="md" name="etd" label="ETD" placeholder=""/>
                     <ProFormDateTimePicker
-                        width="md"
-                        name="closingTime"
-                        label="Closing Time"
-                        placeholder=""
                         fieldProps={{format: 'YYYY-MM-DD hh:mm'}}
+                        width="md" name="closingTime" label="Closing Time" placeholder=""
                     />
                 </Col>
                 {/* ATD、截港/截重柜 */}
                 <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={3}>
-                    <ProFormDatePicker
-                        width="md"
-                        name="atd"
-                        label="ATD"
-                        placeholder=""
-                    />
+                    <ProFormDatePicker width="md" name="atd" label="ATD" placeholder=""/>
                     <ProFormDateTimePicker
-                        width="md"
-                        name="cyClosingDate"
-                        label="CY Closing DATE"
-                        placeholder=""
                         fieldProps={{format: 'YYYY-MM-DD hh:mm'}}
+                        width="md" name="cyClosingDate" label="CY Closing DATE" placeholder=""
                     />
                 </Col>
                 {/* ETA、截提单补料 */}
                 <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={3}>
-                    <ProFormDatePicker
-                        width="md"
-                        name="eta"
-                        label="ETA"
-                        placeholder=""
-                    />
+                    <ProFormDatePicker width="md" name="eta" label="ETA" placeholder=""/>
                     <ProFormDateTimePicker
-                        width="md"
-                        name="siCutOffTime"
-                        label="SI CUT OFF Time"
-                        placeholder=""
                         fieldProps={{format: 'YYYY-MM-DD hh:mm'}}
+                        width="md" name="siCutOffTime" label="SI CUT OFF Time" placeholder=""
                     />
                 </Col>
                 <Col xs={0} sm={0} md={0} lg={0} xl={0} xxl={1} flex="auto" style={{ textAlign: "center" }}>
@@ -247,7 +200,7 @@ const Basic: React.FC<Props> = (props) => {
                                 modalWidth={950}
                                 showHeader={true}
                                 title={'Payable AT'}
-                                text={SeaExportInfo.placeOfIssueNameEn}
+                                text={seaExportInfo.placeOfIssueNameEn}
                                 url={"/apiBase/sea/querySeaCommon"}
                                 handleChangeData={(val: any, option: any) => handleChange('payableAtCode', val, option)}
                             />

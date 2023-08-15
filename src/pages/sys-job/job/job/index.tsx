@@ -98,8 +98,6 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
             values.branchId = '1665596906844135426';
             values.businessLine = 1;
             values.orderStatus = 0;
-            delete values.cargoInfo;
-            delete values.terms;
             if (id === '0') {
                 if (values.accountPeriodId) {
                     const target: any = AccountPeriodList.find((item: any)=> item.value === values.accountPeriodId);

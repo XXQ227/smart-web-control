@@ -233,7 +233,6 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                 <FormItemInput
                     required
                     autoFocus
-                    FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`name${record.id}`}
                     name={`name${record.id}`}
@@ -248,7 +247,6 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             align: 'center',
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`relatedCode${record.id}`}
                     name={`relatedCode${record.id}`}
@@ -266,7 +264,6 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`value${record.id}`}
                     name={`value${record.id}`}
@@ -281,7 +278,6 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             align: 'center',
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`relatedType${record.id}`}
                     name={`relatedType${record.id}`}
@@ -295,7 +291,6 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             align: 'center',
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`remark${record.id}`}
                     name={`remark${record.id}`}

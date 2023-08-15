@@ -184,7 +184,6 @@ const AuthListIndex: React.FC<Props> = (props) => {
                     <FormItemInput
                         required
                         placeholder=''
-                        FormItem={Form.Item}
                         id={`name${record.id}`}
                         name={`name${record.id}`}
                         initialValue={record.name}
@@ -204,7 +203,6 @@ const AuthListIndex: React.FC<Props> = (props) => {
                     <FormItemInput
                         required
                         placeholder=''
-                        FormItem={Form.Item}
                         id={`icon${record.id}`}
                         name={`icon${record.id}`}
                         initialValue={record.name}
@@ -224,7 +222,6 @@ const AuthListIndex: React.FC<Props> = (props) => {
                     <FormItemInput
                         required
                         placeholder=''
-                        FormItem={Form.Item}
                         id={`url${record.id}`}
                         name={`url${record.id}`}
                         initialValue={record.url}

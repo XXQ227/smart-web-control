@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Col, Form, message, Popconfirm, Row, Space, Table} from "antd";
 import {ProCard, ProFormText} from "@ant-design/pro-components";
 import {
@@ -15,7 +15,7 @@ import {IconFont, ID_STRING, keepDecimal} from "@/utils/units";
 import ls from 'lodash'
 import * as XLSX from 'xlsx'
 import ParseExcel from '@/components/ParseExcel'
-import {useModel} from '@@/plugin-model/useModel'
+import {useModel} from 'umi'
 import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 
 const FormItem = Form.Item;
@@ -23,22 +23,28 @@ const FormItem = Form.Item;
 interface Props {
     type?: string;
     form?: any;
-    containerList?: any[];
+    containerList: any[];
 }
-
-const cargoInfo: any = {qty: 168, grossWeight: 1254.8, measurement: 3245.6};
 
 const CTNLoading: React.FC<Props> = (props) => {
     const {
-        type, form,
+        type, form, containerList
     } = props;
 
+    const {CargoInfo} = useModel('job.job', (res: any) => ({CargoInfo: res.CargoInfo}))
     const {queryDictCommonReturn} = useModel('common', (res: any) => ({queryDictCommonReturn: res.queryDictCommonReturn,}))
 
-    const [cTNActualList, setCTNActualList] = useState<APIModel.CTNActualList[]>([]);
+    const [cTNActualList, setCTNActualList] = useState<APIModel.CTNActualList[]>(containerList);
     const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
 
     const [loadingSummary, setLoadingSummary] = useState<any>({qty: 0, grossWeight: 0, measurement: 0});
+
+    useEffect(()=> {
+        if (cTNActualList?.length > 0 && loadingSummary.qty === 0) {
+            getCtnBalance(cTNActualList);
+        }
+    }, [cTNActualList, loadingSummary.qty])
+
 
     // TODO: 多选
     const rowSelection = {
@@ -72,12 +78,14 @@ const CTNLoading: React.FC<Props> = (props) => {
         setCTNActualList(newData);
     }
 
+    // TODO: 添加箱量
     const handleAdd = () => {
         const newData: APIModel.CTNActualList = {id: ID_STRING(),};
         form.setFieldsValue({'containersLoadingDetailEntityList': newData});
         setCTNActualList([...cTNActualList, newData]);
     };
 
+    // TODO: 删除箱量
     const handleDelete = () => {
         const newData = cTNActualList.slice(0).filter((item: any)=> !selectedRowIDs.includes(item.id));
         form.setFieldsValue({'containersLoadingDetailEntityList': newData});
@@ -92,10 +100,11 @@ const CTNLoading: React.FC<Props> = (props) => {
      * @returns
      */
     const handlePreBooking = ()=> {
-        const containerList: any[] = form.getFieldValue('preBookingContainersEntityList') || [];
-        if (containerList?.length > 0) {
+        // TODO: 预配箱的箱量
+        const preBookingList: any[] = form.getFieldValue('preBookingContainersEntityList') || [];
+        if (preBookingList?.length > 0) {
             let actualArr: APIModel.CTNActualList[] = [];
-            containerList.map((item: any) => {
+            preBookingList.map((item: any) => {
                 const obj: APIModel.CTNActualList = {
                     id: ID_STRING(), ctnModelId: item.ctnModelId, ctnModelName: item.ctnModelName
                 };
@@ -130,14 +139,14 @@ const CTNLoading: React.FC<Props> = (props) => {
             const setValueObj = {};
 
             // TODO: 计算每一份的值
-            const qtyPerPart = Math.floor(cargoInfo.qty / ctnQty);
-            const grossWeightPerPart = Math.floor(cargoInfo.grossWeight / ctnQty);
-            const measurementPerPart = Math.floor(cargoInfo.measurement / ctnQty);
+            const qtyPerPart = Math.floor(CargoInfo.qty / ctnQty);
+            const grossWeightPerPart = Math.floor(CargoInfo.grossWeight / ctnQty);
+            const measurementPerPart = Math.floor(CargoInfo.measurement / ctnQty);
 
             // TODO: 计算剩余的值
-            const qtyRemainder = keepDecimal(cargoInfo.qty - qtyPerPart * ctnQty, 6) || 0;
-            const grossWeightRemainder = keepDecimal(cargoInfo.grossWeight - grossWeightPerPart * ctnQty, 6) || 0;
-            const measurementRemainder = keepDecimal(cargoInfo.measurement - measurementPerPart * ctnQty, 6) || 0;
+            const qtyRemainder = keepDecimal(CargoInfo.qty - qtyPerPart * ctnQty, 6) || 0;
+            const grossWeightRemainder = keepDecimal(CargoInfo.grossWeight - grossWeightPerPart * ctnQty, 6) || 0;
+            const measurementRemainder = keepDecimal(CargoInfo.measurement - measurementPerPart * ctnQty, 6) || 0;
 
             // TODO: 把均分的件重尺放到每一个箱中
             let actualArr: any[] = cTNActualList.map((item: any)=> ({
@@ -161,7 +170,7 @@ const CTNLoading: React.FC<Props> = (props) => {
             setValueObj['containersLoadingDetailEntityList'] = actualArr;
             getCtnBalance(actualArr);
             setCTNActualList(actualArr);
-            setLoadingSummary(cargoInfo);
+            setLoadingSummary(CargoInfo);
             form.setFieldsValue(setValueObj);
         } else {
             message.warn('Please add container details');
@@ -271,17 +280,9 @@ const CTNLoading: React.FC<Props> = (props) => {
     function getCtnBalance(data: any[]) {
         if (data?.length > 0) {
             // TODO: 计算 ctn 数组中的 qty、grossWeight 和 measurement 总和
-            const ctnQtyTotal = data.reduce((total, item) => total + Number(item.qty), 0);
-            const ctnGrossWeightTotal = data.reduce((total, item) => total + Number(item.grossWeight), 0);
-            const ctnMeasurementTotal = data.reduce((total, item) => total + Number(item.measurement), 0);
-
-            // TODO: 将 cargo 对象的相应属性减去 ctn 数据的总和
-            // const remainingCargo = {
-            //     qty: cargoInfo.qty - ctnQtyTotal,
-            //     grossWeight: cargoInfo.grossWeight - ctnGrossWeightTotal,
-            //     measurement: cargoInfo.measurement - ctnMeasurementTotal
-            // };
-            // console.log("Remaining Cargo:", remainingCargo);
+            const ctnQtyTotal = data.reduce((total, item) => total + Number(item.qty || 0), 0);
+            const ctnGrossWeightTotal = data.reduce((total, item) => total + Number(item.grossWeight || 0), 0);
+            const ctnMeasurementTotal = data.reduce((total, item) => total + Number(item.measurement || 0), 0);
 
             // TODO: Container 总的 件重尺数量
             const ctnTotal: any = {
@@ -304,7 +305,6 @@ const CTNLoading: React.FC<Props> = (props) => {
                     required
                     placeholder={''}
                     initialValue={text}
-                    FormItem={FormItem}
                     name={`CTNNum_table_${record.id}`}
                     rules={[{required: true, message: 'Container No.'}]}
                     onChange={(val: any) => onChange(index, record.id, 'containerNum', val)}
@@ -316,7 +316,6 @@ const CTNLoading: React.FC<Props> = (props) => {
                 <FormItemInput
                     placeholder={''}
                     initialValue={text}
-                    FormItem={FormItem}
                     name={`SealNum_table_${record.id}`}
                     onChange={(val: any) => onChange(index, record.id, 'sealNum', val)}
                 />
@@ -328,7 +327,6 @@ const CTNLoading: React.FC<Props> = (props) => {
                     required
                     placeholder={''}
                     initialValue={text}
-                    FormItem={FormItem}
                     name={`qty_table_${record.id}`}
                     rules={[{required: true, message: 'QTY'}]}
                     onChange={(val: any) => onChange(index, record.id, 'qty', val)}
@@ -341,7 +339,6 @@ const CTNLoading: React.FC<Props> = (props) => {
                     required
                     placeholder={''}
                     initialValue={text}
-                    FormItem={FormItem}
                     name={`grossWeight_table_${record.id}`}
                     rules={[{required: true, message: 'G.W.'}]}
                     onChange={(val: any) => onChange(index, record.id, 'grossWeight', val)}
@@ -354,7 +351,6 @@ const CTNLoading: React.FC<Props> = (props) => {
                     required
                     placeholder={''}
                     initialValue={text}
-                    FormItem={FormItem}
                     name={`measurement_table_${record.id}`}
                     rules={[{required: true, message: 'Meas.'}]}
                     onChange={(val: any) => onChange(index, record.id, 'measurement', val)}
@@ -366,7 +362,6 @@ const CTNLoading: React.FC<Props> = (props) => {
                 <FormItemInput
                     placeholder={''}
                     initialValue={text}
-                    FormItem={FormItem}
                     name={`vgm_table_${record.id}`}
                     onChange={(val: any) => onChange(index, record.id, 'vgm', val)}
                 />
@@ -416,7 +411,6 @@ const CTNLoading: React.FC<Props> = (props) => {
                     <FormItemInput
                         placeholder={''}
                         initialValue={text}
-                        FormItem={FormItem}
                         name={`YardCTNNum_table_${record.id}`}
                         onChange={(val: any) => onChange(index, record.id, 'yardCTNNum', val)}
                     />
@@ -428,7 +422,6 @@ const CTNLoading: React.FC<Props> = (props) => {
                 <FormItemInput
                     placeholder={''}
                     initialValue={text}
-                    FormItem={FormItem}
                     name={`TareWeight_table_${record.id}`}
                     onChange={(val: any) => onChange(index, record.id, 'tareWeight', val)}
                 />
@@ -437,9 +430,9 @@ const CTNLoading: React.FC<Props> = (props) => {
 
     let iconFortStr = 'icon-neq', isEqual = !(cTNActualList?.length > 0);
     if (
-        loadingSummary.qty === cargoInfo.qty
-        && loadingSummary.grossWeight === cargoInfo.grossWeight
-        && loadingSummary.measurement === cargoInfo.measurement
+        loadingSummary.qty === CargoInfo.qty
+        && loadingSummary.grossWeight === CargoInfo.grossWeight
+        && loadingSummary.measurement === CargoInfo.measurement
     ) {
         iconFortStr = 'icon-equal-to';
         isEqual = true;
@@ -481,7 +474,7 @@ const CTNLoading: React.FC<Props> = (props) => {
                     />
 
                     {/* // TODO: 用于保存时，获取数据用 */}
-                    <FormItem hidden={true} name={'containersLoadingDetailEntityList'} />
+                    <ProFormText hidden={true} name={'containersLoadingDetailEntityList'} />
                 </Col>
             </Row>
             <Row gutter={24}>
@@ -498,14 +491,14 @@ const CTNLoading: React.FC<Props> = (props) => {
                     <IconFont type={iconFortStr} className={'iconfont'}/>
                     <Space className={'siteSpace'}>
                         <div className={'cargo'}>
-                            <span>qty：<b>{cargoInfo.qty}</b></span>
-                            <span>G.W.：<b>{cargoInfo.grossWeight}</b></span>
-                            <span>Meas：<b>{cargoInfo.measurement}</b></span>
+                            <span>qty：<b>{CargoInfo.qty}</b></span>
+                            <span>G.W.：<b>{CargoInfo.grossWeight}</b></span>
+                            <span>Meas：<b>{CargoInfo.measurement}</b></span>
                         </div>
                         <span className={'siteSpaceSpan'}/>
                         <div style={{margin: '3px 0 0 3px'}}>Cargo Summary</div>
                     </Space>
-                    {/* // TODO: 用于验证箱型的【件重尺】是否跟 【cargoInfo】中的匹配 */}
+                    {/* // TODO: 用于验证箱型的【件重尺】是否跟 【CargoInfo】中的匹配 */}
                     <ProFormText
                         hidden={true}
                         required={!isEqual} name={'requiredCtn'}

@@ -10,16 +10,16 @@ import {FooterToolbar, ProForm} from '@ant-design/pro-components'
 import {LeftOutlined, SaveOutlined} from '@ant-design/icons'
 import {history} from '@@/core/history'
 import {getFormErrorMsg} from '@/utils/units'
-import {useModel} from '@@/plugin-model/useModel'
+import {useModel} from 'umi'
 import {useParams} from 'umi'
+import moment from 'moment/moment'
 
 const FormItem = Form.Item;
 
-const SeaImport: React.FC<RouteChildrenProps> = (props) => {
+const SeaImport: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
-    const params: any = useParams();
-    const id = atob(params.id);
-    const {} = props;
+    const urlParams: any = useParams();
+    const jobId = atob(urlParams.id);
 
     useEffect(() => {
 
@@ -27,53 +27,83 @@ const SeaImport: React.FC<RouteChildrenProps> = (props) => {
     //endregion
 
     const {
-        querySeaImportInfo
+        querySeaImportInfo, addSeaImport, editSeaImport
     } = useModel('job.job', (res: any) => ({
         querySeaImportInfo: res.querySeaImportInfo,
+        addSeaImport: res.addSeaImport,
+        editSeaImport: res.editSeaImport,
     }));
 
     const [loading, setLoading] = useState(false);
-    const [SeaExportInfo, setSeaExportInfo] = useState<any>({});
-
-
+    const [seaImportInfo, setSeaImportInfo] = useState<any>({});
+    const [id, setId] = useState<string>('0');
 
 
     /**
      * @Description: TODO: 获取海运出口信息
      * @author XXQ
      * @date 2023/7/26
-     * @param paramsVal     查询参数
      * @returns
      */
-    async function handleQuerySeaImportInfo(paramsVal: any) {
-        // alert('loading Job Info !!!');
-        // setLoading(true);
+    async function handleQuerySeaImportInfo() {
+        setLoading(true);
         // TODO: 获取用户数据
         let result: API.Result;
-        if (paramsVal.id !== '0') {
-            result = await querySeaImportInfo(paramsVal);
+        if (jobId !== '0') {
+            result = await querySeaImportInfo({id: jobId});
+            // TODO: 把当前服务的 id 存下来
+            if (result.data) {
+                setId(result.data.id);
+            } else {
+                result.data = {blTypeId: 1};
+            }
+            setLoading(false);
         } else {
-            result = {success: true, data: {}};
+            result = {success: true, data: {blTypeId: 1}};
+            setLoading(false);
         }
-
-        // setLoading(false);
-        setSeaExportInfo(result || {});
-        return result.data;
+        setSeaImportInfo(result.data || {});
+        return result.data || {};
     }
 
 
-
+    // TODO: 保存进口服务单票
     const handleFinish = async (values: Record<string, any>) => {
         try {
-            console.log(values)
             // @ts-ignore
             for (const item: string in values) {
                 if (item.indexOf('_table_') > -1) {
                     delete values[item];
                 }
             }
-            // await fakeSubmitForm(values);
-            message.success('提交成功');
+            // TODO: 时间需要另做处理
+            if (values.eta) values.eta = moment(values.eta).format('YYYY-MM-DD hh:mm:ss');
+            if (values.dischargingDate) values.dischargingDate = moment(values.dischargingDate).format('YYYY-MM-DD hh:mm:ss');
+            if (values.completeDate) values.completeDate = moment(values.completeDate).format('YYYY-MM-DD hh:mm:ss');
+
+            const params: any = {jobId, ...seaImportInfo, ...values};
+
+            if (params.containersLoadingDetailEntityList?.length > 0) {
+                params.containersLoadingDetailEntityList =
+                    params.containersLoadingDetailEntityList.map((item: any)=>
+                        ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id, jobId})
+                    );
+            }
+
+            let result: API.Result;
+            if (id === '0') {
+                params.id = '0';
+                result = await addSeaImport(params);
+            } else {
+                params.id = id;
+                result = await editSeaImport(params);
+            }
+            if (result.success) {
+                message.success('success!!!');
+                if (id === '0') setId(result?.data?.id || '0');
+            } else {
+                if (result.message) message.error(result.message);
+            }
         } catch {
             // console.log
         }
@@ -111,16 +141,15 @@ const SeaImport: React.FC<RouteChildrenProps> = (props) => {
                         setLoading(false);
                     }
                 }}
-                initialValues={SeaExportInfo}
-                // @ts-ignore
-                request={async () => handleQuerySeaImportInfo({id})}
+                initialValues={seaImportInfo}
+                request={async () => handleQuerySeaImportInfo()}
             >
-                <Basic title={'Basic'}/>
+                <Basic {...baseForm} title={'Basic'}/>
 
                 {/* 港口信息 */}
-                <Ports {...baseForm} title={'Port'}/>
+                <Ports {...baseForm} title={'Port'} jobServiceInfo={seaImportInfo || {}}/>
 
-                <Containers{...baseForm} type={'import'}/>
+                <Containers{...baseForm} jobServiceInfo={seaImportInfo || {}} type={'import'}/>
 
                 <Remark type={'import'} title={'Remark'}/>
             </ProForm>

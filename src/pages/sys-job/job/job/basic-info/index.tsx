@@ -144,7 +144,6 @@ const BasicInfo: React.FC<Props> = (props) => {
                         qty={5}
                         width={"lg"}
                         isShowLabel={true}
-                        // required={true}
                         label='Cargo Owner'
                         id={'cargoOwnerId'}
                         name={'cargoOwnerId'}
@@ -159,7 +158,6 @@ const BasicInfo: React.FC<Props> = (props) => {
                         qty={5}
                         width={"lg"}
                         isShowLabel={true}
-                        // required={true}
                         id='payerId'
                         label='Paying Agent'
                         valueObj={{value: '', label: ''}}
@@ -178,7 +176,6 @@ const BasicInfo: React.FC<Props> = (props) => {
                         qty={5}
                         width={"lg"}
                         isShowLabel={true}
-                        // required={true}
                         label="Project"
                         id={'projectId'}
                         name={'projectId'}

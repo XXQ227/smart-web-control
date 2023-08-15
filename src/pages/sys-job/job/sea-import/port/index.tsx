@@ -1,28 +1,48 @@
 import React, {useState} from 'react';
-import {Col, Divider, Row} from "antd";
+import {Col, Divider, Row, Form} from "antd";
 import {rowGrid} from "@/utils/units";
 import {ProCard, ProFormDatePicker, ProFormText} from "@ant-design/pro-components";
 import SearchTable from "@/components/SearchTable";
 
 interface Props {
     title: string;
-    Port?: APIModel.Port;
-    FormItem: any;
+    form: any;
+    jobServiceInfo: any;
 }
 
 const Ports: React.FC<Props> = (props) => {
-    const  {
-        Port, FormItem
-    } = props;
+    const {form, jobServiceInfo} = props;
 
-    const [portInfo, setPortInfo] = useState<any>(Port || {});
+
+    const [portNameInfo, setPortNameInfo] = useState({
+        portOfLoadingNameEn: jobServiceInfo.portOfLoadingNameEn,
+        placeOfReceiptNameEn: jobServiceInfo.placeOfReceiptNameEn,
+        portOfDischargeNameEn: jobServiceInfo.portOfDischargeNameEn,
+    });
 
     const handleChange =(fieldName: string, val: any, option?: any)=> {
-        // console.log(fieldName, val, option);
+        let setPortInfoVal: any = {};
         switch (fieldName) {
-            default: break;
+            // 装货港
+            case "portOfLoadingCode":
+                portNameInfo.portOfLoadingNameEn = option?.name;
+                setPortInfoVal = {portOfLoadingNameEn: option?.name};
+                break;
+            // 交货地
+            case "placeOfReceiptCode":
+                portNameInfo.placeOfReceiptNameEn = option?.name;
+                setPortInfoVal = {placeOfReceiptNameEn: option?.name};
+                break;
+            // 卸货港
+            case "portOfDischargeCode":
+                portNameInfo.portOfDischargeNameEn = option?.name;
+                setPortInfoVal = {portOfDischargeNameEn: option?.name};
+                break;
+            default:
+                break;
         }
-        setPortInfo({});
+        setPortNameInfo(portNameInfo);
+        form.setFieldsValue({[fieldName]: val, ...setPortInfoVal});
     }
     //endregion
 
@@ -37,7 +57,7 @@ const Ports: React.FC<Props> = (props) => {
             <Row gutter={rowGrid}>
                 {/* 抵港日期、卸货日期 */}
                 <Col xs={24} sm={24} md={24} lg={8} xl={4} xxl={4}>
-                    <ProFormDatePicker width="md" name="ETAPOD" label="ETA" placeholder=""/>
+                    <ProFormDatePicker width="md" name="eta" label="ETA" placeholder=""/>
 
                     <ProFormDatePicker width="md" name="dischargingDate" label="Discharging Date" placeholder=""/>
                 </Col>
@@ -48,79 +68,74 @@ const Ports: React.FC<Props> = (props) => {
                     {/* 收货地、卸货港、装货港 */}
                     <Row gutter={rowGrid}>
                         <Col xs={24} sm={24} md={24} lg={8} xl={8} xxl={8}>
-                            <FormItem label={'Place of Receipt'} name={['port', 'porId']}>
+                            <Form.Item label={'Place of Receipt'} name={'placeOfReceiptCode'}>
                                 <SearchTable
                                     qty={20}
                                     rowKey={'code'}
                                     modalWidth={950}
-                                    filedValue={'ID'}
                                     showHeader={true}
-                                    name="PlaceOfReceiptID"
-                                    text={portInfo.porName}
                                     title={'Place of Receipt'}
-                                    query={{TransportTypeID: 1}}
+                                    id={'placeOfReceiptCode'}
                                     className={'input-container'}
-                                    filedLabel={['Name', 'Country']}
-                                    url={"/apiLocal/MCommon/GetPortCityOrCountry"}
-                                    handleChangeData={(val: any, option: any) => handleChange('porId', val, option)}
+                                    url={"/apiBase/sea/querySeaCommon"}
+                                    text={portNameInfo.placeOfReceiptNameEn}
+                                    handleChangeData={(val: any, option: any) => handleChange('placeOfReceiptCode', val, option)}
                                 />
-                            </FormItem>
+                            </Form.Item>
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={8} xl={8} xxl={8}>
-                            <FormItem label={'Port of Discharge'} name={['port', 'podId']}>
+                            <Form.Item label={'Port of Discharge'} name={'portOfDischargeCode'}>
                                 <SearchTable
                                     qty={20}
                                     rowKey={'code'}
                                     modalWidth={950}
                                     showHeader={true}
-                                    filedValue={'ID'}
-                                    text={portInfo.podName}
                                     title={'Port of Discharge'}
-                                    query={{TransportTypeID: 1}}
                                     className={'input-container'}
-                                    filedLabel={['Name', 'Country']}
-                                    url={"/apiLocal/MCommon/GetPortCityOrCountry"}
-                                    handleChangeData={(val: any, option: any) => handleChange('podId', val, option)}
+                                    url={"/apiBase/sea/querySeaCommon"}
+                                    text={portNameInfo.portOfDischargeNameEn}
+                                    handleChangeData={(val: any, option: any) => handleChange('portOfDischargeCode', val, option)}
                                 />
-                            </FormItem>
+                            </Form.Item>
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={8} xl={8} xxl={8}>
-                            <FormItem label={'Port of Loading'} name={['port', 'polId']}>
+                            <Form.Item label={'Port of Loading'} name={'portOfLoadingCode'}>
                                 <SearchTable
                                     qty={20}
-                                    // name="POLID"
                                     rowKey={'code'}
                                     modalWidth={950}
                                     showHeader={true}
-                                    filedValue={'ID'}
-                                    text={portInfo.polName}
                                     title={'Port of Loading'}
-                                    query={{TransportTypeID: 1}}
                                     className={'input-container'}
-                                    filedLabel={['Name', 'Country']}
-                                    url={"/apiLocal/MCommon/GetPortCityOrCountry"}
-                                    handleChangeData={(val: any, option: any) => handleChange('polId', val, option)}
+                                    url={"/apiBase/sea/querySeaCommon"}
+                                    text={portNameInfo.portOfLoadingNameEn}
+                                    handleChangeData={(val: any, option: any) => handleChange('portOfLoadingCode', val, option)}
                                 />
-                            </FormItem>
+                            </Form.Item>
                         </Col>
                     </Row>
                     {/* 码头、作业区 */}
                     <Row gutter={rowGrid}>
                         <Col xs={24} sm={24} md={24} lg={8} xl={8} xxl={8}>
-                            <ProFormText
-                                name="TERMINAL"
-                                label="Wharf"
-                                placeholder=""
-                            />
+                            <ProFormText width="md" name="wharf" label="Wharf" placeholder=""/>
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={8} xl={8} xxl={8}>
-                            <ProFormText
-                                name="operationArea"
-                                label="Operation Area"
-                                placeholder=""
-                            />
+                            <ProFormText width="md" name="operationArea" label="Operation Area" placeholder=""/>
                         </Col>
                     </Row>
+                </Col>
+            </Row>
+
+            <Row gutter={24}>
+                <Col span={24}>
+                    {/* // TODO: 订舱代理 */}
+                    <ProFormText hidden={true} width="md" name={'portOfLoadingNameEn'}/>
+
+                    {/* // TODO: 船公司 */}
+                    <ProFormText hidden={true} width="md" name={'portOfDischargeNameEn'}/>
+
+                    {/* // TODO: 目的港代理 */}
+                    <ProFormText hidden={true} width="md" name={'placeOfReceiptNameEn'}/>
                 </Col>
             </Row>
         </ProCard>

@@ -19,29 +19,25 @@ const Remark: React.FC<Props> = (props) => {
             headerBordered
             collapsible
         >
+            <Row hidden={props.type === 'import'} gutter={rowGrid}>
+                <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
+                    <ProFormTextArea
+                        placeholder=''
+                        name="agentBookingRemark"
+                        label="Booking Remark (for Agent)"
+                        fieldProps={{rows: 4}}
+                    />
+                </Col>
+                <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
+                    <ProFormTextArea
+                        placeholder=''
+                        name="customerBookingRemark"
+                        label="Booking Remark (for Customer)"
+                        fieldProps={{rows: 4}}
+                    />
+                </Col>
+            </Row>
             <Row gutter={rowGrid}>
-                {
-                    props.type !== 'import' ?
-                        <>
-                            <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
-                                <ProFormTextArea
-                                    placeholder=''
-                                    name="agentBookingRemark"
-                                    label="Booking Remark (for Agent)"
-                                    fieldProps={{rows: 4}}
-                                />
-                            </Col>
-                            <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
-                                <ProFormTextArea
-                                    placeholder=''
-                                    name="customerBookingRemark"
-                                    label="Booking Remark (for Customer)"
-                                    fieldProps={{rows: 4}}
-                                />
-                            </Col>
-                        </>
-                        : null
-                }
                 <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
                     <ProFormTextArea
                         placeholder=''

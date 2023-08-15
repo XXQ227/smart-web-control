@@ -69,6 +69,26 @@ export async function querySeaImportInfoAPI(body: {id: string}) {
     });
 }
 
+// TODO: 获取出口业务信息
+export async function addSeaImportAPI(body: {id: string}) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiEngine/seaImport/addSeaImport/`, {
+        method: 'POST',
+        body,
+    });
+}
+
+
+// TODO: 获取出口业务信息
+export async function editSeaImportAPI(body: {id: string}) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiEngine/seaImport/editSeaImport/`, {
+        method: 'POST',
+        body,
+    });
+}
+
+
 // TODO: 获取单票费用详情数据
 export async function GetNJobCGSByIDAPI(body: APIModel.GetCJobByID) {
     // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构

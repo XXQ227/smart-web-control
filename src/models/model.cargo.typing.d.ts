@@ -210,7 +210,7 @@ declare namespace APIModel {
         Terminal?: string,
         ETD?: string,
         ATD?: string,
-        ETAPOD?: string,
+        eta?: string,
         CutCustoms?: string,
         CutVGM?: string,
         CutSingle?: string,
@@ -272,7 +272,7 @@ declare namespace APIModel {
         socFlag?: boolean,
         fclFlag?: boolean,
         Owner?: string,
-        Remark?: string,
+        remark?: string,
     }
     type CTNActualList = {
         id?: string;

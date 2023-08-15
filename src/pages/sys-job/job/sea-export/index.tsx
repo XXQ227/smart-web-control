@@ -13,6 +13,7 @@ import {LeftOutlined, SaveOutlined} from '@ant-design/icons'
 import {history} from '@@/core/history'
 import {getFormErrorMsg} from '@/utils/units'
 import {useParams, useModel} from 'umi'
+import moment from 'moment'
 
 const FormItem = Form.Item;
 
@@ -32,7 +33,7 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
     }));
 
     const [loading, setLoading] = useState(false);
-    const [SeaExportInfo, setSeaExportInfo] = useState<any>({});
+    const [seaExportInfo, setSeaExportInfo] = useState<any>({});
     const [id, setId] = useState<string>('0');
 
 
@@ -48,12 +49,15 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
         let result: API.Result;
         if (jobId !== '0') {
             result = await querySeaExportInfo({id: jobId});
-            console.log(result);
             // TODO: 把当前服务的 id 存下来
-            if (result.data) setId(result.data.id);
+            if (result.data) {
+                setId(result.data.id);
+            } else {
+                result.data = {blTypeId: 1};
+            }
             setLoading(false);
         } else {
-            result = {success: true, data: {}};
+            result = {success: true, data: {blTypeId: 1}};
             setLoading(false);
         }
 
@@ -70,45 +74,46 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
                     delete values[item];
                 }
             }
-            const params: any = {...SeaExportInfo, ...values};
-            params.jobId = jobId;
-            if (params.closingTime?.length === 16) params.closingTime += ':00';
-            if (params.cyClosingDate?.length === 16) params.cyClosingDate += ':00';
-            if (params.siCutOffTime?.length === 16) params.siCutOffTime += ':00';
+            // TODO: 时间需要另做处理
+            if (values.closingTime) values.closingTime = moment(values.closingTime).format('YYYY-MM-DD hh:mm:ss');
+            if (values.cyClosingDate) values.cyClosingDate = moment(values.cyClosingDate).format('YYYY-MM-DD hh:mm:ss');
+            if (values.siCutOffTime) values.siCutOffTime = moment(values.siCutOffTime).format('YYYY-MM-DD hh:mm:ss');
+            // TODO: 组合 modal 跟后修改的（values） 的数据
+            const params: any = {jobId, ...seaExportInfo, ...values};
 
+            // TODO: 处理箱信息的 id 数据
             if (params.preBookingContainersEntityList?.length > 0) {
                 params.preBookingContainersEntityList =
                     params.preBookingContainersEntityList.map((item: any)=>
-                        ({...item, id: id.indexOf('ID_') > -1 ? '0' : item.id})
+                        ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id, jobId})
                     );
             }
             if (params.containersLoadingDetailEntityList?.length > 0) {
                 params.containersLoadingDetailEntityList =
                     params.containersLoadingDetailEntityList.map((item: any)=>
-                        ({...item, id: id.indexOf('ID_') > -1 ? '0' : item.id})
+                        ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id, jobId})
                     );
             }
             if (params.billOfLoadingEntity?.length > 0) {
                 params.billOfLoadingEntity = params.billOfLoadingEntity.map((item: any)=>
-                    ({...item, id: id.indexOf('ID_') > -1 ? '0' : item.id})
+                    ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id, jobId})
                 );
             }
 
             let result: API.Result;
             if (id === '0') {
                 params.id = '0';
-                result = addSeaExport(params);
+                result = await addSeaExport(params);
                 setId(result.data);
             } else {
                 params.id = id;
-                result = editSeaExport(params);
+                result = await editSeaExport(params);
             }
             if (result.success) {
                 message.success('success!!!');
                 if (id === '0') setId(result.data);
             } else {
                 message.error(result.message);
-
             }
         } catch {
             // console.log
@@ -117,7 +122,6 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
 
     const baseForm = {form, FormItem};
 
-    console.log(SeaExportInfo);
     return (
         <Spin spinning={loading}>
             <ProForm
@@ -143,23 +147,24 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
                 onFinishFailed={async (values: any) => {
                     if (values.errorFields?.length > 0) {
                         /** TODO: 错误信息 */
+                        console.log('123');
                         message.error(getFormErrorMsg(values));
                         setLoading(false);
                     }
                 }}
-                initialValues={SeaExportInfo}
+                initialValues={seaExportInfo}
                 // @ts-ignore
                 request={async () => handleQuerySeaExportInfo()}
             >
-                <Basic {...baseForm} title={'Basic'} SeaExportInfo={SeaExportInfo}/>
+                <Basic {...baseForm} title={'Basic'} seaExportInfo={seaExportInfo}/>
 
                 {/* 提货信息 */}
                 <Pickup title={'Pickup'}/>
 
                 {/* 港口信息 */}
-                <Ports {...baseForm} title={'Port'} SeaExportInfo={SeaExportInfo}/>
+                <Ports {...baseForm} title={'Port'} seaExportInfo={seaExportInfo}/>
 
-                <Containers {...baseForm} SeaExportInfo={SeaExportInfo}/>
+                <Containers {...baseForm} jobServiceInfo={seaExportInfo}/>
 
                 {/* 收发通信息 */}
                 <BillOfLoading title={'Bill Of Loading'}/>

@@ -246,7 +246,6 @@ const ShippingTable: React.FC<Props> = (props) => {
                 <FormItemInput
                     required
                     placeholder=''
-                    FormItem={Form.Item}
                     id={`name${record.id}`}
                     name={`name${record.id}`}
                     initialValue={record.name}
@@ -265,7 +264,6 @@ const ShippingTable: React.FC<Props> = (props) => {
                 <FormItemInput
                     required
                     placeholder=''
-                    FormItem={Form.Item}
                     id={`code${record.id}`}
                     name={`code${record.id}`}
                     initialValue={record.code}
@@ -282,7 +280,6 @@ const ShippingTable: React.FC<Props> = (props) => {
                 <FormItemInput
                     required
                     placeholder=''
-                    FormItem={Form.Item}
                     id={`callSign${record.id}`}
                     name={`callSign${record.id}`}
                     initialValue={record.callSign}
@@ -298,7 +295,6 @@ const ShippingTable: React.FC<Props> = (props) => {
                 <FormItemInput
                     required
                     placeholder=''
-                    FormItem={Form.Item}
                     id={`imoNum${record.id}`}
                     name={`imoNum${record.id}`}
                     initialValue={record.imoNum}
@@ -315,7 +311,6 @@ const ShippingTable: React.FC<Props> = (props) => {
                 /*<FormItemInput
                     required
                     placeholder=''
-                    FormItem={Form.Item}
                     id={`code${record.id}`}
                     name={`code${record.id}`}
                     initialValue={record.code}
@@ -385,7 +380,6 @@ const ShippingTable: React.FC<Props> = (props) => {
                 <FormItemInput
                     required
                     placeholder=''
-                    FormItem={Form.Item}
                     id={`name${record.id}`}
                     name={`name${record.id}`}
                     initialValue={record.name}
@@ -404,7 +398,6 @@ const ShippingTable: React.FC<Props> = (props) => {
                 <FormItemInput
                     required
                     placeholder=''
-                    FormItem={Form.Item}
                     id={`areaCode${record.id}`}
                     name={`areaCode${record.id}`}
                     initialValue={record.areaCode}
@@ -421,7 +414,6 @@ const ShippingTable: React.FC<Props> = (props) => {
                 <FormItemInput
                     required
                     placeholder=''
-                    FormItem={Form.Item}
                     id={`serverId${record.id}`}
                     name={`serverId${record.id}`}
                     initialValue={record.serverId}
@@ -438,7 +430,6 @@ const ShippingTable: React.FC<Props> = (props) => {
                 /*<FormItemInput
                     required
                     placeholder=''
-                    FormItem={Form.Item}
                     id={`code${record.id}`}
                     name={`code${record.id}`}
                     initialValue={record.code}

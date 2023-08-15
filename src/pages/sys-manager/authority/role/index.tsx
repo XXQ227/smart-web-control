@@ -166,7 +166,6 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
                     <FormItemInput
                         required
                         placeholder=''
-                        FormItem={Form.Item}
                         id={`roleName${record.id}`}
                         name={`roleName${record.id}`}
                         initialValue={record.roleName}
@@ -187,7 +186,6 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
                     <FormItemInput
                         required
                         placeholder=''
-                        FormItem={Form.Item}
                         id={`roleCode${record.id}`}
                         name={`roleCode${record.id}`}
                         initialValue={record.roleName}
@@ -204,7 +202,6 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
                 record.parentId ? text :
                     <FormItemInput
                         placeholder=''
-                        FormItem={Form.Item}
                         id={`url${record.id}`}
                         name={`url${record.id}`}
                         initialValue={record.url}
@@ -220,7 +217,6 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 record.parentId ? text :
                     <FormItemSwitch
-                        FormItem={Form.Item}
                         id={`readOnly${record.id}`}
                         name={`readOnly${record.id}`}
                         initialValue={!!record.readOnly}

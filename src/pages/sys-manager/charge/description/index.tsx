@@ -191,7 +191,6 @@ const DescriptionIndex: React.FC<Props> = () => {
                 <FormItemInput
                     required
                     placeholder=''
-                    FormItem={Form.Item}
                     name={`name${record.id}`}
                     initialValue={record.name}
                     disabled={record.enableFlag}
@@ -209,7 +208,6 @@ const DescriptionIndex: React.FC<Props> = () => {
                 <FormItemInput
                     required
                     placeholder=''
-                    FormItem={Form.Item}
                     name={`code${record.id}`}
                     initialValue={record.code}
                     disabled={record.enableFlag}

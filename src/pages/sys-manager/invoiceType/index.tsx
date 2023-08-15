@@ -171,7 +171,6 @@ const InvoiceTypeListIndex: React.FC<RouteChildrenProps> = () => {
                 <FormItemInput
                     required
                     placeholder=''
-                    FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`name${record.id}`}
                     name={`name${record.id}`}
@@ -187,7 +186,6 @@ const InvoiceTypeListIndex: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     placeholder=''
-                    FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`subCategoryCode${record.id}`}
                     name={`subCategoryCode${record.id}`}
@@ -202,7 +200,6 @@ const InvoiceTypeListIndex: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     placeholder=''
-                    FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`subSonCode${record.id}`}
                     name={`subSonCode${record.id}`}
@@ -220,7 +217,6 @@ const InvoiceTypeListIndex: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 <FormItemRadio
                     required
-                    FormItem={Form.Item}
                     options={[
                         {value: 1, label: 'AR'},
                         {value: 2, label: 'AP'},
@@ -243,7 +239,6 @@ const InvoiceTypeListIndex: React.FC<RouteChildrenProps> = () => {
                 <FormItemInput
                     required
                     placeholder=''
-                    FormItem={Form.Item}
                     disabled={record.enableFlag}
                     id={`taxRate${record.id}`}
                     name={`taxRate${record.id}`}

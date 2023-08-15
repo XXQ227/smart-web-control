@@ -87,7 +87,6 @@ const BankIndex: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    FormItem={Form.Item}
                     id={`bankName${record.id}`}
                     name={`bankName${record.id}`}
                     initialValue={record.bankName}
@@ -102,7 +101,6 @@ const BankIndex: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    FormItem={Form.Item}
                     id={`bankAddress${record.id}`}
                     name={`bankAddress${record.id}`}
                     initialValue={record.bankAddress}
@@ -118,7 +116,6 @@ const BankIndex: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    FormItem={Form.Item}
                     id={`name${record.id}`}
                     name={`name${record.id}`}
                     initialValue={record.name}
@@ -134,7 +131,6 @@ const BankIndex: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    FormItem={Form.Item}
                     id={`num${record.id}`}
                     name={`num${record.id}`}
                     initialValue={record.num}
@@ -150,7 +146,6 @@ const BankIndex: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItemSelect
                     required
-                    FormItem={Form.Item}
                     // options={getCurrencyList()}
                     options={[{value: 'CNY', label: 'CNY'}, {value: 'HKD', label: 'HKD'}]}
                     id={`currencyName${record.id}`}
@@ -168,7 +163,6 @@ const BankIndex: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    FormItem={Form.Item}
                     id={`swiftCode${record.id}`}
                     name={`swiftCode${record.id}`}
                     initialValue={record.swiftCode}

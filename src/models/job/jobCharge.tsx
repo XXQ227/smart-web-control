@@ -17,9 +17,6 @@ export default (callback: T, deps: React.DependencyList) => {
     //region TODO: 费用详情结构表
     const jobChargeInfo: APIModel.NJobDetailDto = {
         ID: 0,
-        NBasicInfo: {
-            Code: '',
-        },
         PayCGList: [],
         ReceiveCGList: [],
         ProxyCGList: [],

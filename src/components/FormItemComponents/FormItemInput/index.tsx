@@ -1,12 +1,12 @@
 import React from 'react'
-import {Input} from 'antd'
+import {Form, Input} from 'antd'
 
+const FormItem = Form.Item;
 interface Props {
     id?: string,
     name: string,
     label?: string,
     initialValue?: any
-    FormItem: any,
     disabled?: boolean,
     suffix?: any,
     className?: any,
@@ -20,7 +20,7 @@ interface Props {
 
 const FormItemInput: React.FC<Props> = (props) => {
     const {
-        id, name, initialValue, onChange, FormItem, label, suffix, allowClear,
+        id, name, initialValue, onChange, label, suffix, allowClear,
         disabled, placeholder, autoFocus, required, rules, className
     } = props;
 

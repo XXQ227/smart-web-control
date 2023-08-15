@@ -1,22 +1,23 @@
 import React from 'react'
-import {Switch} from 'antd'
+import {Form, Switch} from 'antd'
 
+
+const FormItem = Form.Item;
 interface Props {
-    id: string,
-    name: string,
+    id?: string,
+    name?: string,
     checkedChildren?: string,
     unCheckedChildren?: string,
     initialValue: any
     rules?: any,
     disabled?: boolean,
     required?: boolean,
-    FormItem?: any,
     onChange: (val: any) => void,
 }
 
 const FormItemSwitch: React.FC<Props> = (props) => {
     const {
-        id, name, initialValue, required, rules, onChange, FormItem, disabled,
+        id, name, initialValue, required, rules, onChange, disabled,
         checkedChildren, unCheckedChildren,
     } = props;
     return (
@@ -25,10 +26,10 @@ const FormItemSwitch: React.FC<Props> = (props) => {
             name={name}
             rules={rules}
             required={required}
-            disabled={disabled}
             initialValue={initialValue}
         >
             <Switch
+                disabled={disabled}
                 onChange={onChange}
                 checked={initialValue}
                 checkedChildren={checkedChildren || 'Yes'}

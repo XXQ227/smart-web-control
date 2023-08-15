@@ -229,7 +229,6 @@ const ChargeTemplateForm: React.FC<RouteChildrenProps> = () => {
                                 name='name'
                                 placeholder=''
                                 label='Template Name'
-                                FormItem={Form.Item}
                                 initialValue={CGTempInfoVO.name}
                                 rules={[{required: true, message: 'Template Name is required'}]}
                             />*/}

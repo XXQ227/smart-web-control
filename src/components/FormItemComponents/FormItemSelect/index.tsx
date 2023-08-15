@@ -1,6 +1,7 @@
 import React from 'react'
-import {Select} from 'antd'
+import {Form, Select} from 'antd'
 
+const FormItem = Form.Item;
 interface Props {
     id?: string,
     name: string,
@@ -15,7 +16,10 @@ interface Props {
 }
 
 const FormItemSelect: React.FC<Props> = (props) => {
-    const {id, name, initialValue, required, rules, onSelect, FormItem, disabled, options, label} = props;
+    const {
+        id, name, initialValue, required, rules,
+        onSelect, disabled, options, label
+    } = props;
     return (
         <FormItem
             id={id}
@@ -23,12 +27,12 @@ const FormItemSelect: React.FC<Props> = (props) => {
             label={label}
             rules={rules}
             required={required}
-            disabled={disabled}
             initialValue={initialValue}
         >
             <Select
-                onSelect={onSelect}
                 options={options}
+                disabled={disabled}
+                onSelect={onSelect}
                 // options={options.map((item: any) => ({ label: item.label || item, value: item.value || item }))}
             />
         </FormItem>
