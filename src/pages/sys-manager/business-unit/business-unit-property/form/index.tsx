@@ -21,7 +21,7 @@ import {getFormErrorMsg, IconFont, rowGrid, getLabelByValue} from "@/utils/units
 import SearchProFormSelect from "@/components/SearchProFormSelect";
 import {NATURE_OF_COMPANY, PROPERTY_AS_CUSTOMER} from "@/utils/common-data";
 import type { CheckboxValueType } from 'antd/lib/checkbox/Group';
-import {ArrowLeftOutlined, SaveOutlined} from "@ant-design/icons";
+import {LeftOutlined, SaveOutlined} from "@ant-design/icons";
 
 export type LocationState = Record<string, unknown>;
 type APIBUP = APIManager.BUP;
@@ -692,7 +692,7 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                         </ProCard> : null
                 }
 
-                <FooterToolbar extra={<Button disabled={false} onClick={handleBack} icon={<ArrowLeftOutlined/>}>Back</Button>}>
+                <FooterToolbar extra={<Button disabled={false} onClick={handleBack} icon={<LeftOutlined/>}>Back</Button>}>
                     <Button
                         disabled={false}
                         hidden={id === '0'}

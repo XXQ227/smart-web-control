@@ -125,7 +125,7 @@ const Ports: React.FC<Props> = (props) => {
             headerBordered
             bordered={true}
             title={props.title}
-            className={'seaExportPort'}
+            className={'ant-card seaExportPort'}
         >
             <Row gutter={rowGrid}>
                 {/*装货港、卸货港*/}

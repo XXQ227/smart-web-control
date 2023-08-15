@@ -30,13 +30,13 @@ const NonContainerLayout: React.FC<Props> = (props) => {
                     />
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
-                    <Space direction="horizontal" align="center" className={styles.siteSpace}>
+                    <Space direction="horizontal" align="center" className={'siteSpace'}>
                         <ProFormText
                             name={`ShippingContact${batchNo}`}
                             label="Shipping Contact"
                             placeholder={''}
                         />
-                        <span className={styles.siteSpaceSpan}  />
+                        <span className={'siteSpaceSpan'}  />
                         <ProFormText
                             name={`Origin_Telephone${batchNo}`}
                             label="Telephone"
@@ -90,13 +90,13 @@ const NonContainerLayout: React.FC<Props> = (props) => {
                     />
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
-                    <Space direction="horizontal" align="center" className={styles.siteSpace}>
+                    <Space direction="horizontal" align="center" className={'siteSpace'}>
                         <ProFormText
                             name={`ReceivingContact${batchNo}`}
                             label="Receiving Contact"
                             placeholder={''}
                         />
-                        <span className={styles.siteSpaceSpan}  />
+                        <span className={'siteSpaceSpan'}  />
                         <ProFormText
                             name={`Destination_Telephone${batchNo}`}
                             label="Telephone"
@@ -131,10 +131,9 @@ const NonContainerLayout: React.FC<Props> = (props) => {
         </>
     );
 
-
     return (
         <ProCard
-            className={styles.nonContainerLayout}
+            className={'nonContainerLayout'}
             title={'Task'}
             headerBordered
             collapsible

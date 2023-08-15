@@ -15,7 +15,7 @@ import {message} from 'antd/es'
 import {getFormErrorMsg, rowGrid, IconFont, getValue} from "@/utils/units";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
 import {NATURE_OF_COMPANY} from '@/utils/common-data'
-import {ArrowLeftOutlined, SaveOutlined} from "@ant-design/icons";
+import {LeftOutlined, SaveOutlined} from "@ant-design/icons";
 import ls from "lodash";
 
 export type LocationState = Record<string, unknown>;
@@ -446,7 +446,7 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
                                     searchParams: state ? (state as LocationState)?.searchParams : '',
                                 },
                             })}
-                            icon={<ArrowLeftOutlined/>}
+                            icon={<LeftOutlined/>}
                         >
                             Back
                         </Button>

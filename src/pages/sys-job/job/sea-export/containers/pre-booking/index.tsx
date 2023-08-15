@@ -163,7 +163,14 @@ const ProBooking: React.FC<Props> = (props) => {
     //endregion
 
     return (
-        <ProCard hidden={type === 'import'} title={'Pre-booking Containers'} collapsible headerBordered bordered>
+        <ProCard
+            hidden={type === 'import'}
+            title={'Pre-booking Containers'}
+            className={'ant-card'}
+            collapsible
+            headerBordered
+            bordered
+        >
             <Row gutter={24}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={20}>
                     <div className={'tableHeaderContainer'}>

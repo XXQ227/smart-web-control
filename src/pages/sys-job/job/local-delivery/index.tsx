@@ -1,48 +1,45 @@
-import React, {useEffect, useState, useRef} from 'react';
+import React, {useState, useRef} from 'react';
 import BasicInfo from './basicInfo';
-import {Modal, Tabs, TabsProps} from "antd";
-import styles from "@/pages/sys-job/job/style.less";
-import {ProCard} from "@ant-design/pro-components";
-import {ExclamationCircleFilled} from "@ant-design/icons";
-import {RouteChildrenProps} from 'react-router'
-
-// const FormItem = Form.Item;
+import {Modal, Tabs, Spin, Button, message, Form} from "antd";
+import type {TabsProps} from 'antd';
+import '../style.less'
+import {FooterToolbar, ProForm, ProCard} from "@ant-design/pro-components";
+import {ExclamationCircleFilled, LeftOutlined, SaveOutlined} from "@ant-design/icons";
+import type { RouteChildrenProps } from 'react-router';
+import {history} from "@@/core/history";
+import {getFormErrorMsg} from "@/utils/units";
 
 const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
+const initialData: APIModel.BatchData[] = [
+    {
+        shipmentNo: 'SPHK-QY-0012',
+        truckingCompany: '招商局建瑞运输有限公司',
+        grossWeight: 0,
+        measurement: 0,
+        pieces: 0,
+        vehicleType: '集装箱运输货车',
+        plateNo: '',
+        driverName: '',
+        receivingContac: '',
+        phone: '',
+    },
+    {
+        shipmentNo: 'SPHK-QY-0013',
+        truckingCompany: '招商局建瑞运输有限公司',
+        grossWeight: 0,
+        measurement: 0,
+        pieces: 0,
+        vehicleType: '通用货车',
+        plateNo: '',
+        driverName: '',
+        receivingContac: '',
+        phone: '',
+    },
+]
+
 const LocalDelivery: React.FC<RouteChildrenProps> = (props) => {
-    const {
-
-    } = props;
-
-    const initialData: APIModel.BatchData[] = [
-        {
-            shipmentNo: 'SPHK-QY-0012',
-            truckingCompany: '招商局建瑞运输有限公司',
-            grossWeight: 0,
-            measurement: 0,
-            pieces: 0,
-            vehicleType: '集装箱运输货车',
-            plateNo: '',
-            driverName: '',
-            receivingContac: '',
-            phone: '',
-        },
-        {
-            shipmentNo: 'SPHK-QY-0013',
-            truckingCompany: '招商局建瑞运输有限公司',
-            grossWeight: 0,
-            measurement: 0,
-            pieces: 0,
-            vehicleType: '通用货车',
-            plateNo: '',
-            driverName: '',
-            receivingContac: '',
-            phone: '',
-        },
-    ]
-
     const renderContent = (key: string, data?: APIModel.BatchData) => {
         return <BasicInfo
             CTNPlanList={[]}
@@ -67,15 +64,14 @@ const LocalDelivery: React.FC<RouteChildrenProps> = (props) => {
             children: renderContent('SPHK-QY-0013', initialData[1]),
         },
     ];
+
+    const [form] = Form.useForm();
+    const [loading, setLoading] = useState(false);
     const [tabList, setTabList] = useState(initialTabList);
     const [activeKey, setActiveKey] = useState(initialTabList[0].key);
     const activeKeyRef = useRef(activeKey);
     activeKeyRef.current = activeKey;
     const newTabIndex = useRef(3);
-
-    useEffect(() => {
-
-    }, [])
 
     const handleAddBatch = () => {
         const newBatch: APIModel.BatchData = {
@@ -153,27 +149,62 @@ const LocalDelivery: React.FC<RouteChildrenProps> = (props) => {
     }
 
     return (
-        <ProCard
-            className={styles.localDelivery}
-            title={'Basic Information'}
-            bordered={true}
-            headerBordered
-            collapsible
-        >
-            <Tabs
-                type="editable-card"
-                activeKey={activeKey}
-                onChange={handleTabChange}
-                onEdit={onEdit}
-                items={tabList}
+        <Spin spinning={loading}>
+            <ProForm
+                form={form}
+                omitNil={false}
+                layout="vertical"
+                name={'formJobInfo'}
+                // initialValues={CJobInfo}
+                className={'basicInfoProForm'}
+                submitter={{
+                    // 完全自定义整个区域
+                    render: () =>
+                        <FooterToolbar
+                            style={{height: 55}}
+                            extra={
+                                <Button icon={<LeftOutlined/>} onClick={() => history.goBack()}>Back</Button>
+                            }>
+                            <Button icon={<SaveOutlined/>} key={'submit'} type={'primary'} htmlType={'submit'}>
+                                Save
+                            </Button>
+                        </FooterToolbar>
+                    ,
+                }}
+                // onFinish={handleFinish}
+                onFinishFailed={async (values: any) => {
+                    if (values.errorFields?.length > 0) {
+                        /** TODO: 错误信息 */
+                        message.error(getFormErrorMsg(values));
+                        setLoading(false);
+                    }
+                }}
+                // @ts-ignore
+                request={async () => handleQueryJobInfo({id})}
             >
-                {/*{tabList.map(tab => (
-                    <Tabs.TabPane key={tab.key} tab={tab.label} closable={tab.closable}>
-                        {tab.content}
-                    </Tabs.TabPane>
-                ))}*/}
-            </Tabs>
-        </ProCard>
+                <ProCard
+                    className={'localDelivery'}
+                    title={'Basic Information'}
+                    bordered={true}
+                    headerBordered
+                    collapsible
+                >
+                    <Tabs
+                        type="editable-card"
+                        activeKey={activeKey}
+                        onChange={handleTabChange}
+                        onEdit={onEdit}
+                        items={tabList}
+                    >
+                        {/*{tabList.map(tab => (
+                            <Tabs.TabPane key={tab.key} tab={tab.label} closable={tab.closable}>
+                                {tab.content}
+                            </Tabs.TabPane>
+                        ))}*/}
+                    </Tabs>
+                </ProCard>
+            </ProForm>
+        </Spin>
     )
 }
 export default LocalDelivery;

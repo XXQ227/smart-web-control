@@ -8,7 +8,7 @@ import {Button, Modal, Divider, Row, Col, Form} from 'antd';
 import {getFormErrorMsg, rowGrid} from "@/utils/units";
 import {EditOutlined, PlusOutlined, FileSearchOutlined, CaretDownOutlined} from "@ant-design/icons";
 import {message} from "antd/es";
-import {useModel} from '@@/plugin-model/useModel';
+import {useModel} from 'umi';
 import type moment from 'moment';
 
 export type LocationState = Record<string, unknown>;

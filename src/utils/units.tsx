@@ -2,7 +2,6 @@ import moment from 'moment';
 import _ from 'lodash';
 import {createFromIconfontCN} from '@ant-design/icons';
 import {Descriptions} from "antd";
-import styles from "@/pages/sys-job/job/style.less";
 
 export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_cozf2shjo6.js';
 
@@ -759,7 +758,7 @@ export function getFormErrorMsg(errorInfo: any = []) {
 
 export function HeaderInfo(NBasicInfo: any, LockDate: string, SalesManName?: string) {
     return (
-        <Descriptions className={styles.headerList} size="small" column={{xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 7}}>
+        <Descriptions className={'headerList'} size="small" column={{xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 7}}>
             <Descriptions.Item
                 label="Business Line">{getBusinessLineName(NBasicInfo?.BusinessLineID)}</Descriptions.Item>
             <Descriptions.Item label="Job No.">{NBasicInfo?.Code}</Descriptions.Item>

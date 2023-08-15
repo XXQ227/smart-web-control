@@ -11,7 +11,7 @@ export async function queryJobInfoAPI(body: APIModel.GetCJobByID) {
     });
 }
 
-// TODO: 获取单票业务详情数据
+// TODO: 新增单票
 export async function addJobAPI(body: any) {
     // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
     return request(`/apiEngine/forwardJob/addJob`, {
@@ -20,7 +20,7 @@ export async function addJobAPI(body: any) {
     });
 }
 
-// TODO: 获取单票业务详情数据
+// TODO: 编辑单票
 export async function editJobAPI(body: any) {
     // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
     return request(`/apiEngine/forwardJob/editJob`, {
@@ -29,8 +29,7 @@ export async function editJobAPI(body: any) {
     });
 }
 
-
-// TODO: 获取出口业务信息
+// TODO: 查询海运出口服务信息
 export async function querySeaExportInfoAPI(body: {id: string}) {
     // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
     return request(`/apiEngine/seaExport/querySeaExportInfo/`, {
@@ -39,8 +38,7 @@ export async function querySeaExportInfoAPI(body: {id: string}) {
     });
 }
 
-
-// TODO: 获取出口业务信息
+// TODO: 新增海运出口服务信息
 export async function addSeaExportAPI(body: {id: string}) {
     // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
     return request(`/apiEngine/seaExport/addSeaExport/`, {
@@ -49,8 +47,7 @@ export async function addSeaExportAPI(body: {id: string}) {
     });
 }
 
-
-// TODO: 获取出口业务信息
+// TODO: 编辑海运出口服务信息
 export async function editSeaExportAPI(body: {id: string}) {
     // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
     return request(`/apiEngine/seaExport/editSeaExport/`, {
@@ -59,8 +56,7 @@ export async function editSeaExportAPI(body: {id: string}) {
     });
 }
 
-
-// TODO: 获取进口业务信息
+// TODO: 查询海运进口服务信息
 export async function querySeaImportInfoAPI(body: {id: string}) {
     // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
     return request(`/apiEngine/seaImport/querySeaImportInfo/`, {
@@ -69,7 +65,7 @@ export async function querySeaImportInfoAPI(body: {id: string}) {
     });
 }
 
-// TODO: 获取出口业务信息
+// TODO: 新增海运进口服务信息
 export async function addSeaImportAPI(body: {id: string}) {
     // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
     return request(`/apiEngine/seaImport/addSeaImport/`, {
@@ -78,8 +74,7 @@ export async function addSeaImportAPI(body: {id: string}) {
     });
 }
 
-
-// TODO: 获取出口业务信息
+// TODO: 编辑海运进口服务信息
 export async function editSeaImportAPI(body: {id: string}) {
     // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
     return request(`/apiEngine/seaImport/editSeaImport/`, {
@@ -88,6 +83,32 @@ export async function editSeaImportAPI(body: {id: string}) {
     });
 }
 
+// TODO: 查询本地交付服务信息
+export async function queryLocalDeliveryInfoAPI(body: {id: string}) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiEngine/localDelivery/queryLocalDeliveryInfo/`, {
+        method: 'POST',
+        body,
+    });
+}
+
+// TODO: 新增本地交付服务信息
+export async function addLocalDeliveryAPI(body: {id: string}) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiEngine/localDelivery/addLocalDelivery/`, {
+        method: 'POST',
+        body,
+    });
+}
+
+// TODO: 编辑本地交付服务信息
+export async function editLocalDeliveryAPI(body: {id: string}) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiEngine/localDelivery/editLocalDelivery/`, {
+        method: 'POST',
+        body,
+    });
+}
 
 // TODO: 获取单票费用详情数据
 export async function GetNJobCGSByIDAPI(body: APIModel.GetCJobByID) {

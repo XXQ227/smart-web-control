@@ -27,11 +27,9 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
         { tab: 'Local Delivery', key: 'local-delivery', closable: false },
     ];
 
-
     const [activeKey, setActiveKey] = useState<string>('job');
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [tabList, setTabList] = useState(initialTabList);
-
 
     const showModal = (state: boolean) => {
         setIsModalOpen(state);
@@ -85,7 +83,7 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
             tabList={tabList}
             header={{breadcrumb: {}}}
             onTabChange={onTabChange}
-            className={`pageContainer stickyTabs`}
+            className={'pageContainer stickyTabs'}
             content={HeaderInfo({}, '2022-03-02', 'Admin')}
             tabProps={{
                 activeKey,

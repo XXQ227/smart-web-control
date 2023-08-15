@@ -18,7 +18,6 @@ const cjobListParams: APIModel.SearchJobParams = {
     pageSize: 20,
 };
 
-
 const columnsStateStr = '{"Code":{"fixed":"left"},"PrincipalNameEN":{"show":true},"MBOLNum":{"show":true},"OceanTransportType":{"show":true},"CreateDate":{"show":true},"option":{"show":true}}';
 
 const JobList: React.FC<RouteChildrenProps> = () => {

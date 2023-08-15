@@ -6,7 +6,6 @@ import {PlusCircleOutlined} from "@ant-design/icons";
 import type {ColumnsType} from "antd/es/table";
 import NonContainerLayout from "./non-container-layout";
 import ContainerLayout from "./container-layout";
-import styles from "@/pages/sys-job/job/style.less";
 
 interface Props {
     form?: any,
@@ -140,7 +139,7 @@ const BasicInfo: React.FC<Props> = (props) => {
 
     return (
         <div
-            className={styles.antProCard}
+            className={'antProCard'}
         >
             <Row gutter={rowGrid}>
                 <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5} className={'custom-input'}>
@@ -259,7 +258,7 @@ const BasicInfo: React.FC<Props> = (props) => {
             }
 
             <ProCard
-                className={styles.remark}
+                className={'remark'}
                 title={'Remark'}
                 headerBordered
                 collapsible
@@ -274,7 +273,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                         />
                     </Col>
                     <Col xs={24} sm={24} md={24} lg={24} xl={17} xxl={15}>
-                        <div className={styles.title}>
+                        <div className={'photo-remark-title'}>
                             <div className={'ant-div-left'}>
                                 <span>Photo Remark</span>
                             </div>
@@ -291,7 +290,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                             columns={columns}
                             dataSource={photoRemarkList}
                             locale={{emptyText: "NO DATA"}}
-                            className={`tableStyle ${styles.photoRemarkTable}`}
+                            className={'tableStyle photoRemarkTable'}
                         />
                     </Col>
                 </Row>

@@ -66,7 +66,7 @@ const Basic: React.FC<Props> = (props) => {
         <ProCard
             title={props.title}
             bordered={true}
-            className={'seaExportBasic'}
+            className={'ant-card seaExportBasic'}
             headerBordered
             collapsible
         >

@@ -1,26 +1,28 @@
 import {
-    queryJobInfoAPI, addJobAPI, editJobAPI,
-    querySeaExportInfoAPI, addSeaExportAPI, editSeaExportAPI,
-    querySeaImportInfoAPI, addSeaImportAPI, editSeaImportAPI
+    queryJobInfoAPI,
+    addJobAPI,
+    editJobAPI,
+    querySeaExportInfoAPI,
+    addSeaExportAPI,
+    editSeaExportAPI,
+    querySeaImportInfoAPI,
+    addSeaImportAPI,
+    editSeaImportAPI,
+    queryLocalDeliveryInfoAPI,
+    addLocalDeliveryAPI,
+    editLocalDeliveryAPI
 } from '@/services/smart/job/job-info';
 import {useCallback, useState} from "react";
 
-
-
 export default () => {
-    //region TODO: 业务详情结构表
-    //endregion
-
     const [ServiceTypeList, setServiceTypeList] = useState([]);
     // TODO: 用于分配实装数据
     const [CargoInfo, setCargoInfo] = useState<any>({});
 
-    // TODO: 单票详情
-
     //region TODO: 接口
 
     // region job
-    // TODO: 获取单票业务详情请求
+    // TODO: 获取单票业务详情数据
     const queryJobInfo = useCallback(async (params: APIModel.GetCJobByID) => {
         // TODO: 请求后台 API
         const response: API.Result = await queryJobInfoAPI(params);
@@ -52,7 +54,6 @@ export default () => {
         }
         return response;
     }, []);
-
 
     // TODO: 编辑单票
     // POST /engine/web/forwardJob/editJob
@@ -112,7 +113,7 @@ export default () => {
     }, []);
 
     // TODO: 新增海运进口服务信息
-    // POST /engine/web/seaExport/addSeaExport
+    // POST /engine/web/seaImport/addSeaImport
     // API ID:98135707
     // API URL:https://app.apifox.com/project/2684231/apis/api-98135707
     const addSeaImport = useCallback(async (params: {id: string}) => {
@@ -127,6 +128,36 @@ export default () => {
     const editSeaImport = useCallback(async (params: {id: string}) => {
         // TODO: 请求后台 API
         return await editSeaImportAPI(params);
+    }, []);
+    //endregion
+
+
+    //region 本地交付
+    // TODO: 查询本地交付服务信息
+    // POST /engine/web/localDelivery/queryLocalDeliveryInfo
+    // API ID:98140491
+    // API URL:https://app.apifox.com/link/project/2684231/apis/api-98140491
+    const queryLocalDeliveryInfo = useCallback(async (params: {id: string}) => {
+        // TODO: 请求后台 API
+        return await queryLocalDeliveryInfoAPI(params);
+    }, []);
+
+    // TODO: 新增本地交付服务信息
+    // POST /engine/web/localDelivery/addLocalDelivery
+    // API ID:98140362
+    // API URL:https://app.apifox.com/link/project/2684231/apis/api-98140362
+    const addLocalDelivery = useCallback(async (params: {id: string}) => {
+        // TODO: 请求后台 API
+        return await addLocalDeliveryAPI(params);
+    }, []);
+
+    // TODO: 编辑本地交付服务信息
+    // POST /engine/web/localDelivery/editLocalDelivery
+    // API ID:98141148
+    // API URL:https://app.apifox.com/link/project/2684231/apis/api-98141148
+    const editLocalDelivery = useCallback(async (params: {id: string}) => {
+        // TODO: 请求后台 API
+        return await editLocalDeliveryAPI(params);
     }, []);
     //endregion
 
@@ -150,5 +181,9 @@ export default () => {
         querySeaImportInfo,
         addSeaImport,
         editSeaImport,
+
+        queryLocalDeliveryInfo,
+        addLocalDelivery,
+        editLocalDelivery,
     }
 }

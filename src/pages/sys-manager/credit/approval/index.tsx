@@ -19,7 +19,7 @@ import {
     NATURE_OF_COMPANY, POSITION_IN_INDUSTRY,
     PROPERTY_AS_CUSTOMER
 } from '@/utils/common-data'
-import {ArrowLeftOutlined, CheckOutlined, CloseOutlined} from '@ant-design/icons'
+import {LeftOutlined, CheckOutlined, CloseOutlined} from '@ant-design/icons'
 import arrow from '@/assets/img/left-arrow.png';
 import moment from "moment/moment";
 import ls from 'lodash'
@@ -672,7 +672,7 @@ const CreditApproval: React.FC<RouteChildrenProps> = () => {
 
                 <FooterToolbar
                     extra={
-                        <Button onClick={() => history.push({pathname: '/manager/credit'})} icon={<ArrowLeftOutlined/>}>
+                        <Button onClick={() => history.push({pathname: '/manager/credit'})} icon={<LeftOutlined/>}>
                             Back
                         </Button>
                     }

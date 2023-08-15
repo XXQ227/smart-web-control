@@ -19,6 +19,7 @@ const Pickup: React.FC<Props> = (props) => {
         <ProCard
             title={props.title}
             bordered={true}
+            className={'ant-card'}
             headerBordered
             collapsible
         >

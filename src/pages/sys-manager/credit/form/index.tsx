@@ -25,7 +25,7 @@ import ls from 'lodash'
 import FormItemSelect from '@/components/FormItemComponents/FormItemSelect'
 import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 import moment from 'moment'
-import {ArrowLeftOutlined, SaveOutlined, SendOutlined} from "@ant-design/icons";
+import {LeftOutlined, SaveOutlined, SendOutlined} from "@ant-design/icons";
 
 const FormItem = Form.Item;
 
@@ -753,7 +753,7 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
 
                 <FooterToolbar
                     extra={
-                        <Button onClick={() => history.push({pathname: '/manager/credit'})} icon={<ArrowLeftOutlined/>}>
+                        <Button onClick={() => history.push({pathname: '/manager/credit'})} icon={<LeftOutlined/>}>
                             Back
                         </Button>
                     }

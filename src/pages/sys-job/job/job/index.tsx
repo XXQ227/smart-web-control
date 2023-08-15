@@ -18,7 +18,6 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
     const id = atob(params.id);
     const [form] = Form.useForm();
 
-
     const {
         queryJobInfo, addJob, editJob
     } = useModel('job.job', (res: any) => ({
@@ -133,7 +132,7 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
                 layout="vertical"
                 name={'formJobInfo'}
                 initialValues={CJobInfo}
-                className={styles.basicInfoProForm}
+                className={'basicInfoProForm'}
                 submitter={{
                     // 完全自定义整个区域
                     render: () =>

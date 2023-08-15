@@ -206,7 +206,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
         >
             <Row gutter={24}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={22} xxl={20}>
-                    <div className={'title'}>
+                    <div className={'container-list-title'}>
                         <div className={'ant-div-left'}>
                             <span>Container List</span>
                         </div>

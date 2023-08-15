@@ -77,7 +77,7 @@ const BillOfLoading: React.FC<Props> = (props) => {
         <ProCard
             title={props.title}
             bordered={true}
-            className={'seaExportBillOfLoading'}
+            className={'ant-card seaExportBillOfLoading'}
             headerBordered
             collapsible
         >

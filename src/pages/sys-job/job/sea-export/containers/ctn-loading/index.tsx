@@ -439,7 +439,7 @@ const CTNLoading: React.FC<Props> = (props) => {
     }
 
     return (
-        <ProCard title={'Containers Loading Detail'} bordered headerBordered collapsible>
+        <ProCard title={'Containers Loading Detail'} bordered headerBordered collapsible className={'ant-card'}>
             <Row gutter={24}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={20}>
                     {/* 进口隐藏 */}

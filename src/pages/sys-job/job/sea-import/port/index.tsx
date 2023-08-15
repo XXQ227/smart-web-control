@@ -50,7 +50,7 @@ const Ports: React.FC<Props> = (props) => {
         <ProCard
             title={props.title}
             bordered={true}
-            className={'seaExportPort'}
+            className={'ant-card seaExportPort'}
             headerBordered
             collapsible
         >
