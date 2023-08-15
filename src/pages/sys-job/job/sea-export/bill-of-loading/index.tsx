@@ -1,72 +1,50 @@
 import React from 'react';
-import {Col, Row} from "antd";
-import {rowGrid} from "@/utils/units";
-import {ProCard, ProFormTextArea} from "@ant-design/pro-components";
-import {getUserID} from "@/utils/auths";
-import SearchSelectInput from "@/components/SearchSelectInput";
+import {Col, Row} from 'antd';
+import {rowGrid} from '@/utils/units';
+import {ProCard} from '@ant-design/pro-components';
+import SearchSelectInput from '@/components/SearchSelectInput';
+import FormItemTextArea from '@/components/FormItemComponents/FormItemTextArea'
 
 interface Props {
     title: string,
-    Port?: APIModel.Port,
-    NBasicInfo?: APIModel.NBasicInfo,
+    form?: any,
 }
 
 const BillOfLoading: React.FC<Props> = (props) => {
-    const  {NBasicInfo} = props;
-    const mblVO: any = NBasicInfo?.MBSCN;
-    const hblVO: any = NBasicInfo?.HBSCN;
-
-    // const [mblVO, setMBLVO] = React.useState(NBasicInfo?.MBSCN);
-    // const [hblVO, setHBLVO] = React.useState(NBasicInfo?.HBSCN);
+    const {form} = props;
 
 
-    const BlDOM = (label: string, domID: string, fieldName: string, value?: any) => {
-        // const ItemColSpan = ItemLayout(4, 20);
+    /**
+     * @Description: TODO:
+     * @author XXQ
+     * @date 2023/7/26
+     * @param filedName 操作的数据字段
+     * @param val       修改的值
+     * @param option    其他数据
+     * @returns
+     */
+    const handleChange = (filedName: string, val: any, option?: any) => {
+        // const setValueObj: any = {billOfLoadingEntity: {[filedName]: val}};
+        // console.log(option);
+        // form.setFieldsValue(setValueObj);
+    }
+
+    const BlDOM = (label: string, domID: string, fieldName: string) => {
 
         return (
             <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
-                {/*<SearchProFormSelect
-                    qty={5}
-                    required={false}
-                    label={label}
-                    id={domID}
-                    name={domID}
-                    url={'/apiLocal/CT/GetCTByStrNoPage'}
-                    query={{ UserID: getUserID() }}
-                    // prefix={<IconFont type={'icon-search'} />}
-                    // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
-                />*/}
                 <div className={'ant-form-shipperInfoItem'}>
                     <label>{label}</label>
                     <SearchSelectInput
                         qty={5}
-                        filedValue={'ID'}
-                        id={'name_full_en'}
-                        filedLabel={'NameFull'}
-                        // valueObj={companyNameEN}
-                        query={{ UserID: getUserID() }}
-                        url={'/apiLocal/CT/GetCTByStrNoPage'}
-                        // handleChangeData={(val: any)=> handleChangeData(val, 'name_full_en')}
+                        id={domID}
+                        filedValue={'id'} filedLabel={'nameFullEn'}
+                        query={{branchId: '1665596906844135426', buType: 1}}
+                        url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
+                        handleChangeData={(val: any, option: any) => handleChange(fieldName, val, option)}
                     />
                 </div>
-
-                {/*<FormItem label={label} {...ItemColSpan} className={'ant-form-shipperInfoItem'}>
-                    <SearchSelectInput
-                        qty={5}
-                        filedValue={'ID'}
-                        id={'name_full_en'}
-                        filedLabel={'NameFull'}
-                        // valueObj={companyNameEN}
-                        query={{ UserID: getUserID() }}
-                        url={'/api/CT/GetCTByStrNoPage'}
-                        // handleChangeData={(val: any)=> handleChangeData(val, 'name_full_en')}
-                    />
-                </FormItem>*/}
-                <ProFormTextArea
-                    fieldProps={{rows: 6}}
-                    name={fieldName}
-                    initialValue={value}
-                />
+                <FormItemTextArea rows={6} placeholder={''} name={['billOfLoadingEntity', fieldName]} />
             </Col>
         );
     }
@@ -75,18 +53,16 @@ const BillOfLoading: React.FC<Props> = (props) => {
 
     return (
         <ProCard
-            title={props.title}
-            bordered={true}
+            headerBordered collapsible
+            title={props.title} bordered={true}
             className={'seaExportBillOfLoading'}
-            headerBordered
-            collapsible
         >
             <Row gutter={rowGrid}>
-                {BlDOM("Shipper", "SearchInputShipper", "Shipper", mblVO?.Shipper)}
-                {BlDOM("Consignee", "SearchInputConsignee", "Consignee", mblVO?.Consignee)}
-                {BlDOM("Destination Agent", "HSearchInputPODAgent", "PODAgent", hblVO?.PODAgent)}
-                {BlDOM("Notify Party", "SearchInputNotifyParty", "NotifyParty", mblVO?.NotifyParty)}
-                {BlDOM("Also Notify", "SearchInputNotifyParty2", "NotifyParty2", mblVO?.NotifyParty2)}
+                {BlDOM('Shipper', 'SearchInputShipper', 'shipper')}
+                {BlDOM('Consignee', 'SearchInputConsignee', 'consignee')}
+                {BlDOM('Destination Agent', 'SearchInputPODAgent', 'destinationAgent')}
+                {BlDOM('Notify Party', 'SearchInputNotifyParty', 'notifyParty')}
+                {BlDOM('Also Notify', 'SearchInputNotifyParty2', 'alsoNotify')}
             </Row>
         </ProCard>
     )

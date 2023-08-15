@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {RouteChildrenProps} from 'react-router'
+import type {RouteChildrenProps} from 'react-router'
 import BasicInfo from './basic-info';
 import Cargo from './cargo';
 import Payment from './payment';
-import styles from '@/pages/sys-job/job/style.less'
 import {FooterToolbar, ProCard, ProForm, ProFormTextArea} from '@ant-design/pro-components'
 import {Button, Col, Form, message, Row, Spin} from 'antd'
 import {LeftOutlined, SaveOutlined} from '@ant-design/icons'
@@ -133,7 +132,7 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
                 layout="vertical"
                 name={'formJobInfo'}
                 initialValues={CJobInfo}
-                className={styles.basicInfoProForm}
+                className={'basicInfoProForm'}
                 submitter={{
                     // 完全自定义整个区域
                     render: () =>
