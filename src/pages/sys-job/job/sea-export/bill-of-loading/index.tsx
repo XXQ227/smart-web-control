@@ -1,5 +1,5 @@
 import React from 'react';
-import {Col, Row} from 'antd';
+import {Col, Row, Space} from 'antd';
 import {rowGrid} from '@/utils/units';
 import {ProCard} from '@ant-design/pro-components';
 import SearchSelectInput from '@/components/SearchSelectInput';
@@ -33,18 +33,39 @@ const BillOfLoading: React.FC<Props> = (props) => {
 
         return (
             <Col xs={24} sm={24} md={24} lg={24} xl={12} xxl={8}>
-                <div className={'ant-form-shipperInfoItem'}>
-                    <label>{label}</label>
-                    <SearchSelectInput
-                        qty={5}
-                        id={domID}
-                        filedValue={'id'} filedLabel={'nameFullEn'}
-                        query={{branchId: '1665596906844135426', buType: 1}}
-                        url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
-                        handleChangeData={(val: any, option: any) => handleChange(fieldName, val, option)}
-                    />
-                </div>
-                <FormItemTextArea rows={6} placeholder={''} name={['billOfLoadingEntity', fieldName]} />
+                <Row gutter={24}>
+                    <Col span={24}>
+                        <Row gutter={24} className={'ant-form-shipperInfoItem'}>
+                            <Col span={6}>{label}</Col>
+                            <Col span={18}>
+                                <SearchSelectInput
+                                    qty={5}
+                                    id={domID}
+                                    filedValue={'id'} filedLabel={'nameFullEn'}
+                                    query={{branchId: '1665596906844135426', buType: 1}}
+                                    url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
+                                    handleChangeData={(val: any, option: any) => handleChange(fieldName, val, option)}
+                                />
+                            </Col>
+                        </Row>
+                        {/*<div className={'ant-form-shipperInfoItem'}>
+                            <label>{label}</label>
+                            <SearchSelectInput
+                                qty={5}
+                                id={domID}
+                                filedValue={'id'} filedLabel={'nameFullEn'}
+                                query={{branchId: '1665596906844135426', buType: 1}}
+                                url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
+                                handleChangeData={(val: any, option: any) => handleChange(fieldName, val, option)}
+                            />
+                        </div>*/}
+                    </Col>
+                </Row>
+                <Row gutter={24}>
+                    <Col span={24}>
+                        <FormItemTextArea rows={6} placeholder={''} name={['billOfLoadingEntity', fieldName]}/>
+                    </Col>
+                </Row>
             </Col>
         );
     }

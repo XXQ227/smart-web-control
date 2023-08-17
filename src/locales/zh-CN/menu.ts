@@ -20,7 +20,10 @@ export default {
   // TODO: bill
   'menu.bill': 'Billing',
   'menu.bill.ticket': '单票详情',
-  'menu.bill.bill': 'Billing',
+  'menu.bill.billing': 'Billing',
+  'menu.bill.billing.ar': 'AR',
+  'menu.bill.billing.ap': 'AP',
+  'menu.bill.billing.invoice': 'Invoice',
   'menu.bill.invoice': 'Invoice',
   'menu.bill.agent': '代收代付',
   // TODO: job

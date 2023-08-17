@@ -83,10 +83,30 @@ const bill_route = {
             ...MICRO_APP_CARGO('bill'),
         },
         {
-            name: 'bill',
+            name: 'billing',
             icon: 'icon-bill',
-            path: '/bill/bill',
-            component: './sys-bill/bill',
+            path: '/bill/billing',
+            // component: './sys-bill/bill',
+            routes: [
+                {
+                    name: 'ar',
+                    icon: 'icon-job-ship',
+                    path: '/bill/billing/ar',
+                    component: './sys-bill/bill/ar',
+                },
+                {
+                    name: 'ap',
+                    icon: 'icon-job-ship',
+                    path: '/bill/billing/ap',
+                    component: './sys-bill/bill/ap',
+                },
+                {
+                    name: 'invoice',
+                    icon: 'icon-job-ship',
+                    path: '/bill/billing/invoice',
+                    component: './sys-bill/bill/invoice',
+                },
+            ],
             ...MICRO_APP_CARGO('bill'),
         },
         {
