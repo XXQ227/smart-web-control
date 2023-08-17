@@ -1,7 +1,6 @@
 import React from 'react';
 import {ProCard, ProFormText, ProFormDateTimePicker} from '@ant-design/pro-components';
 import {Col, Row, Space, Divider} from 'antd';
-import styles from "@/pages/sys-job/job/style.less";
 import {rowGrid} from "@/utils/units";
 
 interface Props {
@@ -24,37 +23,37 @@ const NonContainerLayout: React.FC<Props> = (props) => {
             <Row gutter={rowGrid}>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
                     <ProFormText
-                        name={`Origin${batchNo}`}
+                        name={`placeOfOrigin${batchNo}`}
                         label="Place of Origin"
-                        placeholder={''}
+                        placeholder=''
                     />
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
                         <ProFormText
-                            name={`ShippingContact${batchNo}`}
+                            name={`shippingContact${batchNo}`}
                             label="Shipping Contact"
-                            placeholder={''}
+                            placeholder=''
                         />
                         <span className={'siteSpaceSpan'}  />
                         <ProFormText
-                            name={`Origin_Telephone${batchNo}`}
+                            name={`shippingContactTelephone${batchNo}`}
                             label="Telephone"
-                            placeholder={''}
+                            placeholder=''
                         />
                     </Space>
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={24} xl={20} xxl={22}>
                     <ProFormText
-                        name={`OriginAddress${batchNo}`}
+                        name={`originAddress${batchNo}`}
                         label="Origin Address"
-                        placeholder={''}
+                        placeholder=''
                     />
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12} xl={7} xxl={9}>
                     <ProFormDateTimePicker
                         width={"md"}
-                        name={`PickupTimeRequired${batchNo}`}
+                        name={`requiredPickupTime${batchNo}`}
                         label="Pickup Time (Required)"
                         initialValue={'2023-02-19 00:00:10'}
                     />
@@ -62,7 +61,7 @@ const NonContainerLayout: React.FC<Props> = (props) => {
                 <Col xs={12} sm={12} md={12} lg={12} xl={7} xxl={9}>
                     <ProFormDateTimePicker
                         width={"md"}
-                        name={`PickupTimeActual${batchNo}`}
+                        name={`actualPickupTime${batchNo}`}
                         label="Pickup Time (Actual)"
                         initialValue={'2023-02-18 00:00:10'}
                     />
@@ -70,7 +69,7 @@ const NonContainerLayout: React.FC<Props> = (props) => {
                 <Col xs={12} sm={12} md={12} lg={12} xl={7} xxl={9}>
                     <ProFormDateTimePicker
                         width={"md"}
-                        name={`DepartureTime${batchNo}`}
+                        name={`departureTime${batchNo}`}
                         label="Departure Time (Warehouse)"
                         initialValue={'2023-02-19 10:00:10'}
                     />
@@ -84,37 +83,37 @@ const NonContainerLayout: React.FC<Props> = (props) => {
             <Row gutter={rowGrid}>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
                     <ProFormText
-                        name={`Destination${batchNo}`}
+                        name={`placeOfDestination${batchNo}`}
                         label="Place of Destination"
-                        placeholder={''}
+                        placeholder=''
                     />
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
                         <ProFormText
-                            name={`ReceivingContact${batchNo}`}
+                            name={`receivingContact${batchNo}`}
                             label="Receiving Contact"
-                            placeholder={''}
+                            placeholder=''
                         />
                         <span className={'siteSpaceSpan'}  />
                         <ProFormText
-                            name={`Destination_Telephone${batchNo}`}
+                            name={`receivingContactTelephone${batchNo}`}
                             label="Telephone"
-                            placeholder={''}
+                            placeholder=''
                         />
                     </Space>
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={24} xl={20} xxl={22}>
                     <ProFormText
-                        name={`DestinationAddress${batchNo}`}
+                        name={`destinationAddress${batchNo}`}
                         label="Destination Address"
-                        placeholder={''}
+                        placeholder=''
                     />
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12} xl={7} xxl={9}>
                     <ProFormDateTimePicker
                         width={"md"}
-                        name={`DeliveryTimeRequired${batchNo}`}
+                        name={`requiredDeliveryTime${batchNo}`}
                         label="Delivery Time (Required)"
                         initialValue={'2023-02-19 00:00:10'}
                     />
@@ -122,7 +121,7 @@ const NonContainerLayout: React.FC<Props> = (props) => {
                 <Col xs={12} sm={12} md={12} lg={12} xl={7} xxl={9}>
                     <ProFormDateTimePicker
                         width={"md"}
-                        name={`DeliveryTimeActual${batchNo}`}
+                        name={`actualDeliveryTime${batchNo}`}
                         label="Delivery Time (Actual)"
                         initialValue={'2023-02-18 00:00:10'}
                     />

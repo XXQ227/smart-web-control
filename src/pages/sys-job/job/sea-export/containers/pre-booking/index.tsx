@@ -195,7 +195,7 @@ const ProBooking: React.FC<Props> = (props) => {
                         rowSelection={rowSelection}
                         columns={preBookingColumns}
                         locale={{emptyText: "NO DATA"}}
-                        className={`tableStyle containerTable`}
+                        className={'tableStyle containerTable'}
                     />
 
                     {/* // TODO: 用于保存时，获取数据用 */}
