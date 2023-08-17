@@ -78,8 +78,17 @@ export default () => {
     // API ID:98136955
     // API URL:https://app.apifox.com/project/2684231/apis/api-98136955
     const querySeaExportInfo = useCallback(async (params: {id: string}) => {
+        const response: API.Result = await querySeaExportInfoAPI(params);
         // TODO: 请求后台 API
-        return await querySeaExportInfoAPI(params);
+        if (response.success) {
+            if (response.data.billOfLoadingEntity?.length > 0) {
+                response.data.billOfLoadingEntity = response.data.billOfLoadingEntity[0] || {};
+            } else {
+                response.data.billOfLoadingEntity = {};
+            }
+            delete response.data.service;
+        }
+        return response;
     }, []);
 
     // TODO: 新增海运出口服务信息

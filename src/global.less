@@ -829,6 +829,7 @@ ol {
   }
 }
 
+
 // TODO: 港口
 .antd-pro-table-port-list {
   .ant-pro-card-body {
@@ -850,19 +851,28 @@ ol {
   width: calc(100% - 30%) !important;
 }
 
-// TODO: 费用模板
-//.ant-pro-table-search {
-//  .ant-pro-table-dict-toolbar-container{
-//    padding-top: 0!important;
-//  }
-//  .ant-pro-table-dict-toolbar-title{
-//    .ant-input-group{
-//      .ant-input{
-//        min-width: 300px!important;
-//      }
-//    }
-//  }
-//}
+.antd-pro-table-expandable {
+  .ant-pro-card-body {
+    padding: 0!important;
+  }
+  .ant-table-row-expand-icon-cell {
+    width: 26px!important;
+    padding: 0!important;
+  }
+  .ant-table-expanded-row > .ant-table-cell {
+    .ant-table-thead > tr {
+      padding: 0px!important;
+    }
+    //隐藏子表中全选按钮
+    th .ant-table-selection {
+      display: none;
+    }
+    //padding: 0!important;
+  //  .ant-table-cell {
+  //    padding: 0!important;
+  //  }
+  }
+}
 
 .ant-pro-table-charge-info .ant-table .ant-table-content .ant-table-tbody .ant-form-item .ant-form-item-control-input-content .ant-input-status-error::after{
   content: 'is required.';

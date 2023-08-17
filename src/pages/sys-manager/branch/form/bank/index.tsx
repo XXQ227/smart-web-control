@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import type {ProColumns} from '@ant-design/pro-components';
 import {ProTable} from '@ant-design/pro-components'
 import {DeleteOutlined, PlusOutlined} from '@ant-design/icons'
-import {Popconfirm, Button, message, Form} from 'antd'
+import {Popconfirm, Button, message} from 'antd'
 import ls from 'lodash'
 import {ID_STRING} from '@/utils/units'
 import FormItemInput from '@/components/FormItemComponents/FormItemInput'

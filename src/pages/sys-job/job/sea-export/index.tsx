@@ -94,10 +94,10 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
                         ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id, jobId})
                     );
             }
-            if (params.billOfLoadingEntity?.length > 0) {
-                params.billOfLoadingEntity = params.billOfLoadingEntity.map((item: any)=>
-                    ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id, jobId})
-                );
+            // TODO: 提单信息
+            if (JSON.stringify(params.billOfLoadingEntity) !== '{}') {
+                params.billOfLoadingEntity.jobId = jobId;
+                params.billOfLoadingEntity = [params.billOfLoadingEntity];
             }
 
             let result: API.Result;

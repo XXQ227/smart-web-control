@@ -184,7 +184,7 @@ function DebounceSelect<
                 onFocus={()=> valueObj.value ? debounceFetcher(valueObj.value) : null}
                 prefix={fetching ? <LoadingOutlined color={'rgba(0,0,0,.25)'} /> : <IconFont type={'icon-search'} />}
             />
-            <div className={classNames(wrapClass)} style={{ minHeight: '100%', top: 32, left: '0' }}>
+            <div className={classNames(wrapClass)} style={{ minHeight: '100%', top: 32, left: 0 }}>
                 <ul className="ant-select-dropdown-menu ant-select-dropdown-menu-customize">
                     {
                         options.map((item, index) => {

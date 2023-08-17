@@ -69,8 +69,8 @@ const Basic: React.FC<Props> = (props) => {
                                 name={'switchBlAgentId'}
                                 label={"Switch B/L Agent"}
                                 filedValue={'id'} filedLabel={'nameFullEn'}
-                                url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                                 query={{branchId: '1665596906844135426', buType: 1}}
+                                url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                                 handleChangeData={(val: any, option: any) => handleChange('switchBlAgentId', val, option)}
                             />
                         </Col>

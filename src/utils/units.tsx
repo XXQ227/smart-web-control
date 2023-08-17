@@ -7,10 +7,7 @@ export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_cozf2shjo6.js';
 
 // TODO: 系统五字码
 export const SYSTEM_ID = 99003;
-export const SYSTEM_ID_LAND = 36035;
-export const SYSTEM_KEY_TEST_LAND = 'aa532a0-6492-44e5-b1f4-a212278c9860';
 export const SYSTEM_KEY_TEST = '2e6a8552-1a36-4d02-bd9f-8d83f2d528a9';
-export const SYSTEM_KEY_PRODUCT = 'a56aa88d-c8c6-4ee5-a67a-f8cb8a4c2bfd';
 
 // TODO: 自定义图标使用 【For Example: <CustomizeIcon type={'icon-create'} />】
 export const CustomizeIcon = createFromIconfontCN({
