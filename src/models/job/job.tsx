@@ -18,6 +18,7 @@ export default () => {
     const [ServiceTypeList, setServiceTypeList] = useState([]);
     // TODO: 用于分配实装数据
     const [CargoInfo, setCargoInfo] = useState<any>({});
+    const [jobInfo, setJobInfo] = useState<any>({});
 
     //region TODO: 接口
 
@@ -33,6 +34,7 @@ export default () => {
             // TODO: job 的服务信息
             setServiceTypeList(response?.data?.serviceTypeList || []);
             setCargoInfo(response?.data?.cargoInformationResult || {});
+            setJobInfo(response?.data || {});
             delete response.data.cargoInformationResult;
             delete response.data.termsResult;
             delete response.data.service;
@@ -177,6 +179,7 @@ export default () => {
     return {
         queryJobInfo,
         CargoInfo,
+        jobInfo,
 
         addJob,
         editJob,

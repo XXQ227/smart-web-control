@@ -41,7 +41,6 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
         AccountPeriodList: res.AccountPeriodList,
     }))
 
-
     const [CJobInfo, setCJobInfo] = useState<any>({});
     const [loading, setLoading] = useState(false);
 

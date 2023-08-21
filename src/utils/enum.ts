@@ -33,19 +33,19 @@ export const OCEAN_TRANSPORT_TYPE_ENUM = {
 
 // TODO: 费用状态枚举值
 export const CHARGE_STATE_ENUM = {
-    '1': {text: 'Draft', status: 'Draft', key: 1},
-    '2': {text: 'Submitted', status: 'Submitted', key: 2},
-    '3': {text: 'Approved', status: 'Approved', key: 3},
-    '4': {text: 'Bill Issued', status: 'Bill Issued', key: 4},
-    '5': {text: 'Invoice Issued', status: 'Invoice Issued', key: 5},
-    '6': {text: 'Invoice', status: 'Invoice', key: 6},
-    '7': {text: 'Financial Confirmed', status: 'Financial Confirmed', key: 7},
-    '8': {text: 'Partial Settled', status: 'Partial Settled', key: 8},
-    '9': {text: 'Completed', status: 'Completed', key: 9},
+    1: {text: 'Draft', status: 'Draft', key: 1},
+    2: {text: 'Submitted', status: 'Submitted', key: 2},
+    3: {text: 'Approved', status: 'Approved', key: 3},
+    4: {text: 'Bill Issued', status: 'Bill Issued', key: 4},
+    5: {text: 'Invoice Issued', status: 'Invoice Issued', key: 5},
+    6: {text: 'Invoice', status: 'Invoice', key: 6},
+    7: {text: 'Financial Confirmed', status: 'Financial Confirmed', key: 7},
+    8: {text: 'Partial Settled', status: 'Partial Settled', key: 8},
+    9: {text: 'Completed', status: 'Completed', key: 9},
     // TODO: 押金状态
-    '10': {text: 'Paid', status: 'Paid', key: 10},
-    '11': {text: 'Returned', status: 'Returned', key: 11},
-    '12': {text: 'Partial Return', status: 'Partial Return', key: 12},
+    10: {text: 'Paid', status: 'Paid', key: 10},
+    11: {text: 'Returned', status: 'Returned', key: 11},
+    12: {text: 'Partial Return', status: 'Partial Return', key: 12},
 };
 
 // TODO: 账期期间类型举值  1-正常账期 2-补录账期
@@ -84,6 +84,5 @@ export const SALES_ENUM = {
     0: {text: 'No', status: 'No', key: 0},
     1: {text: 'Yes', status: 'Yes', key: 1},
 }
-
 
 

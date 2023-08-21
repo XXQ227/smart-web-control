@@ -1,6 +1,12 @@
-import {GetNJobCGSByIDAPI} from '@/services/smart/job/job-info';
+import {
+    deleteChargesAPI,
+    GetNJobCGSByIDAPI,
+    queryChargesByJobIdAPI,
+    saveChargesAPI
+} from '@/services/smart/job/job-info';
 import type React from "react";
 import {useCallback, useState} from "react";
+import {formatNumToMoney} from '@/utils/units'
 
 interface T {
     resResult: object,
@@ -15,12 +21,7 @@ interface T {
 
 export default (callback: T, deps: React.DependencyList) => {
     //region TODO: 费用详情结构表
-    const jobChargeInfo: APIModel.NJobDetailDto = {
-        ID: 0,
-        PayCGList: [],
-        ReceiveCGList: [],
-        ProxyCGList: [],
-    };
+
     // TODO: 费用的币种、发票类型数据，创建费用时用
     const chargeBaseInfo: APIModel.AccountPeriodInfo = {
         CurrencyOpts: [],
@@ -30,7 +31,6 @@ export default (callback: T, deps: React.DependencyList) => {
     //endregion
 
     // TODO: 单票详情
-    const [JobChargeInfo, setJobChargeInfo] = useState(jobChargeInfo || {});
     // TODO: 费用基础信息
     const [ChargeBaseInfo, setChargeBaseInfo] = useState(chargeBaseInfo || {});
     // TODO: 发票类型
@@ -44,14 +44,13 @@ export default (callback: T, deps: React.DependencyList) => {
         // TODO: 请求后台 API
         const response: APIModel.GetCJobByIDResponse = await GetNJobCGSByIDAPI(params);
         if (!response) return;
-        const NJobDetailDto = response.Content?.NJobDetailDto || jobChargeInfo;
+        const NJobDetailDto = response.Content?.NJobDetailDto;
         const ChargeBaseInfoDto = response.Content?.AccountPeriodInfo || chargeBaseInfo;
         const PayInvoTypeListDto = response.Content?.PayInvoTypeList || apInvoTypeList;
         const ResInvoTypeListDto = response.Content?.ResInvoTypeList || arInvoTypeList;
         if (response.Result) {
             // TODO: 整理返回结果
             // TODO: 将数据存到 model 里
-            setJobChargeInfo(NJobDetailDto);
             setChargeBaseInfo(ChargeBaseInfoDto);
             setPayInvoTypeList(PayInvoTypeListDto);
             setResInvoTypeList(ResInvoTypeListDto);
@@ -59,15 +58,58 @@ export default (callback: T, deps: React.DependencyList) => {
         setResResult(response);
         return NJobDetailDto;
     }, []);
+
+
+    // TODO: 查询费用
+    const queryChargesByJobId = useCallback(async (params: {id: string}) => {
+        // TODO: 请求后台 API
+        const response: API.Result = await queryChargesByJobIdAPI(params);
+        if (response.success && response.data) {
+            if (response.data.chargeARList?.length > 0) {
+                response.data.chargeARList = response.data.chargeARList.map((item: any)=> (getCGItem(item)))
+            }
+            if (response.data.chargeAPList?.length > 0) {
+                response.data.chargeAPList = response.data.chargeAPList.map((item: any)=> (getCGItem(item)))
+            }
+        }
+        return response;
+    }, []);
+
+    // TODO: 保存费用
+    const saveCharges = useCallback(async (params: {id: string}) => {
+        // TODO: 请求后台 API
+        const response: API.Result = await saveChargesAPI(params);
+        return response;
+    }, []);
+
+    // TODO: 删除费用
+    const deleteCharges = useCallback(async (params: any) => {
+        // TODO: 请求后台 API
+        return await deleteChargesAPI(params);
+    }, []);
     //endregion
 
 
     return {
         resResult,
-        JobChargeInfo,
         ChargeBaseInfo,
         PayInvoTypeList,
         ResInvoTypeList,
         getCJobCGByID,
+
+        queryChargesByJobId,
+        saveCharges,
+        deleteCharges,
     }
+}
+
+// TODO: 处理费用的部分数据
+function getCGItem (item: any) {
+    return {
+        ...item,
+        qtyStr: formatNumToMoney(item.qty),
+        orgUnitPriceStr: formatNumToMoney(item.orgUnitPrice),
+        orgAmountStr: formatNumToMoney(item.orgAmount),
+        orgBillExrateStr: formatNumToMoney(item.orgBillExrate),
+    };
 }

@@ -367,6 +367,12 @@ ol {
       }
     }
     .ant-table-content, .ant-table-body {
+      // TODO: 当选中时，给编辑框加个背景
+      .ant-table-tbody > tr.ant-table-row-selected > td {
+        input, select, .ant-select-selector, .ant-input-affix-wrapper{
+          background-color: #113545!important;
+        }
+      }
       .ant-table-tbody{
         input, select, .ant-select-selector, .ant-input-affix-wrapper{
           border: 0!important;

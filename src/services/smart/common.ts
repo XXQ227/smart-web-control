@@ -18,3 +18,12 @@ export async function queryDictDetailCommonAPI(body: any) {
   });
 }
 
+
+/** 获取字典详情通用接口 */
+export async function queryInvoiceTypeCommonAPI(body: any) {
+  return request(`/apiBase/invoiceType/queryInvoiceTypeCommon`, {
+    method: 'POST',
+    body
+  });
+}
+

@@ -9,7 +9,7 @@ import {CHARGE_STATE_ENUM} from '@/utils/enum'
 import {stringify} from 'querystring';
 import ls from 'lodash';
 import SearchModal from '@/components/SearchModal';
-import {ProTable} from "@ant-design/pro-components";
+import {ProCard, ProTable} from "@ant-design/pro-components";
 import type {ProColumns} from '@ant-design/pro-table';
 
 const Option = Select.Option;
@@ -426,7 +426,7 @@ const Agent: React.FC<Props> = (props) => {
             return (
                 Object.keys(obj).map((item, index) => {
                     return (
-                        <div key={index + 1} className="result-text" style={{float: "left"}}>
+                        <div key={`${index + 1}`} className="result-text" style={{float: "left"}}>
                             <span style={{fontWeight: 500}}>{item}：</span>
                             <b>{formatNumToMoney(keepDecimal(obj[item].total).toFixed(2))}</b>
                         </div>
@@ -440,25 +440,27 @@ const Agent: React.FC<Props> = (props) => {
     // endregion
 
     return (
-        <Row gutter={24}>
-            <Col span={24}>
-                <div>{total}</div>
-                <ProTable<APICGInfo>
-                    rowKey={'CGID'}
-                    search={false}
-                    options={false}
-                    bordered={true}
-                    pagination={false}
-                    columns={columns}
-                    dataSource={cgList}
-                    locale={{ emptyText: 'No Data' }}
-                    className={'ant-pro-table-charge-info ant-pro-table-edit'}
-                />
-            </Col>
-            <Col span={24}>
-                <Button icon={<PlusOutlined/>} onClick={handleAdd} className={'ant-btn-charge-add'}>Add Charge</Button>
-            </Col>
-        </Row>
+        <ProCard title={'Reimbursement'} bordered={true} headerBordered className={'ant-card'}>
+            <Row gutter={24}>
+                <Col span={24}>
+                    <div>{total}</div>
+                    <ProTable<APICGInfo>
+                        rowKey={'CGID'}
+                        search={false}
+                        options={false}
+                        bordered={true}
+                        pagination={false}
+                        columns={columns}
+                        dataSource={cgList}
+                        locale={{ emptyText: 'No Data' }}
+                        className={'ant-pro-table-charge-info ant-pro-table-edit'}
+                    />
+                </Col>
+                <Col span={24}>
+                    <Button icon={<PlusOutlined/>} onClick={handleAdd} className={'ant-btn-charge-add'}>Add Charge</Button>
+                </Col>
+            </Row>
+        </ProCard>
     )
 }
 export default Agent;

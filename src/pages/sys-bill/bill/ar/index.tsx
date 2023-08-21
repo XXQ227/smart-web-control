@@ -55,13 +55,13 @@ const BillingAR: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     const onSelect = (record: any, selected: boolean) => {
-        const cgIdArr: any[] = record.cgList?.map((item: any) => item.id) || [];
+        const cgIdArr: any[] = record.child?.map((item: any) => item.id) || [];
         let childKeys: React.Key[] = selectedChildKeys.slice(0),
             childRows: any[] = selectChildRows.slice(0);
         if (selected) {
             // TODO: 选中添加 当前行的费用
             childKeys.push(...cgIdArr);
-            childRows.push(...record.cgList);
+            childRows.push(...record.child);
         } else {
             // TODO: 取消选中：删除当前行的费用
             childKeys = childKeys.filter((key: React.Key) => !cgIdArr.includes(key));
@@ -86,8 +86,8 @@ const BillingAR: React.FC<RouteChildrenProps> = () => {
         if (selected) {
             let cgIdArr: React.Key[] = [], childArr: any[] = [];
             if (selectedRow?.length > 0) {
-                cgIdArr = selectedRow.map((item: any) => item.cgList?.map((cg: any) => cg.id)).flat();
-                childArr = selectedRow.map((item: any) => item.cgList).flat();
+                cgIdArr = selectedRow.map((item: any) => item.child?.map((cg: any) => cg.id)).flat();
+                childArr = selectedRow.map((item: any) => item.child).flat();
             }
             // TODO: 选中添加 当前行的费用
             childKeys.push(...cgIdArr);
@@ -149,7 +149,7 @@ const BillingAR: React.FC<RouteChildrenProps> = () => {
         }
         //region TODO: 以下判断是否需要选中父级数据
         // TODO: 获取当前 job 下所有费用条数
-        const cgIdNumArr: React.Key[] = cgRows.cgList?.map((cg: any) => cg.id);
+        const cgIdNumArr: React.Key[] = cgRows.child?.map((cg: any) => cg.id);
         // TODO: 找出当前 job 下的费用，在选中的费用行中有多少条
         const localJobCGs: React.Key[] = childKeys.filter((key: React.Key) => cgIdNumArr.includes(key));
         // TODO: 当选中的费用等于所有费用时，父级数据也一并被选中

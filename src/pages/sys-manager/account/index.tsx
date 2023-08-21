@@ -17,7 +17,7 @@ type APISearchAccountParams = APIManager.SearchAccountParams;
 // TODO: 获取账期列表的请求参数
 const searchParams: APISearchAccountParams = {
     finaYear: moment(new Date()).year().toString(),
-    branchId: '0',
+    branchId: '1665596906844135426',
 };
 
 const AccountListIndex: React.FC<RouteChildrenProps> = () => {

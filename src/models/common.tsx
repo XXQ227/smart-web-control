@@ -1,6 +1,6 @@
 import {useCallback, useState} from "react";
 import {
-    queryDictCommonAPI, queryDictDetailCommonAPI
+    queryDictCommonAPI, queryDictDetailCommonAPI, queryInvoiceTypeCommonAPI
 } from '@/services/smart/common'
 import {queryAccountPeriodCommonAPI, queryStartAccountPeriodInfoAPI} from '@/services/smart/manager/account'
 import {getTransferDate} from '@/utils/units'
@@ -18,6 +18,7 @@ export default () => {
     const [VendorTypeList, setVendorTypeList] = useState([]);
     const [CTNModelList, setCTNModelList] = useState([]);
     const [AccountPeriodList, setAccountPeriodList] = useState([]);
+    const [InvoTypeList, setInvoTypeList] = useState([]);
 
     // TODO: 获取字典数据
     const queryDictCommon = useCallback(async (params: {dictCodes: any}) => {
@@ -86,7 +87,7 @@ export default () => {
     // POST /base/web/accountPeriod/queryAccountPeriodCommon
     // API ID:98908726
     // API URL:https://app.apifox.com/project/2684231/apis/api-98908726
-    const queryAccountPeriodCommon = useCallback(async (params: {UserID: number, ID: number}) => {
+    const queryAccountPeriodCommon = useCallback(async (params: any) => {
         // TODO: 请求后台 API
         const response: API.Result = await queryAccountPeriodCommonAPI(params);
         if (!response) return;
@@ -106,11 +107,24 @@ export default () => {
     // POST /base/web/accountPeriod/queryStartAccountPeriodInfo
     // API ID:100610076
     // API URL:https://app.apifox.com/project/2684231/apis/api-100610076
-    const queryStartAccountPeriodInfo = useCallback(async (params: {UserID: number, ID: number}) => {
+    const queryStartAccountPeriodInfo = useCallback(async (params: any) => {
         // TODO: 请求后台 API
         const response = await queryStartAccountPeriodInfoAPI(params);
         if (!response) return;
         return response;
+    }, []);
+
+    // TODO: 获取发票类型通用信息
+    // POST /base/web/invoiceType/queryInvoiceTypeCommon
+    // API ID:89997977
+    // API URL:https://app.apifox.com/project/2684231/apis/api-89997977
+    const queryInvoiceTypeCommon = useCallback(async (params: {name: string, branchId: any}) => {
+        // TODO: 请求后台 API
+        const response = await queryInvoiceTypeCommonAPI(params);
+        if (!response) return;
+        if (response.success) {
+            setInvoTypeList(response.data || []);
+        }
     }, []);
 
     return {
@@ -128,5 +142,7 @@ export default () => {
         queryAccountPeriodCommon,
         AccountPeriodList,
         queryStartAccountPeriodInfo,
+        queryInvoiceTypeCommon,
+        InvoTypeList,
     }
 }

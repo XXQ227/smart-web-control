@@ -117,3 +117,30 @@ export async function GetNJobCGSByIDAPI(body: APIModel.GetCJobByID) {
         method: 'GET',
     });
 }
+
+// TODO: 获取单票费用详情数据
+export async function queryChargesByJobIdAPI(body: any) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiAccounting/charge/queryChargesByJobId/`, {
+        method: 'POST',
+        body,
+    });
+}
+
+// TODO: 获取单票费用详情数据
+export async function saveChargesAPI(body: any) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiAccounting/charge/saveCharges/`, {
+        method: 'POST',
+        body,
+    });
+}
+
+// TODO: 获取单票费用详情数据
+export async function deleteChargesAPI(body: any) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiAccounting/charge/deleteCharges/`, {
+        method: 'POST',
+        body,
+    });
+}

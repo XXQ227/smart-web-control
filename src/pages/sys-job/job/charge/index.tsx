@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
-import {FooterToolbar, PageContainer, ProCard, ProForm} from '@ant-design/pro-components';
-import {Button, Col, Form, message, Row} from 'antd';
+import {FooterToolbar, ProForm} from '@ant-design/pro-components';
+import {Button, Form, message, Spin} from 'antd';
 import {history, useModel, useParams} from 'umi';
 import {getFormErrorMsg} from '@/utils/units';
 import ChargeTable from '@/pages/sys-job/job/charge/chargeTable';
@@ -12,17 +12,22 @@ const FormItem = Form.Item;
 // TODO: 数据类型1
 type APICGInfo = APIModel.PRCGInfo;
 
-let isLoadingData = false;
-const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
-    const params: any = useParams();
-    const id = atob(params.id);
+const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
+    const urlParams: any = useParams();
+    const jobId = atob(urlParams.id);
     //region TODO: 数据层
     const {
-        JobChargeInfo: {PayCGList, ReceiveCGList, ProxyCGList}, getCJobCGByID
+        queryChargesByJobId, saveCharges
     } = useModel('job.jobCharge', (res: any) => ({
-        JobChargeInfo: res.JobChargeInfo,
-        getCJobCGByID: res.getCJobCGByID,
+        queryChargesByJobId: res.queryChargesByJobId,
+        saveCharges: res.saveCharges,
     }));
+    const {
+        queryInvoiceTypeCommon, InvoTypeList,
+    } = useModel('common', (res: any)=> ({
+        queryInvoiceTypeCommon: res.queryInvoiceTypeCommon,
+        InvoTypeList: res.InvoTypeList,
+    }))
     //endregion
 
     /** 实例化Form */
@@ -31,18 +36,36 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
     // TODO: 用来判断是否是第一次加载数据
     const [loading, setLoading] = useState(false);
 
-    const [payCGList, setPayCGList] = useState<APICGInfo[]>(PayCGList || []);
-    const [receiveCGList, setReceiveCGList] = useState<APICGInfo[]>(ReceiveCGList || []);
-    const [proxyCGList, setProxyCGList] = useState<APICGInfo[]>(ProxyCGList || []);
-    const [updateState, setUpdateState] = useState(false);
+    const [payCGList, setPayCGList] = useState<APICGInfo[]>([]);
+    const [receiveCGList, setReceiveCGList] = useState<APICGInfo[]>([]);
+    const [proxyCGList, setProxyCGList] = useState<APICGInfo[]>([]);
+
+    const [selectedKeyObj, setSelectedKeyObj] = useState<any>({});
+    const [selectedRowObj, setSelectedRowObj] = useState<any>({});
+
+    const [isCopyNoSame, setIsCopyNoSame] = useState<boolean>(false);
 
     useEffect(() => {
 
     }, [])
 
     async function handleQueryJobChargeInfo() {
-        alert('loading job charge info !!!');
-        return {};
+        setLoading(true);
+        if (InvoTypeList?.length === 0) {
+            await queryInvoiceTypeCommon({branchId: '1665596906844135426', name: ''});
+        }
+        const result: API.Result = await queryChargesByJobId({id: jobId});
+        setLoading(false);
+        if (result.success) {
+            const {chargeAPList, chargeARList,  reimbursementChargeList} = result.data;
+            setPayCGList(chargeAPList || []);
+            setReceiveCGList(chargeARList || []);
+            setProxyCGList(reimbursementChargeList || []);
+            return result.data || {};
+        } else {
+            if (result.message) message.error(result.message);
+            return {};
+        }
     }
 
     /**
@@ -51,15 +74,47 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
      * @date 2023/4/11
      * @param data      操作后的数据
      * @param CGType    操作的 【AR / AP】
+     * @param state     操作动作：TODO: 【copy: 复制】
      * @returns
      */
-    const handleChangeData = (data: any, CGType: number) => {
-        if (CGType === 1) {
-            setReceiveCGList(data);
+    const handleChangeData = (data: any, CGType: number, state?: any) => {
+        // TODO: 此复制为反向复制，【ar => ap】 or 【ap => ar】
+        if (state === 'copy') {
+            if (CGType === 1) {
+                const newData = payCGList.slice(0);
+                newData.push(...data);
+                setPayCGList(newData);
+                form.setFieldsValue({payCGList: newData});
+            } else {
+                const newData = receiveCGList.slice(0);
+                newData.push(...data);
+                setReceiveCGList(newData)
+                form.setFieldsValue({receiveCGList: newData});
+            }
+            setIsCopyNoSame(true);
         } else {
-            setPayCGList(data);
+            if (CGType === 1) {
+                setReceiveCGList(data);
+            } else {
+                setPayCGList(data);
+            }
         }
-        setUpdateState(true);
+    }
+
+    /**
+     * @Description: TODO: 处理所有选中的费用信息
+     * @author XXQ
+     * @date 2023/8/21
+     * @param selectRowKeys     选中行的 id 集合
+     * @param selectRows        选中的费用行
+     * @param key               费用类型： 1：ar; 2、ap; 3、代收代付;
+     * @returns
+     */
+    const handleChangeRows = (selectRowKeys: any[], selectRows: any[], key: string) => {
+        selectedKeyObj[key] = selectRowKeys;
+        selectedRowObj[key] = selectRows;
+        setSelectedKeyObj(selectedKeyObj);
+        setSelectedRowObj(selectedRowObj);
     }
 
     /**
@@ -69,18 +124,41 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const handleSave = async (values: any) => {
-        console.log(values);
         form.validateFields()
             .then(async () => {
-                /** 正确后的验证信息 */
-                if (updateState) {
-                    const apChangeList: APICGInfo[] = payCGList.filter((item: APICGInfo)=> item.isChange) || [];
-                    const arChangeList: APICGInfo[] = receiveCGList.filter((item: APICGInfo)=> item.isChange) || [];
-                    const proxyChangeList: APICGInfo[] = proxyCGList.filter((item: APICGInfo)=> item.isChange) || [];
-                    const isChangeCG: APICGInfo[] = [...arChangeList, ...apChangeList, ...proxyChangeList];
-                    console.log(isChangeCG, arChangeList );
+                // @ts-ignore // TODO: 删除对应的 table 里的录入数据
+                for (const item: string in values) {
+                    if (item.indexOf('_table_') > -1) {
+                        delete values[item];
+                    }
+                }
+                console.log(selectedKeyObj, selectedRowObj);
+                const params = {
+                    jobId, branchId: '1665596906844135426', taxMethod: 1,
+                    ...values, chargeList: [], reimbursementChargeList: [],
+                };
+
+                if (params.receiveCGList?.length > 0) {
+                    params.receiveCGList = params.receiveCGList.map((item: any)=>
+                        ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id})
+                    );
+                    params.chargeList.push(...params.receiveCGList);
+                }
+                delete params.receiveCGList;
+
+                if (params.payCGList?.length > 0) {
+                    params.payCGList = params.payCGList.map((item: any)=>
+                        ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id})
+                    );
+                    params.chargeList.push(...params.payCGList);
+                }
+                delete params.payCGList;
+                const result: API.Result = await saveCharges(params);
+                if (result.success) {
+                    message.success('success');
+                    await handleQueryJobChargeInfo();
                 } else {
-                    message.info('没有需要保存的数据');
+                    if (result.message) message.error(result.message);
                 }
             })
             .catch((errorInfo) => {
@@ -91,85 +169,58 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = (props) => {
     }
 
     // TODO: 传给子组件的参数
-    const baseCGDON: any = {form, FormItem, handleChangeData};
+    const baseCGDON: any = {jobId, form, FormItem, InvoTypeList, handleChangeData, handleChangeRows};
 
-    /*const initialValues = {
-        table: {
-            ar: receiveCGList,
-            ap: payCGList,
-        },
-        arTable: receiveCGList,
-        apTable: payCGList,
-    };*/
-
-    // console.log(receiveCGList)
-    // console.log(initialValues)
+    // console.log(receiveCGList);
 
     return (
-        <ProForm
-            form={form}
-            name={'formCharge'}
-            autoComplete={'off'}
-            onFinish={handleSave}
-            onFinishFailed={handleSave}
-            // initialValues={initialValues}
-            // @ts-ignore
-            request={async () => handleQueryJobChargeInfo()}
-        >
-            <ProCard
-                title={'AR'}
-                bordered={true}
-                headerBordered
-                className={'ant-card'}
+        <Spin spinning={loading}>
+            <ProForm
+                form={form}
+                name={'formCharge'}
+                autoComplete={'off'}
+                onFinish={handleSave}
+                onFinishFailed={async (values: any) => {
+                    if (values.errorFields?.length > 0) {
+                        /** TODO: 错误信息 */
+                        message.error(getFormErrorMsg(values));
+                        setLoading(false);
+                    }
+                }}
+                // initialValues={initialValues}
+                request={async () => handleQueryJobChargeInfo()}
             >
-                <Row gutter={24} className={'ant-margin-bottom-24'}>
-                    <Col span={24}>
-                        <ChargeTable
-                            CGType={1}
-                            {...baseCGDON}
-                            CGList={receiveCGList}
-                        />
-                    </Col>
-                </Row>
-            </ProCard>
+                <ChargeTable
+                    CGType={1}
+                    title={'AR'}
+                    {...baseCGDON}
+                    CGList={receiveCGList}
+                    formName={'payCGList'}
+                    isCopyNoSame={isCopyNoSame}
+                    handleChangeCopyState={()=> setIsCopyNoSame(false)}
+                />
 
-            <ProCard
-                title={'AP'}
-                bordered={true}
-                headerBordered
-                className={'ant-card'}
-            >
-                <Row gutter={24}>
-                    <Col span={24}>
-                        <ChargeTable
-                            CGType={2}
-                            {...baseCGDON}
-                            CGList={payCGList}
-                        />
-                    </Col>
-                </Row>
-            </ProCard>
+                <ChargeTable
+                    CGType={2}
+                    title={'AP'}
+                    {...baseCGDON}
+                    CGList={payCGList}
+                    formName={'receiveCGList'}
+                    isCopyNoSame={isCopyNoSame}
+                    handleChangeCopyState={()=> setIsCopyNoSame(false)}
+                />
 
-            <ProCard
-                title={'Reimbursement'}
-                bordered={true}
-                headerBordered
-                className={'ant-card'}
-            >
-                <Row gutter={24}>
-                    <Col span={24}>
-                        <Agent
-                            CGType={3}
-                            {...baseCGDON}
-                            CGList={proxyCGList}
-                        />
-                    </Col>
-                </Row>
-            </ProCard>
-            <FooterToolbar extra={<Button onClick={() => history.goBack()}>Back</Button>}>
-                <Button type={'primary'} htmlType={'submit'}>保存</Button>
-            </FooterToolbar>
-        </ProForm>
+                <Agent
+                    CGType={3}
+                    {...baseCGDON}
+                    CGList={proxyCGList}
+                />
+
+                <FooterToolbar extra={<Button onClick={() => history.goBack()}>Back</Button>}>
+                    <Button type={'primary'} htmlType={'submit'}>保存</Button>
+                </FooterToolbar>
+            </ProForm>
+        </Spin>
     )
 }
 export default JobChargeInfo;

@@ -34,7 +34,7 @@ export default {
     // TODO: accounting
     '/apiAccounting/': {
       // 要代理的地址
-      target: 'http://106.52.125.82:8080/',
+      target: 'http://106.52.125.82:8082/',
       changeOrigin: true,
       pathRewrite: {
         '^/apiAccounting': '/accounting/web',
