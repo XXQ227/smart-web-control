@@ -6,6 +6,9 @@ import {PlusCircleOutlined, DeleteOutlined} from "@ant-design/icons";
 import type { ColumnsType } from 'antd/es/table';
 import SearchModal from "@/components/SearchModal";
 import {ID_STRING} from "@/utils/units";
+import ls from 'lodash';
+import FormItemInput from "@/components/FormItemComponents/FormItemInput";
+import FormItemSwitch from "@/components/FormItemComponents/FormItemSwitch";
 
 interface Props {
     // FormItem: any,
@@ -28,7 +31,7 @@ const initialContainerList: APIModel.PreBookingList[] = [
         qty: 1,
         socFlag: false,
         Owner: "码头箱主",
-        Remark: "abcde",
+        remark: "abcde",
     },
     {
         id: 'ID2',
@@ -37,147 +40,132 @@ const initialContainerList: APIModel.PreBookingList[] = [
         qty: 2,
         socFlag: true,
         Owner: "Owner456",
-        Remark: "123",
+        remark: "123",
     },
 ];
 
 const ContainerLayout: React.FC<Props> = (props) => {
     const  {
         CTNPlanList, NBasicInfo,
-        batchNo
+        batchNo, form
     } = props;
 
     const [containerList, setContainerList] = useState<APIModel.PreBookingList[]>(CTNPlanList || initialContainerList);
     const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
 
+    /**
+     * @Description: TODO: 更新预配箱信息
+     * @author XXQ
+     * @date 2023/8/8
+     * @param index
+     * @param rowID
+     * @param filedName
+     * @param val
+     * @param option
+     * @returns
+     */
+    function onChange(index: number, rowID: any, filedName: string, val: any, option?: any) {
+        const newData: any[] = ls.cloneDeep(containerList);
+        const target = newData.find((item: any)=> item.id === rowID) || {};
+        target[filedName] = val?.target ? val.target.value : val;
+        // TODO: 需要存箱型名字
+        if (filedName === 'ctnModelId') {
+            target.ctnModelName = option.label;
+        }
+        console.log(target);
+        newData.splice(index, 1, target);
+        // TODO: 把数据接口给到 FormItem 表单里
+        form.setFieldsValue({
+            [`${filedName}_ctn_table_${target.id}`]: target[filedName],
+            containersLoadingDetailEntityList: newData
+        });
+        setContainerList(newData);
+    }
+
     const columns: ColumnsType<APIModel.PreBookingList> = [
         {
             title: 'SIZE',
             dataIndex: 'ctnModelId',
-            key: 'ctnModelId',
             width: '10%',
             className: "textCenter",
-            render: (text: any, record, index) => {
-                return (
-                    <FormItem
-                        name={`CTNModelID${record.id}`}
-                        initialValue={record.ctnModelName}>
-                        <SearchModal
-                            qty={30}
-                            id={`CTNModelID${record.id}`}
-                            title={'SIZE'}
-                            modalWidth={500}
-                            // value={record.ctnModelName}
-                            text={record.ctnModelName}
-                            query={{ Type: [6, 7].includes(NBasicInfo.OceanTransportTypeID) ? 5 : null, BranchID: getBranchID(), BizType1ID: NBasicInfo.BizType1ID }}
-                            url={"/apiLocal/MCommon/GetCTNModelByStr"}
-                            handleChangeData={(val: any, option: any)=> handleRowChange(index, record.id, 'ctnModelId', val, option)}
-                        />
-                    </FormItem>
-                );
-            },
+            render: (text: any, record, index) =>
+                <FormItem
+                    required
+                    initialValue={record.ctnModelName}
+                    name={`ctnModelId_ctn_table_${record.id}`}
+                    rules={[{required: true, message: 'SIZE'}]}
+                >
+                    <SearchModal
+                        qty={30}
+                        title={'SIZE'}
+                        modalWidth={500}
+                        text={record.ctnModelName}
+                        query={{dictCode: "ctn_model"}}
+                        url={"/apiBase/dict/queryDictDetailCommon"}
+                        handleChangeData={(val: any, option: any) => onChange(index, record.id, 'ctnModelId', val, option)}
+                    />
+                </FormItem>
         },
         {
             title: 'QTY',
             dataIndex: 'qty',
-            key: 'qty',
             width: '10%',
             className: "textCenter",
-            render: (text: any, record, index) => {
-                return (
-                    <ProFormText
-                        name={`QTY${record.id}`}
-                        initialValue={record.qty}
-                        placeholder={''}
-                        fieldProps={{
-                            onChange: (e) => handleRowChange(index, record.id, 'qty', e)
-                        }}
-                    />
-                );
-            },
+            render: (text: any, record, index) =>
+                <FormItemInput
+                    required
+                    placeholder={''}
+                    initialValue={record.qty}
+                    name={`qty_ctn_table_${record.id}`}
+                    rules={[{required: true, message: 'QTY'}]}
+                    onChange={(e) => onChange(index, record.id, 'qty', e)}
+                />
         },
         {
             title: 'SOC/COC',
             dataIndex: 'socFlag',
-            key: 'socFlag',
             align: 'center',
             width: '10%',
-            render: (text: any, record, index) => {
-                return (
-                    <ProFormSwitch
-                        name={`socFlag${record.id}`}
-                        initialValue={record.socFlag}
-                        checkedChildren="SOC"
-                        unCheckedChildren="COC"
-                        fieldProps={{
-                            onChange: (e) => handleRowChange(index, record.id, 'socFlag', e)
-                        }}
-                    />
-                );
-            },
+            render: (text: any, record, index) =>
+                <FormItemSwitch
+                    checkedChildren="SOC"
+                    unCheckedChildren="COC"
+                    initialValue={record.socFlag}
+                    name={`socFlag_ctn_table_${record.id}`}
+                    onChange={(e) => onChange(index, record.id, 'socFlag', e)}
+                />
         },
         {
             title: 'Owner',
             dataIndex: 'Owner',
-            key: 'Owner',
-            render: (text: any, record, index) => {
-                return (
-                    <ProFormText
-                        name={`Owner${record.id}`}
-                        initialValue={record.Owner}
-                        placeholder={''}
-                        fieldProps={{
-                            onChange: (e) => handleRowChange(index, record.id, 'Owner', e)
-                        }}
-                    />
-                );
-            }
+            render: (text: any, record, index) =>
+                <FormItemInput
+                    placeholder={''}
+                    initialValue={text}
+                    name={`Owner_ctn_table_${record.id}`}
+                    onChange={(e) => onChange(index, record.id, 'Owner', e)}
+                />
         },
         {
             title: 'Remark',
             dataIndex: 'Remark',
             key: 'Remark',
-            render: (text: any, record, index) => {
-                return (
-                    <ProFormText
-                        name={`Remark${record.id}`}
-                        initialValue={record.Remark}
-                        placeholder={''}
-                        fieldProps={{
-                            onChange: (e) => handleRowChange(index, record.id, 'Remark', e)
-                        }}
-                    />
-                );
-            }
+            render: (text: any, record, index) =>
+                <FormItemInput
+                    placeholder={''}
+                    initialValue={text}
+                    name={`Remark_ctn_table_${record.id}`}
+                    onChange={(e) => onChange(index, record.id, 'remark', e)}
+                />
         },
     ];
 
     const rowSelection = {
         columnWidth: 30,
-        // selectedRowKeys,
-        /*onChange: (selectedRowKeys: React.Key[], ) => {
-            let disabled = true;
-            if (selectedRowKeys?.length > 0) disabled = false;
-            this.setState({selectedRowKeys, disable: disabled});
-        },
-        onChange: (selectedRowKeys: React.Key[], selectedRows: APIModel.PreBookingList[]) => {
-            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-        },
-        */
         onChange: (selectedRowKeys: React.Key[]) => {
-            console.log(`selectedRowKeys: ${selectedRowKeys}`);
             setSelectedRowIDs(selectedRowKeys)
         },
-        /*getCheckboxProps: (record: DataType) => ({
-            disabled: record.name === 'Disabled User', // Column configuration not to be checked
-            name: record.name,
-        }),*/
     };
-
-    function handleRowChange(index: number, rowID: any, filedName: string, val: any, option?: any) {
-        console.log(index)
-        console.log(filedName)
-    }
 
     const handleAdd = () => {
         const newData: APIModel.PreBookingList = {
@@ -187,13 +175,14 @@ const ContainerLayout: React.FC<Props> = (props) => {
             qty: 1,
             socFlag: false,
             Owner: "",
-            Remark: "",
+            remark: "",
         };
         setContainerList([...containerList, newData]);
     };
 
     const handleDelete = () => {
-        const newData = containerList.filter(item => !selectedRowIDs.includes(item.id));
+        const newData =
+            containerList.filter(item => !selectedRowIDs.includes(item.id));
         setContainerList(newData);
     };
 
@@ -228,18 +217,21 @@ const ContainerLayout: React.FC<Props> = (props) => {
                         rowKey={'id'}
                         bordered
                         pagination={false}
-                        columns={columns}
                         dataSource={containerList}
-                        locale={{emptyText: "NO DATA"}}
                         rowSelection={rowSelection}
-                        className={`tableStyle containerTable`}
+                        columns={columns}
+                        locale={{emptyText: "NO DATA"}}
+                        className={'tableStyle containerTable'}
                     />
+
+                    {/* // TODO: 用于保存时，获取数据用 */}
+                    <ProFormText hidden={true} name={'containersLoadingDetailEntityList'}/>
                 </Col>
             </Row>
             <Row gutter={24}>
                 <Col span={12}>
                     <ProFormText
-                        name={`pickupLoc${batchNo}`}
+                        name={`placeOfOrigin${batchNo}`}
                         initialValue={'香港九龍灣宏光道1號億京中心B座20樓E室'}
                         label="Pickup Location"
                         placeholder={''}
@@ -247,7 +239,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                 </Col>
                 <Col span={12}>
                     <ProFormDateTimePicker
-                        name={`pickupTime${batchNo}`}
+                        name={`actualPickupTime${batchNo}`}
                         label="Pickup Time"
                         initialValue={'2023-05-19 00:00:10'}
                     />
@@ -256,7 +248,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
             <Row gutter={24}>
                 <Col span={12}>
                     <ProFormText
-                        name={`S&DLoc${batchNo}`}
+                        name={`containingStuffingDevanning${batchNo}`}
                         initialValue={'Unit F & G, 20/F., MG Tower, 133 Hoi Bun Road, Kwun Tong, Hong Kong'}
                         label="Containing Stuffing & Devanning at"
                         placeholder={''}
@@ -264,7 +256,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                 </Col>
                 <Col span={12}>
                     <ProFormDateTimePicker
-                        name={`S&DTime${batchNo}`}
+                        name={`stuffingDevanningTime${batchNo}`}
                         label="Stuffing & Devanning Time"
                         initialValue={'2023-05-19 00:00:10'}
                     />
@@ -273,7 +265,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
             <Row gutter={24}>
                 <Col span={12}>
                     <ProFormText
-                        name={`returnLoc${batchNo}`}
+                        name={`placeOfDestination${batchNo}`}
                         initialValue={'16/F, Richmond Commercial Building, 109 Argyle Street, Mongkok, Kowloon'}
                         label="Return Location"
                         placeholder={''}
@@ -281,7 +273,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                 </Col>
                 <Col span={12}>
                     <ProFormDateTimePicker
-                        name={`returnTime${batchNo}`}
+                        name={`actualDeliveryTime${batchNo}`}
                         label="Return Time"
                         initialValue={'2023-05-19 00:00:10'}
                     />

@@ -253,16 +253,16 @@ declare namespace APIModel {
         PODAgent?: string,
     }
     type BatchData = {
-        shipmentNo: string;
+        shipmentNum: string;
         truckingCompany: string;
         grossWeight: number;
         measurement: number;
         pieces: number;
         vehicleType: string;
-        plateNo: string;
+        licensePlateNum: string;
         driverName: string;
-        receivingContac: string;
-        phone: string;
+        receivingContact: string;
+        receivingContactTelephone: string;
     }
     type PreBookingList = {
         id: any,
@@ -297,9 +297,9 @@ declare namespace APIModel {
         IssueDate?: string,
     }
     type PhotoRemarkList = {
-        ID: any,
-        Description: string,
-        Time: string,
+        id: any,
+        description?: string,
+        Time?: string,
         // photo:
     }
     //endregion TODO: 单票业务详情返回结果

@@ -8,40 +8,48 @@ import {ExclamationCircleFilled, LeftOutlined, SaveOutlined} from "@ant-design/i
 import type { RouteChildrenProps } from 'react-router';
 import {history} from "@@/core/history";
 import {getFormErrorMsg} from "@/utils/units";
+import {useParams} from "umi";
+import {useModel} from "@@/plugin-model/useModel";
+import moment from "moment/moment";
 
 const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const initialData: APIModel.BatchData[] = [
     {
-        shipmentNo: 'SPHK-QY-0012',
+        shipmentNum: 'SPHK-QY-0012',
         truckingCompany: '招商局建瑞运输有限公司',
         grossWeight: 0,
         measurement: 0,
         pieces: 0,
         vehicleType: '集装箱运输货车',
-        plateNo: '',
+        licensePlateNum: '',
         driverName: '',
-        receivingContac: '',
-        phone: '',
+        receivingContact: '',
+        receivingContactTelephone: '',
     },
     {
-        shipmentNo: 'SPHK-QY-0013',
+        shipmentNum: 'SPHK-QY-0013',
         truckingCompany: '招商局建瑞运输有限公司',
         grossWeight: 0,
         measurement: 0,
         pieces: 0,
         vehicleType: '通用货车',
-        plateNo: '',
+        licensePlateNum: '',
         driverName: '',
-        receivingContac: '',
-        phone: '',
+        receivingContact: '',
+        receivingContactTelephone: '',
     },
 ]
 
-const LocalDelivery: React.FC<RouteChildrenProps> = (props) => {
+const LocalDelivery: React.FC<RouteChildrenProps> = () => {
+    const [form] = Form.useForm();
+    const urlParams: any = useParams();
+    const jobId = atob(urlParams.id);
+
     const renderContent = (key: string, data?: APIModel.BatchData) => {
         return <BasicInfo
+            form={form}
             CTNPlanList={[]}
             NBasicInfo={{}}
             batchNo={key}
@@ -65,26 +73,76 @@ const LocalDelivery: React.FC<RouteChildrenProps> = (props) => {
         },
     ];
 
-    const [form] = Form.useForm();
+    const {
+        queryLocalDeliveryInfo, addLocalDelivery, editLocalDelivery,
+    } = useModel('job.job', (res: any) => ({
+        queryLocalDeliveryInfo: res.queryLocalDeliveryInfo,
+        addLocalDelivery: res.addLocalDelivery,
+        editLocalDelivery: res.editLocalDelivery,
+    }));
+
     const [loading, setLoading] = useState(false);
+    const [localDeliveryInfo, setLocalDeliveryInfo] = useState<any>({});
+    const [id, setId] = useState<string>('0');
+
     const [tabList, setTabList] = useState(initialTabList);
     const [activeKey, setActiveKey] = useState(initialTabList[0].key);
     const activeKeyRef = useRef(activeKey);
     activeKeyRef.current = activeKey;
     const newTabIndex = useRef(3);
 
+    /**
+     * @Description: TODO: 查询本地交付服务信息
+     * @author LLS
+     * @date 2023/8/16
+     * @returns
+     */
+    async function handleQueryLocalDeliveryInfo() {
+        setLoading(true);
+        // TODO: 获取用户数据
+        let result: API.Result;
+        if (jobId !== '0') {
+            result = await queryLocalDeliveryInfo({id: jobId});
+            // TODO: 把当前服务的 id 存下来
+            if (result.data) {
+                setId(result.data.id);
+            } else {
+                result.data = {blTypeId: 1};
+            }
+        } else {
+            result = {success: true, data: {blTypeId: 1}};
+        }
+        setLoading(false);
+        setLocalDeliveryInfo(result.data || {});
+        return result.data || {};
+    }
+
+    const handleFinish = async (val: any) => {
+        try {
+            // TODO: 删除对应的 table 里的录入数据
+            for (const item in val) {
+                if (item.indexOf('_table_') > -1) {
+                    delete val[item];
+                }
+            }
+            console.log(val);
+        } catch {
+            // console.log
+        }
+    };
+
     const handleAddBatch = () => {
         const newBatch: APIModel.BatchData = {
-            shipmentNo: '',
+            shipmentNum: '',
             truckingCompany: '',
             grossWeight: 0,
             measurement: 0,
             pieces: 0,
             vehicleType: '',
-            plateNo: '',
+            licensePlateNum: '',
             driverName: '',
-            receivingContac: '',
-            phone: '',
+            receivingContact: '',
+            receivingContactTelephone: '',
         };
 
         const newActiveKey = (newTabIndex.current++).toString()
@@ -155,7 +213,7 @@ const LocalDelivery: React.FC<RouteChildrenProps> = (props) => {
                 omitNil={false}
                 layout="vertical"
                 name={'formJobInfo'}
-                // initialValues={CJobInfo}
+                initialValues={localDeliveryInfo}
                 className={'basicInfoProForm'}
                 submitter={{
                     // 完全自定义整个区域
@@ -169,9 +227,8 @@ const LocalDelivery: React.FC<RouteChildrenProps> = (props) => {
                                 Save
                             </Button>
                         </FooterToolbar>
-                    ,
                 }}
-                // onFinish={handleFinish}
+                onFinish={handleFinish}
                 onFinishFailed={async (values: any) => {
                     if (values.errorFields?.length > 0) {
                         /** TODO: 错误信息 */
@@ -179,8 +236,7 @@ const LocalDelivery: React.FC<RouteChildrenProps> = (props) => {
                         setLoading(false);
                     }
                 }}
-                // @ts-ignore
-                request={async () => handleQueryJobInfo({id})}
+                request={async () => handleQueryLocalDeliveryInfo()}
             >
                 <ProCard
                     className={'localDelivery'}

@@ -6,6 +6,8 @@ import {PlusCircleOutlined} from "@ant-design/icons";
 import type {ColumnsType} from "antd/es/table";
 import NonContainerLayout from "./non-container-layout";
 import ContainerLayout from "./container-layout";
+import ls from 'lodash';
+import FormItemInput from "@/components/FormItemComponents/FormItemInput";
 
 interface Props {
     form?: any,
@@ -23,20 +25,20 @@ const { Option } = Select;
 
 const initialPhotoRemarkList: APIModel.PhotoRemarkList[] = [
     {
-        ID: 'ID1',
-        Description: "青衣碼頭裝箱照片",
-        Time: "2023-03-20 15:30:10",
+        id: 'ID1',
+        description: "青衣碼頭裝箱照片",
+        Time: "2023-03-20 15:30",
     },
     {
-        ID: 'ID2',
-        Description: "港區入口交通擁堵，無法及時提柜",
-        Time: "2023-03-20 20:10:10",
+        id: 'ID2',
+        description: "港區入口交通擁堵，無法及時提柜",
+        Time: "2023-03-20 20:10",
     },
 ];
 
 const BasicInfo: React.FC<Props> = (props) => {
     const  {
-        batchNo, data,
+        batchNo, data, form,
         CTNPlanList, PhotoRemarkList, NBasicInfo
     } = props;
 
@@ -49,27 +51,47 @@ const BasicInfo: React.FC<Props> = (props) => {
         </Select>
     );
 
-    function handleRowChange(index: number, rowID: any, filedName: string, val: any, option?: any) {
-        console.log(index)
-        console.log(filedName)
+    /**
+     * @Description: TODO: 更新Photo Remark信息
+     * @author LLS
+     * @date 2023/8/17
+     * @param index
+     * @param rowID
+     * @param filedName
+     * @param val
+     * @returns
+     */
+    function onChange(index: number, rowID: any, filedName: string, val: any) {
+        const newData: any[] = ls.cloneDeep(photoRemarkList);
+        const target = newData.find((item: any)=> item.id === rowID) || {};
+        target[filedName] = val?.target ? val.target.value : val;
+        console.log(target);
+        newData.splice(index, 1, target);
+        // TODO: 把数据接口给到 FormItem 表单里
+        form.setFieldsValue({
+            [`${filedName}_remark_table_${target.id}`]: target[filedName],
+            photoRemarkEntityList: newData
+        });
+        setPhotoRemarkList(newData);
     }
 
     const handleAdd = () => {
         const newData: APIModel.PhotoRemarkList = {
-            ID: ID_STRING(),
-            Description: "",
-            Time: new Date().toString(),
+            id: ID_STRING(),
+            description: "",
+            Time: "",
+            // Time: new Date().toString(),
         };
         setPhotoRemarkList([...photoRemarkList, newData]);
     };
 
     const handleDelete = (key: any) => {
-        const newData = photoRemarkList.filter(item => item.ID !== key);
+        const newData = photoRemarkList.filter(item => item.id !== key);
         setPhotoRemarkList(newData);
     };
 
     const handleChange = (fieldName: string, value: string) => {
-        if (fieldName === 'shipmentNo') {
+        if (fieldName === 'shipmentNum') {
             if (props.handleChangeLabel) props.handleChangeLabel(value);
         } else if (fieldName === 'TransportVehicleType') {
             setIsContainer(value === "集装箱运输货车")
@@ -80,43 +102,25 @@ const BasicInfo: React.FC<Props> = (props) => {
         {
             title: 'Description',
             dataIndex: 'Description',
-            key: 'Description',
-            render: (text: any, record, index) => {
-                return (
-                    <ProFormText
-                        name={`Description${record.ID}`}
-                        initialValue={record.Description}
-                        placeholder={''}
-                        fieldProps={{
-                            onChange: (e) => handleRowChange(index, record.ID, 'Description', e)
-                        }}
-                    />
-                );
-            }
+            render: (text: any, record, index) =>
+                <FormItemInput
+                    required
+                    placeholder={''}
+                    initialValue={record.description}
+                    name={`description_remark_table_${record.id}`}
+                    rules={[{required: true, message: 'Description'}]}
+                    onChange={(e) => onChange(index, record.id, 'description', e)}
+                />
         },
         {
             title: 'Time',
             align: "center",
             dataIndex: 'Time',
-            key: 'Time',
-            render: (text: any, record, index) => {
-                return (
-                    <ProFormDateTimePicker
-                        name={`Time${record.ID}`}
-                        initialValue={record.Time}
-                        fieldProps={{
-                            // format: (value) => value.format('YYYY-MM-DD'),
-                            onChange: (e) => handleRowChange(index, record.ID, 'Description', e)
-                        }}
-                    />
-                );
-            }
         },
         {
             title: 'Action',
             align: "center",
             dataIndex: 'photo',
-            key: 'photo',
             width: '120px',
             className: "textColor",
             render: (text: any, record, index) => {
@@ -126,7 +130,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                         <span className="vertical-line" />
                         <Popconfirm
                             title={'Sure to delete?'}
-                            onConfirm={() => handleDelete(record.ID)}
+                            onConfirm={() => handleDelete(record.id)}
                         >
                             <a>Delete</a>
                         </Popconfirm>
@@ -136,20 +140,17 @@ const BasicInfo: React.FC<Props> = (props) => {
         },
     ];
 
-
     return (
-        <div
-            className={'antProCard'}
-        >
+        <div className={'antProCard'}>
             <Row gutter={rowGrid}>
                 <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5} className={'custom-input'}>
                     <ProFormText
                         placeholder=''
-                        name={`shipmentNo${batchNo}`}
-                        initialValue={data?.shipmentNo}
+                        name={`shipmentNum${batchNo}`}
+                        initialValue={data?.shipmentNum}
                         label="Shipment No."
                         fieldProps={{
-                            onChange: (e) => handleChange('shipmentNo', e.target.value)
+                            onChange: (e) => handleChange('shipmentNum', e.target.value)
                         }}
                     />
                     <label>G.W.</label>
@@ -191,7 +192,6 @@ const BasicInfo: React.FC<Props> = (props) => {
                         placeholder=''
                         name={`TransportVehicleType${batchNo}`}
                         label="Transport Vehicle Type"
-                        // initialValue={data?.vehicleType}
                         initialValue={data?.vehicleType}
                         options={[
                             {label: '平板货车 platform truck(flat bed truck)', value: '平板货车'},
@@ -206,8 +206,8 @@ const BasicInfo: React.FC<Props> = (props) => {
                     <div className={'proFormTextContainer'}>
                         <ProFormText
                             placeholder=''
-                            name={`plateNo${batchNo}`}
-                            initialValue={data?.plateNo}
+                            name={`licensePlateNum${batchNo}`}
+                            initialValue={data?.licensePlateNum}
                             label="License Plate No."
                         />
                         <ProFormText
@@ -227,14 +227,14 @@ const BasicInfo: React.FC<Props> = (props) => {
                             <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5}>
                                 <ProFormText
                                     placeholder=''
-                                    name={`receivingContac${batchNo}`}
-                                    initialValue={data?.receivingContac}
-                                    label="Receiving Contac"
+                                    name={`receivingContact${batchNo}`}
+                                    initialValue={data?.receivingContact}
+                                    label="Receiving Contact"
                                 />
                                 <ProFormText
                                     placeholder=''
-                                    name={`phone${batchNo}`}
-                                    initialValue={data?.phone}
+                                    name={`receivingContactTelephone${batchNo}`}
+                                    initialValue={data?.receivingContactTelephone}
                                     label="Telephone"
                                 />
                             </Col>
@@ -246,6 +246,7 @@ const BasicInfo: React.FC<Props> = (props) => {
             {
                 isContainer ?
                     <ContainerLayout
+                        form={form}
                         CTNPlanList={CTNPlanList}
                         NBasicInfo={NBasicInfo}
                         batchNo={batchNo}
@@ -266,7 +267,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                 <Row gutter={rowGrid}>
                     <Col xs={24} sm={24} md={24} lg={24} xl={7} xxl={5}>
                         <ProFormTextArea
-                            name={`OperationRemark${batchNo}`}
+                            name={`operationRemark${batchNo}`}
                             fieldProps={{rows: 5}}
                             label="Operation Remark"
                             placeholder=''
@@ -287,11 +288,14 @@ const BasicInfo: React.FC<Props> = (props) => {
                             rowKey={'ID'}
                             bordered
                             pagination={false}
-                            columns={columns}
                             dataSource={photoRemarkList}
+                            columns={columns}
                             locale={{emptyText: "NO DATA"}}
                             className={'tableStyle photoRemarkTable'}
                         />
+
+                        {/* // TODO: 用于保存时，获取数据用 */}
+                        <ProFormText hidden={true} name={'photoRemarkEntityList'}/>
                     </Col>
                 </Row>
             </ProCard>
