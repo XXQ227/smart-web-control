@@ -3,25 +3,25 @@ declare namespace APIModel {
 
     //region TODO: 用户登录后返回信息
     type LoginUserInfo = {
-        AuthIDList: any,
-        AuthorityIDList: string,
-        password: string,
-        DisplayName: string,
-        ID: number,
-        BranchID: number,
-        Token: string,
-        CityID: number,
-        CityName: string,
-        CountryID: number,
-        CountryName: string,
-        FuncCurrency: string,
-        IsOpenAccount: boolean,
-        IsSalesMan: boolean,
-        DivisionID: number,
-        BranchCode: string,
-        FinereportURL: string,
-        PUAList: any,
-        Email: string,
+        AuthIDList: any;
+        AuthorityIDList: string;
+        password: string;
+        DisplayName: string;
+        ID: number;
+        BranchID: number;
+        Token: string;
+        CityID: number;
+        CityName: string;
+        CountryID: number;
+        CountryName: string;
+        FuncCurrency: string;
+        IsOpenAccount: boolean;
+        IsSalesMan: boolean;
+        DivisionID: number;
+        BranchCode: string;
+        FinereportURL: string;
+        PUAList: any;
+        Email: string;
         geographic?: {
             province?: { label?: string; key?: string };
             city?: { label?: string; key?: string };
@@ -31,33 +31,27 @@ declare namespace APIModel {
 
 
     //region TODO: 单票列表页
-    type responseAny = object | any;
 
     type SearchJobParams = {
-        searchKey: string,
-        customerOrCargoId?: string,
-        branchId?: string,
-        currentPage?: number,
-        pageSize?: number,
+        searchKey: string;
+        customerOrCargoId?: string;
+        branchId?: string;
+        currentPage?: number;
+        pageSize?: number;
     };
 
     type CJobListItem  = {
-        ID: number,
-        Code: string,
-        PrincipalNameEN: string,
-        POLETA: string,
-        ETD: string,
-        ATD: string,
-        ETA: string,
-        MBOLNum: string,
-        HBOLNum: string,
-        FreighterEN: string,
-        state: string,
-    }
-
-    type ResCJob = {
-        CJobList: CJobListItem[] | [];
-
+        ID: number;
+        Code: string;
+        PrincipalNameEN: string;
+        POLETA: string;
+        ETD: string;
+        ATD: string;
+        ETA: string;
+        MBOLNum: string;
+        HBOLNum: string;
+        FreighterEN: string;
+        state: string;
     }
 
     // TODO: 单票列表结果集
@@ -68,15 +62,15 @@ declare namespace APIModel {
             Result?: boolean;
             Page?: APIPage;
             Content?: {
-                CJobList?: CJobListItem[],
-                AllFinishQty: number,
-                BizFinishQty: number,
-                FinishQty: number,
-                OnWayNewQty: number,
-                OnWayQty: number,
-                PendingQty: number,
-                SetFinishQty: number,
-                ShutoutQty: number,
+                CJobList?: CJobListItem[];
+                AllFinishQty: number;
+                BizFinishQty: number;
+                FinishQty: number;
+                OnWayNewQty: number;
+                OnWayQty: number;
+                PendingQty: number;
+                SetFinishQty: number;
+                ShutoutQty: number;
             };
         };
     };
@@ -92,165 +86,160 @@ declare namespace APIModel {
     //region TODO: 单票详情页面
     // TODO: 单票详情搜索参数
     type GetCJobByID = {
-        CJobID: number,
-        UserID?: number,
+        CJobID: number;
+        UserID?: number;
     }
 
 
     // TODO: 单票详情数据
     type GetCJobByIDResponse = {
-        Result: boolean,
-        Page: API.APIPage,
+        Result: boolean;
+        Page: API.APIPage;
         Content: {
-            APStartDate: string,
-            BillingLimit: string,
-            IsPrepareClose: boolean,
-            CurrencyOpts: object,
-            DefaultUnit: object,
-            FinanceDates?: any,
-            Division: API.APIKey$Value[],
-            SalesMan?: API.APIKey$Value[],
-            PayMethodOpts?: API.APIKey$Value[],
-            PayInvoTypeList?: InvoiceType[],
-            ResInvoTypeList?: InvoiceType[],
-            UserInfo: LoginUserInfo,
-            NJobDetailDto?: NJobDetailDto,
-            AccountPeriodInfo?: AccountPeriodInfo,
+            APStartDate: string;
+            BillingLimit: string;
+            IsPrepareClose: boolean;
+            CurrencyOpts: object;
+            DefaultUnit: object;
+            FinanceDates?: any;
+            Division: API.APIKey$Value[];
+            SalesMan?: API.APIKey$Value[];
+            PayMethodOpts?: API.APIKey$Value[];
+            PayInvoTypeList?: InvoiceType[];
+            ResInvoTypeList?: InvoiceType[];
+            UserInfo: LoginUserInfo;
+            NJobDetailDto?: NJobDetailDto;
+            AccountPeriodInfo?: AccountPeriodInfo;
         }
     }
 
-    type CommonBasicInfo = {
-        SalesManList?: API.APIValue$Label[],
-        FinanceDates?: string[],
-    }
-
     type NJobDetailDto = {
-        ID: number,
-        LockDate: string,
-        FinanceDate: string,
-        NBasicInfo?: NBasicInfo,
-        CargoInfo?: CargoInfo,
-        PayCGList?: PRCGInfo[],
-        ReceiveCGList?: PRCGInfo[],
-        ProxyCGList?: PRCGInfo[],
-        CTNPlanList?: ContainerList[],
-        CTNActualList?: CTNActualList[],
-        HouseBill?: HouseBill,
+        ID: number;
+        LockDate: string;
+        FinanceDate: string;
+        NBasicInfo?: NBasicInfo;
+        CargoInfo?: CargoInfo;
+        PayCGList?: PRCGInfo[];
+        ReceiveCGList?: PRCGInfo[];
+        ProxyCGList?: PRCGInfo[];
+        CTNPlanList?: ContainerList[];
+        CTNActualList?: CTNActualList[];
+        HouseBill?: HouseBill;
     }
 
     type AccountPeriodInfo = {
-        CurrencyOpts?: CurrencyOpts[],
-        FinanceDates?: [],
+        CurrencyOpts?: CurrencyOpts[];
+        FinanceDates?: [];
     }
 
     //region TODO: 单票业务详情返回结果
     type NBasicInfo = {
-        ID: number,
-        Code: string,
-        LastEditor: string,
-        LastEditDate: string,
-        BizType1ID: number,
-        BusinessLineID: number,
-        BizTypeEN: string,
-        CreateDate: string,
-        Operator: string,
-        OceanTransportTypeID: number,
-        BizRemark: string,
-        Principal?: Principal,
-        Carrier?: Carrier,
-        Port?: Port,
-        Terms?: Terms,
-        MBSCN?: MBSCN,
-        HBSCN?: HBSCN,
+        ID: number;
+        Code: string;
+        LastEditor: string;
+        LastEditDate: string;
+        BizType1ID: number;
+        BusinessLineID: number;
+        BizTypeEN: string;
+        CreateDate: string;
+        Operator: string;
+        OceanTransportTypeID: number;
+        BizRemark: string;
+        Principal?: Principal;
+        Carrier?: Carrier;
+        Port?: Port;
+        Terms?: Terms;
+        MBSCN?: MBSCN;
+        HBSCN?: HBSCN;
     }
     type CargoInfo = {
-        marks?: string,
-        description?: string,
-        descriptionCN?: string,
-        commodity?: string,
-        pieces?: number,
-        grossWeight?: number,
-        measurement?: number,
-        chargeableWeight?: number,
-        netWeight?: number,
-        cargoValue?: number,
-        HSCode?: string,
+        marks?: string;
+        description?: string;
+        descriptionCN?: string;
+        commodity?: string;
+        pieces?: number;
+        grossWeight?: number;
+        measurement?: number;
+        chargeableWeight?: number;
+        netWeight?: number;
+        cargoValue?: number;
+        HSCode?: string;
     }
     type Principal = {
-        ClientInvoNum?: string,
-        SalesManID: number,
-        SalesManName: string,
-        PrincipalXID: number,
-        PrincipalXName: string,
-        PrincipalXNameEN: string,
-        PayerID?: number,
-        PayerName?: string,
-        PayerNameEN?: string,
-        CargoOwnerID?: number,
-        CargoOwnerName?: string,
-        CargoOwnerNameEN?: string,
-        BookingUserID?: number,
-        BookingUserName?: string,
-        PONum?: string,
-        POLID?: number,
-        POLName?: string,
+        ClientInvoNum?: string;
+        SalesManID: number;
+        SalesManName: string;
+        PrincipalXID: number;
+        PrincipalXName: string;
+        PrincipalXNameEN: string;
+        PayerID?: number;
+        PayerName?: string;
+        PayerNameEN?: string;
+        CargoOwnerID?: number;
+        CargoOwnerName?: string;
+        CargoOwnerNameEN?: string;
+        BookingUserID?: number;
+        BookingUserName?: string;
+        PONum?: string;
+        POLID?: number;
+        POLName?: string;
     }
     type Carrier = {
-        MBOLNum?: string,
-        HBOLNum?: string,
-        BookingAgentID?: number,
-        BookingAgentName?: string,
-        PODAgentID?: number,
-        PODAgentName?: string,
-        FreighterID?: number,
-        FreighterName?: string,
-        VesselName?: string,
-        VoyageNum?: string,
-        ContactNum?: string,
-        Terminal?: string,
-        ETD?: string,
-        ATD?: string,
-        eta?: string,
-        CutCustoms?: string,
-        CutVGM?: string,
-        CutSingle?: string,
-        PackAddress?: string,
-        DeliveryAddress?: string,
-        PODTerminalPickupDate?: string,
-        POLTerminalReceiptDate?: string,
-        PackDate?: string,
+        MBOLNum?: string;
+        HBOLNum?: string;
+        BookingAgentID?: number;
+        BookingAgentName?: string;
+        PODAgentID?: number;
+        PODAgentName?: string;
+        FreighterID?: number;
+        FreighterName?: string;
+        VesselName?: string;
+        VoyageNum?: string;
+        ContactNum?: string;
+        Terminal?: string;
+        ETD?: string;
+        ATD?: string;
+        eta?: string;
+        CutCustoms?: string;
+        CutVGM?: string;
+        CutSingle?: string;
+        PackAddress?: string;
+        DeliveryAddress?: string;
+        PODTerminalPickupDate?: string;
+        POLTerminalReceiptDate?: string;
+        PackDate?: string;
     }
     type Port = {
-        POLName?: string,
-        POLBill?: string,
-        PODName?: string,
-        PODBill?: string,
-        PlaceOfReceiptName?: string,
-        PlaceOfReceiptBill?: string,
-        PlaceOfDeliveryName?: string,
-        Destination?: string,
-        TranshipmentPortList?: TranshipmentPortList[],
+        POLName?: string;
+        POLBill?: string;
+        PODName?: string;
+        PODBill?: string;
+        PlaceOfReceiptName?: string;
+        PlaceOfReceiptBill?: string;
+        PlaceOfDeliveryName?: string;
+        Destination?: string;
+        TranshipmentPortList?: TranshipmentPortList[];
     }
     type TranshipmentPortList = {
-        ID?: any,
-        PortName?: string,
+        ID?: any;
+        PortName?: string;
     }
     type Terms = {
-        incotermsId?: number,
-        shipmentTermId?: string,
-        shipmentTermName?: string,
-        payMethod?: number,
-        payableAtCode?: string,
-        payableAtNameEn?: string,
+        incotermsId?: number;
+        shipmentTermId?: string;
+        shipmentTermName?: string;
+        payMethod?: number;
+        payableAtCode?: string;
+        payableAtNameEn?: string;
     }
     type MBSCN = {
-        Shipper?: string,
-        Consignee?: string,
-        NotifyParty?: string,
-        NotifyParty2?: string,
+        Shipper?: string;
+        Consignee?: string;
+        NotifyParty?: string;
+        NotifyParty2?: string;
     }
     type HBSCN = {
-        PODAgent?: string,
+        PODAgent?: string;
     }
     type BatchData = {
         shipmentNum: string;
@@ -265,14 +254,14 @@ declare namespace APIModel {
         receivingContactTelephone: string;
     }
     type PreBookingList = {
-        id: any,
-        ctnModelId?: number,
-        ctnModelName?: string,
-        qty?: number,
-        socFlag?: boolean,
-        fclFlag?: boolean,
-        Owner?: string,
-        remark?: string,
+        id: any;
+        ctnModelId?: number;
+        ctnModelName?: string;
+        qty?: number;
+        socFlag?: boolean;
+        fclFlag?: boolean;
+        Owner?: string;
+        remark?: string;
     }
     type CTNActualList = {
         id?: string;
@@ -290,16 +279,16 @@ declare namespace APIModel {
         TareWeight?: string;
     }
     type HouseBill = {
-        SignMethodID?: number,
-        SignBillQTY?: number,
-        IssuePlaceID?: number,
-        IssuePlaceName?: string,
-        IssueDate?: string,
+        SignMethodID?: number;
+        SignBillQTY?: number;
+        IssuePlaceID?: number;
+        IssuePlaceName?: string;
+        IssueDate?: string;
     }
     type PhotoRemarkList = {
-        id: any,
-        description?: string,
-        Time?: string,
+        id: any;
+        description?: string;
+        Time: string;
         // photo:
     }
     //endregion TODO: 单票业务详情返回结果
@@ -307,79 +296,103 @@ declare namespace APIModel {
     //endregion TODO: 单票费用详情
     // TODO: 币种
     type CurrencyOpts = {
-        RateValue: number,
-        CurrencyID: number,
-        Currency: string,
+        RateValue: number;
+        CurrencyID: number;
+        Currency: string;
     }
     // TODO: 发票类型
     type InvoiceType = {
-        Key: number,
-        Value: string,
-        Type: number,
+        Key: number;
+        Value: string;
+        Type: number;
     }
     type PRCGInfo = {
-        jobId: string,
-        jobCode: string,
-        branchId: string,
-        businessId?: string,
-        businessName?: string,
-        businessOracleId?: string,
-        id?: string,
-        itemId?: string,
-        itemName?: string,
-        itemSubjectCode?: string,
-        unitId?: string,
-        unitName?: string,
-        invoiceTypeId?: string,
-        invoiceTypeName?: string,
-        vatRate?: any,
-        taxFreeFlag?: any,
-        supplementFlag?: any,
-        settlementType?: any,
-        type?: number,
-        state?: number,
-        orgCurrencyName?: string,
-        orgUnitPrice?: any,
-        orgUnitPriceStr?: string,
-        orgAmount?: any,
-        orgAmountStr?: string,
-        orgBillExrate?: any,
-        orgBillExrateStr?: string,
-        qty?: any,
-        qtyStr?: string,
-        billCurrencyName?: string,
-        billUnitPrice?: any,
-        billInTaxAmount?: any,
-        billNoTaxAmount?: any,
-        billTaxAmount?: any,
-        billWriteOffAmount?: any,
-        billFuncExrate?: any,
-        invoiceBillFuncExrate?: any,
-        funcAmountInTax?: any,
-        funcNoTaxAmount?: any,
-        funcTaxAmount?: any,
-        bmsUploadStatus?: number,
-        departmentCode?: any,
-        salespersonCode?: any,
-        operatorCode?: any,
-        invoiceId?: string,
-        businessSection?: any,
-        blNum?: string,
-        payMethod?: any,
-        relationType?: string,
-        orgChargeId?: string,
-        remark?: string,
-        bmsReturnMsg?: string,
-        reimbursementId?: string,
-        note?: string,
-        containerNo?: string,
-        invoiceExrateAmount?: string,
-        writeOffExrateAmount?: string,
-        accountPeriodDate?: string,
-        accountPeriodId?: string,
-        rejectRemark?: string,
-        taxFlag?: string
-        isChange?: boolean
+        jobId: string;
+        jobCode: string;
+        branchId: string;
+        businessId?: string;
+        businessName?: string;
+        businessOracleId?: string;
+        id?: string;
+        itemId?: string;
+        itemName?: string;
+        itemSubjectCode?: string;
+        unitId?: string;
+        unitName?: string;
+        invoiceTypeId?: string;
+        invoiceTypeName?: string;
+        vatRate?: any;
+        taxFreeFlag?: any;
+        supplementFlag?: any;
+        settlementType?: any;
+        type?: number;
+        state?: number;
+        orgCurrencyName?: string;
+        orgUnitPrice?: any;
+        orgUnitPriceStr?: string;
+        orgAmount?: any;
+        orgAmountStr?: string;
+        orgBillExrate?: any;
+        orgBillExrateStr?: string;
+        qty?: any;
+        qtyStr?: string;
+        billCurrencyName?: string;
+        billUnitPrice?: any;
+        billInTaxAmount?: any;
+        billNoTaxAmount?: any;
+        billTaxAmount?: any;
+        billWriteOffAmount?: any;
+        billFuncExrate?: any;
+        invoiceBillFuncExrate?: any;
+        funcAmountInTax?: any;
+        funcNoTaxAmount?: any;
+        funcTaxAmount?: any;
+        bmsUploadStatus?: number;
+        departmentCode?: any;
+        salespersonCode?: any;
+        operatorCode?: any;
+        invoiceId?: string;
+        businessSection?: any;
+        blNum?: string;
+        payMethod?: any;
+        relationType?: string;
+        orgChargeId?: string;
+        remark?: string;
+        bmsReturnMsg?: string;
+        reimbursementId?: string;
+        note?: string;
+        containerNo?: string;
+        invoiceExrateAmount?: string;
+        writeOffExrateAmount?: string;
+        accountPeriodDate?: string;
+        accountPeriodId?: string;
+        rejectRemark?: string;
+        taxFlag?: string;
+        isChange?: boolean;
+
+        // TODO: 代收对象
+        receiveId?: string;
+        receiveBusinessId?: string;
+        receiveBusinessName?: string;
+        receiveBusinessOracleId?: string;
+        receiveBillCurrencyName?: string;
+        receiveOrgBillExrate?: any;
+        receiveOrgBillExrateStr?: string;
+        receiveBillUnitPrice?: any;
+        receiveBillInTaxAmount?: any;
+        receiveBillInTaxAmountStr?: string;
+
+        // TODO: 代付对象
+        payId?: string;
+        payBusinessId?: string;
+        payBusinessName?: string;
+        payBusinessOracleId?: string;
+        payBillCurrencyName?: string;
+        payOrgBillExrate?: any;
+        payOrgBillExrateStr?: string;
+        payBillUnitPrice?: any;
+        payBillInTaxAmount?: any;
+        payBillInTaxAmountStr?: string;
     }
     //endregion TODO: 单票查询页面
     //endregion TODO: 单票查询页面

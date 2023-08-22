@@ -65,7 +65,7 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
             await queryDictCommon({dictCodes: ['business_line']});
         }
         if (AccountPeriodList?.length === 0) {
-            await queryAccountPeriodCommon({branchId: '0', name: ''});
+            await queryAccountPeriodCommon({branchId: '1665596906844135426', name: ''});
         }
         let result: API.Result;
         if (paramsVal.id !== '0') {

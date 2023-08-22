@@ -132,10 +132,10 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                         delete values[item];
                     }
                 }
-                console.log(selectedKeyObj, selectedRowObj);
+                // console.log(selectedKeyObj, selectedRowObj);
                 const params = {
                     jobId, branchId: '1665596906844135426', taxMethod: 1,
-                    ...values, chargeList: [], reimbursementChargeList: [],
+                    ...values, chargeList: [],
                 };
 
                 if (params.receiveCGList?.length > 0) {
@@ -143,16 +143,23 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                         ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id})
                     );
                     params.chargeList.push(...params.receiveCGList);
+                    delete params.receiveCGList;
                 }
-                delete params.receiveCGList;
 
                 if (params.payCGList?.length > 0) {
                     params.payCGList = params.payCGList.map((item: any)=>
                         ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id})
                     );
                     params.chargeList.push(...params.payCGList);
+                    delete params.payCGList;
                 }
-                delete params.payCGList;
+
+                if (params.reimbursementChargeList?.length > 0) {
+                    params.reimbursementChargeList = params.reimbursementChargeList.map((item: any)=>
+                        ({...item, receiveId: item.receiveId.indexOf('ID_') > -1 ? '0' : item.id})
+                    );
+                }
+
                 const result: API.Result = await saveCharges(params);
                 if (result.success) {
                     message.success('success');
@@ -187,7 +194,6 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                         setLoading(false);
                     }
                 }}
-                // initialValues={initialValues}
                 request={async () => handleQueryJobChargeInfo()}
             >
                 <ChargeTable

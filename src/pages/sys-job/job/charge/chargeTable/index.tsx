@@ -41,7 +41,7 @@ const ChargeTable: React.FC<Props> = (props) => {
         // TODO: 是否是 ar/ap 交互复制
         isCopyNoSame, handleChangeCopyState
     } = props;
-    const CurrencyOpts = [{value: 'CNY', label: 'CNY'}, {value: 'HKD', label: 'HKD'}, {value: 'USD', label: 'USD'}];
+    const CurrencyOpts = ['CNY', 'HKD', 'USD'];
     const {jobInfo} = useModel('job.job', (res: any) => ({jobInfo: res.jobInfo}));
     const {deleteCharges} = useModel('job.jobCharge', (res: any) => ({deleteCharges: res.deleteCharges}));
 
@@ -168,7 +168,6 @@ const ChargeTable: React.FC<Props> = (props) => {
             target.itemName = data.label;
             target.itemSubjectCode = CGType === 1 ? data.subjectCodeAr : data.subjectCodeAp;
         } else if (filedName === 'unitId') {
-            target.unitName = data.label;
             target.unitName = data.label;
         } else if (filedName === 'orgBillExrate') {
             // TODO: 千分符转换
@@ -329,7 +328,6 @@ const ChargeTable: React.FC<Props> = (props) => {
     }
     // endregion
 
-    //region render
     const renderTableTitle = (
         <div className={'ant-table-title-info'}>
             <div className={'ant-div-left'}>
@@ -368,41 +366,6 @@ const ChargeTable: React.FC<Props> = (props) => {
     //     </div>
     // );
 
-
-    // @ts-ignore
-    const renderAmountByCurrency = () => {
-        // console.log(newData)
-        const obj: Record<string, { total: number }> = {};
-        if (cgList?.length > 0) {
-            cgList.map((item: any) => {
-                if (!item) return true;
-                if (item.orgUnitPrice && item.qty) {
-                    if (!!item.orgCurrencyName) {
-                        if (!obj[item.orgCurrencyName]) {
-                            obj[item.orgCurrencyName] = {
-                                total: item.orgUnitPrice * item.qty,
-                            };
-                        } else {
-                            obj[item.orgCurrencyName].total += item.orgUnitPrice * item.qty;
-                        }
-                    }
-                }
-                return true;
-            });
-        }
-        if (Object.keys(obj).length > 0) {
-            return (
-                Object.keys(obj).map((item, index) => {
-                    return (
-                        <div key={`${index + 1}`} className="result-text" style={{float: "right"}}>
-                            <span style={{fontWeight: 500}}>{item}：</span>
-                            <b>{formatNumToMoney(keepDecimal(obj[item].total).toFixed(2))}</b>
-                        </div>
-                    )
-                })
-            )
-        }
-    }
     // endregion
 
     const rowSelection: any = {
@@ -427,12 +390,12 @@ const ChargeTable: React.FC<Props> = (props) => {
                 >
                     <SearchModal
                         qty={13}
-                        text={record.itemName}
                         title={'Description'}
                         value={record.itemId}
+                        text={record.itemName}
                         id={`CGItemID${record.id}`}
+                        query={{branchId: '1665596906844135426'}}
                         url={'/apiBase/chargeItem/queryChargeItemCommon'}
-                        query={{UserID: getUserID(), CTType: 1, SystemID: 4,}}
                         handleChangeData={(val: any, option: any)=> handleRowChange(index, record.id, 'itemId', val, option)}
                     />
                 </FormItem>
@@ -481,7 +444,7 @@ const ChargeTable: React.FC<Props> = (props) => {
             render: (text: any, record: APICGInfo, index) =>
                 <FormItem
                     // TODO: 一定要有 initialValue: 用于设置初始值
-                    rules={[{required: true, message: `qty is required.`}]}
+                    rules={[{required: true, message: `qty`}]}
                     initialValue={record.qty} name={`qty_table_${record.id}`}
                 >
                     <InputEditNumber
@@ -495,7 +458,7 @@ const ChargeTable: React.FC<Props> = (props) => {
             title: 'Unit Price', dataIndex: 'orgUnitPrice', align: 'center', width: '10%',
             render: (text: any, record: APICGInfo, index) =>
                 <FormItem
-                    rules={[{required: true, message: `Unit Price is required.`}]}
+                    rules={[{required: true, message: `Unit Price`}]}
                     initialValue={record.orgUnitPrice} name={`orgUnitPrice_table_${record.id}`}
                 >
                     <InputEditNumber
@@ -510,16 +473,14 @@ const ChargeTable: React.FC<Props> = (props) => {
             title: 'CURR', dataIndex: 'orgCurrencyName', align: 'center', width: '7%',
             render: (text: any, record: APICGInfo, index) =>
                 <FormItem
-                    rules={[{required: true, message: `Currency is required.`}]}
+                    rules={[{required: true, message: `Currency`}]}
                     initialValue={record.orgCurrencyName} name={`orgCurrencyName_table_${record.id}`}
                 >
                     <Select
                         dropdownMatchSelectWidth={false}
                         onSelect={(e) => handleRowChange(index, record.id, 'orgCurrencyName', e)}
                     >
-                        {CurrencyOpts?.map((item: any) =>
-                            <Option key={item.value} value={item.value}>{item.label}</Option>
-                        )}
+                        {CurrencyOpts?.map((key: string) => <Option key={key} value={key}>{key}</Option>)}
                     </Select>
                 </FormItem>,
         },
@@ -527,16 +488,14 @@ const ChargeTable: React.FC<Props> = (props) => {
             title: 'Bill CURR', dataIndex: 'billCurrencyName', align: 'center', width: '8%',
             render: (text: any, record: APICGInfo, index) =>
                 <FormItem
-                    rules={[{required: true, message: `Bill CUR is required.`}]}
+                    rules={[{required: true, message: `Bill CUR`}]}
                     initialValue={record.billCurrencyName} name={`billCurrencyName_table_${record.id}`}
                 >
                     <Select
                         dropdownMatchSelectWidth={false}
                         onSelect={(e) => handleChangeABillCurr(index, e, record)}
                     >
-                        {CurrencyOpts?.map((item: any) =>
-                            <Option key={item.value} value={item.value}>{item.label}</Option>
-                        )}
+                        {CurrencyOpts?.map((key: string) => <Option key={key} value={key}>{key}</Option>)}
                     </Select>
                 </FormItem>,
         },
@@ -544,7 +503,7 @@ const ChargeTable: React.FC<Props> = (props) => {
             title: 'Ex Rate', dataIndex: 'orgBillExrate', align: 'center', width: '8%',
             render: (text: any, record: APICGInfo, index) =>
                 <FormItem
-                    rules={[{required: true, message: `Ex Rate is required.`}]}
+                    rules={[{required: true, message: `Ex Rate`}]}
                     initialValue={record.orgBillExrate} name={`orgBillExrate_table_${record.id}`}
                 >
                     <InputEditNumber
@@ -577,7 +536,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                 <Col span={24}>
                     <Row gutter={24} style={{marginBottom: 12}}>
                         <Col span={8}>{renderTableTitle}</Col>
-                        <Col span={16}>{renderAmountByCurrency()}</Col>
+                        <Col span={16}>{renderAmountByCurrency(cgList)}</Col>
                     </Row>
                     <ProTable<APICGInfo>
                         rowKey={'id'}
@@ -607,3 +566,46 @@ const ChargeTable: React.FC<Props> = (props) => {
     )
 }
 export default ChargeTable;
+
+/**
+ * @Description: TODO: 计算各币种的费用
+ * @author XXQ
+ * @date 2023/8/22
+ * @param cgList    费用集合
+ * @returns
+ */
+export function renderAmountByCurrency(cgList: any[]) {
+    // console.log(newData)
+    const obj: Record<string, { total: number }> = {};
+    if (cgList?.length > 0) {
+        cgList.map((item: any) => {
+            if (!item) return true;
+            if (item.orgUnitPrice && item.qty) {
+                if (!!item.orgCurrencyName) {
+                    if (!obj[item.orgCurrencyName]) {
+                        obj[item.orgCurrencyName] = {
+                            total: item.orgUnitPrice * item.qty,
+                        };
+                    } else {
+                        obj[item.orgCurrencyName].total += item.orgUnitPrice * item.qty;
+                    }
+                }
+            }
+            return true;
+        });
+    }
+    if (Object.keys(obj).length > 0) {
+        return (
+            Object.keys(obj).map((item, index) => {
+                return (
+                    <div key={`${index + 1}`} className="result-text" style={{float: "right"}}>
+                        <span style={{fontWeight: 500}}>{item}：</span>
+                        <b>{formatNumToMoney(keepDecimal(obj[item].total).toFixed(2))}</b>
+                    </div>
+                )
+            })
+        )
+    } else {
+        return null;
+    }
+}
