@@ -5,14 +5,13 @@ import {Button, Form, message, Spin} from 'antd';
 import {history, useModel, useParams} from 'umi';
 import {getFormErrorMsg} from '@/utils/units';
 import ChargeTable from '@/pages/sys-job/job/charge/charge-table';
-import Agent from '@/pages/sys-job/job/charge/agent';
 
 const FormItem = Form.Item;
 
 // TODO: 数据类型1
 type APICGInfo = APIModel.PRCGInfo;
 
-const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
+const ChargeRefund: React.FC<RouteChildrenProps> = () => {
     const urlParams: any = useParams();
     const jobId = atob(urlParams.id);
     //region TODO: 数据层
@@ -36,9 +35,8 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
     // TODO: 用来判断是否是第一次加载数据
     const [loading, setLoading] = useState(false);
 
-    const [payCGList, setPayCGList] = useState<APICGInfo[]>([]);
-    const [receiveCGList, setReceiveCGList] = useState<APICGInfo[]>([]);
-    const [proxyCGList, setProxyCGList] = useState<APICGInfo[]>([]);
+    const [refundARCGList, setRefundARCGList] = useState<APICGInfo[]>([]);
+    const [refundAPCGList, setRefundAPCGList] = useState<APICGInfo[]>([]);
 
     const [selectedKeyObj, setSelectedKeyObj] = useState<any>({});
     const [selectedRowObj, setSelectedRowObj] = useState<any>({});
@@ -57,11 +55,10 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
         const result: API.Result = await queryChargesByJobId({id: jobId});
         setLoading(false);
         if (result.success) {
-            const {chargeAPList, chargeARList,  reimbursementChargeList} = result.data;
-            setPayCGList(chargeAPList || []);
-            setReceiveCGList(chargeARList || []);
-            setProxyCGList(reimbursementChargeList || []);
-            form.setFieldsValue({payCGList: chargeAPList, receiveCGList: chargeARList, reimbursementChargeList});
+            const {refundAPChargeList, refundARChargeList} = result.data;
+            setRefundARCGList(refundARChargeList);
+            setRefundAPCGList(refundAPChargeList);
+            form.setFieldsValue({refundARCGList: refundARChargeList, refundAPCGList: refundAPChargeList});
             setIsReload(true);
             return result.data || {};
         } else {
@@ -83,24 +80,22 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
         // TODO: 此复制为反向复制，【ar => ap】 or 【ap => ar】
         if (state === 'copy') {
             if (CGType === 1) {
-                const newData = payCGList.slice(0);
+                const newData = refundAPCGList.slice(0);
                 newData.push(...data);
-                setPayCGList(newData);
-                form.setFieldsValue({payCGList: newData});
+                setRefundAPCGList(newData);
+                form.setFieldsValue({refundAPCGList: newData});
             } else {
-                const newData = receiveCGList.slice(0);
+                const newData = refundARCGList.slice(0);
                 newData.push(...data);
-                setReceiveCGList(newData)
-                form.setFieldsValue({receiveCGList: newData});
+                setRefundARCGList(newData)
+                form.setFieldsValue({refundARCGList: newData});
             }
             setIsReload(true);
         } else {
             if (CGType === 1) {
-                setReceiveCGList(data);
+                setRefundARCGList(data);
             } else if (CGType === 2) {
-                setPayCGList(data);
-            } else if (CGType === 3) {
-                setProxyCGList(data);
+                setRefundAPCGList(data);
             }
         }
     }
@@ -137,32 +132,25 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                         delete values[item];
                     }
                 }
-                // console.log(selectedKeyObj, selectedRowObj);
                 const params = {
                     jobId, branchId: '1665596906844135426', taxMethod: 1,
                     ...values, chargeList: [],
                 };
 
-                if (params.receiveCGList?.length > 0) {
-                    params.receiveCGList = params.receiveCGList.map((item: any)=>
-                        ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id})
+                if (params.refundARCGList?.length > 0) {
+                    params.refundARCGList = params.refundARCGList.map((item: any)=>
+                        ({...item, jobBusinessLine: 1, id: item.id.indexOf('ID_') > -1 ? '0' : item.id})
                     );
-                    params.chargeList.push(...params.receiveCGList);
-                    delete params.receiveCGList;
+                    params.chargeList.push(...params.refundARCGList);
+                    delete params.refundARCGList;
                 }
 
-                if (params.payCGList?.length > 0) {
-                    params.payCGList = params.payCGList.map((item: any)=>
-                        ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id})
+                if (params.refundAPCGList?.length > 0) {
+                    params.refundAPCGList = params.refundAPCGList.map((item: any)=>
+                        ({...item, jobBusinessLine: 1, id: item.id.indexOf('ID_') > -1 ? '0' : item.id})
                     );
-                    params.chargeList.push(...params.payCGList);
-                    delete params.payCGList;
-                }
-
-                if (params.reimbursementChargeList?.length > 0) {
-                    params.reimbursementChargeList = params.reimbursementChargeList.map((item: any)=>
-                        ({...item, receiveId: item.receiveId.indexOf('ID_') > -1 ? '0' : item.receiveId})
-                    );
+                    params.chargeList.push(...params.refundAPCGList);
+                    delete params.refundAPCGList;
                 }
 
                 const result: API.Result = await saveCharges(params);
@@ -175,7 +163,6 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                 }
             })
             .catch((errorInfo) => {
-                console.log(errorInfo);
                 /** TODO: 错误信息 */
                 message.error(getFormErrorMsg(errorInfo));
             });
@@ -184,7 +171,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
     // TODO: 传给子组件的参数
     const baseCGDON: any = {jobId, form, FormItem, InvoTypeList, handleChangeData, handleChangeRows};
 
-    // console.log(receiveCGList);
+    // console.log(refundARCGList);
 
     return (
         <Spin spinning={loading}>
@@ -216,9 +203,10 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                     CGType={1}
                     title={'AR'}
                     {...baseCGDON}
+                    isReturn={true}
                     isReload={isReload}
-                    CGList={receiveCGList}
-                    formName={'receiveCGList'}
+                    CGList={refundARCGList}
+                    formName={'refundARCGList'}
                     handleChangeCopyState={()=> setIsReload(false)}
                 />
 
@@ -226,20 +214,15 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                     CGType={2}
                     title={'AP'}
                     {...baseCGDON}
-                    CGList={payCGList}
+                    isReturn={true}
                     isReload={isReload}
-                    formName={'payCGList'}
+                    CGList={refundAPCGList}
+                    formName={'refundAPCGList'}
                     handleChangeCopyState={()=> setIsReload(false)}
-                />
-
-                <Agent
-                    CGType={3}
-                    {...baseCGDON}
-                    CGList={proxyCGList}
                 />
 
             </ProForm>
         </Spin>
     )
 }
-export default JobChargeInfo;
+export default ChargeRefund;

@@ -12,7 +12,7 @@ interface Props {
 
 }
 
-export const Remark: React.FC<Props> = (props) => {
+const ChargeRemark: React.FC<Props> = (props) => {
 
     const {open, record, title, handleCancel, } = props;
     const [form] = Form.useForm();
@@ -54,3 +54,5 @@ export const Remark: React.FC<Props> = (props) => {
         </div>
     )
 }
+
+export default ChargeRemark;

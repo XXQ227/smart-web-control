@@ -71,6 +71,15 @@ export default (callback: T, deps: React.DependencyList) => {
             if (response.data.chargeAPList?.length > 0) {
                 response.data.chargeAPList = response.data.chargeAPList.map((item: any)=> (getCGItem(item)))
             }
+            if (response.data.reimbursementChargeList?.length > 0) {
+                response.data.reimbursementChargeList = response.data.reimbursementChargeList.map((item: any)=> (getCGItem(item, 3)))
+            }
+            if (response.data.refundAPChargeList?.length > 0) {
+                response.data.refundAPChargeList = response.data.refundAPChargeList.map((item: any)=> (getCGItem(item)))
+            }
+            if (response.data.refundARChargeList?.length > 0) {
+                response.data.refundARChargeList = response.data.refundARChargeList.map((item: any)=> (getCGItem(item)))
+            }
         }
         return response;
     }, []);
@@ -104,12 +113,30 @@ export default (callback: T, deps: React.DependencyList) => {
 }
 
 // TODO: 处理费用的部分数据
-function getCGItem (item: any) {
-    return {
+/**
+ * @Description: TODO:
+ * @author XXQ
+ * @date 2023/8/22
+ * @param item      费用行
+ * @param type      类型
+ * @returns
+ */
+function getCGItem (item: any, type?: number) {
+    let result: any = {
         ...item,
         qtyStr: formatNumToMoney(item.qty),
         orgUnitPriceStr: formatNumToMoney(item.orgUnitPrice),
         orgAmountStr: formatNumToMoney(item.orgAmount),
         orgBillExrateStr: formatNumToMoney(item.orgBillExrate),
     };
+    if (type === 3) {
+        result = {
+            ...result,
+            receiveBillInTaxAmountStr: formatNumToMoney(item.receiveBillInTaxAmount),
+            receiveOrgBillExrateStr: formatNumToMoney(item.receiveOrgBillExrate),
+            payBillInTaxAmountStr: formatNumToMoney(item.payBillInTaxAmount),
+            payOrgBillExrateStr: formatNumToMoney(item.payOrgBillExrate),
+        };
+    }
+    return result;
 }

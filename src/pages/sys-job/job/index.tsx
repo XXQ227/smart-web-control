@@ -1,16 +1,17 @@
 import React, {useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import {PageContainer} from '@ant-design/pro-components';
-import JobInfo from './job'
-import JobChargeInfo from './charge';
 import './style.less'
 import {HeaderInfo} from '@/utils/units'
 import AddServiceModal from '@/components/AddServiceModal'
 import {message} from 'antd'
-import SeaExport from '@/pages/sys-job/job/sea-export'
-import SeaImport from '@/pages/sys-job/job/sea-import'
-import LocalDelivery from '@/pages/sys-job/job/local-delivery'
 import {useParams} from 'umi'
+import JobInfo from './job'
+import JobChargeInfo from './charge';
+import ChargeRefund from './charge-refund'
+import SeaExport from './sea-export'
+import SeaImport from './sea-import'
+import LocalDelivery from './local-delivery'
 
 const TicketForm: React.FC<RouteChildrenProps> = (props) => {
 
@@ -20,8 +21,9 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
 
     // 动态生成标签页信息
     const initialTabList = [
-        { tab: 'Job', key: 'job', closable: false,  },
-        { tab: 'Charge', key: 'charge', closable: false,  },
+        { tab: 'Job', key: 'job', closable: false, },
+        { tab: 'Charge', key: 'charge', closable: false, },
+        { tab: 'Refund-Charge', key: 'refund-charge', closable: false, },
         { tab: 'Sea (Export)', key: 'sea-export', closable: false },
         { tab: 'Sea (Import)', key: 'sea-import', closable: false },
         { tab: 'Local Delivery', key: 'local-delivery', closable: false },
@@ -98,6 +100,7 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
         >
             {activeKey === 'job' && <JobInfo {...props}/>}
             {activeKey === 'charge' && !isCreate && <JobChargeInfo {...props}/>}
+            {activeKey === 'refund-charge' && !isCreate && <ChargeRefund {...props}/>}
             {activeKey === 'sea-export' && <SeaExport {...props}/>}
             {activeKey === 'sea-import' && <SeaImport {...props}/>}
             {activeKey === 'local-delivery' && <LocalDelivery {...props}/>}

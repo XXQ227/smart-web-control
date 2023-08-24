@@ -94,11 +94,13 @@ const SearchModal: React.FC<Props> = (props) => {
         // TODO: 当 【visible = true】 时。做关闭操作，否则做搜索
         const searchValue = val?.target?.value || '';
         if (visible) {
+            if (props.id && document?.getElementById(props.id)) {
+                document?.getElementById(props.id)?.focus();
+            }
             setSearchVal('');
             setFetching(false);
             setDataSourceList([]);
             setActiveItem(-1);
-            // document?.getElementById(props.id)?.focus();
         } else {
             setFetching(true);
             debounceFetcher(searchValue);

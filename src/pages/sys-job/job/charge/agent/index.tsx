@@ -8,8 +8,8 @@ import SearchModal from '@/components/SearchModal';
 import {ProCard, ProFormText, ProTable} from "@ant-design/pro-components";
 import type {ProColumns} from '@ant-design/pro-table';
 import {useModel} from '@@/plugin-model/useModel'
-import {Remark} from '@/pages/sys-job/job/charge/remark'
-import {renderAmountByCurrency} from '@/pages/sys-job/job/charge/chargeTable'
+import ChargeRemark from '@/pages/sys-job/job/charge/charge-remark'
+import {renderAmountByCurrency} from '@/pages/sys-job/job/charge/charge-table'
 
 const Option = Select.Option;
 // TODO: 数据类型
@@ -43,8 +43,8 @@ const Agent: React.FC<Props> = (props) => {
     const [chargeIndex, setChargeIndex] = useState<number>(0);
 
     // TODO: 复选框
-    const [selectedKeys, setSelectedKeys] = useState<any[]>([]);
-    const [selectRows, setSelectRows] = useState<any[]>([]);
+    const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
+    const [selectRows, setSelectRows] = useState<React.Key[]>([]);
 
     const handleChangeData = (data: any) => {
         props.handleChangeData(data, CGType);
@@ -69,6 +69,7 @@ const Agent: React.FC<Props> = (props) => {
             branchId: '1665596906844135426',
             businessId: '',
             businessName: '',
+            businessNameFullEn: '',
             businessOracleId: '',
             id: '',
             itemId: '',
@@ -82,7 +83,6 @@ const Agent: React.FC<Props> = (props) => {
             taxFreeFlag: 1,
             supplementFlag: 0,
             settlementType: 0,
-            type: CGType,
             state: 1,
             orgCurrencyName: '',
             orgUnitPrice: 0,
@@ -115,6 +115,7 @@ const Agent: React.FC<Props> = (props) => {
             receiveId: 'ar_' + ID_STRING(),
             receiveBusinessId: '',
             receiveBusinessName: '',
+            receiveBusinessNameFullEn: '',
             receiveBusinessOracleId: '',
             receiveBillCurrencyName: '',
             receiveOrgBillExrate: 0,
@@ -127,6 +128,7 @@ const Agent: React.FC<Props> = (props) => {
             payId: '',
             payBusinessId: '',
             payBusinessName: '',
+            payBusinessNameFullEn: '',
             payBusinessOracleId: '',
             payBillCurrencyName: '',
             payOrgBillExrate: 1,
@@ -201,10 +203,12 @@ const Agent: React.FC<Props> = (props) => {
             }
         } else if (filedName === 'receiveBusinessId') {
             target.receiveBusinessName = data.nameFullEn;
+            target.receiveBusinessNameFullEn = data.nameFullEn;
             target.receiveBusinessOracleId = data.oracleCustomerCode || '123456';
         } else if (filedName === 'payBusinessId') {
             target.payBusinessName = data.nameFullEn;
-            target.payBusinessOracleId = data.oracleCustomerCode || '123456';
+            target.payBusinessNameFullEn = data.nameFullEn;
+            target.payBusinessOracleId = data.oracleSupplierCode || '123456';
         } else if (filedName === 'itemId') {
             target.itemName = data.label;
             target.itemSubjectCode = CGType === 1 ? data.subjectCodeAr : data.subjectCodeAp;
@@ -213,16 +217,11 @@ const Agent: React.FC<Props> = (props) => {
         } else if (['orgCurrencyName', 'receiveBillCurrencyName', 'payBillCurrencyName'].includes(filedName)) {
             if (filedName === 'orgCurrencyName') {
                 // TODO: 账单币种跟着原币走
-                target.receiveBillCurrencyName = val;
-                target.payBillCurrencyName = val;
-                setFieldsVal[`receiveBillCurrencyName${nameStr}`] = val;
-                setFieldsVal[`payBillCurrencyName${nameStr}`] = val;
+                target.receiveBillCurrencyName = target.payBillCurrencyName = val;
+                setFieldsVal[`receiveBillCurrencyName${nameStr}`] = setFieldsVal[`payBillCurrencyName${nameStr}`] = val;
                 // TODO: 更新原币到账单币种的汇率
-                setFieldsVal[`receiveOrgBillExrate${nameStr}`] = target.receiveOrgBillExrate = data?.exRate || 1;
-                target.receiveOrgBillExrateStr = formatNumToMoney(keepDecimal(target.receiveOrgBillExrate, 7));
-
-                setFieldsVal[`payOrgBillExrate${nameStr}`] = target.payOrgBillExrate = data?.exRate || 1;
-                target.payOrgBillExrateStr = formatNumToMoney(keepDecimal(target.payOrgBillExrate, 7));
+                setFieldsVal[`payOrgBillExrate${nameStr}`] = setFieldsVal[`receiveOrgBillExrate${nameStr}`] = target.receiveOrgBillExrate = data?.exRate || 1;
+                target.receiveOrgBillExrateStr = target.payOrgBillExrateStr = formatNumToMoney(keepDecimal(target.payOrgBillExrate, 7));
 
                 // TODO: 计算代收代付的账单金额
                 target.payBillUnitPrice = target.receiveBillUnitPrice = target.orgUnitPrice;
@@ -269,7 +268,12 @@ const Agent: React.FC<Props> = (props) => {
     // TODO: 删除费用
     const handleRemove = async () => {
         if (selectedKeys?.length > 0) {
-            const rowKeys: React.Key[] = selectedKeys?.filter((key: string)=> key.indexOf('ID_') === -1) || [];
+            const allKeys: React.Key[] = selectedKeys.slice(0);
+            // TODO: 拿到代付的费用id；只拿保存成功的
+            selectRows.map((item: any) => {
+                if (item.payId?.indexOf('ID_') === -1) allKeys.push(item.payId);
+            });
+            const rowKeys: React.Key[] = allKeys.filter((key: any)=> key.indexOf('ID_') === -1) || [];
 
             let result: API.Result = {success: true};
             if (rowKeys) {
@@ -287,20 +291,6 @@ const Agent: React.FC<Props> = (props) => {
         }
     }
     //endregion
-
-    //region
-    const renderTableTitle = (
-        <div className={'ant-table-title-info'}>
-            <div className={'ant-div-left'}>
-                {/*<span className={'ant-table-title-label'}>AR</span>*/}
-                <Space>
-                    <Button disabled={selectedKeys?.length === 0} onClick={() => handleRemove()}>Remove</Button>
-                    <Button disabled={selectedKeys?.length === 0} onClick={() => handleCopy()}>Copy</Button>
-                </Space>
-            </div>
-        </div>
-    )
-    // endregion
 
 
     const columns: ProColumns<APICGInfo>[] = [
@@ -525,7 +515,14 @@ const Agent: React.FC<Props> = (props) => {
             <Row gutter={24}>
                 <Col span={24}>
                     <Row gutter={24} style={{marginBottom: 12}}>
-                        <Col span={8}>{renderTableTitle}</Col>
+                        <Col span={8} className={'ant-table-title-info'}>
+                            <div className={'ant-div-left'}>
+                                <Space>
+                                    <Button disabled={selectedKeys?.length === 0} onClick={() => handleRemove()}>Remove</Button>
+                                    <Button disabled={selectedKeys?.length === 0} onClick={() => handleCopy()}>Copy</Button>
+                                </Space>
+                            </div>
+                        </Col>
                         <Col span={16}>{renderAmountByCurrency(cgList)}</Col>
                     </Row>
                     <ProTable<APICGInfo>
@@ -536,11 +533,12 @@ const Agent: React.FC<Props> = (props) => {
                         pagination={false}
                         columns={columns}
                         dataSource={cgList}
+                        tableAlertRender={false}
                         rowSelection={rowSelection}
                         locale={{ emptyText: 'No Data' }}
                         className={'ant-pro-table-charge-info ant-pro-table-edit'}
                     />
-                    <Remark
+                    <ChargeRemark
                         open={open} record={chargeRecord}
                         handleCancel={()=> setOpen(false)}
                         handleOk={(val: any)=> handleRowChange(chargeIndex, chargeRecord.id, 'remark', val)}

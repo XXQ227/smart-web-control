@@ -11,7 +11,7 @@ import ls from 'lodash';
 import SearchModal from '@/components/SearchModal';
 import {ProCard, ProFormText, ProTable} from "@ant-design/pro-components";
 import type {ProColumns} from '@ant-design/pro-table';
-import {Remark} from '@/pages/sys-job/job/charge/remark'
+import ChargeRemark from '@/pages/sys-job/job/charge/charge-remark'
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -21,8 +21,9 @@ type APICGInfo = APIModel.PRCGInfo;
 interface Props {
     CGType: number,             // TODO: 费用类型：1：ar; 2：ap
     CGList: APICGInfo[],        // TODO: 费用集合
+    isReturn: boolean,          // TODO: 单票 id
     jobId: any,                 // TODO: 单票 id
-    isCopyNoSame: boolean,      // TODO: 是否是 ar/ap 交互复制
+    isReload: boolean,      // TODO: 是否是 ar/ap 交互复制
     title: string,              // TODO: 抬头数据
     form: any,                  // TODO: form 表单
     formName: string,           // TODO: form name
@@ -37,9 +38,9 @@ interface Props {
 const ChargeTable: React.FC<Props> = (props) => {
     const {
         jobId, CGType, CGList, form, formName,
-        InvoTypeList, title,
+        InvoTypeList, title, isReturn,
         // TODO: 是否是 ar/ap 交互复制
-        isCopyNoSame, handleChangeCopyState
+        isReload, handleChangeCopyState
     } = props;
     const CurrencyOpts = ['CNY', 'HKD', 'USD'];
     const {jobInfo} = useModel('job.job', (res: any) => ({jobInfo: res.jobInfo}));
@@ -57,18 +58,18 @@ const ChargeTable: React.FC<Props> = (props) => {
     const [chargeIndex, setChargeIndex] = useState<number>(0);
 
     useEffect(()=> {
-        if (isCopyNoSame) {
+        if (isReload) {
             setCGList(CGList);
             handleChangeCopyState();
         }
-    }, [CGList, handleChangeCopyState, isCopyNoSame])
+    }, [CGList, handleChangeCopyState, isReload])
 
     const handleChangeData = (data: any, state?: any) => {
         props.handleChangeData(data, CGType, state);
     }
 
     const handleChangeRows = (selectRowKeys: any[], rows: any[]) => {
-        props.handleChangeRows(selectRowKeys, rows, CGType === 1 ? 'arSelected' : 'apSelected');
+        props.handleChangeRows(selectRowKeys, rows, CGType === 1 ? 'refundArSelected' : 'refundApSelected');
     }
 
     //region function 方法
@@ -86,6 +87,7 @@ const ChargeTable: React.FC<Props> = (props) => {
             branchId: '1665596906844135426',
             businessId: '',
             businessName: '',
+            businessNameFullEn: '',
             businessOracleId: '',
             id: ID_STRING(),
             itemId: '',
@@ -148,7 +150,6 @@ const ChargeTable: React.FC<Props> = (props) => {
         const newData: APICGInfo[] = cgList?.map((item: APICGInfo) => ({...item})) || [];
         const target: any = newData.find((item: APICGInfo) => item.id === rowID) || {};
 
-        const fileLen: number = filedName.length;
         // TODO: 当录入【数量、单价、汇率】时，转成数字型
         target[filedName] = ['qty', 'orgUnitPrice', 'orgBillExrate'].includes(filedName) ? Number(val) || null : val?.target ? val?.target?.value || null : val;
         // TODO: 用于设置 form 里的值，否则必填字段验证时不会被响应
@@ -163,6 +164,7 @@ const ChargeTable: React.FC<Props> = (props) => {
             }
         } else if (filedName === 'businessId') {
             target.businessName = data.nameFullEn;
+            target.businessNameFullEn = data.nameFullEn;
             target.businessOracleId = data.oracleCustomerCode || '123456';
         } else if (filedName === 'itemId') {
             target.itemName = data.label;
@@ -182,9 +184,6 @@ const ChargeTable: React.FC<Props> = (props) => {
             // TODO: 更新原币到账单币种的汇率
             target.orgBillExrate = data?.ExRate || 1;
             target.orgBillExrateStr = data?.ExRateStr || '1';
-        } else if (filedName.substring(fileLen-2, fileLen) === 'ID') {
-            // TODO: 判断是不是 【ID】 字段，【ID】 字段需要存 【Name】 的值
-            target[filedName.substring(0, fileLen-2) + 'Name'] = data?.label;
         } else if (filedName === 'remark') {
             setChargeRecord({});
             setChargeIndex(0);
@@ -251,19 +250,6 @@ const ChargeTable: React.FC<Props> = (props) => {
         }
     }
 
-    /**
-     * @Description: TODO: 添加费用
-     * @author XXQ
-     * @date 2023/4/10
-     * @param rowID     费用行
-     * @returns
-     */
-    function handleDeleteCharge(rowID: any) {
-        const newCGData: APICGInfo[] = cgList.filter((item: APICGInfo) => item.id !== rowID) || [];
-        setCGList(newCGData);
-        handleChangeData(newCGData);
-    }
-
     const handleEditRemark = (index: number, record: any) => {
         setChargeRecord(record);
         setChargeIndex(index);
@@ -306,10 +292,27 @@ const ChargeTable: React.FC<Props> = (props) => {
         handleChangeRows([], []);
     }
 
+
+    /**
+     * @Description: TODO: 删除费用
+     * @author XXQ
+     * @date 2023/4/10
+     * @param rowID     费用行
+     * @returns
+     */
+    async function handleDeleteCharge(rowID?: any) {
+        if (rowID) {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            await handleRemove([rowID]);
+        } else {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            await handleRemove(selectedKeys);
+        }
+    }
     // TODO: 删除费用
-    const handleRemove = async () => {
-        if (selectedKeys?.length > 0) {
-            const rowKeys: React.Key[] = selectedKeys?.filter((key: string)=> key.indexOf('ID_') === -1) || [];
+    const handleRemove = async (idList: any[]) => {
+        if (idList?.length > 0) {
+            const rowKeys: React.Key[] = idList?.filter((key: string)=> key.indexOf('ID_') === -1) || [];
 
             let result: API.Result = {success: true};
             if (rowKeys) {
@@ -317,8 +320,9 @@ const ChargeTable: React.FC<Props> = (props) => {
             }
             if (result.success) {
                 let chargeArr: any[] = cgList.slice(0);
-                chargeArr = chargeArr.filter((item: any) => !selectedKeys.includes(item.id)) || [];
+                chargeArr = chargeArr.filter((item: any) => !idList.includes(item.id)) || [];
                 setCGList(chargeArr);
+                handleChangeData(chargeArr);
                 handleClearSelected();
                 message.success('success');
             } else {
@@ -327,27 +331,6 @@ const ChargeTable: React.FC<Props> = (props) => {
         }
     }
     // endregion
-
-    const renderTableTitle = (
-        <div className={'ant-table-title-info'}>
-            <div className={'ant-div-left'}>
-                {/*<span className={'ant-table-title-label'}>AR</span>*/}
-                <Space>
-                    <Button disabled={selectedKeys?.length === 0} onClick={() => handleRemove()}>Remove</Button>
-                    <Button disabled={selectedKeys?.length === 0} onClick={() => handleCopy('same')}>Copy</Button>
-                    <Button disabled={selectedKeys?.length === 0} onClick={() => handleCopy('noSame')}>
-                        Copy to {CGType === 1 ? 'AP' : 'AR'}
-                    </Button>
-                </Space>
-            </div>
-            {/*<div className={'ant-div-right'}>
-                <Space>
-                    <Button hidden={APHidden} onClick={() => handleCopy('same')}>Credit Note</Button>
-                    <Button hidden={APHidden} onClick={() => handleCopy('noSame')}>Debit Note</Button>
-                </Space>
-            </div>*/}
-        </div>
-    );
 
     // const renderTableFooter = (
     //     <div className={'ant-table-footer-info'}>
@@ -367,18 +350,6 @@ const ChargeTable: React.FC<Props> = (props) => {
     // );
 
     // endregion
-
-    const rowSelection: any = {
-        // 自定义选择项参考: https://ant.design/components/table-cn/#components-table-demo-row-selection-custom
-        // 注释该行则默认不显示下拉选项
-        columnWidth: 26,
-        selectedRowKeys: selectedKeys,
-        onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
-            setSelectedKeys(selectedRowKeys);
-            setSelectRows(selectedRows);
-            handleChangeRows(selectedRowKeys, selectedRows);
-        },
-    };
 
     const cgColumns: ProColumns<APICGInfo>[] = [
         {
@@ -458,7 +429,10 @@ const ChargeTable: React.FC<Props> = (props) => {
             title: 'Unit Price', dataIndex: 'orgUnitPrice', align: 'center', width: '10%',
             render: (text: any, record: APICGInfo, index) =>
                 <FormItem
-                    rules={[{required: true, message: `Unit Price`}]}
+                    rules={[
+                        {required: true, message: `Unit Price`},
+                        {pattern: isReturn ? /^-((\d+(\.\d{0,5})?)|(\d*\.\d{1,5}))$/ : /^/, message: 'Must be a negative number'},
+                    ]}
                     initialValue={record.orgUnitPrice} name={`orgUnitPrice_table_${record.id}`}
                 >
                     <InputEditNumber
@@ -530,12 +504,36 @@ const ChargeTable: React.FC<Props> = (props) => {
         },
     ];
 
+    const rowSelection: any = {
+        // 自定义选择项参考: https://ant.design/components/table-cn/#components-table-demo-row-selection-custom
+        // 注释该行则默认不显示下拉选项
+        columnWidth: 26,
+        selectedRowKeys: selectedKeys,
+        onChange: (selectedRowKeys: React.Key[], selectedRows: any[]) => {
+            setSelectedKeys(selectedRowKeys);
+            setSelectRows(selectedRows);
+            handleChangeRows(selectedRowKeys, selectedRows);
+        },
+    };
+
+
     return (
         <ProCard title={title} bordered={true} headerBordered className={'ant-card'}>
             <Row gutter={24} className={'ant-margin-bottom-24'}>
                 <Col span={24}>
                     <Row gutter={24} style={{marginBottom: 12}}>
-                        <Col span={8}>{renderTableTitle}</Col>
+                        <Col span={8} className={'ant-table-title-info'}>
+                            <div className={'ant-div-left'}>
+                                {/*<span className={'ant-table-title-label'}>AR</span>*/}
+                                <Space>
+                                    <Button disabled={selectedKeys?.length === 0} onClick={() => handleDeleteCharge()}>Remove</Button>
+                                    <Button disabled={selectedKeys?.length === 0} onClick={() => handleCopy('same')}>Copy</Button>
+                                    <Button disabled={selectedKeys?.length === 0} onClick={() => handleCopy('noSame')}>
+                                        Copy to {CGType === 1 ? 'AP' : 'AR'}
+                                    </Button>
+                                </Space>
+                            </div>
+                        </Col>
                         <Col span={16}>{renderAmountByCurrency(cgList)}</Col>
                     </Row>
                     <ProTable<APICGInfo>
@@ -551,7 +549,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                         locale={{ emptyText: 'No Data' }}
                         className={'ant-pro-table-charge-info ant-pro-table-edit'}
                     />
-                    <Remark
+                    <ChargeRemark
                         open={open} record={chargeRecord}
                         handleCancel={()=> setOpen(false)}
                         handleOk={(val: any)=> handleRowChange(chargeIndex, chargeRecord.id, 'remark', val)}
@@ -575,7 +573,6 @@ export default ChargeTable;
  * @returns
  */
 export function renderAmountByCurrency(cgList: any[]) {
-    // console.log(newData)
     const obj: Record<string, { total: number }> = {};
     if (cgList?.length > 0) {
         cgList.map((item: any) => {

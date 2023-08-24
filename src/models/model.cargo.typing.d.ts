@@ -312,6 +312,7 @@ declare namespace APIModel {
         branchId: string;
         businessId?: string;
         businessName?: string;
+        businessNameFullEn?: string;
         businessOracleId?: string;
         id?: string;
         itemId?: string;
@@ -374,6 +375,7 @@ declare namespace APIModel {
         receiveId?: string;
         receiveBusinessId?: string;
         receiveBusinessName?: string;
+        receiveBusinessNameFullEn?: string;
         receiveBusinessOracleId?: string;
         receiveBillCurrencyName?: string;
         receiveOrgBillExrate?: any;
@@ -386,6 +388,7 @@ declare namespace APIModel {
         payId?: string;
         payBusinessId?: string;
         payBusinessName?: string;
+        payBusinessNameFullEn?: string;
         payBusinessOracleId?: string;
         payBillCurrencyName?: string;
         payOrgBillExrate?: any;
