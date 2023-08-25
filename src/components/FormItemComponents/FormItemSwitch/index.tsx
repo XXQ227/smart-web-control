@@ -5,7 +5,7 @@ import {Form, Switch} from 'antd'
 const FormItem = Form.Item;
 interface Props {
     id?: string,
-    name?: string,
+    name?: any,
     checkedChildren?: string,
     unCheckedChildren?: string,
     initialValue: any

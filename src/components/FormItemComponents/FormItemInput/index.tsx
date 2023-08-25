@@ -4,7 +4,7 @@ import {Form, Input} from 'antd'
 const FormItem = Form.Item;
 interface Props {
     id?: string,
-    name: string,
+    name: any,
     label?: string,
     initialValue?: any
     disabled?: boolean,

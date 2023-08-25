@@ -10,7 +10,7 @@ import {
     editSeaImportAPI,
     queryLocalDeliveryInfoAPI,
     addLocalDeliveryAPI,
-    editLocalDeliveryAPI
+    editLocalDeliveryAPI, deleteLocalDeliveryAPI
 } from '@/services/smart/job/job-info';
 import {useCallback, useState} from "react";
 
@@ -159,6 +159,15 @@ export default () => {
         // TODO: 请求后台 API
         return await editLocalDeliveryAPI(params);
     }, []);
+
+    // TODO: 删除本地交付服务信息
+    // POST /engine/web/localDelivery/deleteLocalDelivery
+    // API ID:98141899
+    // API URL:https://app.apifox.com/link/project/2684231/apis/api-98141899
+    const deleteLocalDelivery = useCallback(async (params: {id: string}) => {
+        // TODO: 请求后台 API
+        return await deleteLocalDeliveryAPI(params);
+    }, []);
     //endregion
 
 
@@ -185,5 +194,6 @@ export default () => {
         queryLocalDeliveryInfo,
         addLocalDelivery,
         editLocalDelivery,
+        deleteLocalDelivery,
     }
 }

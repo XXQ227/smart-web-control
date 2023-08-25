@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
-import {ProCard, ProFormText, ProFormSwitch, ProFormDateTimePicker} from '@ant-design/pro-components';
+import {ProCard, ProFormText, ProFormDateTimePicker} from '@ant-design/pro-components';
 import {Col, Row, Form, Space, Button, Table, Popconfirm} from 'antd';
-import {getBranchID} from '@/utils/auths';
 import {PlusCircleOutlined, DeleteOutlined} from "@ant-design/icons";
 import type { ColumnsType } from 'antd/es/table';
 import SearchModal from "@/components/SearchModal";
@@ -18,7 +17,7 @@ interface Props {
     batchNo: string,
     data?: APIModel.BatchData,
     CTNPlanList?: APIModel.PreBookingList[],
-    NBasicInfo: APIModel.NBasicInfo,
+    NBasicInfo?: APIModel.NBasicInfo,
 }
 
 const FormItem = Form.Item;
@@ -46,8 +45,7 @@ const initialContainerList: APIModel.PreBookingList[] = [
 
 const ContainerLayout: React.FC<Props> = (props) => {
     const  {
-        CTNPlanList, NBasicInfo,
-        batchNo, form
+        CTNPlanList, form
     } = props;
 
     const [containerList, setContainerList] = useState<APIModel.PreBookingList[]>(CTNPlanList || initialContainerList);
@@ -92,7 +90,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                 <FormItem
                     required
                     initialValue={record.ctnModelName}
-                    name={`ctnModelId_ctn_table_${record.id}`}
+                    name={['0', `ctnModelId_ctn_table_${record.id}`]}
                     rules={[{required: true, message: 'SIZE'}]}
                 >
                     <SearchModal
@@ -114,9 +112,9 @@ const ContainerLayout: React.FC<Props> = (props) => {
             render: (text: any, record, index) =>
                 <FormItemInput
                     required
-                    placeholder={''}
+                    placeholder=''
                     initialValue={record.qty}
-                    name={`qty_ctn_table_${record.id}`}
+                    name={['0', `qty_ctn_table_${record.id}`]}
                     rules={[{required: true, message: 'QTY'}]}
                     onChange={(e) => onChange(index, record.id, 'qty', e)}
                 />
@@ -131,7 +129,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                     checkedChildren="SOC"
                     unCheckedChildren="COC"
                     initialValue={record.socFlag}
-                    name={`socFlag_ctn_table_${record.id}`}
+                    name={['0', `socFlag_ctn_table_${record.id}`]}
                     onChange={(e) => onChange(index, record.id, 'socFlag', e)}
                 />
         },
@@ -140,9 +138,9 @@ const ContainerLayout: React.FC<Props> = (props) => {
             dataIndex: 'Owner',
             render: (text: any, record, index) =>
                 <FormItemInput
-                    placeholder={''}
+                    placeholder=''
                     initialValue={text}
-                    name={`Owner_ctn_table_${record.id}`}
+                    name={['0', `Owner_ctn_table_${record.id}`]}
                     onChange={(e) => onChange(index, record.id, 'Owner', e)}
                 />
         },
@@ -152,9 +150,9 @@ const ContainerLayout: React.FC<Props> = (props) => {
             key: 'Remark',
             render: (text: any, record, index) =>
                 <FormItemInput
-                    placeholder={''}
+                    placeholder=''
                     initialValue={text}
-                    name={`Remark_ctn_table_${record.id}`}
+                    name={['0', `Remark_ctn_table_${record.id}`]}
                     onChange={(e) => onChange(index, record.id, 'remark', e)}
                 />
         },
@@ -231,51 +229,51 @@ const ContainerLayout: React.FC<Props> = (props) => {
             <Row gutter={24}>
                 <Col span={12}>
                     <ProFormText
-                        name={`placeOfOrigin${batchNo}`}
-                        initialValue={'香港九龍灣宏光道1號億京中心B座20樓E室'}
+                        name='placeOfOrigin'
                         label="Pickup Location"
-                        placeholder={''}
+                        placeholder=''
                     />
                 </Col>
                 <Col span={12}>
                     <ProFormDateTimePicker
-                        name={`actualPickupTime${batchNo}`}
+                        name='actualPickupTime'
                         label="Pickup Time"
-                        initialValue={'2023-05-19 00:00:10'}
+                        placeholder=''
+                        fieldProps={{format: 'YYYY-MM-DD HH:mm'}}
                     />
                 </Col>
             </Row>
             <Row gutter={24}>
                 <Col span={12}>
                     <ProFormText
-                        name={`containingStuffingDevanning${batchNo}`}
-                        initialValue={'Unit F & G, 20/F., MG Tower, 133 Hoi Bun Road, Kwun Tong, Hong Kong'}
+                        name='containingStuffingDevanning'
                         label="Containing Stuffing & Devanning at"
-                        placeholder={''}
+                        placeholder=''
                     />
                 </Col>
                 <Col span={12}>
                     <ProFormDateTimePicker
-                        name={`stuffingDevanningTime${batchNo}`}
+                        name='stuffingDevanningTime'
                         label="Stuffing & Devanning Time"
-                        initialValue={'2023-05-19 00:00:10'}
+                        placeholder=''
+                        fieldProps={{format: 'YYYY-MM-DD HH:mm'}}
                     />
                 </Col>
             </Row>
             <Row gutter={24}>
                 <Col span={12}>
                     <ProFormText
-                        name={`placeOfDestination${batchNo}`}
-                        initialValue={'16/F, Richmond Commercial Building, 109 Argyle Street, Mongkok, Kowloon'}
+                        name='placeOfDestination'
                         label="Return Location"
-                        placeholder={''}
+                        placeholder=''
                     />
                 </Col>
                 <Col span={12}>
                     <ProFormDateTimePicker
-                        name={`actualDeliveryTime${batchNo}`}
+                        name='actualDeliveryTime'
                         label="Return Time"
-                        initialValue={'2023-05-19 00:00:10'}
+                        placeholder=''
+                        fieldProps={{format: 'YYYY-MM-DD HH:mm'}}
                     />
                 </Col>
             </Row>

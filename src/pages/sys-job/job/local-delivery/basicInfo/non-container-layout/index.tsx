@@ -52,26 +52,29 @@ const NonContainerLayout: React.FC<Props> = (props) => {
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12} xl={7} xxl={9}>
                     <ProFormDateTimePicker
-                        width={"md"}
-                        name={`requiredPickupTime${batchNo}`}
+                        width='md'
+                        name='requiredPickupTime'
                         label="Pickup Time (Required)"
-                        initialValue={'2023-02-19 00:00:10'}
+                        placeholder=''
+                        fieldProps={{format: 'YYYY-MM-DD HH:mm'}}
                     />
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12} xl={7} xxl={9}>
                     <ProFormDateTimePicker
-                        width={"md"}
-                        name={`actualPickupTime${batchNo}`}
+                        width='md'
+                        name='actualPickupTime'
                         label="Pickup Time (Actual)"
-                        initialValue={'2023-02-18 00:00:10'}
+                        placeholder=''
+                        fieldProps={{format: 'YYYY-MM-DD HH:mm'}}
                     />
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12} xl={7} xxl={9}>
                     <ProFormDateTimePicker
-                        width={"md"}
-                        name={`departureTime${batchNo}`}
+                        width='md'
+                        name='departureTime'
                         label="Departure Time (Warehouse)"
-                        initialValue={'2023-02-19 10:00:10'}
+                        placeholder=''
+                        fieldProps={{format: 'YYYY-MM-DD HH:mm'}}
                     />
                 </Col>
             </Row>
@@ -112,18 +115,20 @@ const NonContainerLayout: React.FC<Props> = (props) => {
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12} xl={7} xxl={9}>
                     <ProFormDateTimePicker
-                        width={"md"}
-                        name={`requiredDeliveryTime${batchNo}`}
+                        width='md'
+                        name='requiredDeliveryTime'
                         label="Delivery Time (Required)"
-                        initialValue={'2023-02-19 00:00:10'}
+                        placeholder=''
+                        fieldProps={{format: 'YYYY-MM-DD HH:mm'}}
                     />
                 </Col>
                 <Col xs={12} sm={12} md={12} lg={12} xl={7} xxl={9}>
                     <ProFormDateTimePicker
-                        width={"md"}
-                        name={`actualDeliveryTime${batchNo}`}
+                        width='md'
+                        name='actualDeliveryTime'
                         label="Delivery Time (Actual)"
-                        initialValue={'2023-02-18 00:00:10'}
+                        placeholder=''
+                        fieldProps={{format: 'YYYY-MM-DD HH:mm'}}
                     />
                 </Col>
             </Row>

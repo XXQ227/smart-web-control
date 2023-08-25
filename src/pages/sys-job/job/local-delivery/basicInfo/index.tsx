@@ -1,6 +1,12 @@
 import React, {useState} from 'react';
-import {ProCard, ProFormDateTimePicker, ProFormSelect, ProFormText, ProFormTextArea} from '@ant-design/pro-components';
-import {Col, Row, InputNumber, Select, Divider, Space, Button, Popconfirm, Table} from 'antd';
+import {
+    ProCard,
+    ProFormDigit,
+    ProFormSelect,
+    ProFormText,
+    ProFormTextArea
+} from '@ant-design/pro-components';
+import {Col, Row, Select, Divider, Space, Button, Popconfirm, Table} from 'antd';
 import {ID_STRING, rowGrid} from '@/utils/units';
 import {PlusCircleOutlined} from "@ant-design/icons";
 import type {ColumnsType} from "antd/es/table";
@@ -8,22 +14,24 @@ import NonContainerLayout from "./non-container-layout";
 import ContainerLayout from "./container-layout";
 import ls from 'lodash';
 import FormItemInput from "@/components/FormItemComponents/FormItemInput";
+import SearchProFormSelect from "@/components/SearchProFormSelect";
 
 interface Props {
     form?: any,
     formRef?: any,
     formCurrent?: any,
     batchNo: string,
-    data?: APIModel.BatchData,
+    data: any,
     CTNPlanList?: APIModel.PreBookingList[],
     PhotoRemarkList?: APIModel.PhotoRemarkList[],
-    NBasicInfo: APIModel.NBasicInfo,
+    NBasicInfo?: APIModel.NBasicInfo,
     handleChangeLabel: (val: any) => void,   // 选中后，返回的结果
+    handleChangeData: (val: any) => void,    // 设置数据
 }
 
 const { Option } = Select;
 
-const initialPhotoRemarkList: APIModel.PhotoRemarkList[] = [
+/*const initialPhotoRemarkList: APIModel.PhotoRemarkList[] = [
     {
         id: 'ID1',
         description: "青衣碼頭裝箱照片",
@@ -34,7 +42,7 @@ const initialPhotoRemarkList: APIModel.PhotoRemarkList[] = [
         description: "港區入口交通擁堵，無法及時提柜",
         Time: "2023-03-20 20:10",
     },
-];
+];*/
 
 const BasicInfo: React.FC<Props> = (props) => {
     const  {
@@ -42,8 +50,9 @@ const BasicInfo: React.FC<Props> = (props) => {
         CTNPlanList, PhotoRemarkList, NBasicInfo
     } = props;
 
-    const [isContainer, setIsContainer] = useState(data?.vehicleType === '集装箱运输货车');
-    const [photoRemarkList, setPhotoRemarkList] = useState<APIModel.PhotoRemarkList[]>(PhotoRemarkList || initialPhotoRemarkList);
+    const [isContainer, setIsContainer] = useState(data[0]?.transportVehicleTypeId === 3);
+    // const [photoRemarkList, setPhotoRemarkList] = useState<APIModel.PhotoRemarkList[]>(data[0]?.photoRemarkEntityList || PhotoRemarkList || initialPhotoRemarkList);
+    const [photoRemarkList, setPhotoRemarkList] = useState<APIModel.PhotoRemarkList[]>(data[0]?.photoRemarkEntityList || PhotoRemarkList || []);
 
     const selectAfter = (
         <Select defaultValue="KG" style={{ width: 70 }}>
@@ -65,14 +74,47 @@ const BasicInfo: React.FC<Props> = (props) => {
         const newData: any[] = ls.cloneDeep(photoRemarkList);
         const target = newData.find((item: any)=> item.id === rowID) || {};
         target[filedName] = val?.target ? val.target.value : val;
-        console.log(target);
+        // console.log(target);
         newData.splice(index, 1, target);
+        // TODO: 把数据更新到表单里
+        props.handleChangeData({photoRemarkEntityList: newData});
+
         // TODO: 把数据接口给到 FormItem 表单里
-        form.setFieldsValue({
+        /*form.setFieldsValue({
             [`${filedName}_remark_table_${target.id}`]: target[filedName],
             photoRemarkEntityList: newData
         });
+        console.log(newData);*/
         setPhotoRemarkList(newData);
+    }
+
+    /**
+     * @Description: TODO:
+     * @author LLS
+     * @date 2023/8/21
+     * @param filedName 操作的数据字段
+     * @param val       修改的值
+     * @param option    其他数据
+     * @returns
+     */
+    const handleChange = (filedName: string, val: any, option?: any) => {
+        const setValueObj: any = {[filedName]: val};
+        switch (filedName) {
+            case 'shipmentNum':
+                if (props.handleChangeLabel) props.handleChangeLabel(val);
+                break;
+            case 'truckingCompanyId':
+                setValueObj.truckingCompanyNameCn = option?.nameFullCn;
+                setValueObj.truckingCompanyNameEn = option?.nameFullEn || option?.nameFullCn;
+                setValueObj.truckingCompanyOracleId = option?.oracleCustomerCode;
+                // TODO: 把数据更新到表单里
+                props.handleChangeData(setValueObj);
+                break;
+            case 'transportVehicleTypeId':
+                setIsContainer(val === 3);
+                break;
+            default: break;
+        }
     }
 
     const handleAdd = () => {
@@ -90,27 +132,38 @@ const BasicInfo: React.FC<Props> = (props) => {
         setPhotoRemarkList(newData);
     };
 
-    const handleChange = (fieldName: string, value: string) => {
+    /*const handleChange = (fieldName: string, value: string) => {
         if (fieldName === 'shipmentNum') {
             if (props.handleChangeLabel) props.handleChangeLabel(value);
-        } else if (fieldName === 'TransportVehicleType') {
+        } else if (fieldName === 'transportVehicleTypeId') {
             setIsContainer(value === "集装箱运输货车")
         }
-    };
+    };*/
 
     const columns: ColumnsType<APIModel.PhotoRemarkList> = [
         {
             title: 'Description',
-            dataIndex: 'Description',
+            dataIndex: 'description',
             render: (text: any, record, index) =>
                 <FormItemInput
                     required
                     placeholder={''}
+                    name={['0', `description_remark_table_${record.id}`]}
+                    // name={`description_remark_table_${record.id}`}
                     initialValue={record.description}
-                    name={`description_remark_table_${record.id}`}
                     rules={[{required: true, message: 'Description'}]}
                     onChange={(e) => onChange(index, record.id, 'description', e)}
                 />
+                /*<ProFormText
+                    required
+                    placeholder={''}
+                    name={`description_remark_table_${record.id}`}
+                    initialValue={record.description}
+                    rules={[{required: true, message: 'Description'}]}
+                    fieldProps={{
+                        onChange: (e) => onChange(index, record.id, 'description', e)
+                    }}
+                />*/
         },
         {
             title: 'Time',
@@ -140,80 +193,93 @@ const BasicInfo: React.FC<Props> = (props) => {
         },
     ];
 
+    // console.log('data:', data);
+    // console.log('batchNo:', batchNo);
+
     return (
         <div className={'antProCard'}>
             <Row gutter={rowGrid}>
                 <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5} className={'custom-input'}>
                     <ProFormText
+                        required
                         placeholder=''
-                        name={`shipmentNum${batchNo}`}
-                        initialValue={data?.shipmentNum}
+                        name='shipmentNum'
                         label="Shipment No."
+                        rules={[{required: true, message: 'Shipment No.'}]}
                         fieldProps={{
                             onChange: (e) => handleChange('shipmentNum', e.target.value)
                         }}
                     />
                     <label>G.W.</label>
-                    <InputNumber
-                        name={`grossWeight${batchNo}`}
-                        addonAfter={selectAfter}
-                        defaultValue={data?.grossWeight}
+                    <ProFormDigit
+                        placeholder=''
+                        min={0}
+                        name='grossWeight'
+                        fieldProps={{addonAfter: selectAfter}}
                     />
                 </Col>
                 <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5}>
-                    <ProFormSelect
+                    {/*<ProFormSelect
                         placeholder=''
                         name={`truckingCompany${batchNo}`}
                         label="Trucking Company"
-                        initialValue={data?.truckingCompany}
                         options={[
                             {label: '深圳鸿邦物流', value: '深圳鸿邦物流'},
                             {label: '威盛运输企业有限公司', value: '威盛运输企业有限公司'},
                             {label: '招商局建瑞运输有限公司', value: '招商局建瑞运输有限公司'},
                         ]}
+                    />*/}
+                    <SearchProFormSelect
+                        required
+                        qty={5}
+                        isShowLabel={true}
+                        id={'truckingCompanyId'}
+                        name={`truckingCompanyId`}
+                        label="Trucking Company"
+                        filedValue={'id'} filedLabel={'nameFullEn'}
+                        url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
+                        query={{branchId: '1665596906844135426', buType: 1}}
+                        handleChangeData={(val: any, option: any) => handleChange('truckingCompanyId', val, option)}
                     />
                     <div className={'proFormTextContainer'}>
                         <ProFormText
                             placeholder=''
-                            name={`Measurement${batchNo}`}
-                            initialValue={data?.measurement}
+                            name='measurement'
                             label="Meas. (cbm)"
                         />
                         <ProFormText
                             placeholder=''
-                            name={`Pieces${batchNo}`}
-                            initialValue={data?.pieces}
+                            name='qty'
                             label="QTY."
                         />
                     </div>
                 </Col>
                 <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5}>
                     <ProFormSelect
+                        required
                         placeholder=''
-                        name={`TransportVehicleType${batchNo}`}
+                        name={'transportVehicleTypeId'}
                         label="Transport Vehicle Type"
-                        initialValue={data?.vehicleType}
                         options={[
-                            {label: '平板货车 platform truck(flat bed truck)', value: '平板货车'},
-                            {label: '通用货车 general-purpose vehicle', value: '通用货车'},
-                            {label: '集装箱运输货车 container carrier', value: '集装箱运输货车'},
-                            {label: '厢式货车 van', value: '厢式货车'},
+                            {label: '平板货车 platform truck(flat bed truck)', value: 1},
+                            {label: '通用货车 general-purpose vehicle', value: 2},
+                            {label: '集装箱运输货车 container carrier', value: 3},
+                            {label: '厢式货车 van', value: 4},
                         ]}
+                        rules={[{required: true, message: 'Transport Vehicle Type'}]}
                         fieldProps={{
-                            onChange: (e) => handleChange('TransportVehicleType', e)
+                            onChange: (e) => handleChange('transportVehicleTypeId', e)
                         }}
                     />
                     <div className={'proFormTextContainer'}>
                         <ProFormText
                             placeholder=''
-                            name={`licensePlateNum${batchNo}`}
-                            initialValue={data?.licensePlateNum}
+                            name='licensePlateNum'
                             label="License Plate No."
                         />
                         <ProFormText
                             placeholder=''
-                            name={`driverName${batchNo}`}
-                            initialValue={data?.driverName}
+                            name='driverName'
                             label="Driver Name"
                         />
                     </div>
@@ -227,14 +293,12 @@ const BasicInfo: React.FC<Props> = (props) => {
                             <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5}>
                                 <ProFormText
                                     placeholder=''
-                                    name={`receivingContact${batchNo}`}
-                                    initialValue={data?.receivingContact}
+                                    name='receivingContact'
                                     label="Receiving Contact"
                                 />
                                 <ProFormText
                                     placeholder=''
-                                    name={`receivingContactTelephone${batchNo}`}
-                                    initialValue={data?.receivingContactTelephone}
+                                    name='receivingContactTelephone'
                                     label="Telephone"
                                 />
                             </Col>
@@ -267,7 +331,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                 <Row gutter={rowGrid}>
                     <Col xs={24} sm={24} md={24} lg={24} xl={7} xxl={5}>
                         <ProFormTextArea
-                            name={`operationRemark${batchNo}`}
+                            name='operationRemark'
                             fieldProps={{rows: 5}}
                             label="Operation Remark"
                             placeholder=''
@@ -285,7 +349,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                             </div>
                         </div>
                         <Table
-                            rowKey={'ID'}
+                            rowKey={'id'}
                             bordered
                             pagination={false}
                             dataSource={photoRemarkList}
