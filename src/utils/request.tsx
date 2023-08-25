@@ -92,7 +92,7 @@ export function request(url: string, options: any) {
             }
         })
         .catch((e: any) => {
-            message.error(e.message);
+            if (e.message) message.error(e.message);
             const status = e.name;
             const result: any = {success: false, message: ''};
             if (status === 401) {

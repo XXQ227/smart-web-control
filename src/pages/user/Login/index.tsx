@@ -1,5 +1,4 @@
 import Footer from '@/components/Footer';
-import {getFakeCaptcha} from '@/services/smart/login';
 import {
     AlipayCircleOutlined,
     LockOutlined,
@@ -243,9 +242,7 @@ const Login: React.FC = () => {
                                     },
                                 ]}
                                 onGetCaptcha={async (phone) => {
-                                    const result = await getFakeCaptcha({
-                                        phone,
-                                    });
+                                    const result = false;
                                     if (!result) {
                                         return;
                                     }

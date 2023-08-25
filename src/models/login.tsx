@@ -1,43 +1,12 @@
-import {loginSmart} from '@/services/smart/login';
-import type React from "react";
+import {loginSmart, iamUserLogInAPI} from '@/services/smart/login';
 import {useCallback, useState} from "react";
 import {setSystemMes} from "@/utils/auths";
+import {message} from 'antd'
 
-interface T {
-    // TODO: 返回结果
-    resResult: any,
-    // TODO: 用户信息
-    userInfo: object,
-    // TODO: 登录系统
-    login: void,
-    // TODO: 退出登录
-    logout: void,
-}
+export default () => {
+    const userInfoSession: any = {};
 
-export default (callback: T, deps: React.DependencyList) => {
-    const userInfoSession: APIModel.LoginUserInfo = {
-        AuthIDList: [],
-        AuthorityIDList: '',
-        BranchCode: '',
-        BranchID: 0,
-        CityID: 0,
-        CityName: '',
-        CountryID: 0,
-        CountryName: '',
-        DisplayName: '',
-        DivisionID: 0,
-        Email: '',
-        FinereportURL: '',
-        FuncCurrency: '',
-        ID: 0,
-        IsOpenAccount: false,
-        IsSalesMan: false,
-        PUAList: undefined,
-        Token: '',
-        password: ''
-    };
-
-    const [userInfo, setUserInfo] = useState(userInfoSession || {});
+    const [userInfo, setUserInfo] = useState<any>(userInfoSession || {});
     const [resResult, setResResult] = useState({});
 
     /**
@@ -65,16 +34,25 @@ export default (callback: T, deps: React.DependencyList) => {
      * @date 2023/2/7
      * @returns
      */
-    const logout = useCallback(() => {
-        setSystemMes({});
-        setUserInfo(userInfoSession)
-        return true;
-    }, deps);
+    const iamUserLogIn = useCallback(async (params: any) => {
+        try {
+            const response: API.Result = await iamUserLogInAPI(params);
+            if (!response) return;
+            if (response.success) {
+                setSystemMes({});
+                setUserInfo({});
+            }
+            return response;
+        } catch (e) {
+            message.error(e);
+            return {success: false};
+        }
+    }, []);
 
     return {
         userInfo,
         login,
-        logout,
+        iamUserLogIn,
         resResult,
     }
 }

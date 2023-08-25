@@ -1,7 +1,7 @@
 import {useCallback} from "react";
 import {
     addAuthResourceAPI, deleteAuthResourceAPI, editAuthResourceAPI, queryAuthResourceTreeAPI,
-    queryRoleAPI, addRoleAPI, deleteRoleAPI, editRoleAPI,
+    queryRoleAPI, addRoleAPI, deleteRoleAPI, editRoleAPI, iamUserOrganizationConvertAPI,
 } from '@/services/smart/manager/auth'
 
 type APIAuthResource = APIManager.AuthResource;
@@ -68,6 +68,13 @@ export default () => {
         return await deleteRoleAPI(params);
     }, []);
 
+    /** 切换公司组织  */
+    const iamUserOrganizationConvert = useCallback(async (params: APIRole) => {
+        return await iamUserOrganizationConvertAPI(params);
+    }, []);
+
+
+
 
     return {
         queryAuthResourceTree,
@@ -78,6 +85,8 @@ export default () => {
         addRole,
         editRole,
         deleteRole,
+
+        iamUserOrganizationConvert,
     }
 }
 

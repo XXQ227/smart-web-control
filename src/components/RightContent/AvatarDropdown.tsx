@@ -1,6 +1,6 @@
 import {LogoutOutlined, SettingOutlined, UserOutlined} from '@ant-design/icons';
 import type {MenuProps} from 'antd';
-import {Avatar, message, Spin} from 'antd';
+import {Avatar, message} from 'antd';
 import React from 'react';
 import {history, useModel} from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
@@ -16,45 +16,47 @@ const avatar = 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/Biazfanxma
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
     // const {initialState, setInitialState} = useModel('@@initialState');
     const userInfo = getUserInfo() || initUserInfo;
-    const {} = useModel('iam');
+    const {iamUserLogIn} = useModel('login', (res: any)=> ({
+        iamUserLogIn: res.iamUserLogIn,
+    }));
 
-    const onMenuClick = (key: string) => {
+    const onMenuClick = async (key: string) => {
         // 退出登录，并且将当前的 url 保存
         if (key === 'logout') {
-            // const logout = users.logout();
-
-            message.success('Success!');
-            history.push(`/user/login`);
-            return;
+            const result: API.Result = await iamUserLogIn();
+            if (result.success) {
+                message.success('success!');
+                history.push(`/user/login`);
+                return;
+            } else {
+                message.error(result.message);
+            }
         }
         history.push(`/account/${key}`);
     }
 
-    const loading = (
-        <span className={`${styles.action} ${styles.account}`}>
-      <Spin size="small" style={{marginLeft: 8, marginRight: 8,}}/>
-    </span>
-    );
+    // const loading = (
+    //     <span className={`${styles.action} ${styles.account}`}>
+    //   <Spin size="small" style={{marginLeft: 8, marginRight: 8,}}/>
+    // </span>
+    // );
 
-    if (!userInfo || !userInfo?.ID) {
-        return loading;
-    }
+    console.log(userInfo);
+    // if (!userInfo || !userInfo?.ID) {
+    //     return loading;
+    // }
 
     const items: MenuProps['items'] = [
         {
-            key: 'center',
-            disabled: !userInfo?.ID,
-            icon: <UserOutlined/>,
+            key: 'center', disabled: !userInfo?.ID, icon: <UserOutlined/>,
             label: (
-                <a target="_blank" rel="noopener noreferrer" onClick={()=> onMenuClick('center')}>
+                <a target="_blank" rel="noopener noreferrer" onClick={() => onMenuClick('center')}>
                     个人中心
                 </a>
             ),
         },
         {
-            key: 'settings',
-            disabled: !userInfo?.ID,
-            icon: <SettingOutlined/>,
+            key: 'settings', disabled: !userInfo?.ID, icon: <SettingOutlined/>,
             label: (
                 <a target="_blank" rel="noopener noreferrer" onClick={() => onMenuClick('settings')}>
                     个人设置
@@ -63,8 +65,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
         },
         {type: 'divider',},
         {
-            key: 'logout',
-            icon: <LogoutOutlined/>,
+            key: 'logout', icon: <LogoutOutlined/>,
             label: (
                 <a target="_blank" rel="noopener noreferrer" onClick={() => onMenuClick('logout')}>
                     退出登录

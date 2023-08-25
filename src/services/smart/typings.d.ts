@@ -49,11 +49,6 @@ declare namespace API {
     status?: string;
   };
 
-  type getFakeCaptchaParams = {
-    /** 手机号 */
-    phone?: string;
-  };
-
   type LoginResult = {
     status?: string;
     type?: string;

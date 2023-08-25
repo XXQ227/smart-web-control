@@ -40,6 +40,15 @@ export default {
         '^/apiAccounting': '/accounting/web',
       },
     },
+    // TODO: accounting
+    '/apiAuth/': {
+      // 要代理的地址
+      target: 'http://apitest.i.sinotrans.com:8065/',
+      changeOrigin: true,
+      pathRewrite: {
+        '^/apiAuth': '/auth/iam',
+      },
+    },
     // TODO: Smart 1.0 后台地址
     '/apiLocal/': {
       // 要代理的地址

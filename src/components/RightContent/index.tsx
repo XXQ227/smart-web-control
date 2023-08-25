@@ -4,11 +4,12 @@ import React from 'react';
 import {/*SelectLang, */useModel} from 'umi';
 import Avatar from './AvatarDropdown';
 import styles from './index.less';
-import BranchSelect from '@/components/BranchSelect'
+import ChooseBranch from '@/components/ChooseBranch'
+import type {RouteChildrenProps} from 'react-router'
 
 export type SiderTheme = 'light' | 'dark';
 
-const GlobalHeaderRight: React.FC = () => {
+const GlobalHeaderRight: React.FC<RouteChildrenProps> = (props) => {
     const {initialState} = useModel('@@initialState');
 
     if (!initialState || !initialState.settings) {
@@ -25,7 +26,7 @@ const GlobalHeaderRight: React.FC = () => {
         <Space className={className}>
 
             {/* 选择 branch */}
-            <BranchSelect/>
+            <ChooseBranch {...props}/>
 
             {/*<HeaderSearch
                 className={`${styles.action} ${styles.search}`}
