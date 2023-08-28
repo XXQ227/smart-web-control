@@ -3,93 +3,119 @@ import BasicInfo from './basicInfo';
 import {Modal, Tabs, Spin, Button, message, Form} from "antd";
 import type {TabsProps} from 'antd';
 import '../style.less'
-import {FooterToolbar, ProForm, ProCard} from "@ant-design/pro-components";
+import type { FormListActionType, ProFormInstance } from "@ant-design/pro-components";
+import {
+    ProFormList,
+    FooterToolbar,
+    ProForm,
+    ProCard
+} from "@ant-design/pro-components";
 import {ExclamationCircleFilled, LeftOutlined, SaveOutlined} from "@ant-design/icons";
 import type { RouteChildrenProps } from 'react-router';
 import {history} from "@@/core/history";
 import {getFormErrorMsg} from "@/utils/units";
-import {useParams} from "umi";
-import {useModel} from "@@/plugin-model/useModel";
-import moment from "moment/moment";
+import {useParams, useModel} from "umi";
 
 const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
-const initialData: APIModel.BatchData[] = [
-    {
-        shipmentNum: 'SPHK-QY-0012',
-        truckingCompany: '招商局建瑞运输有限公司',
-        grossWeight: 0,
-        measurement: 0,
-        pieces: 0,
-        vehicleType: '集装箱运输货车',
-        licensePlateNum: '',
-        driverName: '',
-        receivingContact: '',
-        receivingContactTelephone: '',
-    },
-    {
-        shipmentNum: 'SPHK-QY-0013',
-        truckingCompany: '招商局建瑞运输有限公司',
-        grossWeight: 0,
-        measurement: 0,
-        pieces: 0,
-        vehicleType: '通用货车',
-        licensePlateNum: '',
-        driverName: '',
-        receivingContact: '',
-        receivingContactTelephone: '',
-    },
-]
+const initialData = {
+    '1': [
+        {
+            shipmentNum: '',
+            truckingCompanyId: null,
+            truckingCompanyNameEn: '',
+            truckingCompanyNameCn: '',
+            truckingCompanyOracleId: null,
+            transportVehicleTypeId: null,
+            qty: '',
+            grossWeight: '',
+            measurement: '',
+            licensePlateNum: '',
+            driverName: '',
+        }
+    ]
+}
 
 const LocalDelivery: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
     const urlParams: any = useParams();
     const jobId = atob(urlParams.id);
-
-    const renderContent = (key: string, data?: APIModel.BatchData) => {
-        return <BasicInfo
-            form={form}
-            CTNPlanList={[]}
-            NBasicInfo={{}}
-            batchNo={key}
-            data={data}
-            handleChangeLabel={(val: any) => handleChangeLabel(val)}
-        />
-    }
-
-    const initialTabList: TabsProps['items'] = [
-        {
-            label: 'SPHK-QY-0012',
-            key: '1',
-            closable: false,
-            children: renderContent('SPHK-QY-0012', initialData[0]),
-        },
-        {
-            label: 'SPHK-QY-0013',
-            key: '2',
-            closable: false,
-            children: renderContent('SPHK-QY-0013', initialData[1]),
-        },
-    ];
+    const [loading, setLoading] = useState(false);
+    const [id, setId] = useState<string>('0');
+    const formRef = useRef<ProFormInstance>();
+    const actionRef = useRef<FormListActionType<{name: string;}>>();
 
     const {
-        queryLocalDeliveryInfo, addLocalDelivery, editLocalDelivery,
+        queryLocalDeliveryInfo, addLocalDelivery, editLocalDelivery, deleteLocalDelivery
     } = useModel('job.job', (res: any) => ({
         queryLocalDeliveryInfo: res.queryLocalDeliveryInfo,
         addLocalDelivery: res.addLocalDelivery,
         editLocalDelivery: res.editLocalDelivery,
+        deleteLocalDelivery: res.deleteLocalDelivery,
     }));
 
-    const [loading, setLoading] = useState(false);
-    const [localDeliveryInfo, setLocalDeliveryInfo] = useState<any>({});
-    const [id, setId] = useState<string>('0');
-
+    const [localDeliveryInfo, setLocalDeliveryInfo] = useState<any>(initialData || {});
+    const initialTabList: TabsProps['items'] = [];
     const [tabList, setTabList] = useState(initialTabList);
-    const [activeKey, setActiveKey] = useState(initialTabList[0].key);
+    const [activeKey, setActiveKey] = useState('1');
     const activeKeyRef = useRef(activeKey);
     activeKeyRef.current = activeKey;
-    const newTabIndex = useRef(3);
+    const newTabIndex = useRef(2);
+
+    const handleChangeLabel = (value: any) => {
+        let labelName = value;
+        if (value) {
+            const rowShipments = formRef.current?.getFieldsFormatValue?.();
+
+            // 首先将localDeliveryInfo的数据合并到 mergedShipments 中
+            const mergedShipments = { ...localDeliveryInfo };
+            // 然后将 rowShipments 的数据合并到 mergedShipments 中，会覆盖掉已有的数据
+            for (const shipmentNum in rowShipments) {
+                if (mergedShipments[shipmentNum]) {
+                    mergedShipments[shipmentNum] = rowShipments[shipmentNum];
+                } else {
+                    mergedShipments[shipmentNum] = rowShipments[shipmentNum][0];
+                }
+            }
+        } else {
+            labelName = 'New Tab';
+        }
+        setTabList(prevTabList => {
+            const updatedTabList = [...prevTabList];
+            const activeTab = updatedTabList.find(tab => tab.key === activeKeyRef.current);
+            if (activeTab) {
+                activeTab.label = labelName;
+            }
+            return updatedTabList;
+        });
+    }
+
+    const renderContent = (key: string, data?: any) => {
+        return <ProFormList
+            name={`${key}`}
+            initialValue={data[key]}
+            creatorButtonProps={false}
+            copyIconProps={false}
+            deleteIconProps={false}
+            actionRef={actionRef}
+        >
+            {(f, index, action) => {
+                return (
+                    <>
+                        <BasicInfo
+                            form={form}
+                            CTNPlanList={[]}
+                            batchNo={key}
+                            data={data[key]}
+                            handleChangeLabel={(val: any) => handleChangeLabel(val)}
+                            handleChangeData={(val: any) => action.setCurrentRowData(val)}
+                        />
+                    </>
+                );
+            }}
+        </ProFormList>
+    }
 
     /**
      * @Description: TODO: 查询本地交付服务信息
@@ -103,9 +129,41 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
         let result: API.Result;
         if (jobId !== '0') {
             result = await queryLocalDeliveryInfo({id: jobId});
-            // TODO: 把当前服务的 id 存下来
             if (result.data) {
-                setId(result.data.id);
+                // TODO: 如果有批次数据进行数据转化
+                if (result.data.length > 0) {
+                    const resultData = {};
+                    result.data.forEach((item: any) => {
+                        if (!resultData[item.shipmentNum]) {
+                            resultData[item.shipmentNum] = [];
+                        }
+                        resultData[item.shipmentNum].push(item);
+                    });
+                    // TODO: renderContent(key, resultData) key的值有问题
+                    const newTabList: TabsProps['items'] = Object.entries(resultData).map(([key], index) => ({
+                        label: key,
+                        key: (index + 1).toString(),
+                        closable: true,
+                        children: renderContent(key, resultData),
+                    }));
+                    newTabIndex.current = newTabList.length + 1;
+                    setLocalDeliveryInfo(resultData);
+                    setTabList(newTabList);
+                    // TODO: 把当前服务的 id 存下来
+                    setId(result.data.id);
+                } else {
+                    const newTabList: TabsProps['items'] = [
+                        {
+                            label: 'New Tab',
+                            key: '1',
+                            closable: false,
+                            children: renderContent('1', initialData),
+                        }
+                    ];
+                    setTabList(newTabList);
+                    setLocalDeliveryInfo(initialData);
+                    setId('0');
+                }
             } else {
                 result.data = {blTypeId: 1};
             }
@@ -113,11 +171,11 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
             result = {success: true, data: {blTypeId: 1}};
         }
         setLoading(false);
-        setLocalDeliveryInfo(result.data || {});
         return result.data || {};
     }
 
     const handleFinish = async (val: any) => {
+        setLoading(true);
         try {
             // TODO: 删除对应的 table 里的录入数据
             for (const item in val) {
@@ -125,34 +183,70 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                     delete val[item];
                 }
             }
-            console.log(val);
-        } catch {
-            // console.log
+
+            const dataWithJobId = [];
+            for (const shipmentNum in val) {
+                if (val.hasOwnProperty(shipmentNum)) {
+                    dataWithJobId.push(...val[shipmentNum].map((item: any) => ({
+                        ...item,
+                        jobId
+                    })));
+                }
+            }
+
+            let result: API.Result;
+            if (id === '0') {
+                result = await addLocalDelivery(dataWithJobId);
+            } else {
+                dataWithJobId.forEach(item => {
+                    if (!item.id) {
+                        item.id = "0";
+                        console.log(1111111111);
+                    }
+                });
+                result = await editLocalDelivery(dataWithJobId);
+            }
+            if (result.success) {
+                message.success('Success!!!');
+                // TODO: 把当前服务的 id 存下来
+                setId(result.data.id);
+            } else {
+                message.error(result.message);
+            }
+        } catch (errorInfo) {
+            console.error(errorInfo);
         }
+        setLoading(false);
     };
 
     const handleAddBatch = () => {
-        const newBatch: APIModel.BatchData = {
+        const newBatch = {
             shipmentNum: '',
-            truckingCompany: '',
-            grossWeight: 0,
-            measurement: 0,
-            pieces: 0,
-            vehicleType: '',
+            truckingCompanyId: null,
+            truckingCompanyNameEn: '',
+            truckingCompanyNameCn: '',
+            truckingCompanyOracleId: null,
+            transportVehicleTypeId: null,
+            qty: '',
+            grossWeight: '',
+            measurement: '',
             licensePlateNum: '',
             driverName: '',
-            receivingContact: '',
-            receivingContactTelephone: '',
         };
 
-        const newActiveKey = (newTabIndex.current++).toString()
+        const newActiveKey = (newTabIndex.current++).toString();
+        const newLocalDeliveryInfo = {
+            ...localDeliveryInfo,
+            [newActiveKey]: [newBatch]
+        }
+        setLocalDeliveryInfo(newLocalDeliveryInfo);
         setTabList(prevTabList => [
             ...prevTabList,
             {
                 label: 'New Tab',
                 key: newActiveKey,
                 closable: true,
-                children: renderContent(newActiveKey, newBatch),
+                children: renderContent(newActiveKey, newLocalDeliveryInfo),
             },
         ]);
         setActiveKey(newActiveKey);
@@ -162,21 +256,62 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
         setActiveKey(key);
     };
 
+    /**
+     * @Description: TODO: 删除本地交付服务信息
+     * @author LLS
+     * @date 2023/8/3
+     * @param labelValue
+     * @param targetKey
+     */
+    const handleOperateShipment = async (labelValue: any, targetKey: any) => {
+        const targetIndex = tabList.findIndex((pane) => pane.key === targetKey);
+        const newPanes = tabList.filter((tab) => tab.key !== targetKey);
+        setLoading(true);
+        if (localDeliveryInfo[labelValue]) {
+            const item = localDeliveryInfo[labelValue][0];
+            if (item && item.id) {
+                const result: API.Result = await deleteLocalDelivery({id: item.id});
+                if (result.success) {
+                    message.success('Success!!!');
+                    if (newPanes.length && targetKey === activeKey) {
+                        const { key } = newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
+                        setActiveKey(key);
+                    }
+                    setTabList(newPanes);
+                    delete localDeliveryInfo[labelValue];
+
+                    // TODO：判断剩余批次是否为0
+                    if (Object.keys(localDeliveryInfo).length === 0) {
+                        await handleQueryLocalDeliveryInfo();
+                    }
+                } else {
+                    message.error(result.message);
+                }
+            } else {
+                message.error(`The batch ${labelValue} could not be found.`)
+            }
+        } else {
+            if (newPanes.length && targetKey === activeKey) {
+                const { key } = newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
+                setActiveKey(key);
+            }
+            setTabList(newPanes);
+            delete localDeliveryInfo[targetKey.toString()];
+        }
+        setLoading(false);
+    }
+
     const remove = (targetKey: TargetKey) => {
+        const labelValue: any = tabList.find(item => item.key === targetKey)?.label;
         confirm({
-            title: `Are you sure delete this shipment 【${targetKey}】?`,
+            title: (<div> <strong>{labelValue}</strong> <br /> Are you sure delete this shipment ? </div>),
             icon: <ExclamationCircleFilled />,
             okText: 'Yes',
             okType: 'danger',
             cancelText: 'No',
             onOk() {
-                const targetIndex = tabList.findIndex((pane) => pane.key === targetKey);
-                const newPanes = tabList.filter((tab) => tab.key !== targetKey);
-                if (newPanes.length && targetKey === activeKey) {
-                    const { key } = newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
-                    setActiveKey(key);
-                }
-                setTabList(newPanes);
+                // TODO：删除批次
+                handleOperateShipment(labelValue, targetKey).then(r => console.log(r));
             },
             onCancel() {
                 console.log('Cancel');
@@ -195,25 +330,13 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
         }
     };
 
-    function handleChangeLabel(value: any) {
-        setTabList(prevTabList => {
-            const updatedTabList = [...prevTabList];
-            const activeTab = updatedTabList.find(tab => tab.key === activeKeyRef.current);
-            if (activeTab) {
-                activeTab.label = value;
-            }
-            return updatedTabList;
-        });
-    }
-
     return (
         <Spin spinning={loading}>
             <ProForm
                 form={form}
-                omitNil={false}
+                formRef={formRef}
                 layout="vertical"
                 name={'formJobInfo'}
-                initialValues={localDeliveryInfo}
                 className={'basicInfoProForm'}
                 submitter={{
                     // 完全自定义整个区域
@@ -231,7 +354,6 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                 onFinish={handleFinish}
                 onFinishFailed={async (values: any) => {
                     if (values.errorFields?.length > 0) {
-                        /** TODO: 错误信息 */
                         message.error(getFormErrorMsg(values));
                         setLoading(false);
                     }
@@ -251,13 +373,7 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                         onChange={handleTabChange}
                         onEdit={onEdit}
                         items={tabList}
-                    >
-                        {/*{tabList.map(tab => (
-                            <Tabs.TabPane key={tab.key} tab={tab.label} closable={tab.closable}>
-                                {tab.content}
-                            </Tabs.TabPane>
-                        ))}*/}
-                    </Tabs>
+                    />
                 </ProCard>
             </ProForm>
         </Spin>

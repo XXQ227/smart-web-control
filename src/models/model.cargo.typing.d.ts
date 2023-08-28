@@ -242,16 +242,17 @@ declare namespace APIModel {
         PODAgent?: string;
     }
     type BatchData = {
-        shipmentNum: string;
-        truckingCompany: string;
-        grossWeight: number;
-        measurement: number;
-        pieces: number;
-        vehicleType: string;
-        licensePlateNum: string;
-        driverName: string;
-        receivingContact: string;
-        receivingContactTelephone: string;
+        shipmentNum?: string;
+        truckingCompanyId?: string;
+        truckingCompanyNameEn?: string;
+        truckingCompanyNameCn?: string;
+        truckingCompanyOracleId?: string;
+        transportVehicleTypeId?: number;
+        qty?: number;
+        grossWeight?: number;
+        measurement?: number;
+        licensePlateNum?: string;
+        driverName?: string;
     }
     type PreBookingList = {
         id: any;

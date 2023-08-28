@@ -60,7 +60,7 @@ const AddAccountModal: React.FC<Props> = (props) => {
         const result: any = await queryAccountPeriodInfo({id});
         if (result.success) {
             setAccountInfoVO(result.data);
-            setAccountCurrList(result.data?.accountPeriodExrateBOList || accountCurrArr);
+            setAccountCurrList(result.data?.exrateBOList || accountCurrArr);
         } else {
             message.error(result.message);
         }
@@ -128,7 +128,7 @@ const AddAccountModal: React.FC<Props> = (props) => {
         target.rateValue = e?.target?.value;
         currArr.splice(indexCurr, 1, target);
         setAccountCurrList(currArr);
-        form.setFieldsValue({accountPeriodExrateBOList: currArr});
+        form.setFieldsValue({exrateBOList: currArr});
         // TODO: 内部人民币统计汇率，在创建账期时，使用当期业务人民币汇率
         if (filedName === 'CNY') {
             form.setFieldsValue({funcCnyRate: e?.target?.value});
@@ -319,7 +319,7 @@ const AddAccountModal: React.FC<Props> = (props) => {
                                     </Col>
                                 )}
                                 {/* // TODO: 用于保存时，获取数据用 */}
-                                <Form.Item hidden={true} name={'accountPeriodExrateBOList'} />
+                                <Form.Item hidden={true} name={'exrateBOList'} />
                             </Row>
 
                             <Row gutter={rowGrid}>

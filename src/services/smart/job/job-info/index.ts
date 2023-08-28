@@ -110,6 +110,15 @@ export async function editLocalDeliveryAPI(body: {id: string}) {
     });
 }
 
+// TODO: 删除本地交付服务信息
+export async function deleteLocalDeliveryAPI(body: {id: string}) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiEngine/localDelivery/deleteLocalDelivery`, {
+        method: 'POST',
+        body,
+    });
+}
+
 // TODO: 获取单票费用详情数据
 export async function GetNJobCGSByIDAPI(body: APIModel.GetCJobByID) {
     // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
