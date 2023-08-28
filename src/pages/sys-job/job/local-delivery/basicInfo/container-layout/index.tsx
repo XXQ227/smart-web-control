@@ -18,37 +18,15 @@ interface Props {
     data?: APIModel.BatchData,
     CTNPlanList?: APIModel.PreBookingList[],
     NBasicInfo?: APIModel.NBasicInfo,
+    handleChangeData: (val: any) => void,    // 设置数据
 }
 
 const FormItem = Form.Item;
 
-const initialContainerList: APIModel.PreBookingList[] = [
-    {
-        id: 'ID1',
-        ctnModelId: 1,
-        ctnModelName: "20GP",
-        qty: 1,
-        socFlag: false,
-        Owner: "码头箱主",
-        remark: "abcde",
-    },
-    {
-        id: 'ID2',
-        ctnModelId: 2,
-        ctnModelName: "40GP",
-        qty: 2,
-        socFlag: true,
-        Owner: "Owner456",
-        remark: "123",
-    },
-];
-
 const ContainerLayout: React.FC<Props> = (props) => {
-    const  {
-        CTNPlanList, form
-    } = props;
+    const  { CTNPlanList} = props;
 
-    const [containerList, setContainerList] = useState<APIModel.PreBookingList[]>(CTNPlanList || initialContainerList);
+    const [containerList, setContainerList] = useState<APIModel.PreBookingList[]>(CTNPlanList || []);
     const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
 
     /**
@@ -70,13 +48,9 @@ const ContainerLayout: React.FC<Props> = (props) => {
         if (filedName === 'ctnModelId') {
             target.ctnModelName = option.label;
         }
-        console.log(target);
         newData.splice(index, 1, target);
-        // TODO: 把数据接口给到 FormItem 表单里
-        form.setFieldsValue({
-            [`${filedName}_ctn_table_${target.id}`]: target[filedName],
-            containersLoadingDetailEntityList: newData
-        });
+        // TODO: 把数据更新到表单里
+        props.handleChangeData({preBookingContainersEntityList: newData});
         setContainerList(newData);
     }
 
@@ -135,19 +109,18 @@ const ContainerLayout: React.FC<Props> = (props) => {
         },
         {
             title: 'Owner',
-            dataIndex: 'Owner',
+            dataIndex: 'owner',
             render: (text: any, record, index) =>
                 <FormItemInput
                     placeholder=''
                     initialValue={text}
-                    name={['0', `Owner_ctn_table_${record.id}`]}
-                    onChange={(e) => onChange(index, record.id, 'Owner', e)}
+                    name={['0', `owner_ctn_table_${record.id}`]}
+                    onChange={(e) => onChange(index, record.id, 'owner', e)}
                 />
         },
         {
             title: 'Remark',
-            dataIndex: 'Remark',
-            key: 'Remark',
+            dataIndex: 'remark',
             render: (text: any, record, index) =>
                 <FormItemInput
                     placeholder=''
@@ -223,7 +196,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                     />
 
                     {/* // TODO: 用于保存时，获取数据用 */}
-                    <ProFormText hidden={true} name={'containersLoadingDetailEntityList'}/>
+                    <ProFormText hidden={true} name={'preBookingContainersEntityList'}/>
                 </Col>
             </Row>
             <Row gutter={24}>

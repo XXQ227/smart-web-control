@@ -65,20 +65,7 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
 
     const handleChangeLabel = (value: any) => {
         let labelName = value;
-        if (value) {
-            const rowShipments = formRef.current?.getFieldsFormatValue?.();
-
-            // 首先将localDeliveryInfo的数据合并到 mergedShipments 中
-            const mergedShipments = { ...localDeliveryInfo };
-            // 然后将 rowShipments 的数据合并到 mergedShipments 中，会覆盖掉已有的数据
-            for (const shipmentNum in rowShipments) {
-                if (mergedShipments[shipmentNum]) {
-                    mergedShipments[shipmentNum] = rowShipments[shipmentNum];
-                } else {
-                    mergedShipments[shipmentNum] = rowShipments[shipmentNum][0];
-                }
-            }
-        } else {
+        if (!value) {
             labelName = 'New Tab';
         }
         setTabList(prevTabList => {
@@ -201,7 +188,6 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                 dataWithJobId.forEach(item => {
                     if (!item.id) {
                         item.id = "0";
-                        console.log(1111111111);
                     }
                 });
                 result = await editLocalDelivery(dataWithJobId);

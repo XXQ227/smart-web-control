@@ -78,13 +78,6 @@ const BasicInfo: React.FC<Props> = (props) => {
         newData.splice(index, 1, target);
         // TODO: 把数据更新到表单里
         props.handleChangeData({photoRemarkEntityList: newData});
-
-        // TODO: 把数据接口给到 FormItem 表单里
-        /*form.setFieldsValue({
-            [`${filedName}_remark_table_${target.id}`]: target[filedName],
-            photoRemarkEntityList: newData
-        });
-        console.log(newData);*/
         setPhotoRemarkList(newData);
     }
 
@@ -132,14 +125,6 @@ const BasicInfo: React.FC<Props> = (props) => {
         setPhotoRemarkList(newData);
     };
 
-    /*const handleChange = (fieldName: string, value: string) => {
-        if (fieldName === 'shipmentNum') {
-            if (props.handleChangeLabel) props.handleChangeLabel(value);
-        } else if (fieldName === 'transportVehicleTypeId') {
-            setIsContainer(value === "集装箱运输货车")
-        }
-    };*/
-
     const columns: ColumnsType<APIModel.PhotoRemarkList> = [
         {
             title: 'Description',
@@ -149,21 +134,10 @@ const BasicInfo: React.FC<Props> = (props) => {
                     required
                     placeholder={''}
                     name={['0', `description_remark_table_${record.id}`]}
-                    // name={`description_remark_table_${record.id}`}
                     initialValue={record.description}
                     rules={[{required: true, message: 'Description'}]}
                     onChange={(e) => onChange(index, record.id, 'description', e)}
                 />
-                /*<ProFormText
-                    required
-                    placeholder={''}
-                    name={`description_remark_table_${record.id}`}
-                    initialValue={record.description}
-                    rules={[{required: true, message: 'Description'}]}
-                    fieldProps={{
-                        onChange: (e) => onChange(index, record.id, 'description', e)
-                    }}
-                />*/
         },
         {
             title: 'Time',
@@ -192,9 +166,6 @@ const BasicInfo: React.FC<Props> = (props) => {
             }
         },
     ];
-
-    // console.log('data:', data);
-    // console.log('batchNo:', batchNo);
 
     return (
         <div className={'antProCard'}>
@@ -315,6 +286,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                         NBasicInfo={NBasicInfo}
                         batchNo={batchNo}
                         data={data}
+                        handleChangeData={(val: any) => props.handleChangeData(val)}
                     />
                     :
                     <NonContainerLayout

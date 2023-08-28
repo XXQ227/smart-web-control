@@ -13,17 +13,13 @@ interface Props {
 }
 
 
-const NonContainerLayout: React.FC<Props> = (props) => {
-    const  {
-        batchNo
-    } = props;
-
+const NonContainerLayout: React.FC<Props> = () => {
     const Origin = () => (
         <>
             <Row gutter={rowGrid}>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
                     <ProFormText
-                        name={`placeOfOrigin${batchNo}`}
+                        name='placeOfOrigin'
                         label="Place of Origin"
                         placeholder=''
                     />
@@ -31,13 +27,13 @@ const NonContainerLayout: React.FC<Props> = (props) => {
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
                         <ProFormText
-                            name={`shippingContact${batchNo}`}
+                            name='shippingContact'
                             label="Shipping Contact"
                             placeholder=''
                         />
                         <span className={'siteSpaceSpan'}  />
                         <ProFormText
-                            name={`shippingContactTelephone${batchNo}`}
+                            name='shippingContactTelephone'
                             label="Telephone"
                             placeholder=''
                         />
@@ -45,7 +41,7 @@ const NonContainerLayout: React.FC<Props> = (props) => {
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={24} xl={20} xxl={22}>
                     <ProFormText
-                        name={`originAddress${batchNo}`}
+                        name='originAddress'
                         label="Origin Address"
                         placeholder=''
                     />
@@ -86,7 +82,7 @@ const NonContainerLayout: React.FC<Props> = (props) => {
             <Row gutter={rowGrid}>
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
                     <ProFormText
-                        name={`placeOfDestination${batchNo}`}
+                        name='placeOfDestination'
                         label="Place of Destination"
                         placeholder=''
                     />
@@ -94,13 +90,13 @@ const NonContainerLayout: React.FC<Props> = (props) => {
                 <Col xs={24} sm={24} md={12} lg={12} xl={12} xxl={12}>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
                         <ProFormText
-                            name={`receivingContact${batchNo}`}
+                            name='receivingContact'
                             label="Receiving Contact"
                             placeholder=''
                         />
                         <span className={'siteSpaceSpan'}  />
                         <ProFormText
-                            name={`receivingContactTelephone${batchNo}`}
+                            name='receivingContactTelephone'
                             label="Telephone"
                             placeholder=''
                         />
@@ -108,7 +104,7 @@ const NonContainerLayout: React.FC<Props> = (props) => {
                 </Col>
                 <Col xs={24} sm={24} md={24} lg={24} xl={20} xxl={22}>
                     <ProFormText
-                        name={`destinationAddress${batchNo}`}
+                        name='destinationAddress'
                         label="Destination Address"
                         placeholder=''
                     />
