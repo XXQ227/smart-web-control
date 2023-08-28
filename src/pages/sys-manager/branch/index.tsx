@@ -7,7 +7,7 @@ import {DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons'
 import {Popconfirm, Input, Button, message} from 'antd'
 import {history} from '@@/core/history'
 import DividerCustomize from '@/components/Divider'
-import {CustomizeIcon} from '@/utils/units'
+import {IconFont} from '@/utils/units'
 import ls from 'lodash'
 
 const {Search} = Input;
@@ -184,7 +184,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = (props) => {
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                         >
-                            <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <IconFont type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
                         </Popconfirm>
                         <Popconfirm
                             onConfirm={() => handleOperateBranch(index, record, 'delete')}

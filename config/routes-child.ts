@@ -84,7 +84,7 @@ const bill_route = {
         },
         {
             name: 'billing',
-            icon: 'icon-bill',
+            icon: 'icon-bill-L1',
             path: '/bill/billing',
             // component: './sys-bill/bill',
             routes: [
@@ -129,7 +129,7 @@ const bill_route = {
 // TODO: Manager 系统
 const manager_route = {
     name: 'manager',
-    icon: 'icon-menu-manager',
+    icon: 'icon-menu-settlement',
     path: '/manager',
     routes: [
         {

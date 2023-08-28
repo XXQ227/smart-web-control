@@ -6,7 +6,7 @@ import {useModel} from 'umi';
 import {DeleteOutlined, PlusOutlined, SaveOutlined} from '@ant-design/icons'
 import {Button, Form, Input, message, Popconfirm} from 'antd'
 import DividerCustomize from "@/components/Divider";
-import {CustomizeIcon, getFormErrorMsg, ID_STRING} from "@/utils/units";
+import {IconFont, getFormErrorMsg, ID_STRING} from "@/utils/units";
 import ls from "lodash";
 import FormItemInput from "@/components/FormItemComponents/FormItemInput";
 import FormItemRadio from "@/components/FormItemComponents/FormItemRadio";
@@ -267,7 +267,7 @@ const InvoiceTypeListIndex: React.FC<RouteChildrenProps> = () => {
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                         >
-                            <CustomizeIcon hidden={record.isChange} type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <IconFont hidden={record.isChange} type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
                         </Popconfirm>
                         <Popconfirm
                             onConfirm={() => handleOperateInvoiceType(index, record, 'delete')}

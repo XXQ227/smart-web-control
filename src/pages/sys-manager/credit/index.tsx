@@ -13,7 +13,7 @@ import {EditOutlined, PlusOutlined} from '@ant-design/icons';
 import type {TabsProps} from 'antd';
 import {Col, Divider, Input, message, Row, Tabs} from 'antd';
 import {history} from '@@/core/history';
-import {CustomizeIcon, formatNumToMoney, rowGrid} from '@/utils/units';
+import {IconFont, formatNumToMoney, rowGrid} from '@/utils/units';
 import ls, {debounce} from "lodash";
 
 const {Search} = Input;
@@ -206,7 +206,7 @@ const CreditListIndex: React.FC<RouteChildrenProps> = () => {
                         <Fragment>
                             <EditOutlined color={'#1765AE'} onClick={() => handleOperate(tabKey, record)}/>
                             <Divider type='vertical'/>
-                            <CustomizeIcon
+                            <IconFont
                                 type={'icon-approval'} color={'#1765AE'}
                                 onClick={() => handleOperate(tabKey, record, 'approval')}
                             />

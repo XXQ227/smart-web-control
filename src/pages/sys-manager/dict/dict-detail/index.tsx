@@ -4,7 +4,7 @@ import {ProTable} from '@ant-design/pro-components'
 import {useModel, useParams} from 'umi';
 import {DeleteOutlined, PlusOutlined, SaveOutlined} from '@ant-design/icons'
 import {Popconfirm, Input, Button, message, Form} from 'antd'
-import {CustomizeIcon, getFormErrorMsg, ID_STRING} from '@/utils/units'
+import {IconFont, getFormErrorMsg, ID_STRING} from '@/utils/units'
 import ls from 'lodash'
 import DividerCustomize from '@/components/Divider'
 import FormItemInput from '@/components/FormItemComponents/FormItemInput'
@@ -316,7 +316,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                             onConfirm={() => handleOperateDictDetail(index, record, 'enableFlag')}
                         >
                             <DividerCustomize hidden={isAdd || !record.isChange} />
-                            <CustomizeIcon
+                            <IconFont
                                 hidden={isAdd}
                                 type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
                             />

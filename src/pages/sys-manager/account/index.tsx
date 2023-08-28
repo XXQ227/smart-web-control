@@ -5,7 +5,7 @@ import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
 import {Divider, Input, message} from 'antd'
 import {ACCOUNT_PERIOD_ES_STATUS_ENUM, ACCOUNT_PERIOD_STATE_ENUM, ACCOUNT_PERIOD_TYPE_ENUM} from '@/utils/enum'
-import {CustomizeIcon} from '@/utils/units'
+import {IconFont} from '@/utils/units'
 import moment from 'moment'
 import AddAccountModal from "@/pages/sys-manager/account/AddAccountModal";
 
@@ -154,7 +154,7 @@ const AccountListIndex: React.FC<RouteChildrenProps> = () => {
                             record.state === 0 ?
                                 <Fragment>
                                     <Divider type='vertical'/>
-                                    <CustomizeIcon
+                                    <IconFont
                                         type={'icon-stop'} title={'Open'}
                                         onClick={()=> handleAccountState(record, 'open')}
                                     />
@@ -162,7 +162,7 @@ const AccountListIndex: React.FC<RouteChildrenProps> = () => {
                                 : record.state === 1 ?
                                     <Fragment>
                                         <Divider type='vertical'/>
-                                        <CustomizeIcon
+                                        <IconFont
                                             type={'icon-switch'} title={'Closing'}
                                             onClick={()=> handleAccountState(record, 'startClose')}
                                         />
@@ -170,7 +170,7 @@ const AccountListIndex: React.FC<RouteChildrenProps> = () => {
                                     : record.state === 2 ?
                                         <Fragment>
                                             <Divider type='vertical'/>
-                                            <CustomizeIcon
+                                            <IconFont
                                                 type={'icon-end-close-Account'} title={'Closed'}
                                                 onClick={()=> handleAccountState(record, 'endClose')}
                                             />

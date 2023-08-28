@@ -3,7 +3,7 @@ import type {ProColumns} from '@ant-design/pro-table';
 import {ProTable} from '@ant-design/pro-components'
 import {DeleteOutlined, EditOutlined, PlusOutlined, SaveOutlined} from '@ant-design/icons'
 import {Button, Divider, Form, Input, message, Popconfirm} from 'antd'
-import {CustomizeIcon, getFormErrorMsg, ID_STRING} from "@/utils/units";
+import {IconFont, getFormErrorMsg, ID_STRING} from "@/utils/units";
 import ls from 'lodash'
 import {history} from "@@/core/history";
 import FormItemInput from "@/components/FormItemComponents/FormItemInput";
@@ -220,7 +220,7 @@ const ShippingTable: React.FC<Props> = (props) => {
                             onConfirm={() => handleOperateShipping(index, record, 'freeze')}
                         >
                             <Divider type='vertical'/>
-                            <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <IconFont type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
                         </Popconfirm>
                         <Popconfirm
                             onConfirm={() => handleOperateShipping(index, record, 'delete')}
@@ -350,7 +350,7 @@ const ShippingTable: React.FC<Props> = (props) => {
                             onConfirm={() => handleOperateShipping(index, record, 'freeze')}
                         >
                             <DividerCustomize hidden={!record.isChange} />
-                            <CustomizeIcon
+                            <IconFont
                                 hidden={isAdd}
                                 type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
                             />
@@ -469,7 +469,7 @@ const ShippingTable: React.FC<Props> = (props) => {
                             onConfirm={() => handleOperateShipping(index, record, 'freeze')}
                         >
                             <DividerCustomize hidden={!record.isChange} />
-                            <CustomizeIcon
+                            <IconFont
                                 hidden={isAdd}
                                 type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
                             />

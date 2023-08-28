@@ -6,7 +6,7 @@ import {useModel} from 'umi';
 import {DeleteOutlined, PlusOutlined, SaveOutlined} from '@ant-design/icons'
 import {Button, Form, Input, message, Popconfirm} from 'antd'
 import ls from 'lodash'
-import {CustomizeIcon, getFormErrorMsg, ID_STRING} from '@/utils/units'
+import {IconFont, getFormErrorMsg, ID_STRING} from '@/utils/units'
 import DividerCustomize from '@/components/Divider'
 import {history} from '@@/core/history'
 import FormItemInput from '@/components/FormItemComponents/FormItemInput'
@@ -233,14 +233,14 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                             onClick={() => handleSaveDict(index, record, isAdd ? 'add' : 'edit')}
                         />
                         <DividerCustomize hidden={!record.isChange}/>
-                        <CustomizeIcon hidden={isAdd} type={'icon-details'} onClick={() => handleDetail(record)}/>
+                        <IconFont hidden={isAdd} type={'icon-details'} onClick={() => handleDetail(record)}/>
                         <Popconfirm
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                             onConfirm={() => handleOperateDict(index, record, 'freezen')}
                         >
                             <DividerCustomize hidden={isAdd} />
-                            <CustomizeIcon
+                            <IconFont
                                 hidden={isAdd}
                                 type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
                             />

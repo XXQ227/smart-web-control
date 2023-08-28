@@ -14,7 +14,7 @@ import {useModel} from 'umi';
 import {history} from '@@/core/history'
 import {DeleteOutlined, EditOutlined, PlusCircleOutlined, SearchOutlined} from '@ant-design/icons'
 import ls from "lodash";
-import {CustomizeIcon, getFormErrorMsg, rowGrid} from "@/utils/units";
+import {IconFont, getFormErrorMsg, rowGrid} from "@/utils/units";
 import DividerCustomize from "@/components/Divider";
 import AddCustomerModal from "@/pages/sys-manager/business-unit/payer/AddCustomerModal";
 
@@ -408,7 +408,7 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
                     <Fragment>
                         <EditOutlined color={'#1765AE'} onClick={() => handleEditBUP(record)}/>
                         <DividerCustomize hidden={!!record.enableFlag}/>
-                        <CustomizeIcon
+                        <IconFont
                             hidden={!!record.enableFlag}
                             type={'icon-relationship'}
                             onClick={() => handleModal(1, record)}
@@ -440,7 +440,7 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
             render: (text, record, index) => {
                 return (
                     <Fragment>
-                        <CustomizeIcon
+                        <IconFont
                             hidden={record.isAdd}
                             type={'icon-payers'}
                             onClick={() => handleModal(3, record)}

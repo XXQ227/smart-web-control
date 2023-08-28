@@ -55,13 +55,16 @@ const BillingAR: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     const onSelect = (record: any, selected: boolean) => {
-        const cgIdArr: any[] = record.child?.map((item: any) => item.id) || [];
+        let cgIdArr: any[] = record.child?.map((item: any) => item.id) || [];
         let childKeys: React.Key[] = selectedChildKeys.slice(0),
             childRows: any[] = selectChildRows.slice(0);
         if (selected) {
+            // TODO: 过滤被选中的费用 id
+            cgIdArr = cgIdArr.filter((key: string) => !childKeys.includes(key));
+            const cgRows: any[] = record.child.filter((item: any)=> cgIdArr.includes(item.id));
             // TODO: 选中添加 当前行的费用
             childKeys.push(...cgIdArr);
-            childRows.push(...record.child);
+            childRows.push(...cgRows);
         } else {
             // TODO: 取消选中：删除当前行的费用
             childKeys = childKeys.filter((key: React.Key) => !cgIdArr.includes(key));
@@ -210,6 +213,7 @@ const BillingAR: React.FC<RouteChildrenProps> = () => {
     //     'selectedKeys: ', selectedKeys, '\nselectRows: ', selectRows,
     //     '\nselectedChildKeys: ', selectedChildKeys, '\nselectChildRows: ', selectChildRows,
     // );
+    console.log(selectedKeys, selectRows, selectedChildKeys, selectChildRows);
 
     return (
         <PageContainer
