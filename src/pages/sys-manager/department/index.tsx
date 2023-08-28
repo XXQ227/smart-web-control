@@ -4,7 +4,7 @@ import {PageContainer, ProCard, ProTable,} from '@ant-design/pro-components'
 import {Button, Divider, Input, message, Popconfirm} from 'antd'
 import {DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons'
 import ls from 'lodash'
-import {CustomizeIcon} from '@/utils/units'
+import {IconFont} from '@/utils/units'
 import type {RouteChildrenProps} from 'react-router'
 import {history, useModel} from 'umi'
 
@@ -168,7 +168,7 @@ const DepartmentIndex: React.FC<RouteChildrenProps> = (props) => {
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                         >
                             <Divider type='vertical'/>
-                            <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <IconFont type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
                         </Popconfirm>
                         <Popconfirm
                             onConfirm={() => handleOperateDept(record, index, 'deleteFlag')}

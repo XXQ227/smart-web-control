@@ -3,16 +3,14 @@ import _ from 'lodash';
 import {createFromIconfontCN} from '@ant-design/icons';
 import {Descriptions} from "antd";
 
-export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_0skgjfi605je.js';
+export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_5ejn87q9eia.js';
 
 // TODO: 系统五字码
 export const SYSTEM_ID = 99003;
 export const SYSTEM_KEY_TEST = '2e6a8552-1a36-4d02-bd9f-8d83f2d528a9';
 
-// TODO: 自定义图标使用 【For Example: <CustomizeIcon type={'icon-create'} />】
-export const CustomizeIcon = createFromIconfontCN({
-    scriptUrl: icon_font_url, // 在 iconfont.cn 上生成
-});
+// TODO: 自定义图标使用 【For Example: <IconFont type={'icon-create'} />】
+export const IconFont = createFromIconfontCN({scriptUrl: icon_font_url,});
 //检测浏览器语言   navigator.language;   //判断除IE外其他浏览器使用语言
 export const LOCAL_LANGUAGE = false;
 // export const LOCAL_LANGUAGE = navigator.language === 'en-US';
@@ -24,7 +22,6 @@ export const ID_STRING = () => 'ID_' + Date.now().toString();
 export const rowGrid = { xs: 8, sm: 16, md: 24, lg: 32 };
 export const colGrid = { span: 6, xs: 8, md: 8, lg: 6, xl: 6, xxl: 4 };
 
-export const IconFont = createFromIconfontCN({scriptUrl: icon_font_url,});
 
 /**
  * 用于并排显示

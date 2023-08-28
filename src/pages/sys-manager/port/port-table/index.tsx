@@ -3,7 +3,7 @@ import type {ProColumns} from '@ant-design/pro-table';
 import {ProTable} from '@ant-design/pro-components'
 import {DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons'
 import {Button, Divider, Input, message, Popconfirm} from 'antd'
-import {CustomizeIcon} from "@/utils/units";
+import {IconFont} from "@/utils/units";
 import PortDrawerForm from '@/pages/sys-manager/port/form'
 import ls from 'lodash'
 
@@ -158,7 +158,7 @@ const PortTable: React.FC<Props> = (props) => {
                             onConfirm={() => handleOperatePort(index, record, 'enableFlag')}
                         >
                             <Divider type='vertical'/>
-                            <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <IconFont type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
                         </Popconfirm>
                         <Popconfirm
                             onConfirm={() => handleOperatePort(index, record, 'deleteFlag')}

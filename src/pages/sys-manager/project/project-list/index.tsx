@@ -6,7 +6,7 @@ import {useModel, history} from 'umi';
 import {DeleteOutlined, EditOutlined, PlusOutlined} from '@ant-design/icons'
 import {Button, Input, message, Popconfirm} from 'antd'
 import DividerCustomize from "@/components/Divider";
-import {CustomizeIcon} from "@/utils/units";
+import {IconFont} from "@/utils/units";
 import ls from "lodash";
 
 const {Search} = Input;
@@ -149,7 +149,7 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                         >
                             <DividerCustomize />
-                            <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <IconFont type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
                         </Popconfirm>
                         <Popconfirm
                             onConfirm={() => handleOperateProject(index, record, 'delete')}

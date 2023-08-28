@@ -5,7 +5,7 @@ import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
 import {Divider, Input, message, Popconfirm} from 'antd'
 import {SALES_ENUM} from '@/utils/enum'
-import {CustomizeIcon} from '@/utils/units'
+import {IconFont} from '@/utils/units'
 import UserDrawerForm from '@/pages/sys-manager/user/user-drawer-form'
 import {DeleteOutlined} from '@ant-design/icons'
 import ls from 'lodash'
@@ -169,7 +169,7 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                         >
                             <Divider type='vertical'/>
-                            <CustomizeIcon type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <IconFont type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
                         </Popconfirm>
                         <Popconfirm
                             okText={'Yes'} cancelText={'No'}

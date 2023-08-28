@@ -6,7 +6,7 @@ import {useModel} from 'umi';
 import {Button, Form, Input, message, Popconfirm} from 'antd'
 import {DeleteOutlined, PlusOutlined, SaveOutlined} from '@ant-design/icons'
 import ls from 'lodash'
-import {CustomizeIcon, getFormErrorMsg, ID_STRING} from '@/utils/units'
+import {IconFont, getFormErrorMsg, ID_STRING} from '@/utils/units'
 import {history} from '@@/core/history'
 import DividerCustomize from '@/components/Divider'
 import FormItemInput from '@/components/FormItemComponents/FormItemInput'
@@ -223,7 +223,7 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
                             onClick={() => handleSaveAuthResource(index, record, isAdd ? 'add' : 'edit')}
                         />
                         <DividerCustomize hidden={!record.isChange}/>
-                        <CustomizeIcon hidden={isAdd} type={'icon-details'} onClick={() => handleDetail(record)}/>
+                        <IconFont hidden={isAdd} type={'icon-details'} onClick={() => handleDetail(record)}/>
                         <Popconfirm
                             disabled={haveChildren}
                             okText={'Yes'} cancelText={'No'}

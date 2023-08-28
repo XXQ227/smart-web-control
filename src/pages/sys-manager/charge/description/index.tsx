@@ -4,7 +4,7 @@ import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
 import {DeleteOutlined, PlusOutlined} from '@ant-design/icons'
 import {Button, Form, Input, message, Popconfirm} from 'antd'
-import {CustomizeIcon, getFormErrorMsg, ID_STRING} from '@/utils/units'
+import {IconFont, getFormErrorMsg, ID_STRING} from '@/utils/units'
 import DividerCustomize from '@/components/Divider'
 import ls from 'lodash'
 import SearchModal from '@/components/SearchModal'
@@ -249,7 +249,7 @@ const DescriptionIndex: React.FC<Props> = () => {
             className: 'cursorStyle',
             render: (text, record, index) =>
                 <Fragment>
-                    <CustomizeIcon
+                    <IconFont
                         type={'icon-save'} hidden={!record.isChange}
                         onClick={() => handleSave(record, index)}
                     />
@@ -259,7 +259,7 @@ const DescriptionIndex: React.FC<Props> = () => {
                         title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                     >
                         <DividerCustomize hidden={!record.isChange}/>
-                        <CustomizeIcon
+                        <IconFont
                             hidden={record.id?.indexOf('ID_') > -1}
                             type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
                         />
