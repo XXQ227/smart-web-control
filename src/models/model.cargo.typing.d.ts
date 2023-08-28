@@ -261,7 +261,7 @@ declare namespace APIModel {
         qty?: number;
         socFlag?: boolean;
         fclFlag?: boolean;
-        Owner?: string;
+        owner?: string;
         remark?: string;
     }
     type CTNActualList = {
