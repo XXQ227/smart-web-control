@@ -41,7 +41,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
     // </span>
     // );
 
-    console.log(userInfo);
+    // console.log(userInfo);
     // if (!userInfo || !userInfo?.ID) {
     //     return loading;
     // }
