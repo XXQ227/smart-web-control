@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import BasicInfo from './basicInfo';
 import {Modal, Tabs, Spin, Button, message, Form} from "antd";
 import type {TabsProps} from 'antd';
@@ -110,13 +110,13 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
      * @date 2023/8/16
      * @returns
      */
-    async function handleQueryLocalDeliveryInfo() {
+    async function handleQueryLocalDeliveryInfo(state?: string) {
         setLoading(true);
         // TODO: 获取用户数据
         let result: API.Result;
         if (jobId !== '0') {
             result = await queryLocalDeliveryInfo({id: jobId});
-            if (result.data) {
+            if (result.success && result.data) {
                 // TODO: 如果有批次数据进行数据转化
                 if (result.data.length > 0) {
                     const resultData = {};
@@ -136,6 +136,9 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                     newTabIndex.current = newTabList.length + 1;
                     setLocalDeliveryInfo(resultData);
                     setTabList(newTabList);
+                    if (state === 'add' && activeKey > newTabList.length.toString()) {
+                        setActiveKey(newTabList.length.toString());
+                    }
                     // TODO: 把当前服务的 id 存下来
                     setId(result.data.id);
                 } else {
@@ -149,6 +152,7 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                     ];
                     setTabList(newTabList);
                     setLocalDeliveryInfo(initialData);
+                    setActiveKey('1');
                     setId('0');
                 }
             } else {
@@ -196,6 +200,10 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                 message.success('Success!!!');
                 // TODO: 把当前服务的 id 存下来
                 setId(result.data.id);
+                setTabList([]);
+                // 清空控件数据
+                formRef?.current?.resetFields();
+                await handleQueryLocalDeliveryInfo('add');
             } else {
                 message.error(result.message);
             }
@@ -268,6 +276,8 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
 
                     // TODO：判断剩余批次是否为0
                     if (Object.keys(localDeliveryInfo).length === 0) {
+                        // 清空控件数据
+                        formRef?.current?.resetFields();
                         await handleQueryLocalDeliveryInfo();
                     }
                 } else {

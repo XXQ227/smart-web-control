@@ -50,7 +50,10 @@ const ContainerLayout: React.FC<Props> = (props) => {
         }
         newData.splice(index, 1, target);
         // TODO: 把数据更新到表单里
-        props.handleChangeData({preBookingContainersEntityList: newData});
+        props.handleChangeData({
+            [`ctnModelId_ctn_table_${target.id}`]: target[filedName],
+            preBookingContainersEntityList: newData
+        });
         setContainerList(newData);
     }
 
@@ -145,7 +148,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
             ctnModelName: "",
             qty: 1,
             socFlag: false,
-            Owner: "",
+            owner: "",
             remark: "",
         };
         setContainerList([...containerList, newData]);

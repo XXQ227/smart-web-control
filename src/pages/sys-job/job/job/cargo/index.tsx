@@ -77,9 +77,9 @@ const Cargo: React.FC<Props> = (props) => {
                                 name={['cargoInformationParam', 'packagingMethodId']}
                                 label="Packaging Methods"
                                 options={[
-                                    {label: 'Wooden Boxes', value: 1},
-                                    {label: 'Stack Pack', value: 2},
-                                    {label: 'Palletizing', value: 3},
+                                    {label: 'Wooden Boxes', value: '1'},
+                                    {label: 'Stack Pack', value: '2'},
+                                    {label: 'Palletizing', value: '3'},
                                 ]}
                             />
                         </Col>
