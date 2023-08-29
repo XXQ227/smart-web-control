@@ -311,6 +311,7 @@ declare namespace APIModel {
         jobId: string;
         jobCode: string;
         branchId: string;
+        jobBusinessLine: string;
         businessId?: string;
         businessName?: string;
         businessNameFullEn?: string;

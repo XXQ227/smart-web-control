@@ -85,6 +85,7 @@ const ChargeTable: React.FC<Props> = (props) => {
             jobId,
             jobCode: jobInfo.code,
             branchId: '1665596906844135426',
+            jobBusinessLine: '1',
             businessId: '',
             businessName: '',
             businessNameFullEn: '',

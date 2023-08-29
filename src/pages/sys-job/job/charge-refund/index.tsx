@@ -200,7 +200,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
                 request={async () => handleQueryJobChargeInfo()}
             >
                 <ChargeTable
-                    CGType={1}
+                    CGType={5}
                     title={'AR'}
                     {...baseCGDON}
                     isReturn={true}
@@ -211,7 +211,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
                 />
 
                 <ChargeTable
-                    CGType={2}
+                    CGType={6}
                     title={'AP'}
                     {...baseCGDON}
                     isReturn={true}
