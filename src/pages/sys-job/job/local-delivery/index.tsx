@@ -58,7 +58,7 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
     const [localDeliveryInfo, setLocalDeliveryInfo] = useState<any>(initialData || {});
     const initialTabList: TabsProps['items'] = [];
     const [tabList, setTabList] = useState(initialTabList);
-    const [activeKey, setActiveKey] = useState('1');
+    const [activeKey, setActiveKey] = useState<string>('1');
     const activeKeyRef = useRef(activeKey);
     activeKeyRef.current = activeKey;
     const newTabIndex = useRef(2);
@@ -136,7 +136,7 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                     newTabIndex.current = newTabList.length + 1;
                     setLocalDeliveryInfo(resultData);
                     setTabList(newTabList);
-                    if (state === 'add' && activeKey > newTabList.length.toString()) {
+                    if (state === 'add' && Number(activeKey) >  Number(newTabList.length.toString())) {
                         setActiveKey(newTabList.length.toString());
                     }
                     // TODO: 把当前服务的 id 存下来
@@ -273,13 +273,6 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                     }
                     setTabList(newPanes);
                     delete localDeliveryInfo[labelValue];
-
-                    // TODO：判断剩余批次是否为0
-                    if (Object.keys(localDeliveryInfo).length === 0) {
-                        // 清空控件数据
-                        formRef?.current?.resetFields();
-                        await handleQueryLocalDeliveryInfo();
-                    }
                 } else {
                     message.error(result.message);
                 }
@@ -293,6 +286,12 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
             }
             setTabList(newPanes);
             delete localDeliveryInfo[targetKey.toString()];
+        }
+        // TODO：判断剩余批次是否为0
+        if (Object.keys(localDeliveryInfo).length === 0) {
+            // 清空控件数据
+            formRef?.current?.resetFields();
+            await handleQueryLocalDeliveryInfo();
         }
         setLoading(false);
     }
