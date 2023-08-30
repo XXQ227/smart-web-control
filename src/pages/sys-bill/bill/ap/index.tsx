@@ -259,7 +259,7 @@ const BillingAP: React.FC<RouteChildrenProps> = () => {
                                 </Col>
                             </Row>
                         </Col>
-                        <Col span={4}>
+                        <Col span={2}>
                             <Button icon={<SearchOutlined/>} onClick={handlePrintInvoice}>Search</Button>
                         </Col>
                     </Row>
