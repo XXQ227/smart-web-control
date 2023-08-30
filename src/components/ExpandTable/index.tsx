@@ -4,13 +4,14 @@ import '@/global.less'
 
 interface Props {
     dataSource: any[];
+    loading: boolean;
     columns: any;
     expandedColumns: any;
     handleSetSelectVal: (val: any) => void;
 }
 
 const ExpandTable: React.FC<Props> = (props) => {
-    const {columns, expandedColumns, handleSetSelectVal} = props;
+    const {columns, expandedColumns, handleSetSelectVal, loading} = props;
 
     // const [dataSource, setDataSource] = useState<any[]>(props.dataSource || []);
 
@@ -190,6 +191,7 @@ const ExpandTable: React.FC<Props> = (props) => {
             search={false}
             options={false}
             columns={columns}
+            loading={loading}
             dateFormatter="string"
             tableAlertRender={false}
             rowSelection={rowSelection}
