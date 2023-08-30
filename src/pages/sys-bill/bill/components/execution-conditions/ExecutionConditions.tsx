@@ -16,16 +16,16 @@ const ExecutionConditions: React.FC<Props> = (props) => {
         <Row gutter={24} className={'ant-row-bill-execution-conditions'}>
             <Col span={24}>
                 <Space>
-                    <Button type="text" icon={<UserOutlined color={validateData.businessLine ? '#D39E59' : ''} />}>
+                    <Button type="text" color={validateData.businessLine ? '#D39E59' : ''} icon={<UserOutlined/>}>
                         Business Line
                     </Button>
-                    <Button type="text" icon={<UserOutlined color={validateData.customer ? '#D39E59' : ''} />}>
+                    <Button type="text" color={validateData.customer ? '#D39E59' : ''} icon={<UserOutlined/>}>
                         Customer
                     </Button>
-                    <Button type="text" icon={<IconFont type={'icon-ex-rate'} color={validateData.exRate ? '#D39E59' : ''} />}>
+                    <Button type="text" color={validateData.exRate ? '#D39E59' : ''} icon={<IconFont type={'icon-ex-rate'}/>}>
                         Ex Rate
                     </Button>
-                    <Button type="text" icon={<TransactionOutlined color={validateData.billCurrencyName ? '#D39E59' : ''} />}>
+                    <Button type="text" color={validateData.billCurrencyName ? '#D39E59' : ''} icon={<TransactionOutlined/>}>
                         Bill Currency
                     </Button>
                 </Space>
