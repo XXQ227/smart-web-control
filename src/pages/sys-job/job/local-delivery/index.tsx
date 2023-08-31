@@ -104,6 +104,39 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
         </ProFormList>
     }
 
+    const handleAddBatch = () => {
+        const newBatch = {
+            shipmentNum: '',
+            truckingCompanyId: null,
+            truckingCompanyNameEn: '',
+            truckingCompanyNameCn: '',
+            truckingCompanyOracleId: null,
+            transportVehicleTypeId: null,
+            qty: '',
+            grossWeight: '',
+            measurement: '',
+            licensePlateNum: '',
+            driverName: '',
+        };
+
+        const newActiveKey = (newTabIndex.current++).toString();
+        const newLocalDeliveryInfo = {
+            ...localDeliveryInfo,
+            [newActiveKey]: [newBatch]
+        }
+        setLocalDeliveryInfo(newLocalDeliveryInfo);
+        setTabList(prevTabList => [
+            ...prevTabList,
+            {
+                label: 'New Tab',
+                key: newActiveKey,
+                closable: true,
+                children: renderContent(newActiveKey, newLocalDeliveryInfo),
+            },
+        ]);
+        setActiveKey(newActiveKey);
+    };
+
     /**
      * @Description: TODO: 查询本地交付服务信息
      * @author LLS
@@ -142,18 +175,22 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                     // TODO: 把当前服务的 id 存下来
                     setId(result.data.id);
                 } else {
-                    const newTabList: TabsProps['items'] = [
-                        {
-                            label: 'New Tab',
-                            key: '1',
-                            closable: false,
-                            children: renderContent('1', initialData),
-                        }
-                    ];
-                    setTabList(newTabList);
-                    setLocalDeliveryInfo(initialData);
-                    setActiveKey('1');
-                    setId('0');
+                    if (state === 'delete' ) {
+                        handleAddBatch();
+                    } else {
+                        const newTabList: TabsProps['items'] = [
+                            {
+                                label: 'New Tab',
+                                key: '1',
+                                closable: false,
+                                children: renderContent('1', initialData),
+                            }
+                        ];
+                        setActiveKey('1');
+                        setLocalDeliveryInfo(initialData);
+                        setTabList(newTabList);
+                        setId('0');
+                    }
                 }
             } else {
                 result.data = {blTypeId: 1};
@@ -213,39 +250,6 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
         setLoading(false);
     };
 
-    const handleAddBatch = () => {
-        const newBatch = {
-            shipmentNum: '',
-            truckingCompanyId: null,
-            truckingCompanyNameEn: '',
-            truckingCompanyNameCn: '',
-            truckingCompanyOracleId: null,
-            transportVehicleTypeId: null,
-            qty: '',
-            grossWeight: '',
-            measurement: '',
-            licensePlateNum: '',
-            driverName: '',
-        };
-
-        const newActiveKey = (newTabIndex.current++).toString();
-        const newLocalDeliveryInfo = {
-            ...localDeliveryInfo,
-            [newActiveKey]: [newBatch]
-        }
-        setLocalDeliveryInfo(newLocalDeliveryInfo);
-        setTabList(prevTabList => [
-            ...prevTabList,
-            {
-                label: 'New Tab',
-                key: newActiveKey,
-                closable: true,
-                children: renderContent(newActiveKey, newLocalDeliveryInfo),
-            },
-        ]);
-        setActiveKey(newActiveKey);
-    };
-
     const handleTabChange = (key: string) => {
         setActiveKey(key);
     };
@@ -291,7 +295,7 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
         if (Object.keys(localDeliveryInfo).length === 0) {
             // 清空控件数据
             formRef?.current?.resetFields();
-            await handleQueryLocalDeliveryInfo();
+            await handleQueryLocalDeliveryInfo('delete');
         }
         setLoading(false);
     }
