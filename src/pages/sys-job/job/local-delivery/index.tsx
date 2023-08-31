@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef} from 'react';
 import BasicInfo from './basicInfo';
 import {Modal, Tabs, Spin, Button, message, Form} from "antd";
 import type {TabsProps} from 'antd';
@@ -19,24 +19,6 @@ import {useParams, useModel} from "umi";
 const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
-const initialData = {
-    '1': [
-        {
-            shipmentNum: '',
-            truckingCompanyId: null,
-            truckingCompanyNameEn: '',
-            truckingCompanyNameCn: '',
-            truckingCompanyOracleId: null,
-            transportVehicleTypeId: null,
-            qty: '',
-            grossWeight: '',
-            measurement: '',
-            licensePlateNum: '',
-            driverName: '',
-        }
-    ]
-}
-
 const LocalDelivery: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
     const urlParams: any = useParams();
@@ -55,14 +37,20 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
         deleteLocalDelivery: res.deleteLocalDelivery,
     }));
 
-    const [localDeliveryInfo, setLocalDeliveryInfo] = useState<any>(initialData || {});
+    const [localDeliveryInfo, setLocalDeliveryInfo] = useState<any>({});
     const initialTabList: TabsProps['items'] = [];
     const [tabList, setTabList] = useState(initialTabList);
     const [activeKey, setActiveKey] = useState<string>('1');
     const activeKeyRef = useRef(activeKey);
     activeKeyRef.current = activeKey;
-    const newTabIndex = useRef(2);
+    const newTabIndex = useRef(1);
 
+    /**
+     * @Description: TODO: 当修改批次名称时，同时修改选项卡头显示的文字
+     * @author LLS
+     * @date 2023/8/28
+     * @returns
+     */
     const handleChangeLabel = (value: any) => {
         let labelName = value;
         if (!value) {
@@ -78,6 +66,12 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
         });
     }
 
+    /**
+     * @Description: TODO: 选项卡头显示的内容
+     * @author LLS
+     * @date 2023/8/25
+     * @returns
+     */
     const renderContent = (key: string, data?: any) => {
         return <ProFormList
             name={`${key}`}
@@ -104,6 +98,12 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
         </ProFormList>
     }
 
+    /**
+     * @Description: TODO: 新增页签
+     * @author LLS
+     * @date 2023/8/25
+     * @returns
+     */
     const handleAddBatch = () => {
         const newBatch = {
             shipmentNum: '',
@@ -145,7 +145,6 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
      */
     async function handleQueryLocalDeliveryInfo(state?: string) {
         setLoading(true);
-        // TODO: 获取用户数据
         let result: API.Result;
         if (jobId !== '0') {
             result = await queryLocalDeliveryInfo({id: jobId});
@@ -159,7 +158,6 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                         }
                         resultData[item.shipmentNum].push(item);
                     });
-                    // TODO: renderContent(key, resultData) key的值有问题
                     const newTabList: TabsProps['items'] = Object.entries(resultData).map(([key], index) => ({
                         label: key,
                         key: (index + 1).toString(),
@@ -175,22 +173,9 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                     // TODO: 把当前服务的 id 存下来
                     setId(result.data.id);
                 } else {
-                    if (state === 'delete' ) {
-                        handleAddBatch();
-                    } else {
-                        const newTabList: TabsProps['items'] = [
-                            {
-                                label: 'New Tab',
-                                key: '1',
-                                closable: false,
-                                children: renderContent('1', initialData),
-                            }
-                        ];
-                        setActiveKey('1');
-                        setLocalDeliveryInfo(initialData);
-                        setTabList(newTabList);
-                        setId('0');
-                    }
+                    // TODO: 如果没有批次数据，新增页签
+                    handleAddBatch();
+                    setId('0');
                 }
             } else {
                 result.data = {blTypeId: 1};
