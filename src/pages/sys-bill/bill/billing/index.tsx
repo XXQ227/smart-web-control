@@ -86,10 +86,10 @@ const Billing: React.FC<RouteChildrenProps> = () => {
      */
     async function handleQuerySeaExportInfo(val?: any) {
         if (!loading) setLoading(true);
-        // TODO: 获取用户数据
-        if (SalesList?.length === 0) await queryUserCommon({branchId: '0'});
 
         try {
+            // TODO: 获取用户数据
+            if (SalesList?.length === 0) await queryUserCommon({branchId: '0'});
             val.type = type;
             // TODO: 查所有币种时，把 ['ALL'] 改成所有 币种的集合
             if (val.jobBusinessLine === 0) val.jobBusinessLine = [];
@@ -164,8 +164,8 @@ const Billing: React.FC<RouteChildrenProps> = () => {
         try {
             console.log(val);
             await handleQuerySeaExportInfo(val);
-        } catch {
-            // console.log
+        } catch (e) {
+            message.error(e);
         }
     };
 
