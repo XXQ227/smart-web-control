@@ -56,7 +56,7 @@ export default () => {
         return await modifyPwdAPI(params);
     }, []);
 
-    /** 修改密码 */
+    /** 查询用户数据 */
     const queryUserCommon = useCallback(async (params: APIUser) => {
         const response: API.Result =  await queryUserCommonAPI(params);
         setSalesList(response.data);

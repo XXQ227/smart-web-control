@@ -92,13 +92,13 @@ const bill_route = {
                     name: 'ar',
                     icon: 'icon-job-ship',
                     path: '/bill/billing/ar',
-                    component: './sys-bill/bill/ar',
+                    component: './sys-bill/bill/billing',
                 },
                 {
                     name: 'ap',
                     icon: 'icon-job-ship',
                     path: '/bill/billing/ap',
-                    component: './sys-bill/bill/ap',
+                    component: './sys-bill/bill/billing',
                 },
                 {
                     name: 'invoice',

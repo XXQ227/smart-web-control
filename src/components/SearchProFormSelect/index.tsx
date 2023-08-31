@@ -23,8 +23,6 @@ interface Props {
     handleClearData?: () => void,                           // 清楚选中的结果
 }
 
-// TODO: isSearch === 0：开始第一次搜索；isSearch === 1 时，可搜索；isSearch === 2：搜索完后，选中结果
-let isSearch: number = 0;
 
 const SearchProFormSelect: React.FC<Props> = (props) => {
     const {
@@ -34,7 +32,7 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
     } = props;
     // 设置是否是编辑
     const [valInput, setUserInput] = useState<API.APIValue$Label>(valueObj || {});
-    // const [isSearch, setIsSearch] = useState<boolean>(false);
+    const [isSearch, setIsSearch] = useState<boolean>(false);
 
     // TODO: 返回结果的数据结构；默认 {Key: number, Value: string}，当有其他返回键值对时，在组件调用时定义
     const resValue: string = filedValue || 'value';
@@ -59,10 +57,16 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
      * @returns
      */
     const handleChange = (val: any, option?: any) => {
-        setUserInput(val);//setIsSearch(false);
-        isSearch = 2;
+        setUserInput(val);
+        setIsSearch(false);
         if (props.handleChangeData) props.handleChangeData(val, option);
     }
+
+    function handleClearData() {
+        setIsSearch(false);
+        if (props.handleClearData) props.handleClearData();
+    }
+
 
     return (
         <ProFormSelect
@@ -74,34 +78,34 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
             required={!!required}
             // initialValue={valInput}
             // initialValue={valueObj}
-            label={isShowLabel ? label : ''}
             allowClear={props.allowClear}
             placeholder={placeholder || ""}
+            label={isShowLabel ? label : ''}
             fieldProps={{
                 showArrow: false,
                 onSelect: handleChange,
+                onClear: handleClearData,
                 onSearch: ()=> {
-                    // TODO: isSearch === 0：变成搜索
-                    if (isSearch === 0) {
-                        isSearch = 1;
-                    }
-                    // TODO: isSearch === 2：结束搜索
-                    else if (isSearch === 2) {
-                        isSearch = 0;
-                    }
+                    // TODO: 当在搜索时，调用搜索接口
+                    if (!isSearch) setIsSearch(true);
                 },
-                onClear: props.handleClearData,
+                onMouseDown: ()=> {
+                    // TODO: 获取焦点时，才搜索数据
+                    setIsSearch(true);
+                },
+                onMouseLeave: ()=> {
+                    // TODO: 失去焦点时不搜索（在录入搜索时，可搜索）
+                    setIsSearch(false);
+                },
             }}
             rules={[{ required: !!required, message: label }]}
             // @ts-ignore
-            request={(val: any) => {
-                // TODO: isSearch === 1：可搜索
-                /*if (isSearch === 1) {
-                    return fetchData(val.keyWords, url, query, qty, resValue, resLabel)
+            request={async (val: any) => {
+                if (isSearch) {
+                    return await fetchData(val.keyWords, url, query, qty, resValue, resLabel)
                 } else {
-                    return [];
-                }*/
-                return fetchData(val.keyWords, url, query, qty, resValue, resLabel)
+                    return valueObj ? [valueObj] : [];
+                }
             }}
         />
     )

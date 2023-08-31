@@ -90,58 +90,19 @@ const AccountListIndex: React.FC<RouteChildrenProps> = () => {
     }
 
     const columns: ProColumns<APIAccountPeriod>[] = [
+        {title: 'Year', dataIndex: 'finaYear', align: 'center', width: 100,},
+        {title: 'Month', dataIndex: 'finaMonth', align: 'center', width: 100,},
+        // TODO: 期间类型 1-正常账期 2-补录账期
+        {title: 'Type', dataIndex: 'type', align: 'center', width: 110, valueEnum: ACCOUNT_PERIOD_TYPE_ENUM,},
+        {title: 'Start Date', dataIndex: 'dateStart', align: 'center', width: 150,},
+        {title: 'End Date', dataIndex: 'dateEnd', align: 'center', width: 150,},
         {
-            title: 'Year',
-            dataIndex: 'finaYear',
-            align: 'center',
-            width: 100,
-        },
-        {
-            title: 'Month',
-            dataIndex: 'finaMonth',
-            align: 'center',
-            width: 100,
-        },
-        {
-            // TODO: 期间类型 1-正常账期 2-补录账期
-            title: 'Type',
-            dataIndex: 'type',
-            align: 'center',
-            width: 110,
-            valueEnum: ACCOUNT_PERIOD_TYPE_ENUM,
-        },
-        {
-            title: 'Start Date',
-            dataIndex: 'dateStart',
-            align: 'center',
-            width: 150,
-        },
-        {
-            title: 'End Date',
-            dataIndex: 'dateEnd',
-            align: 'center',
-            width: 150,
-        },
-        {
-            // TODO: 预估状态 0-未生成 1-正在生成 2-成功 3-待导入 -2-失败
-            title: 'Full Estimate',
-            dataIndex: 'statusPredicted',
-            align: 'center',
-            width: 180,
+            title: 'Full Estimate', dataIndex: 'statusPredicted', align: 'center', width: 180,
             valueEnum: ACCOUNT_PERIOD_ES_STATUS_ENUM,
         },
+        {title: 'State', dataIndex: 'state', align: 'center', width: 180, valueEnum: ACCOUNT_PERIOD_STATE_ENUM,},
         {
-            title: 'State',
-            dataIndex: 'state',
-            align: 'center',
-            width: 180,
-            valueEnum: ACCOUNT_PERIOD_STATE_ENUM,
-        },
-        {
-            title: 'Action',
-            width: 100,
-            align: 'center',
-            className: 'cursorStyle',
+            title: 'Action', width: 100, align: 'center', className: 'cursorStyle',
             render: (text, record, index) => {
                 return (
                     <Fragment>

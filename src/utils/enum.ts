@@ -85,4 +85,14 @@ export const SALES_ENUM = {
     1: {text: 'Yes', status: 'Yes', key: 1},
 }
 
+// TODO: 业务线
+export const BUSINESS_LINE_ENUM = {
+    1: {text: 'FF', status: 'Freight Forwarding', key: 1},
+    2: {text: 'PL', status: 'Project Logistics', key: 2},
+    3: {text: 'CL', status: 'Contract Logistics', key: 3},
+    4: {text: 'EC', status: 'E-Commercial', key: 4},
+    5: {text: 'SA', status: 'Shipping Agency', key: 5},
+    6: {text: 'SB', status: 'Shipping Booking', key: 6},
+    7: {text: 'SC', status: 'Shipping Container', key: 7},
+};
 

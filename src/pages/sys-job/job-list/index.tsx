@@ -86,41 +86,13 @@ const JobList: React.FC<RouteChildrenProps> = () => {
 
     // TODO: 单票显示列
     const columns: ProColumns<APICJobListItem>[] = [
+        {title: 'Job Code', dataIndex: 'jobCode', width: 140,},
+        {title: 'Customer', dataIndex: 'customerNameEn',},
+        {title: 'PO Num', dataIndex: 'MBOLNum', width: 130, ellipsis: true,},
+        {title: 'Taking Date', dataIndex: 'orderTakingDate', valueType: "date", width: 110, align: 'center',},
+        {title: 'Complete Date', dataIndex: 'completionDate', valueType: "date", width: 110, align: 'center',},
         {
-            title: 'Job Code',
-            dataIndex: 'jobCode',
-            width: 140,
-        },
-        {
-            title: 'Customer',
-            dataIndex: 'PrincipalNameEN',
-        },
-        {
-            title: 'PO Num',
-            dataIndex: 'MBOLNum',
-            width: 130,
-            ellipsis: true,
-        },
-        {
-            title: 'Taking Date',
-            dataIndex: 'CreateDate',
-            valueType: "date",
-            width: 110,
-            align: 'center',
-        },
-        {
-            title: 'Complete Date',
-            dataIndex: 'LockDate',
-            valueType: "date",
-            width: 110,
-            align: 'center',
-        },
-        {
-            title: 'Action',
-            valueType: 'option',
-            align: 'center',
-            key: 'option',
-            width: 160,
+            title: 'Action', valueType: 'option', align: 'center', key: 'option', width: 100,
             render: (text, record) => {
                 return (
                     <Fragment>

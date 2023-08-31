@@ -152,12 +152,8 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
 
     const columns: ProColumns<APIAuthResource>[] = [
         {
-            title: 'Name',
-            dataIndex: 'name',
-            align: 'left',
-            width: 200,
-            tooltip: 'Name is required',
-            className: 'ant-columns-required',
+            title: 'Name', dataIndex: 'name', align: 'left', width: 200,
+            tooltip: 'Name is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 record.parentId ? text :
                     <FormItemInput
@@ -172,11 +168,8 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
                     />
         },
         {
-            title: 'Icon',
-            dataIndex: 'icon',
-            align: 'left',
-            tooltip: 'Icon is required',
-            className: 'ant-columns-required',
+            title: 'Icon', dataIndex: 'icon', align: 'left',
+            tooltip: 'Icon is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 record.parentId ? text :
                     <FormItemInput
@@ -191,11 +184,8 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
                     />
         },
         {
-            title: 'Url',
-            dataIndex: 'url',
-            align: 'left',
-            tooltip: 'Url is required',
-            className: 'ant-columns-required',
+            title: 'Url', dataIndex: 'url', align: 'left',
+            tooltip: 'Url is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 record.parentId ? text :
                     <FormItemInput
@@ -210,9 +200,7 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
                     />
         },
         {
-            title: 'Action',
-            width: 100,
-            align: 'center',
+            title: 'Action', width: 100, align: 'center',
             render: (text, record, index) => {
                 const isAdd = record?.id?.indexOf('ID_') > -1;
                 const haveChildren = !!record?.children?.length;

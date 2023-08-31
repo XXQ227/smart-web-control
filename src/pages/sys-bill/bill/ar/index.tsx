@@ -6,8 +6,6 @@ import '@/global.less'
 import ExpandTable from '@/components/ExpandTable'
 import {Button, Col, Row, Space} from 'antd'
 import ExecutionConditions from '@/pages/sys-bill/bill/components/execution-conditions/ExecutionConditions'
-import {TransactionOutlined, UserOutlined} from '@ant-design/icons'
-import {IconFont} from '@/utils/units'
 
 
 const BillingAR: React.FC<RouteChildrenProps> = () => {

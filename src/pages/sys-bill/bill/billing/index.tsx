@@ -24,10 +24,23 @@ const initSearchData: any = {
     billCurrencyName: ["All"],
 };
 
-const BillingAP: React.FC<RouteChildrenProps> = () => {
+const Billing: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
     const {location} = history;
     const type = location?.pathname?.indexOf('/ar') > -1 ? 1 : 2;
+    let chargeTypeList: any[] = [
+        {label: 'Normal', value: 1},
+        {label: 'Reimbursement', value: 3},
+        {label: 'Refund-AR', value: 5},
+    ];
+    if (type === 2) {
+        initSearchData.chargeType = [2];
+        chargeTypeList = [
+            {label: 'Normal', value: 2},
+            {label: 'Reimbursement', value: 4},
+            {label: 'Refund-AP', value: 6},
+        ];
+    }
 
 
     const {
@@ -235,12 +248,7 @@ const BillingAP: React.FC<RouteChildrenProps> = () => {
                                         name="chargeType"
                                         label="Charge Type"
                                         style={{minWidth: 150}}
-                                        options={[
-                                            {label: 'Normal', value: 1},
-                                            {label: 'Reimbursement', value: 3},
-                                            {label: 'Refund-AR', value: 5},
-                                            {label: 'All', value: 0},
-                                        ]}
+                                        options={[...chargeTypeList]}
                                     />
                                 </Col>
                                 <Col xs={24} sm={24} md={12} lg={12} xl={6} xxl={6}>
@@ -319,4 +327,4 @@ const BillingAP: React.FC<RouteChildrenProps> = () => {
         </PageContainer>
     )
 }
-export default BillingAP;
+export default Billing;

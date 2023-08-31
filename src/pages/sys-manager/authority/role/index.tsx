@@ -155,12 +155,8 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
 
     const columns: ProColumns<APIRole>[] = [
         {
-            title: 'Name',
-            dataIndex: 'roleName',
-            align: 'left',
-            width: 200,
-            tooltip: 'Name is required',
-            className: 'ant-columns-required',
+            title: 'Name', dataIndex: 'roleName', align: 'left', width: 200,
+            tooltip: 'Name is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 record.parentId ? text :
                     <FormItemInput
@@ -175,12 +171,8 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
                     />
         },
         {
-            title: 'Code',
-            dataIndex: 'roleCode',
-            align: 'left',
-            width: 200,
-            tooltip: 'Code is required',
-            className: 'ant-columns-required',
+            title: 'Code', dataIndex: 'roleCode', align: 'left', width: 200,
+            tooltip: 'Code is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 record.parentId ? text :
                     <FormItemInput
@@ -195,9 +187,7 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
                     />
         },
         {
-            title: 'Remark',
-            dataIndex: 'remark',
-            align: 'left',
+            title: 'Remark', dataIndex: 'remark', align: 'left',
             render: (text: any, record: any, index) =>
                 record.parentId ? text :
                     <FormItemInput
@@ -210,10 +200,7 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
                     />
         },
         {
-            title: 'Read-only',
-            dataIndex: 'readOnly',
-            align: 'center',
-            width: 90,
+            title: 'Read-only', dataIndex: 'readOnly', align: 'center', width: 90,
             render: (text: any, record: any, index) =>
                 record.parentId ? text :
                     <FormItemSwitch
@@ -224,11 +211,7 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
                     />
         },
         {
-            title: 'update time',
-            dataIndex: 'updateTime',
-            align: 'center',
-            width: 100,
-            valueType: 'date',
+            title: 'update time', dataIndex: 'updateTime', align: 'center', width: 100, valueType: 'date',
         },
         {
             title: 'Action',

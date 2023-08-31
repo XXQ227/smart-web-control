@@ -12,7 +12,7 @@ interface Props {
 }
 
 const BasicInfo: React.FC<Props> = (props) => {
-    const  {title, form} = props;
+    const  {title, form, CJobInfo} = props;
 
     const {SalesList} = useModel('manager.user', (res: any) => ({SalesList: res.SalesList}));
 
@@ -127,16 +127,13 @@ const BasicInfo: React.FC<Props> = (props) => {
                     {/* 客户 */}
                     <SearchProFormSelect
                         qty={5}
-                        width={"lg"}
-                        isShowLabel={true}
+                        width={"lg"} isShowLabel={true}
                         // required={true}
-                        label="Customer"
-                        id={'customerId'}
-                        name={'customerId'}
-                        valueObj={{value: '', label: ''}}
+                        label="Customer" id={'customerId'} name={'customerId'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
-                        url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
+                        valueObj={{value: CJobInfo.customerId, label: CJobInfo.customerNameEn}}
                         query={{branchId: '1665596906844135426', buType: 1, payerFlag: 0}}
+                        url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         handleChangeData={(val: any, option: any) => handleChange('customerId', val, option)}
                     />
                     {/* 付款方 */}
@@ -144,11 +141,9 @@ const BasicInfo: React.FC<Props> = (props) => {
                         qty={5}
                         width={"lg"}
                         isShowLabel={true}
-                        label='Cargo Owner'
-                        id={'cargoOwnerId'}
-                        name={'cargoOwnerId'}
-                        // valueObj={{value: '', label: ''}}
+                        label='Cargo Owner' id={'cargoOwnerId'} name={'cargoOwnerId'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
+                        valueObj={{value: CJobInfo.cargoOwnerId, label: CJobInfo.cargoOwnerNameEn}}
                         query={{branchId: '1665596906844135426'}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         handleChangeData={(val: any, option: any) => handleChange('cargoOwnerId', val, option)}
@@ -156,13 +151,10 @@ const BasicInfo: React.FC<Props> = (props) => {
                     {/* 货主/业务指定人 */}
                     <SearchProFormSelect
                         qty={5}
-                        width={"lg"}
-                        isShowLabel={true}
-                        id='payerId'
-                        label='Paying Agent'
-                        valueObj={{value: '', label: ''}}
-                        name={'payerId'}
+                        width={"lg"} isShowLabel={true}
+                        id='payerId' name={'payerId'} label={'Paying Agent'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
+                        valueObj={{value: CJobInfo.payerId, label: CJobInfo.customerNameEn}}
                         query={{branchId: '1665596906844135426', buType: 1, payerFlag: 1}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         handleChangeData={(val: any, option: any) => handleChange('payerId', val, option)}
@@ -174,11 +166,9 @@ const BasicInfo: React.FC<Props> = (props) => {
                 <Col xs={24} sm={24} md={7} lg={9} xl={7} xxl={4}>
                     <SearchProFormSelect
                         qty={5}
-                        width={"lg"}
-                        isShowLabel={true}
-                        label="Project"
-                        id={'projectId'}
-                        name={'projectId'}
+                        width={"lg"} isShowLabel={true}
+                        label="Project" id={'projectId'} name={'projectId'}
+                        valueObj={{value: CJobInfo.projectId, label: CJobInfo.projectName}}
                         url={'/apiBase/project/queryProjectCommon'}
                         query={{branchId: '0', type: 1, currentPage: 1, pageSize: 8}}
                         handleChangeData={(val: any, option: any) => handleChange('projectId', val, option)}

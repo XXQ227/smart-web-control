@@ -26,9 +26,10 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
     }));
 
     const {
-        queryUserCommon
+        queryUserCommon, SalesList
     } = useModel('manager.user', (res: any) => ({
         queryUserCommon: res.queryUserCommon,
+        SalesList: res.SalesList,
     }));
 
     const {
@@ -60,13 +61,11 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
     async function handleQueryJobInfo(paramsVal: any) {
         setLoading(true);
         // TODO: 获取用户数据
-        await queryUserCommon({branchId: '0'});
-        if (BusinessLineList?.length === 0) {
-            await queryDictCommon({dictCodes: ['business_line']});
-        }
-        if (AccountPeriodList?.length === 0) {
-            await queryAccountPeriodCommon({branchId: '1665596906844135426', name: ''});
-        }
+        if (SalesList?.length === 0) await queryUserCommon({branchId: '0'});
+        // TODO: 业务线
+        if (BusinessLineList?.length === 0) await queryDictCommon({dictCodes: ['business_line']});
+        // TODO: 账期
+        if (AccountPeriodList?.length === 0) await queryAccountPeriodCommon({branchId: '1665596906844135426', name: ''});
         let result: API.Result;
         if (paramsVal.id !== '0') {
             result = await queryJobInfo(paramsVal);
