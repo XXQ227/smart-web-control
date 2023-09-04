@@ -75,6 +75,10 @@ const BillOfLoading: React.FC<Props> = (props) => {
         }
     };
 
+    const handleSearchChange = (filedName: string, val: any, record: any, index: number, option?: any) => {
+
+    }
+
     /**
      * @Description: TODO:
      * @author XXQ
@@ -82,28 +86,15 @@ const BillOfLoading: React.FC<Props> = (props) => {
      * @param filedName 操作的数据字段
      * @param val       修改的值
      * @param record    其他数据
-     * @param option    其他数据
      * @param index    其他数据
      * @returns
      */
-    const handleChange = (filedName: string, val: any, record: any, option?: any, index: number) => {
+    const handleChange = (filedName: string, val: any, record: any, index: number) => {
         const newData: any[] = ls.cloneDeep(billInfoItems);
         const target = newData.find((item: any)=> item.id === record.id) || {};
         target[filedName] = val?.target ? val.target.value : val;
-        // TODO: 需要存箱型名字
-        if (filedName === 'ctnModelId') {
-            target.ctnModelName = option.label;
-        }
         newData.splice(index, 1, target);
-        // TODO: 把数据接口给到 FormItem 表单里
-        // form.setFieldsValue({
-        //     [`${filedName}_ctn_table_${target.id}`]: target[filedName],
-        //     preBookingContainersEntityList: newData
-        // });
         setBillOfLoadingEntityList(newData);
-        // const setValueObj: any = {billOfLoadingEntity: {[filedName]: val}};
-        // console.log(option);
-        // form.setFieldsValue(setValueObj);
     }
 
     const onChange = (newActiveKey: string) => {
@@ -120,20 +111,21 @@ const BillOfLoading: React.FC<Props> = (props) => {
                 <Row gutter={24} className={'ant-form-shipperInfoItem'}>
                     <Col span={6}>{label}</Col>
                     <Col span={18}>
-                        <SearchSelectInput
+                        {/*<SearchSelectInput
                             qty={5}
                             id={`SearchInput${label}`}
                             filedValue={'id'} filedLabel={'nameFullEn'}
                             query={{branchId: '1665596906844135426', buType: 1}}
                             url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
-                            handleChangeData={(val: any, option: any) => handleChange(fieldName, val, item, option, index)}
-                        />
+                            handleChangeData={(val: any, option: any) => handleSearchChange(fieldName, val, item, option, index)}
+                        />*/}
                     </Col>
                     <Col span={24}>
                         <FormItemTextArea
                             initialValue={valData}
                             rows={6} placeholder={''}
                             name={['billOfLoadingEntity', [fieldName + item.id]]}
+                            onChange={(val: any) => handleChange(fieldName, val, item, index)}
                         />
                     </Col>
                 </Row>
