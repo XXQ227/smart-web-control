@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import {Button, Form, message, Modal} from 'antd'
 import {ProFormTextArea} from '@ant-design/pro-components'
 import {getFormErrorMsg} from '@/utils/units'
@@ -9,7 +9,6 @@ interface Props {
     title?: string;         // TODO: 弹框名（可为空）
     handleCancel: () => void;   // TODO: 关闭弹框
     handleOk: (val: any) => void;   // TODO: 关闭弹框
-
 }
 
 const ChargeRemark: React.FC<Props> = (props) => {
@@ -17,16 +16,22 @@ const ChargeRemark: React.FC<Props> = (props) => {
     const {open, record, title, handleCancel, } = props;
     const [form] = Form.useForm();
 
+    useEffect(()=> {
+        if (record.id) form.setFieldsValue({remark: record.remark});
+    })
+
     const handleOk = () => {
         form.validateFields()
             .then(async (value: any) => {
                 props.handleOk(value.remark);
+                form.resetFields();
             })
             .catch((errorInfo) => {
                 /** TODO: 错误信息 */
                 message.error(getFormErrorMsg(errorInfo));
             });
     }
+
 
     return (
         <div hidden={!open}>

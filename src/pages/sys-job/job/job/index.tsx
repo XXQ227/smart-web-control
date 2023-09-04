@@ -60,23 +60,27 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
      */
     async function handleQueryJobInfo(paramsVal: any) {
         setLoading(true);
-        // TODO: 获取用户数据
-        if (SalesList?.length === 0) await queryUserCommon({branchId: '0'});
-        // TODO: 业务线
-        if (BusinessLineList?.length === 0) await queryDictCommon({dictCodes: ['business_line']});
-        // TODO: 账期
-        if (AccountPeriodList?.length === 0) await queryAccountPeriodCommon({branchId: '1665596906844135426', name: ''});
-        let result: API.Result;
-        if (paramsVal.id !== '0') {
-            result = await queryJobInfo(paramsVal);
-            setLoading(false);
-            setCJobInfo(result.data || {});
-        } else {
-            setLoading(false);
-            result = {success: true, data: {}};
+        try {
+            // TODO: 获取用户数据
+            if (SalesList?.length === 0) await queryUserCommon({branchId: '0'});
+            // TODO: 业务线
+            if (BusinessLineList?.length === 0) await queryDictCommon({dictCodes: ['business_line']});
+            // TODO: 账期
+            if (AccountPeriodList?.length === 0) await queryAccountPeriodCommon({branchId: '1665596906844135426', name: ''});
+            let result: API.Result;
+            if (paramsVal.id !== '0') {
+                result = await queryJobInfo(paramsVal);
+                setLoading(false);
+                setCJobInfo(result.data || {});
+            } else {
+                setLoading(false);
+                result = {success: true, data: {}};
+            }
+            return result.data;
+        } catch (e) {
+            message.error(e);
+            return {};
         }
-
-        return result.data;
     }
 
     /**
@@ -90,7 +94,7 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
         setLoading(true);
         try {
             console.log(values)
-            let result: API.Result = {success: false, message: ''};
+            let result: API.Result;
             values.branchId = '1665596906844135426';
             values.businessLine = 1;
             values.orderStatus = 0;
@@ -100,22 +104,21 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
                     values.accountPeriodInformation = target.oldLabel;
                 }
                 result = await addJob(values);
-                setLoading(false);
             } else {
                 result = await editJob({...CJobInfo,...values});
-                setLoading(false);
             }
             if (result?.success) {
+                setLoading(false);
                 message.success('success!!');
                 if (id === '0') {
                     history.push({pathname: `/job/job-info/form/${btoa(result.data)}`})
                 }
             } else {
-                message.error(result.message);
+                if (result.message) message.error(result.message);
+                setLoading(false);
             }
-            // await fakeSubmitForm(values);
-        } catch {
-            // console.log
+        } catch (e) {
+            message.error(e)
         }
     };
 
