@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef} from 'react';
 import BasicInfo from './basicInfo';
 import {Modal, Tabs, Spin, Button, message, Form} from "antd";
 import type {TabsProps} from 'antd';
@@ -19,24 +19,6 @@ import {useParams, useModel} from "umi";
 const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
-const initialData = {
-    '1': [
-        {
-            shipmentNum: '',
-            truckingCompanyId: null,
-            truckingCompanyNameEn: '',
-            truckingCompanyNameCn: '',
-            truckingCompanyOracleId: null,
-            transportVehicleTypeId: null,
-            qty: '',
-            grossWeight: '',
-            measurement: '',
-            licensePlateNum: '',
-            driverName: '',
-        }
-    ]
-}
-
 const LocalDelivery: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
     const urlParams: any = useParams();
@@ -55,14 +37,20 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
         deleteLocalDelivery: res.deleteLocalDelivery,
     }));
 
-    const [localDeliveryInfo, setLocalDeliveryInfo] = useState<any>(initialData || {});
+    const [localDeliveryInfo, setLocalDeliveryInfo] = useState<any>({});
     const initialTabList: TabsProps['items'] = [];
     const [tabList, setTabList] = useState(initialTabList);
     const [activeKey, setActiveKey] = useState<string>('1');
     const activeKeyRef = useRef(activeKey);
     activeKeyRef.current = activeKey;
-    const newTabIndex = useRef(2);
+    const newTabIndex = useRef(1);
 
+    /**
+     * @Description: TODO: 当修改批次名称时，同时修改选项卡头显示的文字
+     * @author LLS
+     * @date 2023/8/28
+     * @returns
+     */
     const handleChangeLabel = (value: any) => {
         let labelName = value;
         if (!value) {
@@ -78,6 +66,12 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
         });
     }
 
+    /**
+     * @Description: TODO: 选项卡头显示的内容
+     * @author LLS
+     * @date 2023/8/25
+     * @returns
+     */
     const renderContent = (key: string, data?: any) => {
         return <ProFormList
             name={`${key}`}
@@ -92,7 +86,6 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                     <>
                         <BasicInfo
                             form={form}
-                            CTNPlanList={[]}
                             batchNo={key}
                             data={data[key]}
                             handleChangeLabel={(val: any) => handleChangeLabel(val)}
@@ -105,114 +98,11 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
     }
 
     /**
-     * @Description: TODO: 查询本地交付服务信息
+     * @Description: TODO: 新增页签
      * @author LLS
-     * @date 2023/8/16
+     * @date 2023/8/25
      * @returns
      */
-    async function handleQueryLocalDeliveryInfo(state?: string) {
-        setLoading(true);
-        // TODO: 获取用户数据
-        let result: API.Result;
-        if (jobId !== '0') {
-            result = await queryLocalDeliveryInfo({id: jobId});
-            if (result.success && result.data) {
-                // TODO: 如果有批次数据进行数据转化
-                if (result.data.length > 0) {
-                    const resultData = {};
-                    result.data.forEach((item: any) => {
-                        if (!resultData[item.shipmentNum]) {
-                            resultData[item.shipmentNum] = [];
-                        }
-                        resultData[item.shipmentNum].push(item);
-                    });
-                    // TODO: renderContent(key, resultData) key的值有问题
-                    const newTabList: TabsProps['items'] = Object.entries(resultData).map(([key], index) => ({
-                        label: key,
-                        key: (index + 1).toString(),
-                        closable: true,
-                        children: renderContent(key, resultData),
-                    }));
-                    newTabIndex.current = newTabList.length + 1;
-                    setLocalDeliveryInfo(resultData);
-                    setTabList(newTabList);
-                    if (state === 'add' && Number(activeKey) >  Number(newTabList.length.toString())) {
-                        setActiveKey(newTabList.length.toString());
-                    }
-                    // TODO: 把当前服务的 id 存下来
-                    setId(result.data.id);
-                } else {
-                    const newTabList: TabsProps['items'] = [
-                        {
-                            label: 'New Tab',
-                            key: '1',
-                            closable: false,
-                            children: renderContent('1', initialData),
-                        }
-                    ];
-                    setTabList(newTabList);
-                    setLocalDeliveryInfo(initialData);
-                    setActiveKey('1');
-                    setId('0');
-                }
-            } else {
-                result.data = {blTypeId: 1};
-            }
-        } else {
-            result = {success: true, data: {blTypeId: 1}};
-        }
-        setLoading(false);
-        return result.data || {};
-    }
-
-    const handleFinish = async (val: any) => {
-        setLoading(true);
-        try {
-            // TODO: 删除对应的 table 里的录入数据
-            for (const item in val) {
-                if (item.indexOf('_table_') > -1) {
-                    delete val[item];
-                }
-            }
-
-            const dataWithJobId = [];
-            for (const shipmentNum in val) {
-                if (val.hasOwnProperty(shipmentNum)) {
-                    dataWithJobId.push(...val[shipmentNum].map((item: any) => ({
-                        ...item,
-                        jobId
-                    })));
-                }
-            }
-
-            let result: API.Result;
-            if (id === '0') {
-                result = await addLocalDelivery(dataWithJobId);
-            } else {
-                dataWithJobId.forEach(item => {
-                    if (!item.id) {
-                        item.id = "0";
-                    }
-                });
-                result = await editLocalDelivery(dataWithJobId);
-            }
-            if (result.success) {
-                message.success('Success!!!');
-                // TODO: 把当前服务的 id 存下来
-                setId(result.data.id);
-                setTabList([]);
-                // 清空控件数据
-                formRef?.current?.resetFields();
-                await handleQueryLocalDeliveryInfo('add');
-            } else {
-                message.error(result.message);
-            }
-        } catch (errorInfo) {
-            console.error(errorInfo);
-        }
-        setLoading(false);
-    };
-
     const handleAddBatch = () => {
         const newBatch = {
             shipmentNum: '',
@@ -244,6 +134,144 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
             },
         ]);
         setActiveKey(newActiveKey);
+    };
+
+    /**
+     * @Description: TODO: 查询本地交付服务信息
+     * @author LLS
+     * @date 2023/8/16
+     * @returns
+     */
+    async function handleQueryLocalDeliveryInfo(state?: string) {
+        setLoading(true);
+        let result: API.Result;
+        if (jobId !== '0') {
+            result = await queryLocalDeliveryInfo({id: jobId});
+            if (result.success && result.data) {
+                // TODO: 如果有批次数据进行数据转化
+                if (result.data.length > 0) {
+                    const resultData = {};
+                    result.data.forEach((item: any) => {
+                        if (!resultData[item.shipmentNum]) {
+                            resultData[item.shipmentNum] = [];
+                        }
+                        resultData[item.shipmentNum].push(item);
+                    });
+                    const newTabList: TabsProps['items'] = Object.entries(resultData).map(([key], index) => ({
+                        label: key,
+                        key: (index + 1).toString(),
+                        closable: true,
+                        children: renderContent(key, resultData),
+                    }));
+                    newTabIndex.current = newTabList.length + 1;
+                    setLocalDeliveryInfo(resultData);
+                    setTabList(newTabList);
+                    if (state === 'add' && Number(activeKey) >  Number(newTabList.length.toString())) {
+                        setActiveKey(newTabList.length.toString());
+                    }
+                    // TODO: 把当前服务的 id 存下来
+                    setId(result.data.id);
+                } else {
+                    // TODO: 如果没有批次数据，新增页签
+                    handleAddBatch();
+                    setId('0');
+                }
+            } else {
+                result.data = {blTypeId: 1};
+            }
+        } else {
+            result = {success: true, data: {blTypeId: 1}};
+        }
+        setLoading(false);
+        return result.data || {};
+    }
+
+    const handleFinish = async (val: any) => {
+        setLoading(true);
+        try {
+            // TODO: 将数据转化成保存的格式
+            const dataWithJobId = [];
+            for (const shipmentNum in val) {
+                if (val.hasOwnProperty(shipmentNum)) {
+                    dataWithJobId.push(...val[shipmentNum].map((item: any) => ({
+                        ...item,
+                        jobId
+                    })));
+                }
+            }
+            function removeTableProperties(obj: any): any {
+                let serviceId = '0';
+
+                function mapContainerItem(item: any) {
+                    return {
+                        ...item,
+                        id: item.id.indexOf('ID_') > -1 ? '0' : item.id,
+                        jobId,
+                        serviceId,
+                    };
+                }
+
+                function mapPhotoRemarkItem(item: any) {
+                    return {
+                        ...item,
+                        id: item.id.indexOf('ID_') > -1 ? '0' : item.id,
+                        jobId,
+                        localDeliveryServiceId: serviceId,
+                    };
+                }
+
+                // TODO: id属性不存在时，添加id属性值为'0'；存在就赋值给serviceId
+                if (!obj.hasOwnProperty('id')) {
+                    obj.id = '0';
+                } else {
+                    serviceId = obj.id;
+                }
+
+                for (const prop in obj) {
+                    // TODO: 删除对应的 table 里的录入数据
+                    if (prop.includes('_table_')) {
+                        delete obj[prop];
+                    } else if (typeof obj[prop] === 'object') {
+                        // TODO: 处理箱信息的 id 数据
+                        if (prop === 'preBookingContainersEntityList') {
+                            if (obj[prop]?.length > 0) {
+                                obj[prop] = obj[prop].map(mapContainerItem);
+                            }
+                        } else if (prop === 'photoRemarkEntityList') {
+                            if (obj[prop]?.length > 0) {
+                                obj[prop] = obj[prop].map(mapPhotoRemarkItem);
+                            }
+                        }
+                    }
+                }
+                return obj;
+            }
+            const cleanedDataWithJobId = dataWithJobId.map((data) => {
+                return removeTableProperties(data);
+            });
+            console.log(cleanedDataWithJobId);
+
+            let result: API.Result;
+            if (id === '0') {
+                result = await addLocalDelivery(cleanedDataWithJobId);
+            } else {
+                result = await editLocalDelivery(cleanedDataWithJobId);
+            }
+            if (result.success) {
+                message.success('Success!!!');
+                // TODO: 把当前服务的 id 存下来
+                setId(result.data.id);
+                setTabList([]);
+                // 清空控件数据
+                formRef?.current?.resetFields();
+                await handleQueryLocalDeliveryInfo('add');
+            } else {
+                message.error(result.message);
+            }
+        } catch (errorInfo) {
+            console.log(errorInfo);
+        }
+        setLoading(false);
     };
 
     const handleTabChange = (key: string) => {
@@ -291,7 +319,7 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
         if (Object.keys(localDeliveryInfo).length === 0) {
             // 清空控件数据
             formRef?.current?.resetFields();
-            await handleQueryLocalDeliveryInfo();
+            await handleQueryLocalDeliveryInfo('delete');
         }
         setLoading(false);
     }
