@@ -154,7 +154,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                         width={"lg"} isShowLabel={true}
                         id='payerId' name={'payerId'} label={'Paying Agent'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
-                        valueObj={{value: CJobInfo.payerId, label: CJobInfo.customerNameEn}}
+                        valueObj={{value: CJobInfo.payerId, label: CJobInfo.payerNameEn}}
                         query={{branchId: '1665596906844135426', buType: 1, payerFlag: 1}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         handleChangeData={(val: any, option: any) => handleChange('payerId', val, option)}
@@ -173,20 +173,6 @@ const BasicInfo: React.FC<Props> = (props) => {
                         query={{branchId: '0', type: 1, currentPage: 1, pageSize: 8}}
                         handleChangeData={(val: any, option: any) => handleChange('projectId', val, option)}
                     />
-                    {/*<ProFormSelect
-                        width="md"
-                        placeholder=''
-                        name={'projectId'}
-                        label="Project"
-                        options={[
-                            {label: 'Project', value: 1},
-                            {label: 'Project2', value: 2},
-                            {label: 'Project3', value: 3},
-                        ]}
-                        fieldProps={{
-                            onChange: (val: any, option: any)=> handleChange(val, 'projectId', option)
-                        }}
-                    />*/}
                     <ProFormSwitch
                         name={'nonOperationFlag'}
                         label="Non-operation Revenue"

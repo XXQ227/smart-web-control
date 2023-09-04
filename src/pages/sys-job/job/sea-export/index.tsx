@@ -74,6 +74,7 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
                     delete values[item];
                 }
             }
+            if (values.blTypeId) values.blTypeId = Number(values.blTypeId);
             // TODO: 时间需要另做处理
             if (values.closingTime) values.closingTime = moment(values.closingTime).format('YYYY-MM-DD hh:mm:ss');
             if (values.cyClosingDate) values.cyClosingDate = moment(values.cyClosingDate).format('YYYY-MM-DD hh:mm:ss');
@@ -113,7 +114,7 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
                 message.success('success!!!');
                 if (id === '0') setId(result.data);
             } else {
-                message.error(result.message);
+                if (result.message) message.error(result.message);
             }
         } catch {
             // console.log

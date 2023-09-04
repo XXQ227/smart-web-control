@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {Fragment, useEffect, useState} from 'react';
 import {Button, Col, Divider, Popconfirm, Row, Select, Form, Space, message} from 'antd';
 import {DeleteOutlined, PlusOutlined, FormOutlined} from '@ant-design/icons';
 import {useModel} from 'umi';
@@ -200,6 +200,7 @@ const ChargeTable: React.FC<Props> = (props) => {
         newData.splice(index, 1, target);
         setFieldsVal[formName] = newData;
         form?.setFieldsValue(setFieldsVal);
+        console.log(newData);
         setCGList(newData);
         handleChangeData(newData);
     }
@@ -575,33 +576,46 @@ export default ChargeTable;
  */
 export function renderAmountByCurrency(cgList: any[]) {
     const obj: Record<string, { total: number }> = {};
+    let localAmount = 0;
     if (cgList?.length > 0) {
         cgList.map((item: any) => {
             if (!item) return true;
-            if (item.orgUnitPrice && item.qty) {
-                if (!!item.orgCurrencyName) {
-                    if (!obj[item.orgCurrencyName]) {
-                        obj[item.orgCurrencyName] = {
-                            total: item.orgUnitPrice * item.qty,
-                        };
-                    } else {
-                        obj[item.orgCurrencyName].total += item.orgUnitPrice * item.qty;
-                    }
+            if (!!item.orgCurrencyName) {
+                if (!obj[item.orgCurrencyName]) {
+                    obj[item.orgCurrencyName] = {
+                        total: item.orgAmount,
+                    };
+                } else {
+                    obj[item.orgCurrencyName].total += item.orgAmount;
                 }
+            }
+            if (item.funcAmountInTax) {
+                localAmount += item.funcAmountInTax;
+            } else if (item.orgCurrencyName === 'HKD') {
+                localAmount += item.orgAmount;
+            } else if (item.billCurrencyName === 'HKD') {
+                localAmount += item.billInTaxAmount;
             }
             return true;
         });
     }
     if (Object.keys(obj).length > 0) {
         return (
-            Object.keys(obj).map((item, index) => {
-                return (
-                    <div key={`${index + 1}`} className="result-text" style={{float: "right"}}>
-                        <span style={{fontWeight: 500}}>{item}：</span>
-                        <b>{formatNumToMoney(keepDecimal(obj[item].total).toFixed(2))}</b>
-                    </div>
-                )
-            })
+            <div className={'ant-charge-total-amount-info'}>
+                {
+                    Object.keys(obj).map((item, index) => {
+                        return (
+                            <div key={`${index + 1}`} className="result-text" >
+                                <span>{item}：</span>
+                                <b>{formatNumToMoney(keepDecimal(obj[item].total).toFixed(2))}</b>
+                            </div>
+                        )
+                    })
+                }
+                <div>
+                    Total (in HKD)：<b>{formatNumToMoney(keepDecimal(localAmount).toFixed(2))}</b>
+                </div>
+            </div>
         )
     } else {
         return null;
