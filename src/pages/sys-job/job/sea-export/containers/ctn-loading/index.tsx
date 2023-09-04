@@ -21,15 +21,14 @@ import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 const FormItem = Form.Item;
 
 interface Props {
-    type?: string;
     form?: any;
+    type?: string;
+    serviceId: string;
     containerList: any[];
 }
 
 const CTNLoading: React.FC<Props> = (props) => {
-    const {
-        type, form, containerList
-    } = props;
+    const {type, form, containerList} = props;
 
     const {CargoInfo} = useModel('job.job', (res: any) => ({CargoInfo: res.CargoInfo}))
     const {queryDictCommonReturn} = useModel('common', (res: any) => ({queryDictCommonReturn: res.queryDictCommonReturn,}))

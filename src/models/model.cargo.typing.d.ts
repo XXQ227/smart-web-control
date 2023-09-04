@@ -256,6 +256,7 @@ declare namespace APIModel {
     }
     type PreBookingList = {
         id: any;
+        serviceId: any;
         ctnModelId?: number;
         ctnModelName?: string;
         qty?: number;

@@ -10,7 +10,7 @@ import SearchProFormSelect from "@/components/SearchProFormSelect";
 interface Props {
     title: string;
     form: any;
-    seaExportInfo: any;
+    serviceInfo: any;
 }
 
 // const initialTranshipmentPortList: APIModel.TranshipmentPortList[] = [
@@ -20,13 +20,13 @@ interface Props {
 // ];
 
 const Ports: React.FC<Props> = (props) => {
-    const {seaExportInfo, form} = props;
+    const {serviceInfo, form} = props;
 
     const [portNameInfo, setPortNameInfo] = useState({
-        portOfLoadingNameEn: seaExportInfo.portOfLoadingNameEn,
-        placeOfReceiptNameEn: seaExportInfo.placeOfReceiptNameEn,
-        portOfDischargeNameEn: seaExportInfo.portOfDischargeNameEn,
-        finalDestinationNameEn: seaExportInfo.finalDestinationNameEn,
+        portOfLoadingNameEn: serviceInfo.portOfLoadingNameEn,
+        placeOfReceiptNameEn: serviceInfo.placeOfReceiptNameEn,
+        portOfDischargeNameEn: serviceInfo.portOfDischargeNameEn,
+        finalDestinationNameEn: serviceInfo.finalDestinationNameEn,
     });
 
     const handleChange = (fieldName: string, val: any, option?: any) => {

@@ -14,11 +14,11 @@ import SearchTable from '@/components/SearchTable'
 interface Props {
     title: string,
     form: any,
-    seaExportInfo: any,
+    serviceInfo: any,
 }
 
 const Basic: React.FC<Props> = (props) => {
-    const {form, seaExportInfo} = props;
+    const {form, serviceInfo} = props;
     //endregion
 
     /**
@@ -200,7 +200,7 @@ const Basic: React.FC<Props> = (props) => {
                                 modalWidth={950}
                                 showHeader={true}
                                 title={'Payable AT'}
-                                text={seaExportInfo.placeOfIssueNameEn}
+                                text={serviceInfo.placeOfIssueNameEn}
                                 url={"/apiBase/sea/querySeaCommon"}
                                 handleChangeData={(val: any, option: any) => handleChange('payableAtCode', val, option)}
                             />

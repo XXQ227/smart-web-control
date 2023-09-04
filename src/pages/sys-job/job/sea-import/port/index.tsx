@@ -7,17 +7,17 @@ import SearchTable from "@/components/SearchTable";
 interface Props {
     title: string;
     form: any;
-    jobServiceInfo: any;
+    serviceInfo: any;
 }
 
 const Ports: React.FC<Props> = (props) => {
-    const {form, jobServiceInfo} = props;
+    const {form, serviceInfo} = props;
 
 
     const [portNameInfo, setPortNameInfo] = useState({
-        portOfLoadingNameEn: jobServiceInfo.portOfLoadingNameEn,
-        placeOfReceiptNameEn: jobServiceInfo.placeOfReceiptNameEn,
-        portOfDischargeNameEn: jobServiceInfo.portOfDischargeNameEn,
+        portOfLoadingNameEn: serviceInfo.portOfLoadingNameEn,
+        placeOfReceiptNameEn: serviceInfo.placeOfReceiptNameEn,
+        portOfDischargeNameEn: serviceInfo.portOfDischargeNameEn,
     });
 
     const handleChange =(fieldName: string, val: any, option?: any)=> {

@@ -110,7 +110,7 @@ const SeaImport: React.FC<RouteChildrenProps> = () => {
     };
 
 
-    const baseForm = {form, FormItem};
+    const baseForm = {form, FormItem, serviceInfo: seaImportInfo};
 
     return (
         <Spin spinning={loading}>
@@ -147,9 +147,9 @@ const SeaImport: React.FC<RouteChildrenProps> = () => {
                 <Basic {...baseForm} title={'Basic'}/>
 
                 {/* 港口信息 */}
-                <Ports {...baseForm} title={'Port'} jobServiceInfo={seaImportInfo || {}}/>
+                <Ports {...baseForm} title={'Port'}/>
 
-                <Containers{...baseForm} jobServiceInfo={seaImportInfo || {}} type={'import'}/>
+                <Containers{...baseForm} type={'import'}/>
 
                 <Remark type={'import'} title={'Remark'}/>
             </ProForm>

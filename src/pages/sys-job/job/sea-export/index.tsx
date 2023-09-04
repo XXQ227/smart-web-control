@@ -95,9 +95,11 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
                     );
             }
             // TODO: 提单信息
-            if (JSON.stringify(params.billOfLoadingEntity) !== '{}') {
+            if (params.billOfLoadingEntity?.length > 0) {
                 params.billOfLoadingEntity.jobId = jobId;
                 params.billOfLoadingEntity = [params.billOfLoadingEntity];
+            } else {
+                params.billOfLoadingEntity = [];
             }
 
             let result: API.Result;
@@ -120,7 +122,7 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
         }
     };
 
-    const baseForm = {form, FormItem};
+    const baseForm = {form, FormItem, serviceInfo: seaExportInfo};
 
     return (
         <Spin spinning={loading}>
@@ -156,18 +158,18 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
                 // @ts-ignore
                 request={async () => handleQuerySeaExportInfo()}
             >
-                <Basic {...baseForm} title={'Basic'} seaExportInfo={seaExportInfo}/>
+                <Basic {...baseForm} title={'Basic'}/>
 
                 {/* 提货信息 */}
                 <Pickup title={'Pickup'}/>
 
                 {/* 港口信息 */}
-                <Ports {...baseForm} title={'Port'} seaExportInfo={seaExportInfo}/>
+                <Ports {...baseForm} title={'Port'}/>
 
-                <Containers {...baseForm} jobServiceInfo={seaExportInfo}/>
+                <Containers {...baseForm}/>
 
                 {/* 收发通信息 */}
-                <BillOfLoading title={'Bill Of Loading'}/>
+                <BillOfLoading {...baseForm} title={'Bill Of Loading'}/>
 
                 <Remark title={'Remark'} />
             </ProForm>

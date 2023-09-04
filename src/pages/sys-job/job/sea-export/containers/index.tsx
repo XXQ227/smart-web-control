@@ -7,22 +7,22 @@ interface Props {
     type?: string;
     form: any;
     FormItem: any;
-    jobServiceInfo: any;
+    serviceInfo: any;
 }
 
 
 const Containers: React.FC<Props> = (props) => {
-    const {type, form, jobServiceInfo} = props;
+    const {type, form, serviceInfo} = props;
 
     return (
         <div className={'seaExportContainers'}>
             <PreBooking
-                type={type} form={form}
-                preBookingList={jobServiceInfo.preBookingContainersEntityList || []}
+                type={type} form={form} serviceId={serviceInfo.id}
+                preBookingList={serviceInfo.preBookingContainersEntityList || []}
             />
             <CTNLoading
-                form={form} type={type}
-                containerList={jobServiceInfo.containersLoadingDetailEntityList || []}
+                type={type} form={form} serviceId={serviceInfo.id}
+                containerList={serviceInfo.containersLoadingDetailEntityList || []}
             />
         </div>
     )

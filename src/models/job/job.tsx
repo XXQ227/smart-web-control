@@ -84,9 +84,11 @@ export default () => {
         // TODO: 请求后台 API
         if (response.success) {
             if (response.data.billOfLoadingEntity?.length > 0) {
-                response.data.billOfLoadingEntity = response.data.billOfLoadingEntity[0] || {};
+                response.data.billOfLoadingEntity = response.data.billOfLoadingEntity.map((item: any, index: number)=>
+                    ({...item, id: `${index + 1}`})
+                )
             } else {
-                response.data.billOfLoadingEntity = {};
+                response.data.billOfLoadingEntity = [];
             }
             delete response.data.service;
         }

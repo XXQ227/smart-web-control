@@ -14,8 +14,9 @@ import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 import FormItemSwitch from '@/components/FormItemComponents/FormItemSwitch'
 
 interface Props {
-    type?: string;
     form?: any;
+    type?: string;
+    serviceId: string;
     CTNPlanList?: APIModel.PreBookingList[];
     preBookingList: APIModel.PreBookingList[];
 }
@@ -23,7 +24,7 @@ interface Props {
 const FormItem = Form.Item;
 
 const ProBooking: React.FC<Props> = (props) => {
-    const {type, form, preBookingList} = props;
+    const {type, form, preBookingList, serviceId} = props;
 
     const [containerList, setContainerList] = useState<APIModel.PreBookingList[]>(preBookingList);
     const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
@@ -47,7 +48,6 @@ const ProBooking: React.FC<Props> = (props) => {
         if (filedName === 'ctnModelId') {
             target.ctnModelName = option.label;
         }
-        console.log(target);
         newData.splice(index, 1, target);
         // TODO: 把数据接口给到 FormItem 表单里
         form.setFieldsValue({
@@ -147,6 +147,7 @@ const ProBooking: React.FC<Props> = (props) => {
         const newData: APIModel.PreBookingList = {
             id: ID_STRING(),
             qty: 1,
+            serviceId,
             fclFlag: false,
             socFlag: false,
             remark: "",
