@@ -290,7 +290,7 @@ declare namespace APIModel {
     type PhotoRemarkList = {
         id: any;
         description?: string;
-        Time: string;
+        createTime: string;
         // photo:
     }
     //endregion TODO: 单票业务详情返回结果

@@ -15,6 +15,7 @@ import ContainerLayout from "./container-layout";
 import ls from 'lodash';
 import FormItemInput from "@/components/FormItemComponents/FormItemInput";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
+import moment from "moment/moment";
 
 interface Props {
     form?: any,
@@ -97,8 +98,7 @@ const BasicInfo: React.FC<Props> = (props) => {
         const newData: APIModel.PhotoRemarkList = {
             id: ID_STRING(),
             description: "",
-            Time: "",
-            // Time: new Date().toString(),
+            createTime: "",
         };
         setPhotoRemarkList([...photoRemarkList, newData]);
     };
@@ -127,7 +127,9 @@ const BasicInfo: React.FC<Props> = (props) => {
         {
             title: 'Time',
             align: "center",
-            dataIndex: 'Time',
+            width: '140px',
+            dataIndex: 'createTime',
+            render: (text: any) => moment(text).format('YYYY-MM-DD HH:mm')
         },
         {
             title: 'Action',
@@ -135,7 +137,7 @@ const BasicInfo: React.FC<Props> = (props) => {
             dataIndex: 'photo',
             width: '120px',
             className: "textColor",
-            render: (text: any, record, index) => {
+            render: (text: any, record) => {
                 return (
                     <div>
                         <a>View</a>
