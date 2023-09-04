@@ -86,7 +86,6 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                     <>
                         <BasicInfo
                             form={form}
-                            CTNPlanList={[]}
                             batchNo={key}
                             data={data[key]}
                             handleChangeLabel={(val: any) => handleChangeLabel(val)}
@@ -190,13 +189,7 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
     const handleFinish = async (val: any) => {
         setLoading(true);
         try {
-            // TODO: 删除对应的 table 里的录入数据
-            for (const item in val) {
-                if (item.indexOf('_table_') > -1) {
-                    delete val[item];
-                }
-            }
-
+            // TODO: 将数据转化成保存的格式
             const dataWithJobId = [];
             for (const shipmentNum in val) {
                 if (val.hasOwnProperty(shipmentNum)) {
@@ -206,17 +199,63 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                     })));
                 }
             }
+            function removeTableProperties(obj: any): any {
+                let serviceId = '0';
+
+                function mapContainerItem(item: any) {
+                    return {
+                        ...item,
+                        id: item.id.indexOf('ID_') > -1 ? '0' : item.id,
+                        jobId,
+                        serviceId,
+                    };
+                }
+
+                function mapPhotoRemarkItem(item: any) {
+                    return {
+                        ...item,
+                        id: item.id.indexOf('ID_') > -1 ? '0' : item.id,
+                        jobId,
+                        localDeliveryServiceId: serviceId,
+                    };
+                }
+
+                // TODO: id属性不存在时，添加id属性值为'0'；存在就赋值给serviceId
+                if (!obj.hasOwnProperty('id')) {
+                    obj.id = '0';
+                } else {
+                    serviceId = obj.id;
+                }
+
+                for (const prop in obj) {
+                    // TODO: 删除对应的 table 里的录入数据
+                    if (prop.includes('_table_')) {
+                        delete obj[prop];
+                    } else if (typeof obj[prop] === 'object') {
+                        // TODO: 处理箱信息的 id 数据
+                        if (prop === 'preBookingContainersEntityList') {
+                            if (obj[prop]?.length > 0) {
+                                obj[prop] = obj[prop].map(mapContainerItem);
+                            }
+                        } else if (prop === 'photoRemarkEntityList') {
+                            if (obj[prop]?.length > 0) {
+                                obj[prop] = obj[prop].map(mapPhotoRemarkItem);
+                            }
+                        }
+                    }
+                }
+                return obj;
+            }
+            const cleanedDataWithJobId = dataWithJobId.map((data) => {
+                return removeTableProperties(data);
+            });
+            console.log(cleanedDataWithJobId);
 
             let result: API.Result;
             if (id === '0') {
-                result = await addLocalDelivery(dataWithJobId);
+                result = await addLocalDelivery(cleanedDataWithJobId);
             } else {
-                dataWithJobId.forEach(item => {
-                    if (!item.id) {
-                        item.id = "0";
-                    }
-                });
-                result = await editLocalDelivery(dataWithJobId);
+                result = await editLocalDelivery(cleanedDataWithJobId);
             }
             if (result.success) {
                 message.success('Success!!!');
@@ -230,7 +269,7 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                 message.error(result.message);
             }
         } catch (errorInfo) {
-            console.error(errorInfo);
+            console.log(errorInfo);
         }
         setLoading(false);
     };
