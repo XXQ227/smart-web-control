@@ -47,6 +47,7 @@ export async function getInitialState(): Promise<{
                     console.log(JSON.stringify(result.data));
                 } else {
                     message.error(result.message);
+                    setTimeout(()=> window.close(), 1500);
                 }
             }
             return getUserInfo();

@@ -19,7 +19,7 @@ const Settings: LayoutSettings & {
   title: 'Smart HK',
   pwa: false,
   // pure: true,
-  logo: '/logo.png',
+  logo: '/logo.svg',
   iconfontUrl: '',
   menu: {
     locale: true,

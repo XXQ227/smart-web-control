@@ -3,7 +3,7 @@ import _ from 'lodash';
 import {createFromIconfontCN} from '@ant-design/icons';
 import {Descriptions} from "antd";
 
-export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_5ejn87q9eia.js';
+export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_i8ef0apj4c.js';
 
 // TODO: 系统五字码
 export const SYSTEM_ID = 99003;

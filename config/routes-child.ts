@@ -110,10 +110,30 @@ const bill_route = {
             ...MICRO_APP_CARGO('bill'),
         },
         {
-            name: 'invoice',
-            icon: 'icon-invoice-2',
-            path: '/bill/invoice',
-            component: './sys-bill/invoice',
+            name: 'settlement',
+            icon: 'icon-settlement',
+            path: '/settlement/invoice',
+            // component: './sys-bill/invoice',
+            routes: [
+                {
+                    name: 'outstanding',
+                    icon: 'icon-settlement',
+                    path: '/settlement/outstanding',
+                    component: './sys-bill/settlement',
+                },
+                {
+                    name: 'partial-settle',
+                    icon: 'icon-job-ship',
+                    path: '/settlement/partial-settle',
+                    component: './sys-bill/settlement',
+                },
+                {
+                    name: 'settle-log',
+                    icon: 'icon-job-ship',
+                    path: '/settlement/settle-log',
+                    component: './sys-bill/settlement/log',
+                },
+            ],
             ...MICRO_APP_CARGO('bill'),
         },
         {
