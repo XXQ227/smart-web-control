@@ -14,9 +14,9 @@ interface Props {
     form?: any,
     formRef?: any,
     formCurrent?: any,
-    batchNo: string,
+    batchNo?: string,
     data?: APIModel.BatchData,
-    CTNPlanList?: APIModel.PreBookingList[],
+    preBookingList: APIModel.PreBookingList[],
     NBasicInfo?: APIModel.NBasicInfo,
     handleChangeData: (val: any) => void,    // 设置数据
 }
@@ -24,9 +24,9 @@ interface Props {
 const FormItem = Form.Item;
 
 const ContainerLayout: React.FC<Props> = (props) => {
-    const  { CTNPlanList} = props;
+    const  { preBookingList} = props;
 
-    const [containerList, setContainerList] = useState<APIModel.PreBookingList[]>(CTNPlanList || []);
+    const [containerList, setContainerList] = useState<APIModel.PreBookingList[]>(preBookingList);
     const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
 
     /**
@@ -157,6 +157,10 @@ const ContainerLayout: React.FC<Props> = (props) => {
     const handleDelete = () => {
         const newData =
             containerList.filter(item => !selectedRowIDs.includes(item.id));
+        // TODO: 把数据更新到表单里
+        props.handleChangeData({
+            preBookingContainersEntityList: newData
+        });
         setContainerList(newData);
     };
 

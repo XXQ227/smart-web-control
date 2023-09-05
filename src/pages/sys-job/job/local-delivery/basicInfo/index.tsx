@@ -22,8 +22,6 @@ interface Props {
     formCurrent?: any,
     batchNo: string,
     data: any,
-    CTNPlanList?: APIModel.PreBookingList[],
-    PhotoRemarkList?: APIModel.PhotoRemarkList[],
     NBasicInfo?: APIModel.NBasicInfo,
     handleChangeLabel: (val: any) => void,   // 选中后，返回的结果
     handleChangeData: (val: any) => void,    // 设置数据
@@ -31,28 +29,13 @@ interface Props {
 
 const { Option } = Select;
 
-/*const initialPhotoRemarkList: APIModel.PhotoRemarkList[] = [
-    {
-        id: 'ID1',
-        description: "青衣碼頭裝箱照片",
-        Time: "2023-03-20 15:30",
-    },
-    {
-        id: 'ID2',
-        description: "港區入口交通擁堵，無法及時提柜",
-        Time: "2023-03-20 20:10",
-    },
-];*/
-
 const BasicInfo: React.FC<Props> = (props) => {
-    const  {
-        batchNo, data, form,
-        CTNPlanList, PhotoRemarkList, NBasicInfo
+    const {
+        batchNo, data, form, NBasicInfo
     } = props;
 
     const [isContainer, setIsContainer] = useState(data[0]?.transportVehicleTypeId === 3);
-    // const [photoRemarkList, setPhotoRemarkList] = useState<APIModel.PhotoRemarkList[]>(data[0]?.photoRemarkEntityList || PhotoRemarkList || initialPhotoRemarkList);
-    const [photoRemarkList, setPhotoRemarkList] = useState<APIModel.PhotoRemarkList[]>(data[0]?.photoRemarkEntityList || PhotoRemarkList || []);
+    const [photoRemarkList, setPhotoRemarkList] = useState<APIModel.PhotoRemarkList[]>(data[0]?.photoRemarkEntityList || []);
 
     const selectAfter = (
         <Select defaultValue="KG" style={{ width: 70 }}>
@@ -122,6 +105,8 @@ const BasicInfo: React.FC<Props> = (props) => {
 
     const handleDelete = (key: any) => {
         const newData = photoRemarkList.filter(item => item.id !== key);
+        // TODO: 把数据更新到表单里
+        props.handleChangeData({photoRemarkEntityList: newData});
         setPhotoRemarkList(newData);
     };
 
@@ -282,10 +267,10 @@ const BasicInfo: React.FC<Props> = (props) => {
                 isContainer ?
                     <ContainerLayout
                         form={form}
-                        CTNPlanList={CTNPlanList}
+                        preBookingList={data[0]?.preBookingContainersEntityList || []}
                         NBasicInfo={NBasicInfo}
-                        batchNo={batchNo}
-                        data={data}
+                        // batchNo={batchNo}
+                        // data={data}
                         handleChangeData={(val: any) => props.handleChangeData(val)}
                     />
                     :
