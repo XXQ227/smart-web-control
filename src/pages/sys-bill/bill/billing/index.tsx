@@ -50,13 +50,15 @@ const Billing: React.FC<RouteChildrenProps> = () => {
     }));
 
     const {
-        queryPendingInvoicingCharges,
+        queryPendingInvoicingCharges, createInvoice,
     } = useModel('accounting.invoice', (res: any) => ({
         queryPendingInvoicingCharges: res.queryPendingInvoicingCharges,
+        createInvoice: res.createInvoice,
     }));
 
     const [loading, setLoading] = useState(false);
 
+    const [searchInfo, setSearchInfo] = useState<any>(initSearchData);
 
     const [apList, setAPList] = useState<any[]>([]);
 
@@ -66,6 +68,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
     // TODO: 子单选中列数据
     const [selectedChildKeys, setSelectedChildKeys] = useState<React.Key[]>([]);
     const [selectChildRows, setSelectChildRows] = useState<any[]>([]);
+    // TODO: 验证费用行是否通过创建发票的条件判断
     const [validateData, setValidateData] = useState<any>({
         businessLine: false, customer: false, exRate: false, billCurrencyName: false
     });
@@ -83,22 +86,25 @@ const Billing: React.FC<RouteChildrenProps> = () => {
      * @param val   搜索条件，内容
      * @returns
      */
-    async function handleQuerySeaExportInfo(val?: any) {
+    async function handleQueryPendingInvoicingCharges(val?: any) {
         if (!loading) setLoading(true);
 
         try {
             // TODO: 获取用户数据
             if (SalesList?.length === 0) await queryUserCommon({branchId: '0'});
-            val.type = type;
+            const params: any = JSON.parse(JSON.stringify(val));
+            params.type = type;
             // TODO: 查所有币种时，把 ['ALL'] 改成所有 币种的集合
-            if (val.jobBusinessLine === 0) val.jobBusinessLine = [];
-            if (val.billCurrencyName[0] === 'All') val.billCurrencyName = currencyList;
-            const result: API.Result = await queryPendingInvoicingCharges(val);
+            if (params.jobBusinessLine === 0) params.jobBusinessLine = [];
+            if (params.billCurrencyName[0] === 'All') params.billCurrencyName = currencyList;
+
+            const result: API.Result = await queryPendingInvoicingCharges(params);
             if (result.success) {
                 setAPList(result.data);
             } else {
                 if (result.message) message.error(result.message);
             }
+            setSearchInfo(val);
             setLoading(false);
         } catch (e) {
             setLoading(false);
@@ -156,13 +162,35 @@ const Billing: React.FC<RouteChildrenProps> = () => {
     }
 
     async function handlePrintInvoice() {
-        console.log(selectChildRows, selectedChildKeys);
+        const params: any = {
+            taxMethod: 0,
+            // TODO: 创建发票类型 1:自动 2:手动
+            createInvoiceType: 1,
+            invoiceParam: {
+                num: '',
+                remark: '',
+                bankAccountId: '',
+                funcCurrencyName: '',
+            },
+            chargeEntityList: selectChildRows,
+        };
+
+        try {
+            const result: API.Result = await createInvoice(params);
+            if (result.success) {
+                message.success('success!');
+                await handleQueryPendingInvoicingCharges(searchInfo);
+            } else {
+                message.error('error');
+            }
+        } catch (e) {
+            message.error(e);
+        }
     }
 
     const handleFinish = async (val: any) => {
         try {
-            console.log(val);
-            await handleQuerySeaExportInfo(val);
+            await handleQueryPendingInvoicingCharges(val);
         } catch (e) {
             message.error(e);
         }
@@ -203,10 +231,10 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                 omitNil={false}
                 submitter={false}
                 layout={"vertical"}
-                params={initSearchData}
+                params={searchInfo}
                 onFinish={handleFinish}
                 name={'form-search-info'}
-                initialValues={initSearchData}
+                initialValues={searchInfo}
                 onFinishFailed={async (values: any) => {
                     if (values.errorFields?.length > 0) {
                         /** TODO: 错误信息 */
@@ -215,7 +243,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                     }
                 }}
                 // @ts-ignore
-                request={async (params: any) => handleQuerySeaExportInfo(params)}
+                request={async (params: any) => handleQueryPendingInvoicingCharges(params)}
             >
                 {/* 搜索 */}
                 <ProCard>
