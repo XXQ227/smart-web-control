@@ -24,8 +24,6 @@ const Welcome: React.FC = () => {
                     }}
                 />
             </Card>
-            <ProCard>
-            </ProCard>
         </PageContainer>
     );
 };

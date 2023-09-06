@@ -11,3 +11,15 @@ export async function queryPendingInvoicingChargesAPI(body: any) {
   });
 }
 
+
+// TODO: 创建发票
+//   POST /accounting/web/invoice/createInvoice
+//   API ID:107139145
+//   API URL:https://app.apifox.com/link/project/2684231/apis/api-107139145
+export async function createInvoiceAPI(body: any) {
+  return request(`/apiAccounting/invoice/createInvoice/`, {
+    method: 'POST',
+    body
+  });
+}
+

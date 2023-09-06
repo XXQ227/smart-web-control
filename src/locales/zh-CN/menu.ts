@@ -25,7 +25,10 @@ export default {
   'menu.bill.billing.ap': 'AP',
   'menu.bill.billing.invoice': 'Invoice',
   'menu.bill.invoice': 'Invoice',
-  'menu.bill.agent': '代收代付',
+  'menu.bill.agent': 'Agency',
+  'menu.bill.settlement.outstanding': 'Outstanding',
+  'menu.bill.settlement.partial-settle': 'Partial-Settle',
+  'menu.bill.settlement.settle-log': 'Settle-Log',
   // TODO: job
   'menu.cargo': 'Job',
   'menu.cargo.job': 'Job',
