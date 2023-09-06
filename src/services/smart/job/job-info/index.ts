@@ -153,3 +153,27 @@ export async function deleteChargesAPI(body: any) {
         body,
     });
 }
+
+// TODO: 费用提交主管/财务
+//   POST /accounting/web/charge/submitCharges
+//   API ID:108222318
+//   API URL:https://app.apifox.com/link/project/2684231/apis/api-108222318
+export async function submitChargesAPI(body: any) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiAccounting/charge/submitCharges/`, {
+        method: 'POST',
+        body,
+    });
+}
+
+// TODO: 费用驳回
+//   POST /accounting/web/charge/RejectCharges
+//   API ID:108223599
+//   API URL:https://app.apifox.com/link/project/2684231/apis/api-108223599
+export async function rejectChargesAPI(body: any) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiAccounting/charge/rejectCharges/`, {
+        method: 'POST',
+        body,
+    });
+}

@@ -16,11 +16,14 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
     const jobId = atob(urlParams.id);
     //region TODO: 数据层
     const {
-        queryChargesByJobId, saveCharges
+        queryChargesByJobId, saveCharges, submitCharges, rejectCharges,
     } = useModel('job.jobCharge', (res: any) => ({
         queryChargesByJobId: res.queryChargesByJobId,
         saveCharges: res.saveCharges,
+        submitCharges: res.submitCharges,
+        rejectCharges: res.rejectCharges,
     }));
+
     const {
         queryInvoiceTypeCommon, InvoTypeList,
     } = useModel('common', (res: any)=> ({
@@ -33,15 +36,18 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
 
     // TODO: 用来判断是否是第一次加载数据
+    const [isReload, setIsReload] = useState<boolean>(false);
+
+    // TODO: 用来判断是否是第一次加载数据
     const [loading, setLoading] = useState(false);
 
     const [refundARCGList, setRefundARCGList] = useState<APICGInfo[]>([]);
     const [refundAPCGList, setRefundAPCGList] = useState<APICGInfo[]>([]);
 
+    // TODO: 选种的所有费用数据
     const [selectedKeyObj, setSelectedKeyObj] = useState<any>({});
     const [selectedRowObj, setSelectedRowObj] = useState<any>({});
-
-    const [isReload, setIsReload] = useState<boolean>(false);
+    const [submitStatus, setSubmitStatus] = useState<any>({toManager: true, toBilling: true});
 
     useEffect(() => {
 
@@ -58,6 +64,9 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
             const {refundAPChargeList, refundARChargeList} = result.data;
             setRefundARCGList(refundARChargeList);
             setRefundAPCGList(refundAPChargeList);
+            setSelectedKeyObj({});
+            setSelectedRowObj({});
+            setSubmitStatus({toManager: true, toBilling: true});
             form.setFieldsValue({refundARCGList: refundARChargeList, refundAPCGList: refundAPChargeList});
             setIsReload(true);
             return result.data || {};
@@ -79,7 +88,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
     const handleChangeData = (data: any, CGType: number, state?: any) => {
         // TODO: 此复制为反向复制，【ar => ap】 or 【ap => ar】
         if (state === 'copy') {
-            if (CGType === 1) {
+            if (CGType === 5) {
                 const newData = refundAPCGList.slice(0);
                 newData.push(...data);
                 setRefundAPCGList(newData);
@@ -110,10 +119,74 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     const handleChangeRows = (selectRowKeys: any[], selectRows: any[], key: string) => {
-        selectedKeyObj[key] = selectRowKeys;
         selectedRowObj[key] = selectRows;
+        selectedKeyObj[key] = selectRowKeys;
+        //region TODO: 用来验证【提交按钮】的禁选状态
+        const selectAllRows: any[] = [];
+        if (selectedRowObj.refundArSelected) selectAllRows.push(...selectedRowObj.refundArSelected);
+        if (selectedRowObj.refundApSelected) selectAllRows.push(...selectedRowObj.refundApSelected);
+        // TODO: 【submitStatusObj】 按钮的判断状态值；
+        const submitStatusObj: any = {toManager: true, toBilling: true,};
+        if (selectAllRows?.length > 0) {
+            const stateArr: number[] = selectAllRows.map((item: any) => item.state) || [];
+            // TODO:
+            if (stateArr.length > 0) {
+                // TODO: 当存在【初始费用】时，【提交主管】按钮可操作
+                if (stateArr.includes(1)) submitStatusObj.toManager = false;
+                // TODO: 当存在【提交主管】时，【提交财务】按钮可操作
+                if (stateArr.includes(2)) submitStatusObj.toBilling = false;
+            }
+        }
+        setSubmitStatus(submitStatusObj);
+        //endregion
         setSelectedKeyObj(selectedKeyObj);
         setSelectedRowObj(selectedRowObj);
+    }
+
+
+    /**
+     * @Description: TODO:  费用提交主管、财务或 费用被主管、财务驳回
+     * @author XXQ
+     * @date 2023/9/5
+     * @param type  TODO: 提交的类型： * 1：提交主管；* 2：提交财务；* 3:被主管驳回；* 4:被财务驳回
+     * @returns
+     */
+    const handeSubmit = async (type: number) => {
+        const allChargeArr: any[] = [];
+        if (selectedKeyObj.refundArSelected) allChargeArr.push(...selectedRowObj.refundArSelected);
+        if (selectedKeyObj.refundApSelected) allChargeArr.push(...selectedRowObj.refundApSelected);
+
+        // TODO: 拿到提交操作对应的费用状态数据；【type === 3：费用驳回操作 => 数据拿提交主管的数据】
+        const chargeState: number = type === 3 ? 2 : type;
+        // TODO: 过滤费用数据
+        const submitCGArr: any[] = allChargeArr.filter((item: any)=> item.state === chargeState) || [];
+
+        if (submitCGArr?.length > 0) {
+            // TODO: 拿到选中的 ar、ap 费用行 id,
+            const idList: string[] = submitCGArr.map((item: any) => item.id) || [];
+            const params: any = {idList, jobId, type, branchId: '1665596906844135426', taxMethod: 0};
+            try {
+                // TODO: 返回结果变量
+                let result: API.Result;
+                // TODO: 驳回费用
+                if (type > 2) {
+                    result = await rejectCharges(params);
+                } else {
+                    result = await submitCharges(params);
+                }
+                if (result.success) {
+                    message.success('success');
+                    await handleQueryJobChargeInfo();
+                    setSubmitStatus({toManager: true, toBilling: true});
+                } else {
+                    if (result.message) message.error(result.message);
+                }
+            } catch (e) {
+                message.error(e);
+            }
+        } else {
+            message.warning('There are currently no charges to submit.');
+        }
     }
 
     /**
@@ -185,6 +258,18 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
                     render: () => {
                         return (
                             <FooterToolbar extra={<Button onClick={() => history.goBack()}>Back</Button>}>
+                                <Button
+                                    onClick={() => handeSubmit(1)}
+                                    type={'primary'} disabled={submitStatus.toManager}
+                                >Submit to Manager</Button>
+                                <Button
+                                    onClick={() => handeSubmit(2)}
+                                    type={'primary'} disabled={submitStatus.toBilling}
+                                >Submit to Billing</Button>
+                                <Button
+                                    onClick={() => handeSubmit(3)}
+                                    type={'primary'} disabled={submitStatus.toBilling}
+                                >Reject</Button>
                                 <Button type={'primary'} htmlType={'submit'}>保存</Button>
                             </FooterToolbar>
                         );

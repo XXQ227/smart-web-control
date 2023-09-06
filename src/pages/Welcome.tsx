@@ -24,6 +24,9 @@ const Welcome: React.FC = () => {
                     }}
                 />
             </Card>
+            <ProCard className={'ant-card'}>
+                test
+            </ProCard>
         </PageContainer>
     );
 };

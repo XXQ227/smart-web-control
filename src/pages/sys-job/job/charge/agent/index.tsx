@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Col, Divider, message, Popconfirm, Row, Select, Space} from 'antd';
 import {DeleteOutlined, PlusOutlined, FormOutlined} from '@ant-design/icons';
 import {formatNumToMoney, ID_STRING, keepDecimal} from '@/utils/units';
@@ -19,17 +19,22 @@ interface Props {
     CGType: number,
     jobId: string,
     CGList: APICGInfo[],
+    isReload: boolean,
     form: any,
     FormItem: any,
     InvoTypeList: any[],
     // TODO: 保存
+    handleChangeCopyState: () => void,
     handleChangeData: (data: any, CGType: number) => void,
     handleChangeRows: (selectRowKeys: any[], rows: any[], key: string) => void,
 }
 
 
 const Agent: React.FC<Props> = (props) => {
-    const {CGType, jobId, CGList, form, FormItem, InvoTypeList} = props;
+    const {
+        CGType, jobId, CGList, isReload, form, FormItem, InvoTypeList,
+        handleChangeCopyState
+    } = props;
     const CurrencyOpts = ['CNY', 'HKD', 'USD'];
     const {jobInfo} = useModel('job.job', (res: any) => ({jobInfo: res.jobInfo}));
     const {deleteCharges} = useModel('job.jobCharge', (res: any) => ({deleteCharges: res.deleteCharges}));
@@ -43,15 +48,25 @@ const Agent: React.FC<Props> = (props) => {
     const [chargeIndex, setChargeIndex] = useState<number>(0);
 
     // TODO: 复选框
-    const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
     const [selectRows, setSelectRows] = useState<React.Key[]>([]);
+    const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
+
+    useEffect(()=> {
+        if (isReload) {
+            setCGList(CGList);
+            handleChangeCopyState();
+            setSelectRows([]);
+            setSelectedKeys([]);
+            form?.setFieldsValue({reimbursementChargeList: CGList});
+        }
+    }, [CGList, form, handleChangeCopyState, isReload])
 
     const handleChangeData = (data: any) => {
         props.handleChangeData(data, CGType);
     }
 
     const handleChangeRows = (selectRowKeys: any[], rows: any[]) => {
-        props.handleChangeRows(selectRowKeys, rows, 'agentSelected');
+        props.handleChangeRows(selectRowKeys, rows, 'agentArSelected');
     }
 
     //region function 方法
@@ -153,8 +168,8 @@ const Agent: React.FC<Props> = (props) => {
         const newData: any[] = cgList.slice(0);
         let selectArr: any[] = selectRows.slice(0);
         selectArr = selectArr.map((item: any, index: number) => ({
-            ...item, id: ID_STRING() + index,
-            state: 1, remark: '',
+            ...item, receiveId: ID_STRING() + index,
+            state: 1, remark: '', id: '',
         }));
         newData.push(...selectArr);
         setCGList(newData);
@@ -285,6 +300,7 @@ const Agent: React.FC<Props> = (props) => {
                 chargeArr = chargeArr.filter((item: any) => !selectedKeys.includes(item.id)) || [];
                 setCGList(chargeArr);
                 handleClearSelected();
+                form?.setFieldsValue({reimbursementChargeList: chargeArr});
                 message.success('success');
             } else {
                 message.error(result.message);
@@ -511,6 +527,7 @@ const Agent: React.FC<Props> = (props) => {
     };
     // endregion
 
+
     return (
         <ProCard title={'Reimbursement'} bordered={true} headerBordered className={'ant-card'}>
             <Row gutter={24}>
@@ -544,12 +561,12 @@ const Agent: React.FC<Props> = (props) => {
                         handleCancel={()=> setOpen(false)}
                         handleOk={(val: any)=> handleRowChange(chargeIndex, chargeRecord.id, 'remark', val)}
                     />
-                    <ProFormText hidden={true} name={'reimbursementChargeList'} />
                 </Col>
                 <Col span={24}>
                     <Button icon={<PlusOutlined/>} onClick={handleAdd} className={'ant-btn-charge-add'}>Add Charge</Button>
                 </Col>
             </Row>
+            <ProFormText hidden={true} name={'reimbursementChargeList'} />
         </ProCard>
     )
 }

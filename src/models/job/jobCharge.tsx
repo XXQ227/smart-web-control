@@ -1,8 +1,8 @@
 import {
     deleteChargesAPI,
     GetNJobCGSByIDAPI,
-    queryChargesByJobIdAPI,
-    saveChargesAPI
+    queryChargesByJobIdAPI, rejectChargesAPI,
+    saveChargesAPI, submitChargesAPI
 } from '@/services/smart/job/job-info';
 import type React from "react";
 import {useCallback, useState} from "react";
@@ -96,6 +96,24 @@ export default (callback: T, deps: React.DependencyList) => {
         // TODO: 请求后台 API
         return await deleteChargesAPI(params);
     }, []);
+
+    // TODO: 费用提交主管/财务
+    //   POST /accounting/web/charge/submitCharges
+    //   API ID:108222318
+    //   API URL:https://app.apifox.com/link/project/2684231/apis/api-108222318
+    const submitCharges = useCallback(async (params: any) => {
+        // TODO: 请求后台 API
+        return await submitChargesAPI(params);
+    }, []);
+
+    // TODO: 费用驳回
+    //   POST /accounting/web/charge/RejectCharges
+    //   API ID:108223599
+    //   API URL:https://app.apifox.com/link/project/2684231/apis/api-108223599
+    const rejectCharges = useCallback(async (params: any) => {
+        // TODO: 请求后台 API
+        return await rejectChargesAPI(params);
+    }, []);
     //endregion
 
 
@@ -109,6 +127,9 @@ export default (callback: T, deps: React.DependencyList) => {
         queryChargesByJobId,
         saveCharges,
         deleteCharges,
+
+        submitCharges,
+        rejectCharges,
     }
 }
 

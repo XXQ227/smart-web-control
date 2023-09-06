@@ -89,11 +89,12 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
         try {
             // TODO: 获取用户数据
             if (SalesList?.length === 0) await queryUserCommon({branchId: '0'});
-            val.type = type;
+            const params: any = JSON.parse(JSON.stringify(val));
+            params.type = type;
             // TODO: 查所有币种时，把 ['ALL'] 改成所有 币种的集合
-            if (val.jobBusinessLine === 0) val.jobBusinessLine = [];
-            if (val.billCurrencyName[0] === 'All') val.billCurrencyName = currencyList;
-            const result: API.Result = await queryPendingInvoicingCharges(val);
+            if (params.jobBusinessLine === 0) params.jobBusinessLine = [];
+            if (params.billCurrencyName[0] === 'All') params.billCurrencyName = currencyList;
+            const result: API.Result = await queryPendingInvoicingCharges(params);
             if (result.success) {
                 setAPList(result.data);
             } else {
