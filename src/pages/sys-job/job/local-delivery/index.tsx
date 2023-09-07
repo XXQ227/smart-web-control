@@ -286,13 +286,15 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
      * @param targetKey
      */
     const handleOperateShipment = async (labelValue: any, targetKey: any) => {
-        const targetIndex = tabList.findIndex((pane) => pane.key === targetKey);
-        const newPanes = tabList.filter((tab) => tab.key !== targetKey);
         setLoading(true);
-        if (localDeliveryInfo[labelValue]) {
-            const item = localDeliveryInfo[labelValue][0];
-            if (item && item.id) {
-                const result: API.Result = await deleteLocalDelivery({id: item.id});
+        try {
+            const targetIndex = tabList.findIndex((pane) => pane.key === targetKey);
+            const newPanes = tabList.filter((tab) => tab.key !== targetKey);
+            const delPanes = tabList.filter((tab) => tab.key === targetKey)[0]?.children;
+            // @ts-ignore
+            const delPanesId = delPanes?.props?.initialValue[0]?.id;
+            if (delPanesId) {
+                const result: API.Result = await deleteLocalDelivery({id: delPanesId});
                 if (result.success) {
                     message.success('Success!!!');
                     if (newPanes.length && targetKey === activeKey) {
@@ -300,26 +302,39 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                         setActiveKey(key);
                     }
                     setTabList(newPanes);
-                    delete localDeliveryInfo[labelValue];
+                    // 定义一个函数来删除对象
+                    function deleteItemById(targetId: string, data: any, key: any) {
+                        for (let i = 0; i < data.length; i++) {
+                            if (data[i].id === targetId) {
+                                delete localDeliveryInfo[key]; // 删除匹配的对象
+                                break; // 结束循环，因为已经找到并删除了对象
+                            }
+                        }
+                    }
+                    for (const key in localDeliveryInfo) {
+                        if (Array.isArray(localDeliveryInfo[key])) {
+                            deleteItemById(delPanesId, localDeliveryInfo[key], key);
+                        }
+                    }
                 } else {
                     message.error(result.message);
                 }
             } else {
-                message.error(`The batch ${labelValue} could not be found.`)
+                if (newPanes.length && targetKey === activeKey) {
+                    const { key } = newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
+                    setActiveKey(key);
+                }
+                setTabList(newPanes);
+                delete localDeliveryInfo[targetKey.toString()];
             }
-        } else {
-            if (newPanes.length && targetKey === activeKey) {
-                const { key } = newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
-                setActiveKey(key);
+            // TODO：判断剩余批次是否为0
+            if (Object.keys(localDeliveryInfo).length === 0) {
+                // 清空控件数据
+                formRef?.current?.resetFields();
+                await handleQueryLocalDeliveryInfo('delete');
             }
-            setTabList(newPanes);
-            delete localDeliveryInfo[targetKey.toString()];
-        }
-        // TODO：判断剩余批次是否为0
-        if (Object.keys(localDeliveryInfo).length === 0) {
-            // 清空控件数据
-            formRef?.current?.resetFields();
-            await handleQueryLocalDeliveryInfo('delete');
+        } catch (e) {
+            message.error(e)
         }
         setLoading(false);
     }
