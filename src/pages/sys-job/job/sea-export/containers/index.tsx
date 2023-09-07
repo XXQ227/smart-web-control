@@ -10,7 +10,6 @@ interface Props {
     serviceInfo: any;
 }
 
-
 const Containers: React.FC<Props> = (props) => {
     const {type, form, serviceInfo} = props;
 

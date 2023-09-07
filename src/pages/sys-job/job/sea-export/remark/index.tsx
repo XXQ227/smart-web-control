@@ -2,7 +2,6 @@ import React from 'react';
 import {Col, Row} from "antd";
 import {rowGrid} from "@/utils/units";
 import {ProCard, ProFormTextArea} from "@ant-design/pro-components";
-import styles from "@/pages/sys-job/job/style.less";
 
 interface Props {
     type?: string,
@@ -15,7 +14,6 @@ const Remark: React.FC<Props> = (props) => {
         <ProCard
             title={props.title}
             bordered={true}
-            className={styles.seaExportBillOfLoading}
             headerBordered
             collapsible
         >

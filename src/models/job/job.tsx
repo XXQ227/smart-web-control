@@ -10,7 +10,7 @@ import {
     editSeaImportAPI,
     queryLocalDeliveryInfoAPI,
     addLocalDeliveryAPI,
-    editLocalDeliveryAPI, deleteLocalDeliveryAPI
+    editLocalDeliveryAPI, deleteLocalDeliveryAPI, deleteBillOfLoadingAPI
 } from '@/services/smart/job/job-info';
 import {useCallback, useState} from "react";
 
@@ -83,13 +83,13 @@ export default () => {
         const response: API.Result = await querySeaExportInfoAPI(params);
         // TODO: 请求后台 API
         if (response.success) {
-            if (response.data.billOfLoadingEntity?.length > 0) {
+            /*if (response.data.billOfLoadingEntity?.length > 0) {
                 response.data.billOfLoadingEntity = response.data.billOfLoadingEntity.map((item: any, index: number)=>
                     ({...item, id: `${index + 1}`})
                 )
             } else {
                 response.data.billOfLoadingEntity = [];
-            }
+            }*/
             delete response.data.service;
         }
         return response;
@@ -111,6 +111,15 @@ export default () => {
     const editSeaExport = useCallback(async (params: {id: string}) => {
         // TODO: 请求后台 API
         return await editSeaExportAPI(params);
+    }, []);
+
+    // TODO: 删除收发通信息
+    // POST /engine/web/seaExport/deleteBillOfLoading
+    // API ID:108838763
+    // API URL:https://app.apifox.com/link/project/2684231/apis/api-108838763
+    const deleteBillOfLoading = useCallback(async (params: {id: string}) => {
+        // TODO: 请求后台 API
+        return await deleteBillOfLoadingAPI(params);
     }, []);
     //endregion
 
@@ -200,6 +209,7 @@ export default () => {
         querySeaExportInfo,
         addSeaExport,
         editSeaExport,
+        deleteBillOfLoading,
 
         querySeaImportInfo,
         addSeaImport,

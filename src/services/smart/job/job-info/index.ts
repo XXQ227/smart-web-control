@@ -56,6 +56,15 @@ export async function editSeaExportAPI(body: {id: string}) {
     });
 }
 
+// TODO: 删除收发通信息
+export async function deleteBillOfLoadingAPI(body: {id: string}) {
+    // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构
+    return request(`/apiEngine/seaExport/deleteBillOfLoading`, {
+        method: 'POST',
+        body,
+    });
+}
+
 // TODO: 查询海运进口服务信息
 export async function querySeaImportInfoAPI(body: {id: string}) {
     // TODO: <API.GetCJobByIDResponse> 为接口返回的数据结构

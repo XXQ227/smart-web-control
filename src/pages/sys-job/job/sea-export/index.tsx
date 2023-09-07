@@ -35,7 +35,7 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
     const [loading, setLoading] = useState(false);
     const [seaExportInfo, setSeaExportInfo] = useState<any>({});
     const [id, setId] = useState<string>('0');
-
+    const [isSave, setIsSave] = useState(true);
 
     /**
      * @Description: TODO: 获取海运出口信息
@@ -60,18 +60,33 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
             result = {success: true, data: {blTypeId: 1}};
             setLoading(false);
         }
-
         // setLoading(false);
         setSeaExportInfo(result.data || {});
         return result.data || {};
     }
 
     const handleFinish = async (values: any) => {
+        setLoading(true);
         try {
-            // @ts-ignore // TODO: 删除对应的 table 里的录入数据
-            for (const item: string in values) {
+            const billOfLoadingEntityData = [];
+            // TODO: 删除对应的 table 里的录入数据
+            for (const item in values) {
                 if (item.indexOf('_table_') > -1) {
                     delete values[item];
+                } else if (item === 'billOfLoading') {
+                    delete values[item];
+                } else if (typeof values[item] === 'object' && values[item]?.length > 0) {
+                    if (!['preBookingContainersEntityList', 'containersLoadingDetailEntityList', 'billOfLoadingEntity'].includes(item)) {
+                        if (values.hasOwnProperty(item)) {
+                            billOfLoadingEntityData.push(...values[item].map((val: any) => {
+                                return {
+                                    ...val,
+                                    id: val.id.indexOf('ID_') > -1 ? '0' : val.id
+                                }
+                            }));
+                        }
+                        delete values[item];
+                    }
                 }
             }
             if (values.blTypeId) values.blTypeId = Number(values.blTypeId);
@@ -96,13 +111,20 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
                     );
             }
             // TODO: 提单信息
-            if (params.billOfLoadingEntity?.length > 0) {
+            /*if (params.billOfLoadingEntity?.length > 0) {
                 params.billOfLoadingEntity.jobId = jobId;
                 params.billOfLoadingEntity = [params.billOfLoadingEntity];
             } else {
                 params.billOfLoadingEntity = [];
-            }
+            }*/
 
+            /*if (params.billOfLoadingEntity?.length > 0) {
+                params.billOfLoadingEntity =
+                    params.billOfLoadingEntity.map((item: any) =>
+                        ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id})
+                    );
+            }*/
+            params.billOfLoadingEntity = billOfLoadingEntityData;
             let result: API.Result;
             if (id === '0') {
                 params.id = '0';
@@ -115,15 +137,23 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
             if (result.success) {
                 message.success('success!!!');
                 if (id === '0') setId(result.data);
+                setIsSave(false);
+                // 清空控件数据
+                // form?.resetFields();
+                await handleQuerySeaExportInfo();
+                setIsSave(true);
             } else {
                 if (result.message) message.error(result.message);
             }
         } catch {
             // console.log
         }
+        setLoading(false);
     };
 
     const baseForm = {form, FormItem, serviceInfo: seaExportInfo};
+
+    // console.log(seaExportInfo);
 
     return (
         <Spin spinning={loading}>
@@ -159,6 +189,9 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
                 // @ts-ignore
                 request={async () => handleQuerySeaExportInfo()}
             >
+                {/* 收发通信息 */}
+                <BillOfLoading {...baseForm} title={'Bill Of Loading'} isSave={isSave}/>
+
                 <Basic {...baseForm} title={'Basic'}/>
 
                 {/* 提货信息 */}
@@ -168,9 +201,6 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
                 <Ports {...baseForm} title={'Port'}/>
 
                 <Containers {...baseForm}/>
-
-                {/* 收发通信息 */}
-                <BillOfLoading {...baseForm} title={'Bill Of Loading'}/>
 
                 <Remark title={'Remark'} />
             </ProForm>

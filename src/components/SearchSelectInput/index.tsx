@@ -12,7 +12,7 @@ export interface DebounceSelectProps<ValueType = any>
     extends Omit<SelectProps<ValueType | ValueType[]>, 'options' | 'children'> {
     fetchOptions: (search: string, url: string, query: any, qty: number, resValue: string, resLabel: string) => Promise<ValueType[]>;     // TODO: 异步获取数据
     debounceTimeout?: number;       // TODO: 防抖动时间；默认：1000
-    valueObj?: any;              // TODO: 查询参数
+    valueObj?: any;                 // TODO: 查询参数
     fetchParams?: any;              // TODO: 查询参数
     handleChangeData?: (val: any, option?: any) => void,   // 选中后，返回的结果
 }

@@ -293,16 +293,18 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
             const delPanes = tabList.filter((tab) => tab.key === targetKey)[0]?.children;
             // @ts-ignore
             const delPanesId = delPanes?.props?.initialValue[0]?.id;
+            // TODO：判断要删除的批次是否是新增的
             if (delPanesId) {
                 const result: API.Result = await deleteLocalDelivery({id: delPanesId});
                 if (result.success) {
                     message.success('Success!!!');
+                    // TODO：当剩余的选项卡的长度 !== 0以及当前要删除的tab面板key等于当前激活tab面板的key时，设置当前激活tab面板的key为剩余选项卡的最后一位
                     if (newPanes.length && targetKey === activeKey) {
                         const { key } = newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
                         setActiveKey(key);
                     }
                     setTabList(newPanes);
-                    // 定义一个函数来删除对象
+                    // TODO：定义一个函数来删除对象
                     function deleteItemById(targetId: string, data: any, key: any) {
                         for (let i = 0; i < data.length; i++) {
                             if (data[i].id === targetId) {
@@ -320,6 +322,7 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                     message.error(result.message);
                 }
             } else {
+                // TODO：当剩余的选项卡的长度 !== 0以及当前要删除的tab面板key等于当前激活tab面板的key时，设置当前激活tab面板的key为剩余选项卡的最后一位
                 if (newPanes.length && targetKey === activeKey) {
                     const { key } = newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
                     setActiveKey(key);
