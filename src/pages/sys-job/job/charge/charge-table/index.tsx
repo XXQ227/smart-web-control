@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Col, Divider, Popconfirm, Row, Select, Form, Space, message} from 'antd';
 import {DeleteOutlined, PlusOutlined, FormOutlined} from '@ant-design/icons';
 import {useModel} from 'umi';
@@ -49,8 +49,8 @@ const ChargeTable: React.FC<Props> = (props) => {
     const [cgList, setCGList] = useState<APICGInfo[]>(CGList || []);
     const [currRateList, setCurrRateList] = useState<any[]>([]);
 
-    const [selectedKeys, setSelectedKeys] = useState<any[]>([]);
     const [selectRows, setSelectRows] = useState<any[]>([]);
+    const [selectedKeys, setSelectedKeys] = useState<any[]>([]);
     // TODO: 备注弹框
     const [open, setOpen] = useState<boolean>(false);
     // TODO: 选中的费用行
@@ -60,16 +60,20 @@ const ChargeTable: React.FC<Props> = (props) => {
     useEffect(()=> {
         if (isReload) {
             setCGList(CGList);
+            setSelectRows([]);
+            setSelectedKeys([]);
             handleChangeCopyState();
+            form?.setFieldsValue({[formName]: CGList});
         }
-    }, [CGList, handleChangeCopyState, isReload])
+    }, [CGList, form, formName, handleChangeCopyState, isReload])
 
     const handleChangeData = (data: any, state?: any) => {
         props.handleChangeData(data, CGType, state);
     }
 
     const handleChangeRows = (selectRowKeys: any[], rows: any[]) => {
-        props.handleChangeRows(selectRowKeys, rows, CGType === 1 ? 'refundArSelected' : 'refundApSelected');
+        const key: string = CGType === 1 ? 'arSelected' : CGType === 2 ? 'apSelected' : CGType === 5 ? 'refundArSelected' : 'refundApSelected'
+        props.handleChangeRows(selectRowKeys, rows, key);
     }
 
     //region function 方法
@@ -124,7 +128,6 @@ const ChargeTable: React.FC<Props> = (props) => {
             funcAmountInTax: 0,
             funcNoTaxAmount: 0,
             funcTaxAmount: 0,
-            bmsUploadStatus: 0,
             payMethod: 1,
             departmentCode: 1,
             salespersonCode: 1,
@@ -200,7 +203,6 @@ const ChargeTable: React.FC<Props> = (props) => {
         newData.splice(index, 1, target);
         setFieldsVal[formName] = newData;
         form?.setFieldsValue(setFieldsVal);
-        console.log(newData);
         setCGList(newData);
         handleChangeData(newData);
     }
@@ -280,7 +282,7 @@ const ChargeTable: React.FC<Props> = (props) => {
             message.success('success');
         } else {
             selectArr = selectArr.map((item: any) => ({
-                ...item, type: CGType === 1 ? 2 : 1,
+                ...item, type: CGType === 1 ? 2 : CGType === 2 ? 1 : CGType === 5 ? 6 : 5,
             }));
             handleChangeData(selectArr, 'copy');
         }
@@ -325,6 +327,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                 chargeArr = chargeArr.filter((item: any) => !idList.includes(item.id)) || [];
                 setCGList(chargeArr);
                 handleChangeData(chargeArr);
+                form?.setFieldsValue({[formName]: chargeArr});
                 handleClearSelected();
                 message.success('success');
             } else {
@@ -531,7 +534,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                                     <Button disabled={selectedKeys?.length === 0} onClick={() => handleDeleteCharge()}>Remove</Button>
                                     <Button disabled={selectedKeys?.length === 0} onClick={() => handleCopy('same')}>Copy</Button>
                                     <Button disabled={selectedKeys?.length === 0} onClick={() => handleCopy('noSame')}>
-                                        Copy to {CGType === 1 ? 'AP' : 'AR'}
+                                        Copy to {[1, 5].includes(CGType) ? 'AP' : 'AR'}
                                     </Button>
                                 </Space>
                             </div>

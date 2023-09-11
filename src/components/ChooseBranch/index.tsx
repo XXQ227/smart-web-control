@@ -2,11 +2,10 @@ import {message, Select} from 'antd';
 import React from 'react';
 import {history, useModel} from 'umi';
 import './index.less';
-import type {RouteChildrenProps} from 'react-router'
 
 const Option = Select.Option;
 
-const ChooseBranch: React.FC<RouteChildrenProps> = () => {
+const ChooseBranch: React.FC = () => {
     // const {initialState, setInitialState} = useModel('@@initialState');
     // const userInfo = getUserInfo() || initUserInfo;
     const {iamUserOrganizationConvert} = useModel('manager.auth', (res: any)=> ({

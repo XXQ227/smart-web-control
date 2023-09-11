@@ -8,7 +8,6 @@ import {Link, history} from 'umi';
 import defaultSettings from '../config/defaultSettings';
 import {getUserID, getUserInfo} from "@/utils/auths";
 import {icon_font_url} from '@/utils/units';
-import WorkSpace from '@/components/WorkSpace';
 import ls from 'lodash';
 import Exception403 from '@/pages/exception/403';
 import {iamUserLogInAPI} from '@/services/smart/iam'
@@ -47,6 +46,7 @@ export async function getInitialState(): Promise<{
                     console.log(JSON.stringify(result.data));
                 } else {
                     message.error(result.message);
+                    // TODO: 登录验证不成功时，关闭系统页面窗口
                     setTimeout(()=> window.close(), 1500);
                 }
             }

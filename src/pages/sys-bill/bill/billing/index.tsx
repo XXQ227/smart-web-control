@@ -4,10 +4,10 @@ import type {ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProCard, ProForm, ProFormSelect, ProFormText} from '@ant-design/pro-components'
 import '@/global.less'
 import ExpandTable from '@/components/ExpandTable'
-import {Button, Col, Form, message, Row, Space} from 'antd'
+import {Button, Col, Divider, Form, message, Popconfirm, Row, Space} from 'antd'
 import ExecutionConditions from '@/pages/sys-bill/bill/components/execution-conditions/ExecutionConditions'
 import {SearchOutlined} from '@ant-design/icons'
-import {getFormErrorMsg} from '@/utils/units'
+import {getFormErrorMsg, IconFont} from '@/utils/units'
 import SearchProFormSelect from '@/components/SearchProFormSelect'
 import {useModel} from '@@/plugin-model/useModel'
 import {BUSINESS_LINE_ENUM} from '@/utils/enum'
@@ -50,15 +50,22 @@ const Billing: React.FC<RouteChildrenProps> = () => {
     }));
 
     const {
-        queryPendingInvoicingCharges,
+        queryPendingInvoicingCharges, createInvoice,
     } = useModel('accounting.invoice', (res: any) => ({
         queryPendingInvoicingCharges: res.queryPendingInvoicingCharges,
+        createInvoice: res.createInvoice,
+    }));
+    const {rejectCharges} = useModel('job.jobCharge', (res: any) => ({
+        rejectCharges: res.rejectCharges,
     }));
 
     const [loading, setLoading] = useState(false);
 
+    const [searchInfo, setSearchInfo] = useState<any>(initSearchData);
 
     const [apList, setAPList] = useState<any[]>([]);
+
+    const [isReload, setIsReload] = useState<boolean>(false);
 
     // TODO: 父数据列数据
     // const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
@@ -66,6 +73,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
     // TODO: 子单选中列数据
     const [selectedChildKeys, setSelectedChildKeys] = useState<React.Key[]>([]);
     const [selectChildRows, setSelectChildRows] = useState<any[]>([]);
+    // TODO: 验证费用行是否通过创建发票的条件判断
     const [validateData, setValidateData] = useState<any>({
         businessLine: false, customer: false, exRate: false, billCurrencyName: false
     });
@@ -83,22 +91,26 @@ const Billing: React.FC<RouteChildrenProps> = () => {
      * @param val   搜索条件，内容
      * @returns
      */
-    async function handleQuerySeaExportInfo(val?: any) {
+    async function handleQueryPendingInvoicingCharges(val?: any) {
         if (!loading) setLoading(true);
 
         try {
             // TODO: 获取用户数据
             if (SalesList?.length === 0) await queryUserCommon({branchId: '0'});
-            val.type = type;
+            const params: any = JSON.parse(JSON.stringify(val));
+            params.type = type;
             // TODO: 查所有币种时，把 ['ALL'] 改成所有 币种的集合
-            if (val.jobBusinessLine === 0) val.jobBusinessLine = [];
-            if (val.billCurrencyName[0] === 'All') val.billCurrencyName = currencyList;
-            const result: API.Result = await queryPendingInvoicingCharges(val);
+            if (params.jobBusinessLine === 0) params.jobBusinessLine = [];
+            if (params.billCurrencyName[0] === 'All') params.billCurrencyName = currencyList;
+
+            const result: API.Result = await queryPendingInvoicingCharges(params);
             if (result.success) {
                 setAPList(result.data);
+                setIsReload(true);
             } else {
                 if (result.message) message.error(result.message);
             }
+            setSearchInfo(val);
             setLoading(false);
         } catch (e) {
             setLoading(false);
@@ -147,26 +159,70 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                         setValidateData({businessLine, customer, exRate, billCurrencyName});
                     }
                     if (obj.selectedChildKeys) setSelectedChildKeys(obj.selectedChildKeys);
-                // } else {
-                    // if (obj.selectRows) setSelectRows(obj.selectRows);
-                    // if (obj.selectedKeys) setSelectedKeys(obj.selectedKeys);
                 }
             }
         }
     }
 
     async function handlePrintInvoice() {
-        console.log(selectChildRows, selectedChildKeys);
+        const params: any = {
+            taxMethod: 0,
+            // TODO: 创建发票类型 1:自动 2:手动
+            createInvoiceType: 1,
+            invoiceParam: {
+                num: '',
+                remark: '',
+                bankAccountId: '',
+                funcCurrencyName: '',
+            },
+            chargeEntityList: selectChildRows,
+        };
+
+        try {
+            const result: API.Result = await createInvoice(params);
+            if (result.success) {
+                message.success('success!');
+                await handleQueryPendingInvoicingCharges(searchInfo);
+            } else {
+                message.error('error');
+            }
+        } catch (e) {
+            message.error(e);
+        }
     }
 
     const handleFinish = async (val: any) => {
         try {
-            console.log(val);
-            await handleQuerySeaExportInfo(val);
+            await handleQueryPendingInvoicingCharges(val);
         } catch (e) {
             message.error(e);
         }
     };
+
+    /**
+     * @Description: TODO: 财务驳回 【type: 4】
+     * @author XXQ
+     * @date 2023/9/5
+     * @param record    当前费用行
+     * @returns
+     */
+    const handeReject = async (record: any) => {
+
+        console.log(record);
+        const params: any = {idList: [record.id], jobId: record.jobId, type: 4, branchId: '1665596906844135426', taxMethod: 0};
+        try {
+            // TODO: 返回结果变量
+            const result: API.Result = await rejectCharges(params);
+            if (result.success) {
+                message.success('success');
+                await handleQueryPendingInvoicingCharges(searchInfo);
+            } else {
+                if (result.message) message.error(result.message);
+            }
+        } catch (e) {
+            message.error(e);
+        }
+    }
 
 
     const columns: ProColumns[] = [
@@ -190,7 +246,19 @@ const Billing: React.FC<RouteChildrenProps> = () => {
         {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 80, align: 'center'},
         {title: 'Ex Rate', dataIndex: 'orgBillExrate', width: 100, align: 'center'},
         {title: 'Bill Amount', dataIndex: 'billInTaxAmount', width: 150, align: 'center'},
-        {title: 'Action', key: 'action', width: 100},
+        {title: 'Action', key: 'action', width: 100,
+            render: (_: any, record: any) =>
+                <>
+                    <Popconfirm
+                        onConfirm={() => handeReject(record)}
+                        title="Sure to delete?" okText={'Yes'} cancelText={'No'}
+                    >
+                        <IconFont type={'icon-unlock'} color={'#D39E59'} />
+                    </Popconfirm>
+                    <Divider type='vertical'/>
+                    {/*<FormOutlined color={'#1765AE'} onClick={()=> handleEditRemark(index, record)} />*/}
+                </>
+        },
     ];
 
     return (
@@ -203,10 +271,10 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                 omitNil={false}
                 submitter={false}
                 layout={"vertical"}
-                params={initSearchData}
+                params={searchInfo}
                 onFinish={handleFinish}
                 name={'form-search-info'}
-                initialValues={initSearchData}
+                initialValues={searchInfo}
                 onFinishFailed={async (values: any) => {
                     if (values.errorFields?.length > 0) {
                         /** TODO: 错误信息 */
@@ -215,7 +283,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                     }
                 }}
                 // @ts-ignore
-                request={async (params: any) => handleQuerySeaExportInfo(params)}
+                request={async (params: any) => handleQueryPendingInvoicingCharges(params)}
             >
                 {/* 搜索 */}
                 <ProCard>
@@ -317,9 +385,11 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                     <ExpandTable
                         loading={loading}
                         columns={columns}
+                        isReload={isReload}
                         dataSource={apList}
                         expandedColumns={expandedColumns}
                         handleSetSelectVal={handleSetSelectVal}
+                        handleChangeReload={()=> setIsReload(false)}
                     />
                 </ProCard>
             </ProForm>

@@ -26,6 +26,7 @@ export default {
   'menu.bill.billing.invoice': 'Invoice',
   'menu.bill.invoice': 'Invoice',
   'menu.bill.agent': 'Agency',
+  'menu.bill.settlement': 'Settlement',
   'menu.bill.settlement.outstanding': 'Outstanding',
   'menu.bill.settlement.partial-settle': 'Partial-Settle',
   'menu.bill.settlement.settle-log': 'Settle-Log',
