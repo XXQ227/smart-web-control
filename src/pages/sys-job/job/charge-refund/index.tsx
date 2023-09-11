@@ -101,9 +101,9 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
             }
             setIsReload(true);
         } else {
-            if (CGType === 1) {
+            if (CGType === 5) {
                 setRefundARCGList(data);
-            } else if (CGType === 2) {
+            } else if (CGType === 6) {
                 setRefundAPCGList(data);
             }
         }

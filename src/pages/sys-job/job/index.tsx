@@ -29,7 +29,7 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
         { tab: 'Local Delivery', key: 'local-delivery', closable: false },
     ];
 
-    const [activeKey, setActiveKey] = useState<string>('charge');
+    const [activeKey, setActiveKey] = useState<string>('job');
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [tabList, setTabList] = useState(initialTabList);
 

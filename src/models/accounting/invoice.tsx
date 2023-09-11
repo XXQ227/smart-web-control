@@ -1,10 +1,11 @@
 import {useCallback} from "react";
 import {
     cancelInvoiceAPI,
-    createInvoiceAPI,
+    createInvoiceAPI, editInvoiceAPI,
     queryInvoiceDetailByIdAPI, queryInvoicesAPI,
     queryPendingInvoicingChargesAPI
 } from '@/services/smart/accounting/invoice'
+import {formatNumToMoney} from '@/utils/units'
 
 
 
@@ -39,7 +40,17 @@ export default () => {
     //   API URL:https://app.apifox.com/link/project/2684231/apis/api-108243845
     const queryInvoices = useCallback(async (params: any) => {
         // TODO: 请求后台 API
-        return await queryInvoicesAPI(params);
+        const response: API.Result = await queryInvoicesAPI(params);
+        if (!response) return;
+
+        if (response.success) {
+            response.data = response.data?.map((item: any) => ({
+                ...item,
+                billAmountStr: formatNumToMoney(item.billAmount),
+            }))
+        }
+
+        return response;
     }, []);
 
     // TODO: 查询发票详细信息
@@ -48,7 +59,18 @@ export default () => {
     //   API URL:https://app.apifox.com/link/project/2684231/apis/api-108244197
     const queryInvoiceDetailById = useCallback(async (params: any) => {
         // TODO: 请求后台 API
-        return await queryInvoiceDetailByIdAPI(params);
+        // TODO: 请求后台 API
+        const response: API.Result = await queryInvoiceDetailByIdAPI(params);
+        if (!response) return;
+
+        if (response.success) {
+            response.data = response.data?.map((item: any) => ({
+                ...item,
+                billInTaxAmountStr: formatNumToMoney(item.billInTaxAmount),
+            }))
+        }
+
+        return response;
     }, []);
 
     // TODO: 作废发票
@@ -59,6 +81,15 @@ export default () => {
         // TODO: 请求后台 API
         return await cancelInvoiceAPI(params);
     }, []);
+
+    // TODO: 修改发票
+    //   POST /accounting/web/invoice/editInvoice
+    //   API ID:108860414
+    //   API URL:https://app.apifox.com/link/project/2684231/apis/api-108860414
+    const editInvoice = useCallback(async (params: any) => {
+        // TODO: 请求后台 API
+        return await editInvoiceAPI(params);
+    }, []);
     //endregion
 
     return {
@@ -67,5 +98,6 @@ export default () => {
         queryInvoiceDetailById,
         queryInvoices,
         cancelInvoice,
+        editInvoice,
     }
 }

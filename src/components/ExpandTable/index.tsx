@@ -5,13 +5,18 @@ import '@/global.less'
 interface Props {
     dataSource: any[];
     loading: boolean;
+    isReload: boolean;
     columns: any;
     expandedColumns: any;
+    handleChangeReload: () => void;
     handleSetSelectVal: (val: any) => void;
 }
 
 const ExpandTable: React.FC<Props> = (props) => {
-    const {columns, expandedColumns, handleSetSelectVal, loading} = props;
+    const {
+        columns, expandedColumns, loading, isReload,
+        handleSetSelectVal,  handleChangeReload
+    } = props;
 
     // const [dataSource, setDataSource] = useState<any[]>(props.dataSource || []);
 
@@ -23,9 +28,16 @@ const ExpandTable: React.FC<Props> = (props) => {
     const [selectedChildKeys, setSelectedChildKeys] = useState<React.Key[]>([]);
 
 
-
     useEffect(()=> {
-    }, [])
+        // TODO: 更新选中的费用数据
+        if (isReload) {
+            setSelectRows([]);
+            setSelectedKeys([]);
+            setSelectChildRows([]);
+            setSelectedChildKeys([]);
+            handleChangeReload();
+        }
+    }, [isReload])
 
     //region 主表格复选按钮
     /**

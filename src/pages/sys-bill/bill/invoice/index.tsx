@@ -4,11 +4,12 @@ import type {ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProCard, ProForm, ProFormSelect, ProFormText, ProTable} from '@ant-design/pro-components'
 import '@/global.less'
 import {Button, Col, Divider, Form, message, Popconfirm, Row} from 'antd'
-import {CloseOutlined, DeleteOutlined, SaveOutlined, SearchOutlined} from '@ant-design/icons'
+import {CloseOutlined, PrinterOutlined, SearchOutlined} from '@ant-design/icons'
 import {getFormErrorMsg, IconFont} from '@/utils/units'
 import SearchProFormSelect from '@/components/SearchProFormSelect'
 import {useModel} from '@@/plugin-model/useModel'
 import {BUSINESS_LINE_ENUM} from '@/utils/enum'
+import InvoiceDetails from '@/pages/sys-bill/bill/components/invoice-details'
 
 const initSearchData: any = {
     invoiceType: [1],
@@ -33,19 +34,26 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
     ];
 
     const {
-        queryInvoices, queryInvoiceDetailById, cancelInvoice
+        queryInvoices, queryInvoiceDetailById, cancelInvoice, editInvoice
     } = useModel('accounting.invoice', (res: any) => ({
         queryInvoices: res.queryInvoices,
         queryInvoiceDetailById: res.queryInvoiceDetailById,
         cancelInvoice: res.cancelInvoice,
+        editInvoice: res.editInvoice,
     }));
 
     const [loading, setLoading] = useState(false);
 
+    // TODO: 搜索状态
     const [searchInfo, setSearchInfo] = useState<any>(initSearchData);
 
+    // TODO: 发票
     const [invoiceList, setInvoiceList] = useState<any[]>([]);
 
+    //region TODO: 发票详情
+    const [open, setOpen] = useState<boolean>(false);
+    const [invoiceDetail, setInvoiceDetail] = useState<any>({});
+    //endregion
 
     const currencyList = ['CNY', 'HKD', 'USD'];
 
@@ -93,8 +101,51 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
      * @param record    发票行
      * @returns
      */
-    const handleQueryInvoiceDetailById = async (record: any) => {
-        console.log(record);
+    const handleQueryInvoiceDetailById = async (record: any, index: number) => {
+        try {
+            const result: API.Result = await queryInvoiceDetailById({id: record.id});
+            if (result.success) {
+                setOpen(true);
+                setInvoiceDetail({...record, index, invoiceDetailList: result.data || []});
+            } else {
+                if (result.message) message.error(result.message);
+            }
+        } catch (e) {
+            message.error(e);
+        }
+    }
+
+    /**
+     * @Description: TODO: 关闭弹框（保存备注）
+     * @author XXQ
+     * @date 2023/9/7
+     * @param
+     * @returns
+     */
+    const handleModalOperate = async (state: string, remark: string) => {
+        if (state === 'ok') {
+            setLoading(true);
+            try {
+                const result: API.Result = await editInvoice({id: invoiceDetail.id, remark});
+                if (result.success) {
+                    message.success('success!');
+                    const newData = invoiceList.slice(0);
+                    const target: any = newData.find((item: any) => item.id === invoiceDetail.id);
+                    newData.splice(invoiceDetail.index, 1, target);
+                    setInvoiceList(newData);
+                } else {
+                    if (result.message) message.error(result.message);
+                }
+                setOpen(false);
+                setLoading(false);
+                setInvoiceDetail({});
+            } catch (e) {
+                message.error(e);
+            }
+        } else {
+            setOpen(false);
+            setInvoiceDetail({});
+        }
     }
 
     /**
@@ -117,7 +168,19 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     const handleCancelInvoice = async (record: any) => {
-        console.log(record);
+        try {
+            const result: API.Result = await cancelInvoice({id: record.id});
+            if (result.success) {
+                message.success('success');
+                // TODO: 删除成功后，过滤当前费发票。不再显示
+                const invoiceArr: any[] = invoiceList.filter((item: any) => item.id !== record.id);
+                setInvoiceList(invoiceArr);
+            } else {
+                if (result.message) message.error(result.message);
+            }
+        } catch (e) {
+            message.error(e);
+        }
     }
 
     const handleFinish = async (val: any) => {
@@ -130,33 +193,40 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
 
 
     const columns: ProColumns[] = [
-        {title: 'B-Line', dataIndex: 'businessLine', width: 60, align: 'center', valueEnum: BUSINESS_LINE_ENUM},
-        {title: 'Job No.', dataIndex: 'jobCode', width: 150},
-        {title: 'Invoice No.', dataIndex: 'invoiceNum', width: 150},
-        {title: 'Payer / Vendor', dataIndex: 'customerNameEn',},
-        {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 120, align: 'center'},
+        {title: 'Type', dataIndex: 'type', width: 60, align: 'center'},
+        {title: 'B-Line', dataIndex: 'jobBusinessLine', width: 60, align: 'center', valueEnum: BUSINESS_LINE_ENUM},
+        {title: 'Invoice No.', dataIndex: 'invoiceNum', width: 120},
+        {title: 'Job No.', dataIndex: 'jobsNumber', width: 150},
+        {title: 'Payer / Vendor', dataIndex: 'customerOrPayingAgentName',},
+        {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 100, align: 'center'},
         // TODO: valueType 数据显示格式，
         //  详情见 https://procomponents.ant.design/components/schema#%E8%87%AA%E5%AE%9A%E4%B9%89-valuetype
         {title: 'Bill Amount', dataIndex: 'billAmount', width: 120, align: 'center',},
-        {title: 'Creator', dataIndex: 'creator', width: 150, align: 'center'},
-        {title: 'Sales', dataIndex: 'salesName', width: 150, align: 'center'},
-        {title: 'Action', width: 100,
+        {title: 'Issue Date', dataIndex: 'issueDate', width: 100, align: 'center', valueType: 'date'},
+        {title: 'Issue by', dataIndex: 'issueName', width: 130, align: 'center'},
+        {
+            title: 'Action', width: 100,
             render: (text, record, index) =>
                 <Fragment>
-                    <IconFont type={'icon-details'} onClick={() => handleQueryInvoiceDetailById(record)}/>
-                    <Divider type="vertical" style={{ height: '100%' }} />
-                    <IconFont type={'icon-details'} onClick={() => handlePrint(record)}/>
-                    <Divider type="vertical" style={{ height: '100%' }} />
+                    <IconFont
+                        color={'#1890ff'} type={'icon-detail'}
+                        onClick={() => handleQueryInvoiceDetailById(record,index)}
+                    />
+                    <Divider type="vertical" style={{height: '100%'}}/>
+                    <PrinterOutlined color={'#1890ff'} onClick={() => handlePrint(record)}/>
+                    <Divider type="vertical" style={{height: '100%'}}/>
                     <Popconfirm
                         okText={'Yes'} cancelText={'No'}
                         title={`Are you sure to delete?`}
                         onConfirm={() => handleCancelInvoice(record)}
                     >
-                        <CloseOutlined />
+                        <CloseOutlined color={'#D39E59'} />
                     </Popconfirm>
                 </Fragment>
         },
     ];
+
+    console.log(invoiceList);
 
     return (
         <PageContainer
@@ -180,7 +250,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
                     }
                 }}
                 // @ts-ignore
-                request={async (params: any) => handleQuerySeaExportInfo(params)}
+                request={async (params: any) => handleQueryInvoices(params)}
             >
                 {/* 搜索 */}
                 <ProCard>
@@ -233,6 +303,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
                         </Col>
                     </Row>
                 </ProCard>
+
                 <ProCard>
                     <ProTable<any>
                         bordered
@@ -249,6 +320,14 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
                         className={'antd-pro-table-expandable'}
                     />
                 </ProCard>
+
+                {!open ? null :
+                    <InvoiceDetails
+                        open={open}
+                        invoiceDetail={invoiceDetail}
+                        handleModalOperate={handleModalOperate}
+                    />
+                }
             </ProForm>
         </PageContainer>
     )

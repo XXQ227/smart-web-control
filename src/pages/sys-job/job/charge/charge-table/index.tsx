@@ -128,7 +128,6 @@ const ChargeTable: React.FC<Props> = (props) => {
             funcAmountInTax: 0,
             funcNoTaxAmount: 0,
             funcTaxAmount: 0,
-            bmsUploadStatus: 0,
             payMethod: 1,
             departmentCode: 1,
             salespersonCode: 1,
@@ -204,7 +203,6 @@ const ChargeTable: React.FC<Props> = (props) => {
         newData.splice(index, 1, target);
         setFieldsVal[formName] = newData;
         form?.setFieldsValue(setFieldsVal);
-        console.log(newData);
         setCGList(newData);
         handleChangeData(newData);
     }

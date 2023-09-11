@@ -52,7 +52,7 @@ const ChargeRemark: React.FC<Props> = (props) => {
                         label='Remark'
                         placeholder=''
                         tooltip='length: 200'
-                        fieldProps={{rows: 3}}
+                        fieldProps={{rows: 4}}
                     />
                 </Form>
             </Modal>

@@ -58,3 +58,14 @@ export async function cancelInvoiceAPI(body: any) {
   });
 }
 
+// TODO: 修改发票
+//   POST /accounting/web/invoice/editInvoice
+//   API ID:108860414
+//   API URL:https://app.apifox.com/link/project/2684231/apis/api-108860414
+export async function editInvoiceAPI(body: any) {
+  return request(`/apiAccounting/invoice/editInvoice/`, {
+    method: 'POST',
+    body
+  });
+}
+

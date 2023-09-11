@@ -4,10 +4,10 @@ import type {ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProCard, ProForm, ProFormSelect, ProFormText} from '@ant-design/pro-components'
 import '@/global.less'
 import ExpandTable from '@/components/ExpandTable'
-import {Button, Col, Form, message, Row, Space} from 'antd'
+import {Button, Col, Divider, Form, message, Popconfirm, Row, Space} from 'antd'
 import ExecutionConditions from '@/pages/sys-bill/bill/components/execution-conditions/ExecutionConditions'
 import {SearchOutlined} from '@ant-design/icons'
-import {getFormErrorMsg} from '@/utils/units'
+import {getFormErrorMsg, IconFont} from '@/utils/units'
 import SearchProFormSelect from '@/components/SearchProFormSelect'
 import {useModel} from '@@/plugin-model/useModel'
 import {BUSINESS_LINE_ENUM} from '@/utils/enum'
@@ -55,12 +55,17 @@ const Billing: React.FC<RouteChildrenProps> = () => {
         queryPendingInvoicingCharges: res.queryPendingInvoicingCharges,
         createInvoice: res.createInvoice,
     }));
+    const {rejectCharges} = useModel('job.jobCharge', (res: any) => ({
+        rejectCharges: res.rejectCharges,
+    }));
 
     const [loading, setLoading] = useState(false);
 
     const [searchInfo, setSearchInfo] = useState<any>(initSearchData);
 
     const [apList, setAPList] = useState<any[]>([]);
+
+    const [isReload, setIsReload] = useState<boolean>(false);
 
     // TODO: 父数据列数据
     // const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
@@ -101,6 +106,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
             const result: API.Result = await queryPendingInvoicingCharges(params);
             if (result.success) {
                 setAPList(result.data);
+                setIsReload(true);
             } else {
                 if (result.message) message.error(result.message);
             }
@@ -153,9 +159,6 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                         setValidateData({businessLine, customer, exRate, billCurrencyName});
                     }
                     if (obj.selectedChildKeys) setSelectedChildKeys(obj.selectedChildKeys);
-                // } else {
-                    // if (obj.selectRows) setSelectRows(obj.selectRows);
-                    // if (obj.selectedKeys) setSelectedKeys(obj.selectedKeys);
                 }
             }
         }
@@ -196,6 +199,31 @@ const Billing: React.FC<RouteChildrenProps> = () => {
         }
     };
 
+    /**
+     * @Description: TODO: 财务驳回 【type: 4】
+     * @author XXQ
+     * @date 2023/9/5
+     * @param record    当前费用行
+     * @returns
+     */
+    const handeReject = async (record: any) => {
+
+        console.log(record);
+        const params: any = {idList: [record.id], jobId: record.jobId, type: 4, branchId: '1665596906844135426', taxMethod: 0};
+        try {
+            // TODO: 返回结果变量
+            const result: API.Result = await rejectCharges(params);
+            if (result.success) {
+                message.success('success');
+                await handleQueryPendingInvoicingCharges(searchInfo);
+            } else {
+                if (result.message) message.error(result.message);
+            }
+        } catch (e) {
+            message.error(e);
+        }
+    }
+
 
     const columns: ProColumns[] = [
         {title: 'B-Line', dataIndex: 'businessLine', width: 60, align: 'center', valueEnum: BUSINESS_LINE_ENUM},
@@ -218,7 +246,19 @@ const Billing: React.FC<RouteChildrenProps> = () => {
         {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 80, align: 'center'},
         {title: 'Ex Rate', dataIndex: 'orgBillExrate', width: 100, align: 'center'},
         {title: 'Bill Amount', dataIndex: 'billInTaxAmount', width: 150, align: 'center'},
-        {title: 'Action', key: 'action', width: 100},
+        {title: 'Action', key: 'action', width: 100,
+            render: (_: any, record: any) =>
+                <>
+                    <Popconfirm
+                        onConfirm={() => handeReject(record)}
+                        title="Sure to delete?" okText={'Yes'} cancelText={'No'}
+                    >
+                        <IconFont type={'icon-unlock'} color={'#D39E59'} />
+                    </Popconfirm>
+                    <Divider type='vertical'/>
+                    {/*<FormOutlined color={'#1765AE'} onClick={()=> handleEditRemark(index, record)} />*/}
+                </>
+        },
     ];
 
     return (
@@ -345,9 +385,11 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                     <ExpandTable
                         loading={loading}
                         columns={columns}
+                        isReload={isReload}
                         dataSource={apList}
                         expandedColumns={expandedColumns}
                         handleSetSelectVal={handleSetSelectVal}
+                        handleChangeReload={()=> setIsReload(false)}
                     />
                 </ProCard>
             </ProForm>

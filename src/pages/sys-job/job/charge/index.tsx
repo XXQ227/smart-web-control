@@ -242,7 +242,6 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                     jobId, branchId: '1665596906844135426', taxMethod: 1,
                     ...values, chargeList: [],
                 };
-                console.log(params, values);
 
                 if (params.receiveCGList?.length > 0) {
                     params.receiveCGList = params.receiveCGList.map((item: any)=>
