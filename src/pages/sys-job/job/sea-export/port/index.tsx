@@ -29,47 +29,51 @@ const Ports: React.FC<Props> = (props) => {
         finalDestinationNameEn: serviceInfo.finalDestinationNameEn,
     });
 
-    const handleChange = (fieldName: string, val: any, option?: any) => {
+    const [isReload, setIsReload] = useState<boolean>(false);
+
+    // const handleChange = (fieldName: string, val: any, option?: any) => {
+    function handleChange (fieldName: string, val: any, option?: any) {
         let setPortInfoVal: any = {};
+        const portInfo = JSON.parse(JSON.stringify(portNameInfo)) || {};
         switch (fieldName) {
             // 装货港
             case "portOfLoadingCode":
-                portNameInfo.portOfLoadingNameEn = option?.name;
-                portNameInfo.placeOfReceiptNameEn = option?.name;
+                portInfo.portOfLoadingNameEn = option?.name;
+                portInfo.placeOfReceiptNameEn = option?.name;
                 setPortInfoVal = {
-                    ...setPortInfoVal, ...portNameInfo, placeOfReceiptCode: val,
+                    ...portInfo, ...setPortInfoVal, placeOfReceiptCode: val,
                     portOfLoadingPrintOnBill: option?.name, placeOfReceiptPrintOnBill: option?.name
                 };
                 break;
             // 交货地
             case "placeOfReceiptCode":
-                portNameInfo.placeOfReceiptNameEn = option?.name;
+                portInfo.placeOfReceiptNameEn = option?.name;
                 setPortInfoVal = {
-                    ...portNameInfo, placeOfReceiptNameEn: option?.name, placeOfReceiptPrintOnBill: option?.name
+                    ...portInfo, placeOfReceiptNameEn: option?.name, placeOfReceiptPrintOnBill: option?.name
                 };
                 break;
             // 卸货港
             case "portOfDischargeCode":
-                portNameInfo.portOfDischargeNameEn = option?.name;
-                portNameInfo.finalDestinationNameEn = option?.name;
+                portInfo.portOfDischargeNameEn = option?.name;
+                portInfo.finalDestinationNameEn = option?.name;
                 setPortInfoVal = {
-                    ...portNameInfo, finalDestinationCode: val,
+                    ...portInfo, finalDestinationCode: val,
                     portOfDischargePrintOnBill: option?.name, finalDestinationPrintOnBill: option?.name
                 };
                 break;
             // 目的地
             case "finalDestinationCode":
-                portNameInfo.finalDestinationNameEn = option?.name;
+                portInfo.finalDestinationNameEn = option?.name;
                 setPortInfoVal = {
-                    ...portNameInfo,
+                    ...portInfo,
                     finalDestinationNameEn: option?.name, finalDestinationPrintOnBill: option?.name
                 };
                 break;
             default:
                 break;
         }
-        console.log(portNameInfo, setPortInfoVal);
-        setPortNameInfo(portNameInfo);
+        setPortNameInfo(portInfo);
+        setIsReload(true);
         form.setFieldsValue({[fieldName]: val, ...setPortInfoVal});
     }
 
@@ -118,6 +122,7 @@ const Ports: React.FC<Props> = (props) => {
         },
     ];
     //endregion
+
 
     return (
         <ProCard
@@ -189,11 +194,13 @@ const Ports: React.FC<Props> = (props) => {
                                 rowKey={'code'}
                                 modalWidth={950}
                                 showHeader={true}
+                                isReload={isReload}
                                 title={'Place of Receipt'}
                                 id={'placeOfReceiptCode'}
                                 className={'input-container'}
                                 url={"/apiBase/sea/querySeaCommon"}
                                 text={portNameInfo.placeOfReceiptNameEn}
+                                handleChangeReload={()=> setIsReload(false)}
                                 handleChangeData={(val: any, option: any) => handleChange('placeOfReceiptCode', val, option)}
                             />
                         </Form.Item>
@@ -213,11 +220,13 @@ const Ports: React.FC<Props> = (props) => {
                                 rowKey={'code'}
                                 modalWidth={950}
                                 showHeader={true}
+                                isReload={isReload}
                                 id={'finalDestinationCode'}
                                 title={'Final Destination'}
                                 className={'input-container'}
                                 url={"/apiBase/sea/querySeaCommon"}
                                 text={portNameInfo.finalDestinationNameEn}
+                                handleChangeReload={()=> setIsReload(false)}
                                 handleChangeData={(val: any, option: any) => handleChange('finalDestinationCode', val, option)}
                             />
                         </Form.Item>

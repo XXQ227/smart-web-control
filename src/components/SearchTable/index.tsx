@@ -6,29 +6,32 @@ import {fetchData} from '@/utils/fetch-utils'
 import type {ColumnsType} from 'antd/es/table';
 
 interface Props {
-    name?: any,
-    id?: string,
-    // value?: any,             // ID 数据 / 其他字符
-    text?: string,           // 显示 【Name】 数据
-    url: string,    // 搜索地址
-    qty: number,    // 搜索条数
-    query?: any,     // 搜索参数
-    title?: string,
-    disabled?: boolean,
-    modalWidth?: number,
-    rowKey?: string,
-    showLabel?: boolean,
-    showHeader?: boolean,
-    filedValue?: string,    // 用于显示返回结果 【value】 的返回参数
-    filedLabel?: string[],    // 用于显示返回结果 【label】 的参数
-    prefix?: any,           // 显示前缀图标
-    className?: string,
-    handleChangeData: (val: any, option?: any) => void,   // 选中后，返回的结果
+    name?: any;
+    id?: string;
+    // value?: any;             // ID 数据 / 其他字符
+    text?: string;           // 显示 【Name】 数据
+    url: string;    // 搜索地址
+    qty: number;    // 搜索条数
+    query?: any;     // 搜索参数
+    title?: string;
+    disabled?: boolean;
+    modalWidth?: number;
+    rowKey?: string;
+    isReload?: boolean;     // TODO: 是否重新加载数据
+    showLabel?: boolean;
+    showHeader?: boolean;
+    filedValue?: string;    // 用于显示返回结果 【value】 的返回参数
+    filedLabel?: string[];    // 用于显示返回结果 【label】 的参数
+    prefix?: any;           // 显示前缀图标
+    className?: string;
+    handleChangeReload?: () => void;
+    handleChangeData: (val: any, option?: any) => void;   // 选中后，返回的结果
 }
 
 const SearchTable: React.FC<Props> = (props) => {
     const {
-        url, query, qty, filedValue, filedLabel, showLabel,
+        url, query, qty, filedValue, filedLabel,
+        showLabel,
     } = props;
 
     const [visible, setVisible] = useState<boolean>(false);     // TODO: Modal 隐藏显示开关
@@ -52,16 +55,19 @@ const SearchTable: React.FC<Props> = (props) => {
             // TODO: 关闭弹框 初始化防抖时间
             setDebounceTimeout(100);
         }
+        // TODO: 当需要更新数据时执行
+        if (props.isReload) {
+            setShowText(props.text || '');
+            if (props.handleChangeReload) props.handleChangeReload();
+        }
         /*if (props.id && ['placeOfReceiptCode', 'finalDestinationCode'].includes(props.id) && !visible && props.text !== showText) {
             setShowText(props.text || '')
         }*/
         if (document?.getElementById('search-input')) {
             document?.getElementById('search-input')?.focus();
         }
-        return () => {
-
-        }
-    }, [debounceTimeout, visible])
+        return () => {}
+    }, [debounceTimeout, props, visible])
 
     // TODO: 防抖动搜索
     const debounceFetcher = useMemo(() => {
