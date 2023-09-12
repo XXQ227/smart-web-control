@@ -328,7 +328,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                                 ]}
                             />
                         </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                        <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={5}>
                             <SearchProFormSelect
                                 qty={10}
                                 isShowLabel={true}
@@ -337,6 +337,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                                 id={'parentId'}
                                 name={'parentId'}
                                 url={"/apiBase/branch/queryBranchCommon"}
+                                valueObj={{value: BranchInfoVO?.parentId, label: BranchInfoVO?.parentNameFullEn}}
                             />
                         </Col>
                         <Col span={24}>

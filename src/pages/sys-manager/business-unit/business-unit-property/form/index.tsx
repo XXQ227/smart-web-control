@@ -393,6 +393,7 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
                                 id={'salesId'}
                                 name={'salesId'}
                                 url={"/apiBase/user/queryUserCommon"}
+                                valueObj={{value: BUPInfoVO?.salesId, label: BUPInfoVO?.salesName}}
                                 handleChangeData={(val: any, option: any) =>  {
                                     setSalesNameValue(option?.label)
                                 }}

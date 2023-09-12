@@ -15,7 +15,7 @@ import {Button, Col, Form, message, Row, Space} from 'antd'
 import {history, useModel} from 'umi'
 import {getFormErrorMsg} from '@/utils/units'
 import SearchProFormSelect from "@/components/SearchProFormSelect";
-
+import {LeftOutlined, SaveOutlined} from "@ant-design/icons";
 
 type APIProject = APIManager.Project;
 
@@ -46,23 +46,15 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
         queryDictDetail: res.queryDictDetail,
     }));
 
-    const {
-        queryBranch,
-    } = useModel('manager.branch', (res: any) => ({
-        queryBranch: res.queryBranch,
-    }));
-
     const [ProjectInfoVO, setProjectInfoVO] = useState<any>({});
     const [Manager, setManager] = useState<any>([]);
     const [Industry, setIndustry] = useState<any>([]);
-    const [Branch, setBranch] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(false);
 
     async function getData() {
         // TODO: 分页查询【参数页】
         const managersResult: API.Result = await queryUser({currentPage: 1});
         const industryResult: API.Result = await queryDictDetail({dictId: "1666281726138064897"});
-        const branchResult: API.Result = await queryBranch({currentPage: 1});
         if (managersResult.success) {
             setManager(managersResult.data);
         } else {
@@ -72,11 +64,6 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
             setIndustry(industryResult.data);
         } else {
             message.error(industryResult.message);
-        }
-        if (branchResult.success) {
-            setBranch(branchResult.data);
-        } else {
-            message.error(branchResult.message);
         }
     }
 
@@ -112,9 +99,9 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
             nameShort: val.nameShort,
             managerId: val.managerId,
             oracleId: val.oracleId,
-            branchId: val.branchId,
-            industryType: 1,
-            contractId: 0,
+            branchId: '1665596906844135426',
+            industryType: val.industryType,
+            contractId: val.contractId || '',
             pmsCode: val.pmsCode,
             portionAFlag: portion?.includes('A') ? 1 : 0,
             portionBFlag: portion?.includes('B') ? 1 : 0,
@@ -148,7 +135,6 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const onFinishFailed = (val: any) => {
-        console.log(val);
         const errInfo = getFormErrorMsg(val);
         message.error(errInfo);
     }
@@ -158,11 +144,7 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
     }));
 
     const industryOption = Industry?.map((option: any) => ({
-        value: option.id, label: option.name
-    }));
-
-    const branchOption = Branch?.map((option: any) => ({
-        value: option.id, label: option.nameFullEn
+        value: option.value, label: option.name
     }));
 
     return (
@@ -246,28 +228,17 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
                             />
                         </Col>
                         <Col span={8}>
-                            <ProFormSelect
-                                required
-                                placeholder=''
-                                name="branchId"
-                                label="Company"
-                                initialValue={ProjectInfoVO?.branchId}
-                                options={branchOption}
-                            />
-                        </Col>
-                        <Col span={6}>
                             <SearchProFormSelect
+                                required
                                 qty={5}
-                                disabled={true}
                                 isShowLabel={true}
-                                // required={true}
                                 label="Contract"
                                 id={'contractId'}
                                 name={'contractId'}
-                                url={'/apiLocal/MCommon/GetCTNameByStrOrType'}
-                                // valueObj={{value: Carrier?.BookingAgentID, label: Carrier?.BookingAgentName}}
-                                query={{ }}
-                                // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
+                                filedValue={'id'} filedLabel={'nameFullEn'}
+                                query={{branchId: '1665596906844135426', buType: 1}}
+                                url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
+                                valueObj={{value: ProjectInfoVO?.contractId, label: ProjectInfoVO?.contractName}}
                             />
                         </Col>
                         <Col span={6}>
@@ -310,13 +281,12 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
                             />
                         </Col>
                     </Row>
-
                 </ProCard>
 
                 <FooterToolbar
-                    extra={<Button onClick={() => history.push({pathname: '/manager/project/list'})}>Back</Button>}>
+                    extra={<Button onClick={() => history.push({pathname: '/manager/project/list'})} icon={<LeftOutlined/>}>Back</Button>}>
                     <Space>
-                        <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
+                        <Button key={'submit'} type={'primary'} htmlType={'submit'} icon={<SaveOutlined/>}>Save</Button>
                     </Space>
                 </FooterToolbar>
             </ProForm>

@@ -4,7 +4,7 @@ import {Col, Row, Form, Space, Button, Table, Popconfirm} from 'antd';
 import {PlusCircleOutlined, DeleteOutlined} from "@ant-design/icons";
 import type { ColumnsType } from 'antd/es/table';
 import SearchModal from "@/components/SearchModal";
-import {ID_STRING} from "@/utils/units";
+import {ID_STRING, rowGrid} from "@/utils/units";
 import ls from 'lodash';
 import FormItemInput from "@/components/FormItemComponents/FormItemInput";
 import FormItemSwitch from "@/components/FormItemComponents/FormItemSwitch";
@@ -17,7 +17,6 @@ interface Props {
     batchNo?: string,
     data?: APIModel.BatchData,
     preBookingList: APIModel.PreBookingList[],
-    NBasicInfo?: APIModel.NBasicInfo,
     handleChangeData: (val: any) => void,    // 设置数据
 }
 
@@ -25,7 +24,6 @@ const FormItem = Form.Item;
 
 const ContainerLayout: React.FC<Props> = (props) => {
     const  { preBookingList} = props;
-
     const [containerList, setContainerList] = useState<APIModel.PreBookingList[]>(preBookingList);
     const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>([]);
 
@@ -92,7 +90,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                     placeholder=''
                     initialValue={record.qty}
                     name={['0', `qty_ctn_table_${record.id}`]}
-                    rules={[{required: true, message: 'QTY'}]}
+                    rules={[{required: true, message: 'QTY'}, {pattern: /^[0-9]*$/, message: 'Only integer numbers can be entered'}]}
                     onChange={(e) => onChange(index, record.id, 'qty', e)}
                 />
         },
@@ -171,7 +169,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
             headerBordered
             collapsible
         >
-            <Row gutter={24}>
+            <Row gutter={rowGrid}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={22} xxl={20}>
                     <div className={'container-list-title'}>
                         <div className={'ant-div-left'}>
@@ -206,7 +204,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                     <ProFormText hidden={true} name={'preBookingContainersEntityList'}/>
                 </Col>
             </Row>
-            <Row gutter={24}>
+            <Row gutter={rowGrid}>
                 <Col span={12}>
                     <ProFormText
                         name='placeOfOrigin'
@@ -223,7 +221,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                     />
                 </Col>
             </Row>
-            <Row gutter={24}>
+            <Row gutter={rowGrid}>
                 <Col span={12}>
                     <ProFormText
                         name='containingStuffingDevanning'
@@ -240,7 +238,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
                     />
                 </Col>
             </Row>
-            <Row gutter={24}>
+            <Row gutter={rowGrid}>
                 <Col span={12}>
                     <ProFormText
                         name='placeOfDestination'

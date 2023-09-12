@@ -10,15 +10,17 @@ import {useModel} from "@@/plugin-model/useModel";
 
 interface Props {
     form: any;
+    formRef: any;
     title: string;
     serviceInfo: any;
     isSave: boolean;
+    state?: string;
 }
 const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const BillOfLoading: React.FC<Props> = (props) => {
-    const {serviceInfo, isSave} = props;
+    const {formRef, serviceInfo, isSave, state} = props;
     const actionRef = useRef<FormListActionType<{name: string;}>>();
     const initBillInfo: any = {
         jobId: serviceInfo.jobId, serviceId: serviceInfo.id, blNum: '', id: ID_STRING(),
@@ -187,12 +189,16 @@ const BillOfLoading: React.FC<Props> = (props) => {
             newTabIndex.current = newTabList.length + 1;
             setBillOfLoadingEntityList(resultData);
             setBillInfoItems(newTabList);
-            // 当提单信息只有一条的时候需要给 firstLabelName 赋值，作用是为了正常显示界面
+            // TODO: 保存后，如果当前激活tab面板的key值大于后台获取提单信息数据长度，需要重新设置当前激活tab面板的key
+            if (state === 'add' && Number(activeKey) >  Number(newTabList.length.toString())) {
+                setActiveKey(newTabList.length.toString());
+            }
+            // TODO: 当提单信息只有一条的时候需要给 firstLabelName 赋值，作用是为了正常显示界面
             if (serviceInfo?.billOfLoadingEntity?.length === 1) {
                 setFirstLabelName(serviceInfo?.billOfLoadingEntity[0].blNum || serviceInfo?.billOfLoadingEntity[0].id)
             }
         }
-    }, [serviceInfo?.billOfLoadingEntity]);
+    }, [serviceInfo?.billOfLoadingEntity, state]);
 
     function handleSearchChange(filedName: string, val: any, record: any, index: number, option?: any){
 
@@ -205,7 +211,7 @@ const BillOfLoading: React.FC<Props> = (props) => {
      * @returns
      */
     const add = () => {
-        const newActiveKey = (newTabIndex.current++).toString();
+        const newActiveKey: string= (newTabIndex.current++).toString();
         const newBillOfLoadingEntityList = {
             ...billOfLoadingEntityList,
             [newActiveKey]: [initBillInfo]
@@ -213,6 +219,10 @@ const BillOfLoading: React.FC<Props> = (props) => {
         setBillOfLoadingEntityList(newBillOfLoadingEntityList);
         const keys = Object.keys(billOfLoadingEntityList);
         let id = '';
+        // TODO: 如果获取到当前要创建的name数据，就设置这个name的数据为初始值（之前用过相同的newActiveKey值创建过，再次用这个值就会出问题）
+        if (formRef?.current?.getFieldValue(newActiveKey)) {
+            formRef?.current?.setFieldsValue({[newActiveKey]: [initBillInfo]});
+        }
         setBillInfoItems(prevTabList =>  {
             const updatedTabList = [...prevTabList];
             // TODO: 如果在新增页签时，当前的收发通信息只有一条信息，需要更新一下选项卡头显示的内容，不然之前的信息里无法显示提单号

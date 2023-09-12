@@ -158,9 +158,11 @@ const ProBooking: React.FC<Props> = (props) => {
     const handleDelete = () => {
         const newData =
             containerList.filter(item => !selectedRowIDs.includes(item.id));
+        // TODO: 把数据接口给到 FormItem 表单里
+        form.setFieldsValue({preBookingContainersEntityList: newData});
         setContainerList(newData);
+        setSelectedRowIDs([]);
     };
-
     //endregion
 
     return (
