@@ -21,6 +21,9 @@ const initSearchData: any = {
     billCurrencyName: ["All"],
 };
 
+// TODO: 默认为 true；当首次加载数据后，改为 【false】
+let initLoading = true;
+
 const PrintInvoice: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
 
@@ -69,6 +72,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     async function handleQueryInvoices(val?: any) {
+        console.log(val);
         if (!loading) setLoading(true);
 
         try {
@@ -76,6 +80,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
             // TODO: 查所有币种时，把 ['ALL'] 改成所有 币种的集合
             // if (params.jobBusinessLine === 0) params.jobBusinessLine = [];
             params.jobBusinessLine = [];
+            if (typeof params.invoiceType === 'number') params.invoiceType = [val.invoiceType];
             if (params.billCurrencyName[0] === 'All') params.billCurrencyName = currencyList;
 
             const result: API.Result = await queryInvoices(params);
@@ -90,6 +95,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
             setLoading(false);
             message.error(e);
         }
+        if (initLoading) initLoading = false;
         return val;
     }
 
@@ -99,6 +105,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
      * @author XXQ
      * @date 2023/9/6
      * @param record    发票行
+     * @param index     序号
      * @returns
      */
     const handleQueryInvoiceDetailById = async (record: any, index: number) => {
@@ -119,7 +126,8 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
      * @Description: TODO: 关闭弹框（保存备注）
      * @author XXQ
      * @date 2023/9/7
-     * @param
+     * @param state
+     * @param remark
      * @returns
      */
     const handleModalOperate = async (state: string, remark: string) => {
@@ -195,7 +203,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
     const columns: ProColumns[] = [
         {title: 'Type', dataIndex: 'type', width: 60, align: 'center'},
         {title: 'B-Line', dataIndex: 'jobBusinessLine', width: 60, align: 'center', valueEnum: BUSINESS_LINE_ENUM},
-        {title: 'Invoice No.', dataIndex: 'invoiceNum', width: 120},
+        {title: 'Invoice No.', dataIndex: 'invoiceNum', width: 90},
         {title: 'Job No.', dataIndex: 'jobsNumber', width: 150},
         {title: 'Payer / Vendor', dataIndex: 'customerOrPayingAgentName',},
         {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 100, align: 'center'},
@@ -226,8 +234,6 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
         },
     ];
 
-    console.log(invoiceList);
-
     return (
         <PageContainer
             // loading={loading}
@@ -250,7 +256,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
                     }
                 }}
                 // @ts-ignore
-                request={async (params: any) => handleQueryInvoices(params)}
+                request={async (params: any) => initLoading ? handleQueryInvoices(params) : {}}
             >
                 {/* 搜索 */}
                 <ProCard>

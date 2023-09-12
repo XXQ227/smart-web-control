@@ -24,6 +24,9 @@ const initSearchData: any = {
     billCurrencyName: ["All"],
 };
 
+// TODO: 默认为 true；当首次加载数据后，改为 【false】
+let initLoading = true;
+
 const Billing: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
     const {location} = history;
@@ -40,6 +43,8 @@ const Billing: React.FC<RouteChildrenProps> = () => {
             {label: 'Reimbursement', value: 4},
             {label: 'Refund-AP', value: 6},
         ];
+    } else {
+        initSearchData.chargeType = [1];
     }
 
     const {
@@ -99,6 +104,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
             if (SalesList?.length === 0) await queryUserCommon({branchId: '0'});
             const params: any = JSON.parse(JSON.stringify(val));
             params.type = type;
+            if (typeof val.chargeType === 'number')params.chargeType = [val.chargeType];
             // TODO: 查所有币种时，把 ['ALL'] 改成所有 币种的集合
             if (params.jobBusinessLine === 0) params.jobBusinessLine = [];
             if (params.billCurrencyName[0] === 'All') params.billCurrencyName = currencyList;
@@ -116,6 +122,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
             setLoading(false);
             message.error(e);
         }
+        if (initLoading) initLoading = false;
         return val;
     }
 
@@ -239,7 +246,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
     ];
 
     const expandedColumns: ProColumns[] = [
-        {title: 'Payer', dataIndex: 'businessNameFullEn', align: 'left'},
+        {title: type === 1 ? 'Payer' : 'Vendor', dataIndex: 'businessNameFullEn', align: 'left'},
         {title: 'Description', dataIndex: 'itemName', width: 200, align: 'left' },
         {title: 'Amount', dataIndex: 'orgAmount', width: 120, align: 'center'},
         {title: 'CURR', dataIndex: 'orgCurrencyName', width: 80, align: 'center'},
@@ -283,7 +290,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                     }
                 }}
                 // @ts-ignore
-                request={async (params: any) => handleQueryPendingInvoicingCharges(params)}
+                request={async (params: any) => initLoading ? handleQueryPendingInvoicingCharges(params) : {}}
             >
                 {/* 搜索 */}
                 <ProCard>
