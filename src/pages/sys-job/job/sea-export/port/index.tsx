@@ -13,12 +13,6 @@ interface Props {
     serviceInfo: any;
 }
 
-// const initialTranshipmentPortList: APIModel.TranshipmentPortList[] = [
-//     {ID: 'ID1', PortName: "HO CHI MINH CITY(VIETNAM)",},
-//     {ID: 'ID2', PortName: "SOKHNA(EGYPT)",},
-//     {ID: 'ID3', PortName: "JAKARTA(INDONESIA)",},
-// ];
-
 const Ports: React.FC<Props> = (props) => {
     const {serviceInfo, form} = props;
 
@@ -34,10 +28,9 @@ const Ports: React.FC<Props> = (props) => {
         switch (fieldName) {
             // 装货港
             case "portOfLoadingCode":
-                portNameInfo.portOfLoadingNameEn = option?.name;
-                portNameInfo.placeOfReceiptNameEn = option?.name;
+                setPortNameInfo({...portNameInfo, portOfLoadingNameEn: option?.name, placeOfReceiptNameEn: option?.name})
                 setPortInfoVal = {
-                    ...setPortInfoVal, ...portNameInfo, placeOfReceiptCode: val,
+                    portOfLoadingNameEn: option?.name, placeOfReceiptNameEn: option?.name, placeOfReceiptCode: val,
                     portOfLoadingPrintOnBill: option?.name, placeOfReceiptPrintOnBill: option?.name
                 };
                 break;
@@ -45,15 +38,14 @@ const Ports: React.FC<Props> = (props) => {
             case "placeOfReceiptCode":
                 portNameInfo.placeOfReceiptNameEn = option?.name;
                 setPortInfoVal = {
-                    ...portNameInfo, placeOfReceiptNameEn: option?.name, placeOfReceiptPrintOnBill: option?.name
+                    ...portNameInfo, placeOfReceiptPrintOnBill: option?.name
                 };
                 break;
             // 卸货港
             case "portOfDischargeCode":
-                portNameInfo.portOfDischargeNameEn = option?.name;
-                portNameInfo.finalDestinationNameEn = option?.name;
+                setPortNameInfo({...portNameInfo, portOfDischargeNameEn: option?.name, finalDestinationNameEn: option?.name})
                 setPortInfoVal = {
-                    ...portNameInfo, finalDestinationCode: val,
+                    portOfDischargeNameEn: option?.name, finalDestinationNameEn: option?.name, finalDestinationCode: val,
                     portOfDischargePrintOnBill: option?.name, finalDestinationPrintOnBill: option?.name
                 };
                 break;
@@ -61,15 +53,12 @@ const Ports: React.FC<Props> = (props) => {
             case "finalDestinationCode":
                 portNameInfo.finalDestinationNameEn = option?.name;
                 setPortInfoVal = {
-                    ...portNameInfo,
-                    finalDestinationNameEn: option?.name, finalDestinationPrintOnBill: option?.name
+                    ...portNameInfo, finalDestinationPrintOnBill: option?.name
                 };
                 break;
             default:
                 break;
         }
-        console.log(portNameInfo, setPortInfoVal);
-        setPortNameInfo(portNameInfo);
         form.setFieldsValue({[fieldName]: val, ...setPortInfoVal});
     }
 
@@ -138,6 +127,7 @@ const Ports: React.FC<Props> = (props) => {
                                 modalWidth={950}
                                 showHeader={true}
                                 title={'Port of Loading'}
+                                id={'portOfLoadingCode'}
                                 className={'input-container'}
                                 url={"/apiBase/sea/querySeaCommon"}
                                 text={portNameInfo.portOfLoadingNameEn}
@@ -161,6 +151,7 @@ const Ports: React.FC<Props> = (props) => {
                                 modalWidth={950}
                                 showHeader={true}
                                 title={'Port of Discharge'}
+                                id={'portOfDischargeCode'}
                                 className={'input-container'}
                                 url={"/apiBase/sea/querySeaCommon"}
                                 text={portNameInfo.portOfDischargeNameEn}

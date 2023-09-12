@@ -23,7 +23,6 @@ interface Props {
     formCurrent?: any,
     batchNo: string,
     data: any,
-    NBasicInfo?: APIModel.NBasicInfo,
     handleChangeLabel: (val: any) => void,   // 选中后，返回的结果
     handleChangeData: (val: any) => void,    // 设置数据
 }
@@ -32,7 +31,7 @@ const { Option } = Select;
 
 const BasicInfo: React.FC<Props> = (props) => {
     const {
-        batchNo, data, form, NBasicInfo
+        batchNo, data, form
     } = props;
 
     const [isContainer, setIsContainer] = useState(data[0]?.transportVehicleTypeId === 3);
@@ -58,7 +57,6 @@ const BasicInfo: React.FC<Props> = (props) => {
         const newData: any[] = ls.cloneDeep(photoRemarkList);
         const target = newData.find((item: any)=> item.id === rowID) || {};
         target[filedName] = val?.target ? val.target.value : val;
-        // console.log(target);
         newData.splice(index, 1, target);
         // TODO: 把数据更新到表单里
         props.handleChangeData({photoRemarkEntityList: newData});
@@ -129,7 +127,7 @@ const BasicInfo: React.FC<Props> = (props) => {
             align: "center",
             width: '140px',
             dataIndex: 'createTime',
-            render: (text: any) => moment(text).format('YYYY-MM-DD HH:mm')
+            render: (text: any) => text ? moment(text).format('YYYY-MM-DD HH:mm') : ''
         },
         {
             title: 'Action',
@@ -155,9 +153,9 @@ const BasicInfo: React.FC<Props> = (props) => {
     ];
 
     return (
-        <div className={'antProCard'}>
+        <Row className={'antProCard'}>
             <Row gutter={rowGrid}>
-                <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5} className={'custom-input'}>
+                <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={isContainer ? 6 : 8} className={'custom-input'}>
                     <ProFormText
                         required
                         placeholder=''
@@ -176,17 +174,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                         fieldProps={{addonAfter: selectAfter}}
                     />
                 </Col>
-                <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5}>
-                    {/*<ProFormSelect
-                        placeholder=''
-                        name={`truckingCompany${batchNo}`}
-                        label="Trucking Company"
-                        options={[
-                            {label: '深圳鸿邦物流', value: '深圳鸿邦物流'},
-                            {label: '威盛运输企业有限公司', value: '威盛运输企业有限公司'},
-                            {label: '招商局建瑞运输有限公司', value: '招商局建瑞运输有限公司'},
-                        ]}
-                    />*/}
+                <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={isContainer ? 6 : 8}>
                     <SearchProFormSelect
                         required
                         qty={5}
@@ -195,6 +183,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                         name={`truckingCompanyId`}
                         label="Trucking Company"
                         filedValue={'id'} filedLabel={'nameFullEn'}
+                        valueObj={{value: data[0]?.truckingCompanyId, label: data[0]?.truckingCompanyNameEn}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         query={{branchId: '1665596906844135426', buType: 1}}
                         handleChangeData={(val: any, option: any) => handleChange('truckingCompanyId', val, option)}
@@ -204,15 +193,17 @@ const BasicInfo: React.FC<Props> = (props) => {
                             placeholder=''
                             name='measurement'
                             label="Meas. (cbm)"
+                            rules={[{pattern: /[0-9]+$/, message: 'Only numbers can be entered'}]}
                         />
                         <ProFormText
                             placeholder=''
                             name='qty'
                             label="QTY."
+                            rules={[{pattern: /^[0-9]*$/, message: 'Only integer numbers can be entered'}]}
                         />
                     </div>
                 </Col>
-                <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={5}>
+                <Col xs={24} sm={12} md={12} lg={12} xl={7} xxl={isContainer ? 6 : 8}>
                     <ProFormSelect
                         required
                         placeholder=''
@@ -270,9 +261,6 @@ const BasicInfo: React.FC<Props> = (props) => {
                     <ContainerLayout
                         form={form}
                         preBookingList={data[0]?.preBookingContainersEntityList || []}
-                        NBasicInfo={NBasicInfo}
-                        // batchNo={batchNo}
-                        // data={data}
                         handleChangeData={(val: any) => props.handleChangeData(val)}
                     />
                     :
@@ -322,7 +310,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                     </Col>
                 </Row>
             </ProCard>
-        </div>
+        </Row>
     )
 }
 export default BasicInfo;

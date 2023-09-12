@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Col, Divider, Form, Row, Space} from "antd";
 import {rowGrid} from "@/utils/units";
 import {
@@ -19,7 +19,7 @@ interface Props {
 
 const Basic: React.FC<Props> = (props) => {
     const {form, serviceInfo} = props;
-    //endregion
+    const [isOriginal, setIsOriginal] = useState(serviceInfo?.blTypeId === '1');
 
     /**
      * @Description: TODO:
@@ -55,7 +55,7 @@ const Basic: React.FC<Props> = (props) => {
                 setValueObj.shippingAgentOracleId = option?.oracleSupplierCode;
                 break;
             case 'placeOfIssueCode':
-                setValueObj.placeOfIssueNameEn = option?.nameFullCn;
+                setValueObj.placeOfIssueNameEn = option?.name;
                 break;
             default: break;
         }
@@ -74,12 +74,12 @@ const Basic: React.FC<Props> = (props) => {
                 {/* MB/L No.、HB/L No. */}
                 <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
                     <ProFormText name="mblNum" label="MB/L No." placeholder=""/>
-
                     <ProFormText name="hblNum" label="HB/L No." placeholder=""/>
                 </Col>
                 {/* 订舱代理、目的港代理 */}
                 <Col xs={24} sm={24} md={12} lg={12} xl={7} xxl={8}>
                     <SearchProFormSelect
+                        required
                         qty={5}
                         isShowLabel={true}
                         label="Booking Agent"
@@ -88,9 +88,11 @@ const Basic: React.FC<Props> = (props) => {
                         filedValue={'id'} filedLabel={'nameFullEn'}
                         query={{branchId: '1665596906844135426', buType: 1}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
+                        valueObj={{value: serviceInfo?.bookingAgentId, label: serviceInfo?.bookingAgentNameEn}}
                         handleChangeData={(val: any, option: any) => handleChange('bookingAgentId', val, option)}
                     />
                     <SearchProFormSelect
+                        required
                         qty={5}
                         isShowLabel={true}
                         label="Destination Agent"
@@ -99,12 +101,14 @@ const Basic: React.FC<Props> = (props) => {
                         filedValue={'id'} filedLabel={'nameFullEn'}
                         query={{branchId: '1665596906844135426', buType: 1}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
+                        valueObj={{value: serviceInfo?.destinationAgentId, label: serviceInfo?.destinationAgentNameEn}}
                         handleChangeData={(val: any, option: any) => handleChange('destinationAgentId', val, option)}
                     />
                 </Col>
                 {/* 船公司、船代 */}
                 <Col xs={24} sm={24} md={12} lg={12} xl={7} xxl={8}>
                     <SearchProFormSelect
+                        required
                         qty={5}
                         isShowLabel={true}
                         label="Shipping Line (Carrier)"
@@ -113,9 +117,11 @@ const Basic: React.FC<Props> = (props) => {
                         filedValue={'id'} filedLabel={'nameFullEn'}
                         query={{branchId: '1665596906844135426', buType: 1}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
+                        valueObj={{value: serviceInfo?.carrierId, label: serviceInfo?.carrierNameEn}}
                         handleChangeData={(val: any, option: any) => handleChange('carrierId', val, option)}
                     />
                     <SearchProFormSelect
+                        required
                         qty={5}
                         isShowLabel={true}
                         label="Shipping Agent"
@@ -124,6 +130,7 @@ const Basic: React.FC<Props> = (props) => {
                         filedValue={'id'} filedLabel={'nameFullEn'}
                         query={{branchId: '1665596906844135426', buType: 1}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
+                        valueObj={{value: serviceInfo?.shippingAgentId, label: serviceInfo?.shippingAgentNameEn}}
                         handleChangeData={(val: any, option: any) => handleChange('shippingAgentId', val, option)}
                     />
                 </Col>
@@ -151,7 +158,7 @@ const Basic: React.FC<Props> = (props) => {
                     <Divider type="vertical" style={{ height: '100%' }} />
                 </Col>
                 {/* ETD、截关 */}
-                <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={3}>
+                <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={3}>
                     <ProFormDatePicker width="md" name="etd" label="ETD" placeholder=""/>
                     <ProFormDateTimePicker
                         fieldProps={{format: 'YYYY-MM-DD hh:mm'}}
@@ -159,7 +166,7 @@ const Basic: React.FC<Props> = (props) => {
                     />
                 </Col>
                 {/* ATD、截港/截重柜 */}
-                <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={3}>
+                <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={3}>
                     <ProFormDatePicker width="md" name="atd" label="ATD" placeholder=""/>
                     <ProFormDateTimePicker
                         fieldProps={{format: 'YYYY-MM-DD hh:mm'}}
@@ -167,7 +174,7 @@ const Basic: React.FC<Props> = (props) => {
                     />
                 </Col>
                 {/* ETA、截提单补料 */}
-                <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={3}>
+                <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={3}>
                     <ProFormDatePicker width="md" name="eta" label="ETA" placeholder=""/>
                     <ProFormDateTimePicker
                         fieldProps={{format: 'YYYY-MM-DD hh:mm'}}
@@ -183,14 +190,18 @@ const Basic: React.FC<Props> = (props) => {
                         <ProFormSelect
                             name="blTypeId"
                             label="B/L Type"
+                            placeholder=''
                             style={{minWidth: 150}}
                             options={[
-                                {label: 'Original B/L', value: 1},
-                                {label: 'Telex Release', value: 2},
-                                {label: 'Sea Waybill', value: 3},
+                                {label: 'Original B/L', value: '1'},
+                                {label: 'Telex Release', value: '2'},
+                                {label: 'Sea Waybill', value: '3'},
                             ]}
+                            fieldProps={{
+                                onChange: (e) => setIsOriginal(e === '1')
+                            }}
                         />
-                        <ProFormText label="B/L QTY" name={'blQty'}/>
+                        {isOriginal ? <ProFormText label="B/L QTY" name={'blQty'}/> : null}
                     </div>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
                         <Form.Item name={'placeOfIssueCode'} label={'Place and Date of Issue'}>
@@ -200,9 +211,9 @@ const Basic: React.FC<Props> = (props) => {
                                 modalWidth={950}
                                 showHeader={true}
                                 title={'Payable AT'}
-                                text={serviceInfo.placeOfIssueNameEn}
+                                text={serviceInfo?.placeOfIssueNameEn}
                                 url={"/apiBase/sea/querySeaCommon"}
-                                handleChangeData={(val: any, option: any) => handleChange('payableAtCode', val, option)}
+                                handleChangeData={(val: any, option: any) => handleChange('placeOfIssueCode', val, option)}
                             />
                         </Form.Item>
                         <span className={'siteSpaceSpan'}/>

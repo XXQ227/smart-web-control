@@ -80,17 +80,13 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
         const result: any = await queryBusinessUnitInfo({id});
         if (result.success) {
             // TODO: Nature of a Company 根据后台传回来的natureOfCompany参数，找到对应的label名称
-            console.log(result?.data?.natureOfCompany)
             const enterpriseTypeValue: APIBU = getValue(NATURE_OF_COMPANY, result?.data?.natureOfCompany);
-            console.log(enterpriseTypeValue)
             let newData = result.data;
             if (id !== '0') {
                 setParentValue(1)
-                console.log(newData?.parentCompanyName)
                 setParentCompanyNameValue(newData?.parentCompanyName)
                 newData = {...newData, ...enterpriseTypeValue}
             }
-            console.log(newData);
             setBUInfoVO(newData);
         } else {
             message.error(result.message);
@@ -139,21 +135,17 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
         delete val.enterpriseType;
         val.cityName = cityList.find(city => city.value === val.cityId)?.label ?? '';
         val.industryName = IndustryList.find((industry: any) => industry.value === val.industryType)?.label ?? '';
-        console.log(parentCompanyNameValue);
         val.parentCompanyId = val.parentCompanyId ? val.parentCompanyId : '';
         val.parentCompanyName = parentCompanyNameValue;
         val.establishedDate = val.establishedDate ? val.establishedDate : '';
         if (id === '0') {
             // TODO: 新增业务单位
-            console.log(val)
             result = await addBusinessUnit(val);
         } else {
             // TODO: 编辑业务单位
             val.id = id;
-            console.log(val)
             result = await editBusinessUnit(val);
         }
-        console.log(result)
         if (result?.success) {
             message.success('Success');
             if (id === '0') history.push({pathname: `/manager/business-unit/form/${btoa(result.data)}`});
@@ -171,7 +163,6 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const onFinishFailed = (val: any) => {
-        console.log(val);
         const errInfo = getFormErrorMsg(val);
         message.error(errInfo);
     }
@@ -303,8 +294,8 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
                                 id={'parentCompanyId'}
                                 name={'parentCompanyId'}
                                 url={"/apiBase/branch/queryBranchCommon"}
+                                valueObj={{value: BUInfoVO?.parentCompanyId, label: BUInfoVO?.parentCompanyName}}
                                 handleChangeData={(val: any, option: any) =>  {
-                                    console.log(option?.label)
                                     setParentCompanyNameValue(option?.label)
                                 }}
                                 handleClearData={() => setParentCompanyNameValue('')}

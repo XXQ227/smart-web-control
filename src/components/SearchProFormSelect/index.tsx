@@ -23,7 +23,6 @@ interface Props {
     handleClearData?: () => void,                           // 清楚选中的结果
 }
 
-
 const SearchProFormSelect: React.FC<Props> = (props) => {
     const {
         valueObj, label, url, qty, query,
@@ -67,7 +66,6 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
         if (props.handleClearData) props.handleClearData();
     }
 
-
     return (
         <ProFormSelect
             showSearch
@@ -99,12 +97,11 @@ const SearchProFormSelect: React.FC<Props> = (props) => {
                 },
             }}
             rules={[{ required: !!required, message: label }]}
-            // @ts-ignore
             request={async (val: any) => {
                 if (isSearch) {
                     return await fetchData(val.keyWords, url, query, qty, resValue, resLabel)
                 } else {
-                    return valueObj ? [valueObj] : [];
+                    return valueObj && valueObj?.value && valueObj?.label ? [valueObj] : [];
                 }
             }}
         />

@@ -166,6 +166,7 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
                     newTabIndex.current = newTabList.length + 1;
                     setLocalDeliveryInfo(resultData);
                     setTabList(newTabList);
+                    // TODO: 保存后，如果当前激活tab面板的key值大于后台获取地交付服务信息数据长度，需要重新设置当前激活tab面板的key
                     if (state === 'add' && Number(activeKey) >  Number(newTabList.length.toString())) {
                         setActiveKey(newTabList.length.toString());
                     }

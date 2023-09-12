@@ -8,7 +8,6 @@ import type {ColumnsType} from 'antd/es/table';
 interface Props {
     name?: any,
     id?: string,
-    // value?: any,             // ID 数据 / 其他字符
     text?: string,           // 显示 【Name】 数据
     url: string,    // 搜索地址
     qty: number,    // 搜索条数
@@ -52,16 +51,16 @@ const SearchTable: React.FC<Props> = (props) => {
             // TODO: 关闭弹框 初始化防抖时间
             setDebounceTimeout(100);
         }
-        /*if (props.id && ['placeOfReceiptCode', 'finalDestinationCode'].includes(props.id) && !visible && props.text !== showText) {
-            setShowText(props.text || '')
-        }*/
         if (document?.getElementById('search-input')) {
             document?.getElementById('search-input')?.focus();
         }
-        return () => {
-
-        }
     }, [debounceTimeout, visible])
+
+    useEffect(() => {
+        if (props.id && ['placeOfReceiptCode', 'finalDestinationCode'].includes(props.id) && !visible && props.text !== showText) {
+            setShowText(props.text || '')
+        }
+    }, [props.text])
 
     // TODO: 防抖动搜索
     const debounceFetcher = useMemo(() => {
@@ -187,6 +186,7 @@ const SearchTable: React.FC<Props> = (props) => {
         { title: 'City', align: 'center', width: 260, dataIndex: 'city', className: 'columnsStyle', },
         { title: 'Country', dataIndex: 'country', width: 260, align: 'center', className: 'columnsStyle', },
     ];
+
     return (
         <Fragment>
             {showLabel ? <label style={{display: 'block', marginBottom: 8}}>{props.title}</label> : null}
