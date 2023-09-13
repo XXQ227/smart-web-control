@@ -45,7 +45,6 @@ const initPagination = {
 const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
     const {location: {state}} = props;
     const [form] = Form.useForm();
-    // const FormItem = Form.Item;
     const searchQueryBUP = ls.cloneDeep(initSearchParam)
     const searchLocation = state ? (state as LocationState)?.searchParams : '';
 

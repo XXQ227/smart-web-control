@@ -18,7 +18,7 @@ import moment from 'moment'
 
 const FormItem = Form.Item;
 
-const SeaExport: React.FC<RouteChildrenProps> = (props) => {
+const SeaExport: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
     const formRef = useRef<ProFormInstance>();
     const urlParams: any = useParams();
@@ -46,22 +46,26 @@ const SeaExport: React.FC<RouteChildrenProps> = (props) => {
      */
     async function handleQuerySeaExportInfo() {
         setLoading(true);
-        // TODO: 获取用户数据
-        let result: API.Result;
-        if (jobId !== '0') {
-            result = await querySeaExportInfo({id: jobId});
-            // TODO: 把当前服务的 id 存下来
-            if (result.data) {
-                setId(result.data.id);
+        try {
+            let result: API.Result;
+            if (jobId !== '0') {
+                result = await querySeaExportInfo({id: jobId});
+                // TODO: 把当前服务的 id 存下来
+                if (result.data) {
+                    setId(result.data.id);
+                } else {
+                    result.data = {blTypeId: '1'};
+                }
             } else {
-                result.data = {blTypeId: 1};
+                result = {success: true, data: {blTypeId: '1'}};
             }
-        } else {
-            result = {success: true, data: {blTypeId: 1}};
+            setLoading(false);
+            setSeaExportInfo(result.data || {});
+            return result.data;
+        } catch (e) {
+            message.error(e);
+            return {};
         }
-        setLoading(false);
-        setSeaExportInfo(result.data || {});
-        return result.data || {};
     }
 
     const handleFinish = async (values: any) => {

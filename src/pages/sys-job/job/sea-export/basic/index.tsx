@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {Col, Divider, Form, Row, Space} from "antd";
 import {rowGrid} from "@/utils/units";
 import {
@@ -9,7 +9,7 @@ import {
     ProFormText
 } from "@ant-design/pro-components";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
-import SearchTable from '@/components/SearchTable'
+import SearchTable from '@/components/SearchTable';
 
 interface Props {
     title: string,
@@ -21,6 +21,10 @@ const Basic: React.FC<Props> = (props) => {
     const {form, serviceInfo} = props;
     const [isOriginal, setIsOriginal] = useState(serviceInfo?.blTypeId === '1');
 
+    useEffect(() => {
+        setIsOriginal(serviceInfo?.blTypeId === '1');
+    }, [serviceInfo]);
+
     /**
      * @Description: TODO:
      * @author XXQ
@@ -31,7 +35,6 @@ const Basic: React.FC<Props> = (props) => {
      * @returns
      */
     const handleChange = (filedName: string, val: any, option?: any) => {
-        console.log(val, filedName, option);
         const setValueObj: any = {[filedName]: val};
         switch (filedName) {
             case 'bookingAgentId':
@@ -211,6 +214,7 @@ const Basic: React.FC<Props> = (props) => {
                                 modalWidth={950}
                                 showHeader={true}
                                 title={'Payable AT'}
+                                id={'placeOfIssueCode'}
                                 text={serviceInfo?.placeOfIssueNameEn}
                                 url={"/apiBase/sea/querySeaCommon"}
                                 handleChangeData={(val: any, option: any) => handleChange('placeOfIssueCode', val, option)}

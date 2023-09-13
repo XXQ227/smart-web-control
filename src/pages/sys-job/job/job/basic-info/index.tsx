@@ -127,8 +127,8 @@ const BasicInfo: React.FC<Props> = (props) => {
                     {/* 客户 */}
                     <SearchProFormSelect
                         qty={5}
-                        width={"lg"} isShowLabel={true}
-                        // required={true}
+                        isShowLabel={true}
+                        width={"lg"}
                         label="Customer" id={'customerId'} name={'customerId'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
                         valueObj={{value: CJobInfo.customerId, label: CJobInfo.customerNameEn}}

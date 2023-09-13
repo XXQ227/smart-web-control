@@ -10,7 +10,7 @@ interface Props {
 }
 
 const Basic: React.FC<Props> = (props) => {
-    const  {form} = props;
+    const {form} = props;
 
     /**
      * @Description: TODO:
@@ -63,6 +63,7 @@ const Basic: React.FC<Props> = (props) => {
                     <Row gutter={rowGrid}>
                         <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
                             <SearchProFormSelect
+                                required
                                 qty={5}
                                 isShowLabel={true}
                                 id={'switchBlAgentId'}

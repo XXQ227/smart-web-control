@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Col, Divider, Form, Row, Space, Table} from "antd";
 import {IconFont, rowGrid} from "@/utils/units";
 import {ProCard, ProFormText} from "@ant-design/pro-components";
@@ -22,6 +22,15 @@ const Ports: React.FC<Props> = (props) => {
         portOfDischargeNameEn: serviceInfo.portOfDischargeNameEn,
         finalDestinationNameEn: serviceInfo.finalDestinationNameEn,
     });
+
+    useEffect(() => {
+        setPortNameInfo({
+            portOfLoadingNameEn: serviceInfo.portOfLoadingNameEn,
+            placeOfReceiptNameEn: serviceInfo.placeOfReceiptNameEn,
+            portOfDischargeNameEn: serviceInfo.portOfDischargeNameEn,
+            finalDestinationNameEn: serviceInfo.finalDestinationNameEn,
+        });
+    }, [serviceInfo]);
 
     const handleChange = (fieldName: string, val: any, option?: any) => {
         let setPortInfoVal: any = {};
