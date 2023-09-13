@@ -45,7 +45,6 @@ const initPagination = {
 const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
     const {location: {state}} = props;
     const [form] = Form.useForm();
-    // const FormItem = Form.Item;
     const searchQueryBUP = ls.cloneDeep(initSearchParam)
     const searchLocation = state ? (state as LocationState)?.searchParams : '';
 
@@ -162,8 +161,6 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
     };*/
 
     const onFinish = async (val: APISearchBUParams) => {
-        console.log(searchParams);
-        console.log(val);
         const params: APISearchBUParams = {
             ...searchParams,
             ...val,
@@ -171,20 +168,16 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
             createTimeStart: val.createTimeStart,
             createTimeEnd: val.createTimeEnd,
         };
-        console.log(params);
         setSearchParams(params);
         await handleQueryBUP(params);
     }
 
     const onFinishFailed = (val: any) => {
-        console.log(val);
         const errInfo = getFormErrorMsg(val);
         message.error(errInfo);
     }
 
     const handleChange = (val: any, option?: any) => {
-        console.log(val)
-        console.log(option)
         setBUParams(option.data)
         setNextButtonDisabled(false)
     }
@@ -262,10 +255,6 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
                     // TODO: 焦点给到第一个控件
                     autoFocusFirstInput
                     initialValues={searchParams}
-                    // TODO: 设置默认值
-                    // formKey={'business-unit-information'}
-                    // TODO: 空间有改数据时触动
-                    // onValuesChange={handleProFormValueChange}
                     // TODO: 提交数据
                     onFinish={onFinish}
                     onFinishFailed={onFinishFailed}
@@ -278,13 +267,11 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
                                         name='bupType'
                                         label='BUP Type'
                                         placeholder=''
-                                        // initialValue={{value: 0}}
                                         options={[
                                             {label: 'ALL', value: 0},
                                             {label: 'Customer', value: 1},
                                             {label: 'Vendor', value: 2},
                                         ]}
-                                        // fieldProps={{ onChange: (e) => searchParams.bupType = e }}
                                     />
                                 </Col>
                                 <Col xs={24} sm={24} md={20} lg={16} xl={10} xxl={9}>
@@ -292,12 +279,6 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
                                         name='name'
                                         placeholder=''
                                         label='BUP Name'
-                                        fieldProps={{
-                                            onChange: (e) => {
-                                                // console.log(e.target.value)
-                                                // searchParams.name = e
-                                            }
-                                        }}
                                     />
                                 </Col>
                                 <Col xs={24} sm={24} md={24} lg={16} xl={10} xxl={11}>
@@ -391,49 +372,30 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
             header={{
                 breadcrumb: {},
             }}
-            /*extra={
-                <Button key={'add'} onClick={handleOperateJob} type={'primary'} icon={<PlusOutlined/>}>
-                    Add Customer
-                </Button>
-            }*/
         >
-            {/*<ProCard className={'ant-card ant-card-pro-table'}>*/}
-                {renderSearch()}
-
-                <ProTable<APIBUP>
-                    rowKey={'id'}
-                    search={false}
-                    options={false}
-                    bordered={true}
-                    loading={loading}
-                    columns={columns}
-                    params={searchParams}
-                    dataSource={BUPListVO}
-                    /*search={{
-                        layout: 'vertical',
-                        defaultCollapsed: false,
-                        span: 6,
-                        // hiddenNum: 1,
-                    }}*/
-                    // toolbar={{actions: [renderSearch()]}}
-                    rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
-                    pagination={{
-                        showSizeChanger: true,
-                        ...pagination,
-                        pageSizeOptions: [20, 30, 50, 100],
-                        onChange: (page, pageSize) => {
-                            // searchParams.currentPage = page;
-                            searchParams.pageSize = pageSize;
-                            setSearchParams(searchParams);
-                        },
-                    }}
-                    // request={(params: APISearchBUParams)=> handleQueryBUP(params)}
-                    request={handleQueryBUP}
-                />
-            {/*</ProCard>*/}
-            {/*<FooterToolbar extra={<Button>返回</Button>}>
-                <Button key={'submit'} type={'primary'} htmlType={'submit'}>提交</Button>
-            </FooterToolbar>*/}
+            {renderSearch()}
+            <ProTable<APIBUP>
+                rowKey={'id'}
+                search={false}
+                options={false}
+                bordered={true}
+                loading={loading}
+                columns={columns}
+                params={searchParams}
+                dataSource={BUPListVO}
+                rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
+                pagination={{
+                    showSizeChanger: true,
+                    ...pagination,
+                    pageSizeOptions: [20, 30, 50, 100],
+                    onChange: (page, pageSize) => {
+                        // searchParams.currentPage = page;
+                        searchParams.pageSize = pageSize;
+                        setSearchParams(searchParams);
+                    },
+                }}
+                request={handleQueryBUP}
+            />
 
             <Modal
                 className={'ant-add-modal'}
@@ -458,28 +420,6 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
                     </Button>,
                 ]}
             >
-                {/*<ProForm
-                    form={form}
-                    // TODO: 不显示提交、重置按键
-                    submitter={false}
-                    // TODO: 焦点给到第一个控件
-                    autoFocusFirstInput
-                    // TODO: 设置默认值
-                    formKey={'business-unit-information'}
-                    // TODO: 空间有改数据时触动
-                    // onValuesChange={handleProFormValueChange}
-                    // TODO: 提交数据
-                    onFinish={onFinish}
-                    onFinishFailed={onFinishFailed}
-                    // TODO: 向后台请求数据
-                    // request={async () => handleGetCTPByID()}
-                    layout={"horizontal"}
-                >*/}
-                    {/*<FormItem
-                        name={'parentCompanyId'}
-                        // initialValue={record.CGItemID}
-                        // rules={[{required: true, message: `请输入${CGType === 1 ? 'Payer' : 'Vendor'}`}]}
-                    >*/}
                 <Row gutter={rowGrid}>
                     <Col span={24} className={'ant-add-divider'}>
                         <Divider />
@@ -500,12 +440,6 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
                         />
                     </Col>
                 </Row>
-                    {/*</FormItem>*/}
-                    {/*<div>
-                        <Button htmlType={"button"} key="back" onClick={handleModal}>Cancel</Button>
-                        <Button key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
-                    </div>*/}
-                {/*</ProForm>*/}
             </Modal>
         </PageContainer>
     )

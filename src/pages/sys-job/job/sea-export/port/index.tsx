@@ -13,12 +13,6 @@ interface Props {
     serviceInfo: any;
 }
 
-// const initialTranshipmentPortList: APIModel.TranshipmentPortList[] = [
-//     {ID: 'ID1', PortName: "HO CHI MINH CITY(VIETNAM)",},
-//     {ID: 'ID2', PortName: "SOKHNA(EGYPT)",},
-//     {ID: 'ID3', PortName: "JAKARTA(INDONESIA)",},
-// ];
-
 const Ports: React.FC<Props> = (props) => {
     const {serviceInfo, form} = props;
 
@@ -49,7 +43,7 @@ const Ports: React.FC<Props> = (props) => {
             case "placeOfReceiptCode":
                 portInfo.placeOfReceiptNameEn = option?.name;
                 setPortInfoVal = {
-                    ...portInfo, placeOfReceiptNameEn: option?.name, placeOfReceiptPrintOnBill: option?.name
+                    ...portInfo, placeOfReceiptPrintOnBill: option?.name,
                 };
                 break;
             // 卸货港
@@ -66,7 +60,7 @@ const Ports: React.FC<Props> = (props) => {
                 portInfo.finalDestinationNameEn = option?.name;
                 setPortInfoVal = {
                     ...portInfo,
-                    finalDestinationNameEn: option?.name, finalDestinationPrintOnBill: option?.name
+                    ...portNameInfo, finalDestinationPrintOnBill: option?.name
                 };
                 break;
             default:
@@ -143,6 +137,7 @@ const Ports: React.FC<Props> = (props) => {
                                 modalWidth={950}
                                 showHeader={true}
                                 title={'Port of Loading'}
+                                id={'portOfLoadingCode'}
                                 className={'input-container'}
                                 url={"/apiBase/sea/querySeaCommon"}
                                 text={portNameInfo.portOfLoadingNameEn}
@@ -166,6 +161,7 @@ const Ports: React.FC<Props> = (props) => {
                                 modalWidth={950}
                                 showHeader={true}
                                 title={'Port of Discharge'}
+                                id={'portOfDischargeCode'}
                                 className={'input-container'}
                                 url={"/apiBase/sea/querySeaCommon"}
                                 text={portNameInfo.portOfDischargeNameEn}

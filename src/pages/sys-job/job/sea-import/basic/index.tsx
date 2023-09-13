@@ -5,12 +5,13 @@ import {ProCard, ProFormDatePicker, ProFormSelect, ProFormText} from "@ant-desig
 import SearchProFormSelect from "@/components/SearchProFormSelect";
 
 interface Props {
-    title: string,
-    form: any
+    title: string;
+    form: any;
+    serviceInfo: any;
 }
 
 const Basic: React.FC<Props> = (props) => {
-    const  {form} = props;
+    const  {form, serviceInfo} = props;
 
     /**
      * @Description: TODO:
@@ -44,6 +45,8 @@ const Basic: React.FC<Props> = (props) => {
         form.setFieldsValue(setValueObj);
     }
 
+
+
     return (
         <ProCard
             title={props.title}
@@ -63,12 +66,14 @@ const Basic: React.FC<Props> = (props) => {
                     <Row gutter={rowGrid}>
                         <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
                             <SearchProFormSelect
+                                required
                                 qty={5}
                                 isShowLabel={true}
                                 id={'switchBlAgentId'}
                                 name={'switchBlAgentId'}
                                 label={"Switch B/L Agent"}
                                 filedValue={'id'} filedLabel={'nameFullEn'}
+                                valueObj={{value: serviceInfo?.switchBlAgentId, label: serviceInfo?.switchBlAgentNameEn}}
                                 query={{branchId: '1665596906844135426', buType: 1}}
                                 url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                                 handleChangeData={(val: any, option: any) => handleChange('switchBlAgentId', val, option)}
@@ -82,6 +87,7 @@ const Basic: React.FC<Props> = (props) => {
                                 isShowLabel={true}
                                 label={"Shipping Line (Carrier)"}
                                 filedValue={'id'} filedLabel={'nameFullEn'}
+                                valueObj={{value: serviceInfo?.carrierId, label: serviceInfo?.carrierNameEn}}
                                 query={{branchId: '1665596906844135426', buType: 1}}
                                 url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                                 handleChangeData={(val: any, option: any) => handleChange('carrierId', val, option)}

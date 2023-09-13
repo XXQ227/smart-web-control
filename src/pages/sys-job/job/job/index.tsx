@@ -159,7 +159,6 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
                         setLoading(false);
                     }
                 }}
-                // @ts-ignore
                 request={async () => handleQueryJobInfo({id})}
             >
                 <BasicInfo {...baseForm} title={'Basic Information'} CJobInfo={CJobInfo}/>

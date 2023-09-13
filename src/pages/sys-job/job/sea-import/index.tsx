@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import Basic from "./basic";
 import Ports from "./port";
 import Remark from "@/pages/sys-job/job/sea-export/remark";
@@ -21,11 +21,6 @@ const SeaImport: React.FC<RouteChildrenProps> = () => {
     const urlParams: any = useParams();
     const jobId = atob(urlParams.id);
 
-    useEffect(() => {
-
-    }, [])
-    //endregion
-
     const {
         querySeaImportInfo, addSeaImport, editSeaImport
     } = useModel('job.job', (res: any) => ({
@@ -37,7 +32,6 @@ const SeaImport: React.FC<RouteChildrenProps> = () => {
     const [loading, setLoading] = useState(false);
     const [seaImportInfo, setSeaImportInfo] = useState<any>({});
     const [id, setId] = useState<string>('0');
-
 
     /**
      * @Description: TODO: 获取海运出口信息
@@ -70,8 +64,7 @@ const SeaImport: React.FC<RouteChildrenProps> = () => {
     // TODO: 保存进口服务单票
     const handleFinish = async (values: Record<string, any>) => {
         try {
-            // @ts-ignore
-            for (const item: string in values) {
+            for (const item in values) {
                 if (item.indexOf('_table_') > -1) {
                     delete values[item];
                 }
@@ -85,7 +78,7 @@ const SeaImport: React.FC<RouteChildrenProps> = () => {
 
             if (params.containersLoadingDetailEntityList?.length > 0) {
                 params.containersLoadingDetailEntityList =
-                    params.containersLoadingDetailEntityList.map((item: any)=>
+                    params.containersLoadingDetailEntityList.map((item: any) =>
                         ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id, jobId})
                     );
             }
@@ -108,7 +101,6 @@ const SeaImport: React.FC<RouteChildrenProps> = () => {
             // console.log
         }
     };
-
 
     const baseForm = {form, FormItem, serviceInfo: seaImportInfo};
 

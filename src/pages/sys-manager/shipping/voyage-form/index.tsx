@@ -43,10 +43,19 @@ const VoyageForm: React.FC<RouteChildrenProps> = (props) => {
      */
     const handleGetVoyageInfo = async () => {
         setLoading(true);
-        const result: any = await queryVoyageInfo({id});
-        setVoyageInfoVO(result.data);
-        setLoading(false);
-        return result;
+        try {
+            const result: API.Result = await queryVoyageInfo({id});
+            if (result.success) {
+                setVoyageInfoVO(result.data);
+            } else {
+                message.error(result.message);
+            }
+            setLoading(false);
+            return result.data || {};
+        } catch (errorInfo) {
+            console.log(errorInfo);
+            setLoading(false);
+        }
     }
 
     /**
@@ -93,7 +102,6 @@ const VoyageForm: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const onFinishFailed = (val: any) => {
-        console.log(val);
         const errInfo = getFormErrorMsg(val);
         message.error(errInfo);
     }
@@ -132,46 +140,27 @@ const VoyageForm: React.FC<RouteChildrenProps> = (props) => {
                             />
                         </Col>
                         <Col span={9}>
-                            {/*<ProFormSelect
-                                required
-                                placeholder=''
-                                name="vesselId"
-                                label="Vessel Name"
-                                initialValue={VoyageInfoVO?.vesselId}
-                                options={vesselOption}
-                                rules={[{required: true, message: 'Vessel Name is required'}]}
-                            />*/}
                             <SearchProFormSelect
-                                isShowLabel={true}
                                 qty={5}
+                                isShowLabel={true}
                                 required={true}
                                 label="Vessel Name"
                                 id={'vesselId'}
                                 name={'vesselId'}
-                                url={'/apiBase/vessel/queryVessel'}
-                                // valueObj={{value: VoyageInfoVO?.vesselId, label: VoyageInfoVO?.vesselName}}
+                                url={'/apiBase/vessel/queryVesselCommon'}
+                                valueObj={{value: VoyageInfoVO?.vesselId, label: VoyageInfoVO?.vesselName}}
                             />
                         </Col>
                         <Col span={9}>
-                            {/*<ProFormSelect
-                                required
-                                placeholder=''
-                                name="lineId"
-                                label="Shipping Line"
-                                initialValue={VoyageInfoVO?.lineId}
-                                options={vesselOption}
-                                rules={[{required: true, message: 'Vessel Name is required'}]}
-                            />*/}
                             <SearchProFormSelect
-                                isShowLabel={true}
                                 qty={5}
+                                isShowLabel={true}
                                 required={true}
                                 label="Shipping Line"
                                 id={'lineId'}
                                 name={'lineId'}
-                                url={'/apiBase/line/queryLine'}
-                                // valueObj={VoyageInfoVO?.lineId}
-                                // handleChangeData={(val: any, option: any) => handleChange('CustomerID', val, option)}
+                                url={'/apiBase/line/queryLineCommon'}
+                                valueObj={{value: VoyageInfoVO?.lineId, label: VoyageInfoVO?.lineName}}
                             />
                         </Col>
                         <Col span={6}>
