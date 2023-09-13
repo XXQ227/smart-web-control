@@ -57,7 +57,7 @@ const SearchTable: React.FC<Props> = (props) => {
     }, [debounceTimeout, visible])
 
     useEffect(() => {
-        if (props.id && ['placeOfIssueCode', 'portOfLoadingCode', 'placeOfReceiptCode', 'portOfDischargeCode', 'finalDestinationCode'].includes(props.id) && !visible && props.text !== showText) {
+        if (props.id && ['placeOfReceiptCode', 'finalDestinationCode'].includes(props.id) && !visible && props.text !== showText) {
             setShowText(props.text || '')
         }
     }, [props.text])
