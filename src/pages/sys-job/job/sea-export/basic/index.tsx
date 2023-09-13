@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {Col, Divider, Form, Row, Space} from "antd";
 import {rowGrid} from "@/utils/units";
 import {
@@ -20,10 +20,6 @@ interface Props {
 const Basic: React.FC<Props> = (props) => {
     const {form, serviceInfo} = props;
     const [isOriginal, setIsOriginal] = useState(serviceInfo?.blTypeId === '1');
-
-    useEffect(() => {
-        setIsOriginal(serviceInfo?.blTypeId === '1');
-    }, [serviceInfo]);
 
     /**
      * @Description: TODO:

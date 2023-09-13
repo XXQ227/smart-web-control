@@ -167,7 +167,7 @@ const SeaExport: React.FC<RouteChildrenProps> = () => {
                     },
                 }}
                 initialValues={seaExportInfo}
-                formKey={'sea-export-information'}
+                // formKey={'sea-export-information'}
                 onFinish={handleFinish}
                 onFinishFailed={async (values: any) => {
                     if (values.errorFields?.length > 0) {
