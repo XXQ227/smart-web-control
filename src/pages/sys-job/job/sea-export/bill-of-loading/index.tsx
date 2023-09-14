@@ -159,7 +159,7 @@ const BillOfLoading: React.FC<Props> = (props) => {
                     label: 'Tab 1',
                     key: '1',
                     closable: true,
-                    children: renderContent('1', billOfLoadingEntityList),
+                    children: renderContent('1', {['1']: [initBillInfo]}),
                 },
             ]);
             setFirstLabelName('1');
@@ -362,10 +362,8 @@ const BillOfLoading: React.FC<Props> = (props) => {
                 </Button>
             }
         >
-            {billOfLoadingQTY.current === 1 && firstLabelName ? renderContent(firstLabelName, billOfLoadingEntityList) : null}
-
             <Tabs
-                hidden={billOfLoadingQTY.current < 2}
+                className={billOfLoadingQTY.current === 1 && firstLabelName ? 'tabs-header-hide' : 'tabs-header-show'}
                 type="editable-card"
                 activeKey={activeKey}
                 onChange={handleTabChange}
