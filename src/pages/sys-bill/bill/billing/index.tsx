@@ -80,7 +80,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
     const [selectChildRows, setSelectChildRows] = useState<any[]>([]);
     // TODO: 验证费用行是否通过创建发票的条件判断
     const [validateData, setValidateData] = useState<any>({
-        businessLine: false, customer: false, exRate: false, billCurrencyName: false
+        businessLineState: false, customerState: false, exRateState: false, billCurrencyNameState: false
     });
 
     const currencyList = ['CNY', 'HKD', 'USD'];
@@ -142,8 +142,8 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                     if (obj.selectChildRows) {
                         setSelectChildRows(obj.selectChildRows);
                         // TODO: 定义变量，是否有不同的业务线、客户、汇率、币种【不同为：true】
-                        let businessLine = false, customer = false,
-                            exRate = false, billCurrencyName = false;
+                        let businessLineState = false, customerState = false,
+                            exRateState = false, billCurrencyNameState = false;
                         if (obj.selectChildRows?.length > 0) {
                             // TODO: 它会创建一个存储唯一值的集合。Set 允许你存储各种类型的值（基本数据类型和引用数据类型），
                             //  并确保每个值在集合中只存在一次，即不会重复。
@@ -158,12 +158,12 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                                 uniqueABillCurrencyNames.add(item.currencyName);
                             }
                             // TODO: 【.size】获取这个 Set 中不同值的数量
-                            businessLine = uniqueBusinessLine.size > 1;
-                            customer = uniquePayerNameEns.size > 1;
-                            exRate = uniqueExRates.size > 1;
-                            billCurrencyName = uniqueABillCurrencyNames.size > 1;
+                            businessLineState = uniqueBusinessLine.size > 1;
+                            customerState = uniquePayerNameEns.size > 1;
+                            exRateState = uniqueExRates.size > 1;
+                            billCurrencyNameState = uniqueABillCurrencyNames.size > 1;
                         }
-                        setValidateData({businessLine, customer, exRate, billCurrencyName});
+                        setValidateData({businessLineState, customerState, exRateState, billCurrencyNameState});
                     }
                     if (obj.selectedChildKeys) setSelectedChildKeys(obj.selectedChildKeys);
                 }
@@ -386,7 +386,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                             </Space>
                         </Col>
                         <Col span={12}>
-                            <ExecutionConditions validateData={validateData}/>
+                            <ExecutionConditions validateData={validateData} hiddenState={{}}/>
                         </Col>
                     </Row>
                     <ExpandTable

@@ -37,7 +37,7 @@ const ExpandTable: React.FC<Props> = (props) => {
             setSelectedChildKeys([]);
             handleChangeReload();
         }
-    }, [isReload])
+    }, [handleChangeReload, isReload])
 
     //region 主表格复选按钮
     /**

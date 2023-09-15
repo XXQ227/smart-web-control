@@ -372,7 +372,8 @@ export function formatNumToMoney(amount: any) {
         }
         return result;
     } else {
-        return amount;
+        // return amount;
+        return '0';
     }
 }
 

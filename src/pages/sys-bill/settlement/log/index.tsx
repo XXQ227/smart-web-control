@@ -311,16 +311,8 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                             </Space>
                         </Col>
                         <Col span={12}>
-                            <ExecutionConditions validateData={validateData}/>
                         </Col>
                     </Row>
-                    <ExpandTable
-                        loading={loading}
-                        columns={columns}
-                        dataSource={apList}
-                        expandedColumns={expandedColumns}
-                        handleSetSelectVal={handleSetSelectVal}
-                    />
                 </ProCard>
             </ProForm>
         </PageContainer>
