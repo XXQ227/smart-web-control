@@ -107,9 +107,9 @@ const Basic: React.FC<Props> = (props) => {
                                 name="blTypeId"
                                 label="B/L Type"
                                 options={[
-                                    {label: 'Original B/L', value: 1},
-                                    {label: 'Telex Release', value: 2},
-                                    {label: 'Sea Waybill', value: 3},
+                                    {label: 'Original B/L', value: '1'},
+                                    {label: 'Telex Release', value: '2'},
+                                    {label: 'Sea Waybill', value: '3'},
                                 ]}
                             />
                         </Col>

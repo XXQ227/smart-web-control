@@ -20,12 +20,8 @@ const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const BillOfLoading: React.FC<Props> = (props) => {
-    const {formRef, serviceInfo, isSave, state} = props;
+    const {form, formRef, serviceInfo, isSave, state} = props;
     const actionRef = useRef<FormListActionType<{name: string;}>>();
-    const initBillInfo: any = {
-        jobId: serviceInfo.jobId, serviceId: serviceInfo.id, blNum: '', id: ID_STRING(),
-        shipper: '', consignee: '', destinationAgent: '', notifyParty: '', alsoNotify: '',
-    };
     const [loading, setLoading] = useState(false);
 
     const {
@@ -44,6 +40,10 @@ const BillOfLoading: React.FC<Props> = (props) => {
     const billOfLoadingQTY = useRef(0);
     billOfLoadingQTY.current = Object.keys(billOfLoadingEntityList).length;
     const [firstLabelName, setFirstLabelName] = useState<string>('');
+    const initBillInfo: any = {
+        jobId: serviceInfo.jobId, serviceId: serviceInfo.id, id: ID_STRING(),
+        shipper: '', consignee: '', destinationAgent: '', notifyParty: '', alsoNotify: '',
+    };
 
     useEffect(() => {
         if (!isSave) {
@@ -152,14 +152,13 @@ const BillOfLoading: React.FC<Props> = (props) => {
     useEffect(()=> {
         // TODO：当后台传回来的收发通信息是空并且billOfLoadingQTY.current的值为0时，创建一条空的收发通信息
         if (serviceInfo?.billOfLoadingEntity?.length === 0 && billOfLoadingQTY.current === 0) {
-            setBillOfLoadingEntityList({['1']: [initBillInfo]});
-            setBillInfoItems(prevTabList => [
-                ...prevTabList,
+            setBillOfLoadingEntityList({['1']: [{...initBillInfo, blNum: form?.getFieldValue('mblNum')}]});
+            setBillInfoItems([
                 {
-                    label: 'Tab 1',
+                    label: form?.getFieldValue('mblNum'),
                     key: '1',
                     closable: true,
-                    children: renderContent('1', {['1']: [initBillInfo]}),
+                    children: renderContent('1', {['1']: [{...initBillInfo, blNum: form?.getFieldValue('mblNum')}]}),
                 },
             ]);
             setFirstLabelName('1');
@@ -168,15 +167,19 @@ const BillOfLoading: React.FC<Props> = (props) => {
             // TODO：当后台传回来的收发通信息的长度不等于0时，对收发通信息进行数据转化
             const resultData = {};
             serviceInfo?.billOfLoadingEntity.forEach((item: any) => {
-                let key = item.blNum || item.id; // 如果 blNum 为空，则使用 id 作为 key
+                let key = item.blNum
                 let suffix = 'A';
                 // 检查是否已经存在相同的 key
                 while (resultData[key]) {
-                    key = (item.blNum || item.id) + suffix; // 如果 blNum 为空，则使用 id 作为 key
+                    key = item.blNum + suffix;
                     suffix = String.fromCharCode(suffix.charCodeAt(0) + 1);
                 }
                 if (!resultData[key]) {
                     resultData[key] = [];
+                }
+                // TODO: 当表单中有对应的key收发通信息时，判断表单中对应key的收发通信息id和后台获取的key收发通信息id是否一致，不一致时设置为后台获取的key收发通信息
+                if (formRef?.current?.getFieldValue(key) && formRef?.current?.getFieldValue(key)[0].id !== item.id) {
+                    formRef?.current?.setFieldsValue({[key]: [item]});
                 }
                 resultData[key].push(item);
             });
@@ -195,7 +198,7 @@ const BillOfLoading: React.FC<Props> = (props) => {
             }
             // TODO: 当提单信息只有一条的时候需要给 firstLabelName 赋值，作用是为了正常显示界面
             if (serviceInfo?.billOfLoadingEntity?.length === 1) {
-                setFirstLabelName(serviceInfo?.billOfLoadingEntity[0].blNum || serviceInfo?.billOfLoadingEntity[0].id)
+                setFirstLabelName(serviceInfo?.billOfLoadingEntity[0].blNum)
             }
         }
     }, [serviceInfo?.billOfLoadingEntity, state]);
@@ -211,38 +214,79 @@ const BillOfLoading: React.FC<Props> = (props) => {
      * @returns
      */
     const add = () => {
-        const newActiveKey: string= (newTabIndex.current++).toString();
-        const newBillOfLoadingEntityList = {
-            ...billOfLoadingEntityList,
-            [newActiveKey]: [initBillInfo]
-        }
-        setBillOfLoadingEntityList(newBillOfLoadingEntityList);
-        const keys = Object.keys(billOfLoadingEntityList);
-        let id = '';
-        // TODO: 如果获取到当前要创建的name数据，就设置这个name的数据为初始值（之前用过相同的newActiveKey值创建过，再次用这个值就会出问题）
-        if (formRef?.current?.getFieldValue(newActiveKey)) {
-            formRef?.current?.setFieldsValue({[newActiveKey]: [initBillInfo]});
-        }
-        setBillInfoItems(prevTabList =>  {
-            const updatedTabList = [...prevTabList];
-            // TODO: 如果在新增页签时，当前的收发通信息只有一条信息，需要更新一下选项卡头显示的内容，不然之前的信息里无法显示提单号
-            if (billOfLoadingQTY.current === 1 && keys.length === 1) {
-                const key = keys[0];
-                id = billOfLoadingEntityList[key][0].id;
-                const activeTab = updatedTabList.find(tab => tab.key === activeKeyRef.current);
-                activeTab.children = renderContent(id?.indexOf('ID_') > -1 ? activeTab.key : firstLabelName, billOfLoadingEntityList);
+        if (form?.getFieldValue('mblNum')) {
+            let missingLabelName = '';
+            const prefix = form?.getFieldValue('mblNum');
+            const keys = Object.keys(billOfLoadingEntityList);
+            let id = '';
+            function checkLabel(labelName: string) {
+                let missingLabel: string = '';
+                if (!billInfoItems.some(item => item.label === labelName)) {
+                    missingLabel = labelName;
+                }
+                return missingLabel;
             }
-            return [
-                ...prevTabList,
-                {
-                    label: 'New Tab',
-                    key: newActiveKey,
-                    closable: true,
-                    children: renderContent(newActiveKey, newBillOfLoadingEntityList),
-                },
-            ]
-        });
-        setActiveKey(newActiveKey);
+            // 自动生成标签并检查它们，循环调用 checkLabel 方法并输出缺失的标签
+            for (let i = 0; i < 26; i++) {
+                const label = `${prefix}${String.fromCharCode(65 + i)}`; // 使用字符编码生成后缀字母
+                const missingLabel = checkLabel(label);
+                if (missingLabel) {
+                    if (billOfLoadingQTY.current === 1 && keys.length === 1) {
+                        const key = keys[0];
+                        id = billOfLoadingEntityList[key][0].id;
+                        missingLabelName = id?.indexOf('ID_') > -1 ? `${prefix}B` : missingLabel;
+                    } else {
+                        missingLabelName = missingLabel;
+                    }
+                    break; // 如果找到一个缺失的标签，停止循环
+                }
+            }
+
+            const newActiveKey: string= (newTabIndex.current++).toString();
+            const newBillOfLoadingEntityList = {
+                ...billOfLoadingEntityList,
+                [newActiveKey]: [{...initBillInfo, blNum: missingLabelName}]
+            }
+            setBillOfLoadingEntityList(newBillOfLoadingEntityList);
+            // TODO: 如果获取到当前要创建的name数据，就设置这个name的数据为初始值（之前用过相同的newActiveKey值创建过，再次用这个值就会出问题）
+            if (formRef?.current?.getFieldValue(newActiveKey)) {
+                formRef?.current?.setFieldsValue({[newActiveKey]: [{...initBillInfo, blNum: missingLabelName}]});
+            }
+            setBillInfoItems(prevTabList =>  {
+                const updatedTabList = [...prevTabList];
+                // TODO: 如果在新增页签时，当前的收发通信息只有一条信息，需要更新一下选项卡头显示的内容，不然之前的信息里无法显示提单号
+                if (billOfLoadingQTY.current === 1 && keys.length === 1) {
+                    const activeTab = updatedTabList.find(tab => tab.key === activeKeyRef.current);
+                    const key = keys[0];
+                    // TODO: 新增一条把之前的信息blNum改为`${prefix}A`
+                    if (id?.indexOf('ID_') > -1) {
+                        activeTab.label = `${prefix}A`;
+                        const currentValues = formRef.current?.getFieldsValue();
+                        // 使用 setFieldsValue 更新表单字段
+                        formRef.current?.setFieldsValue({
+                            ...currentValues,
+                            [key]: [
+                                {
+                                    ...currentValues[key][0], // 保留对象中的其他属性
+                                    blNum: `${prefix}A`, // 更新 blNum
+                                },
+                            ],
+                        });
+                    }
+                    activeTab.children = renderContent(id?.indexOf('ID_') > -1 ? activeTab.key : firstLabelName, billOfLoadingEntityList);
+                }
+                return [
+                    ...prevTabList,
+                    {
+                        label: missingLabelName,
+                        key: newActiveKey,
+                        closable: true,
+                        children: renderContent(newActiveKey, newBillOfLoadingEntityList),
+                    },
+                ]
+            });
+            setActiveKey(newActiveKey);
+        }
     };
 
     /**
@@ -299,6 +343,15 @@ const BillOfLoading: React.FC<Props> = (props) => {
             }
             if (Object.keys(billOfLoadingEntityList).length === 1) {
                 setFirstLabelName(Object.keys(billOfLoadingEntityList).join(', '));
+                // TODO: 如果在删除页签时，剩下的收发通信息只有一条信息，需要更新一下选项卡显示的内容，不然布局里会显示提单号
+                setBillInfoItems(prevTabList => {
+                    const updatedTabList = [...prevTabList];
+                    const activeTab = updatedTabList.find(tab => tab.key !== targetKey);
+                    if (activeTab) {
+                        activeTab.children = renderContent(Object.keys(billOfLoadingEntityList).join(', '), billOfLoadingEntityList);
+                    }
+                    return updatedTabList;
+                });
             }
         } catch (e) {
             message.error(e);
@@ -354,7 +407,7 @@ const BillOfLoading: React.FC<Props> = (props) => {
             className={'ant-card seaExportBillOfLoading'}
             extra={
                 <Button
-                    hidden={billOfLoadingQTY.current > 1}
+                    hidden={billOfLoadingQTY.current > 1 || !form?.getFieldValue('mblNum')}
                     icon={<PlusCircleOutlined/>}
                     onClick={add}
                 >

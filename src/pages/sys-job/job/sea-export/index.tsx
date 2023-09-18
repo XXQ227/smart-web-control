@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router'
 import Basic from "./basic";
 import Pickup from "./pickup";
@@ -37,6 +37,7 @@ const SeaExport: React.FC<RouteChildrenProps> = () => {
     const [id, setId] = useState<string>('0');
     const [isSave, setIsSave] = useState(true);
     const [state, setState] = useState('');
+    const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
 
     /**
      * @Description: TODO: 获取海运出口信息
@@ -137,11 +138,26 @@ const SeaExport: React.FC<RouteChildrenProps> = () => {
             } else {
                 if (result.message) message.error(result.message);
             }
-        } catch {
-            // console.log
+        } catch (e) {
+            message.error(e);
         }
         setLoading(false);
     };
+
+    /**
+     * @Description: TODO: 当 ProForm 表单修改时，调用此方法
+     * @author LLS
+     * @date 2023/9/15
+     * @param changeValues   ProForm 表单修改的参数
+     * @returns
+     */
+    const handleProFormValueChange = (changeValues: any) => {
+        Object.keys(changeValues).map((item: any) => {
+            if (item === 'mblNum') {
+                setIsChangeValue(!isChangeValue);
+            }
+        })
+    }
 
     const baseForm = {form, FormItem, serviceInfo: seaExportInfo};
 
@@ -167,6 +183,8 @@ const SeaExport: React.FC<RouteChildrenProps> = () => {
                     },
                 }}
                 initialValues={seaExportInfo}
+                // TODO: 空间有改数据时触动
+                onValuesChange={handleProFormValueChange}
                 // formKey={'sea-export-information'}
                 onFinish={handleFinish}
                 onFinishFailed={async (values: any) => {
@@ -178,6 +196,8 @@ const SeaExport: React.FC<RouteChildrenProps> = () => {
                 }}
                 request={async () => handleQuerySeaExportInfo()}
             >
+                {/* 收发通信息 */}
+                <BillOfLoading {...baseForm} formRef={formRef} title={'Bill Of Loading'} isSave={isSave} state={state}/>
                 <Basic {...baseForm} title={'Basic'}/>
 
                 {/* 提货信息 */}
@@ -188,8 +208,6 @@ const SeaExport: React.FC<RouteChildrenProps> = () => {
 
                 <Containers {...baseForm}/>
 
-                {/* 收发通信息 */}
-                <BillOfLoading {...baseForm} formRef={formRef} title={'Bill Of Loading'} isSave={isSave} state={state}/>
 
                 <Remark title={'Remark'} />
             </ProForm>
