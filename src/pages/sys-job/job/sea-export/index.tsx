@@ -196,8 +196,6 @@ const SeaExport: React.FC<RouteChildrenProps> = () => {
                 }}
                 request={async () => handleQuerySeaExportInfo()}
             >
-                {/* 收发通信息 */}
-                <BillOfLoading {...baseForm} formRef={formRef} title={'Bill Of Loading'} isSave={isSave} state={state}/>
                 <Basic {...baseForm} title={'Basic'}/>
 
                 {/* 提货信息 */}
@@ -208,6 +206,8 @@ const SeaExport: React.FC<RouteChildrenProps> = () => {
 
                 <Containers {...baseForm}/>
 
+                {/* 收发通信息 */}
+                <BillOfLoading {...baseForm} formRef={formRef} title={'Bill Of Loading'} isSave={isSave} state={state}/>
 
                 <Remark title={'Remark'} />
             </ProForm>
