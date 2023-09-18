@@ -41,7 +41,6 @@ const SeaImport: React.FC<RouteChildrenProps> = () => {
      */
     async function handleQuerySeaImportInfo() {
         setLoading(true);
-        // TODO: 获取用户数据
         let result: API.Result;
         if (jobId !== '0') {
             result = await querySeaImportInfo({id: jobId});
@@ -49,11 +48,11 @@ const SeaImport: React.FC<RouteChildrenProps> = () => {
             if (result.data) {
                 setId(result.data.id);
             } else {
-                result.data = {blTypeId: 1};
+                result.data = {blTypeId: '1'};
             }
             setLoading(false);
         } else {
-            result = {success: true, data: {blTypeId: 1}};
+            result = {success: true, data: {blTypeId: '1'}};
             setLoading(false);
         }
         setSeaImportInfo(result.data || {});
