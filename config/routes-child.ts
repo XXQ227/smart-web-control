@@ -76,13 +76,6 @@ const bill_route = {
             redirect: '/bill/ticket',
         },
         {
-            name: 'ticket',
-            icon: 'icon-job',
-            path: '/bill/ticket',
-            component: './sys-bill/ticket',
-            ...MICRO_APP_CARGO('bill'),
-        },
-        {
             name: 'billing',
             icon: 'icon-bill-L1',
             path: '/bill/billing',
