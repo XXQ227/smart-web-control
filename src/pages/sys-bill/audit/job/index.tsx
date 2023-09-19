@@ -77,14 +77,10 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
         if (initLoading) initLoading = false;
         try {
 
-            // TODO: 账期
+            // TODO: 没有账期时，获取账期数据账期
             if (AccountPeriodList?.length === 0) await queryAccountPeriodCommon({branchId: '1665596906844135426', name: ''});
 
             const params: any = {...initSearchData, ...JSON.parse(JSON.stringify(val))};
-
-            // TODO: 查所有币种时，把 ['ALL'] 改成所有 币种的集合
-            // if (params.jobBusinessLine === 0) params.jobBusinessLine = [];
-            // if (params.billCurrencyName[0] === 'All') params.billCurrencyName = currencyList;
 
             const result: API.Result = await queryAuditJob(params);
             if (result.success) {
@@ -92,7 +88,9 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
             } else {
                 if (result.message) message.error(result.message);
             }
+            // TODO: 当 tabKey 有值时，才做更新操作
             if (tabKey) setActiveKey(tabKey);
+            // TODO: 当搜索内容没有改变时，不做更新操作
             if (JSON.stringify(val) !== JSON.stringify(searchInfo)) setSearchInfo(val);
             setLoading(false);
         } catch (e) {
@@ -101,21 +99,6 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
         }
         return val;
     }
-
-    /**
-     * @Description: TODO: 搜索核销列表数据
-     * @author XXQ
-     * @date 2023/9/13
-     * @param val   搜索参数
-     * @returns
-     */
-    const handleFinish = async (val: any) => {
-        try {
-            await handleQueryAuditJob(val);
-        } catch (e) {
-            message.error(e);
-        }
-    };
 
     /**
      * @Description: TODO: 核销单票
@@ -202,8 +185,8 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
                 omitNil={false}
                 layout={"vertical"}
                 params={searchInfo}
-                onFinish={handleFinish}
                 name={'form-search-info'}
+                onFinish={handleQueryAuditJob}
                 initialValues={initSearchData}
                 onFinishFailed={async (values: any) => {
                     if (values.errorFields?.length > 0) {
@@ -234,7 +217,7 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
                     <Row gutter={24} className={'ant-row-search'}>
                         <Col span={21}>
                             <Row gutter={24}>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={4}>
+                                <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
                                     <ProFormSelect
                                         placeholder={''}
                                         name={"businessType"}
@@ -284,7 +267,7 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
                                         options={[]}
                                     />
                                 </Col>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={8}>
+                                <Col xs={24} sm={24} md={12} lg={12} xl={6} xxl={6}>
                                     <ProFormDateRangePicker
                                         placeholder={''}
                                         name="invoiceIssueDate" label="Complete Date (Time-Span)"

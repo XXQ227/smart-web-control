@@ -85,17 +85,15 @@ const InvoiceAudit: React.FC<RouteChildrenProps> = () => {
 
             const params: any = {...initSearchData, ...JSON.parse(JSON.stringify(val))};
 
-            // TODO: 查所有币种时，把 ['ALL'] 改成所有 币种的集合
-            // if (params.jobBusinessLine === 0) params.jobBusinessLine = [];
-            // if (params.billCurrencyName[0] === 'All') params.billCurrencyName = currencyList;
-
             const result: API.Result = await queryAuditJob(params);
             if (result.success) {
                 setDataSource(result.data);
             } else {
                 if (result.message) message.error(result.message);
             }
+            // TODO: 当 tabKey 有值时，才做更新操作
             if (tabKey) setActiveKey(tabKey);
+            // TODO: 当搜索内容没有改变时，不做更新操作
             if (JSON.stringify(val) !== JSON.stringify(searchInfo)) setSearchInfo(val);
             setLoading(false);
         } catch (e) {
@@ -104,15 +102,6 @@ const InvoiceAudit: React.FC<RouteChildrenProps> = () => {
         }
         return val;
     }
-
-    // TODO: 搜索核销列表数据
-    const handleFinish = async (val: any) => {
-        try {
-            await handleQueryAuditJob(val);
-        } catch (e) {
-            message.error(e);
-        }
-    };
 
     /**
      * @Description: TODO: 核销单票
@@ -195,8 +184,8 @@ const InvoiceAudit: React.FC<RouteChildrenProps> = () => {
                 omitNil={false}
                 layout={"vertical"}
                 params={searchInfo}
-                onFinish={handleFinish}
                 name={'form-search-info'}
+                onFinish={handleQueryAuditJob}
                 initialValues={initSearchData}
                 onFinishFailed={async (values: any) => {
                     if (values.errorFields?.length > 0) {
@@ -227,7 +216,7 @@ const InvoiceAudit: React.FC<RouteChildrenProps> = () => {
                     <Row gutter={24} className={'ant-row-search'}>
                         <Col span={21}>
                             <Row gutter={24}>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={4}>
+                                <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
                                     <ProFormSelect
                                         placeholder={''}
                                         name="businessType"
@@ -235,7 +224,7 @@ const InvoiceAudit: React.FC<RouteChildrenProps> = () => {
                                         options={[{label: 'AR', value: 1}, {label: 'AP', value: 2}]}
                                     />
                                 </Col>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={4}>
+                                <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
                                     <ProFormSelect
                                         placeholder={''}
                                         name="businessType"
@@ -287,7 +276,7 @@ const InvoiceAudit: React.FC<RouteChildrenProps> = () => {
                                         options={[]}
                                     />
                                 </Col>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={8}>
+                                <Col xs={24} sm={24} md={12} lg={12} xl={6} xxl={6}>
                                     <ProFormDateRangePicker
                                         placeholder={''}
                                         name="invoiceIssueDate" label="Issue Date (Time-Span)"
