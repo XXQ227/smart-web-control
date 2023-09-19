@@ -5,7 +5,7 @@ import { request } from '@/utils/request';
 //   API ID:109008485
 //   API URL:https://app.apifox.com/link/project/2684231/apis/api-109008485
 export async function queryAuditJobAPI(body: any) {
-  return request(`/accounting/audit/queryAuditJob`, {
+  return request(`/apiAccounting/audit/queryAuditJob`, {
     method: 'POST',
     body
   });
@@ -17,7 +17,19 @@ export async function queryAuditJobAPI(body: any) {
 //   API ID:110745257
 //   API URL:https://app.apifox.com/link/project/2684231/apis/api-110745257
 export async function auditJobAPI(body: any) {
-  return request(`/accounting/audit/auditJob`, {
+  return request(`/apiAccounting/audit/auditJob`, {
+    method: 'POST',
+    body
+  });
+}
+
+
+// TODO: 审核发票
+//   POST /accounting/web/audit/auditInvoice
+//   API ID:110745257
+//   API URL:https://app.apifox.com/link/project/2684231/apis/api-110745257
+export async function auditInvoiceAPI(body: any) {
+  return request(`/apiAccounting/audit/auditInvoice`, {
     method: 'POST',
     body
   });

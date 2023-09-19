@@ -12,23 +12,21 @@ import {
     ProTable
 } from '@ant-design/pro-components'
 import '@/global.less'
-import {Button, Col, Form, message, Row} from 'antd'
+import type { TabsProps} from 'antd';
+import {Button, Col, Form, message, Row, Spin, Tabs} from 'antd'
 import {SearchOutlined} from '@ant-design/icons'
 import {getFormErrorMsg} from '@/utils/units'
-import SearchProFormSelect from '@/components/SearchProFormSelect'
 import {useModel} from '@@/plugin-model/useModel'
 import {history} from 'umi'
-import SettlementInvoiceModal from '@/pages/sys-bill/settlement/components/settlement-invoice-modal'
-import ExecutionConditions from '@/pages/sys-bill/bill/components/execution-conditions/ExecutionConditions'
+import {BUSINESS_LINE} from '@/utils/common-data'
+import SearchProFormSelect from '@/components/SearchProFormSelect'
 
 const initSearchData: any = {
-    invoiceNum: "",
-    settlementPartyId: null,
+    businessType: "",
+    customerId: null,
     jobCode: "",
     branchId: '1665596906844135426',
-    queryType: 1,
-    type: 1,
-    state: 1,
+    bmsUploadStatus: 1,
 };
 
 // TODO: 默认为 true；当首次加载数据后，改为 【false】
@@ -36,31 +34,31 @@ let initLoading = true;
 
 const JobAudit: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
-    const {location} = history;
-
-    initSearchData.state = location?.pathname?.indexOf('/outstanding') > -1 ? 1 : 2;
 
     const {
-        queryUnWriteOffInvoice,
-    } = useModel('accounting.settlement', (res: any) => ({
-        queryUnWriteOffInvoice: res.queryUnWriteOffInvoice,
+        queryAuditJob, auditJob
+    } = useModel('accounting.audit', (res: any) => ({
+        queryAuditJob: res.queryAuditJob,
+        auditJob: res.auditJob,
     }));
+
+    const {
+        queryAccountPeriodCommon, AccountPeriodList
+    } = useModel('common', (res: any)=> ({
+        queryAccountPeriodCommon: res.queryAccountPeriodCommon,
+        AccountPeriodList: res.AccountPeriodList,
+    }))
 
     const [loading, setLoading] = useState(false);
 
+    const [activeKey, setActiveKey] = useState<string>('1');
 
     const [dataSource, setDataSource] = useState<any[]>([]);
 
     const [searchInfo, setSearchInfo] = useState<any>(initSearchData);
-    // TODO: 核销发票类型；默认 【AR：1】
-    const [type, setType] = useState<number>(1);
 
-    // TODO: 核销列表数据
-    const [settleChargeList, setSettleChargeList] = useState<any[]>([]);
     // TODO: 选中行数据
     const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
-    // TODO: 核销验证信息
-    const [settleInfo, setSettleInfo] = useState<any>({});
 
     useEffect(() => {
 
@@ -71,29 +69,31 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
      * @author XXQ
      * @date 2023/8/29
      * @param val   搜索条件，内容
+     * @param tabKey    tab 切换的 key 值；可以为空
      * @returns
      */
-    async function handleQuerySeaExportInfo(val?: any) {
+    async function handleQueryAuditJob(val?: any, tabKey?: string) {
         if (!loading) setLoading(true);
         if (initLoading) initLoading = false;
         try {
+
+            // TODO: 账期
+            if (AccountPeriodList?.length === 0) await queryAccountPeriodCommon({branchId: '1665596906844135426', name: ''});
+
             const params: any = {...initSearchData, ...JSON.parse(JSON.stringify(val))};
-            if (val.invoiceIssueDate?.length > 0) {
-                params.invoiceIssueDateStart = val.invoiceIssueDate[0];
-                params.invoiceIssueDateEnd = val.invoiceIssueDate[1];
-                delete params.invoiceIssueDate;
-            }
+
             // TODO: 查所有币种时，把 ['ALL'] 改成所有 币种的集合
             // if (params.jobBusinessLine === 0) params.jobBusinessLine = [];
             // if (params.billCurrencyName[0] === 'All') params.billCurrencyName = currencyList;
 
-            const result: API.Result = await queryUnWriteOffInvoice(params);
+            const result: API.Result = await queryAuditJob(params);
             if (result.success) {
                 setDataSource(result.data);
             } else {
                 if (result.message) message.error(result.message);
             }
-            setSearchInfo(val);
+            if (tabKey) setActiveKey(tabKey);
+            if (JSON.stringify(val) !== JSON.stringify(searchInfo)) setSearchInfo(val);
             setLoading(false);
         } catch (e) {
             setLoading(false);
@@ -103,46 +103,6 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
     }
 
     /**
-     * @Description: TODO: 表格复选框方法
-     * @author XXQ
-     * @date 2023/9/14
-     * @param selectedRowKeys
-     * @param selectedRows
-     * @returns
-     */
-    function handleTableRowChange(selectedRowKeys: React.Key[], selectedRows: any[]) {
-        setSelectedKeys(selectedRowKeys);
-        let selectRow: any = {}, businessNameState: boolean = false, billCurrencyNameState: boolean = false;
-        if (selectedRows?.length) {
-            selectRow = selectedRows[0];
-            // TODO: 它会创建一个存储唯一值的集合。Set 允许你存储各种类型的值（基本数据类型和引用数据类型），
-            //  并确保每个值在集合中只存在一次，即不会重复。
-            const uniqueBusinessName = new Set(),
-                uniqueBillCurrencyName = new Set();
-            for (const item of selectedRows) {
-                uniqueBusinessName.add(item.businessName);
-                uniqueBillCurrencyName.add(item.billCurrencyName);
-            }
-            // TODO: 验证结算对象、账单币种必须一样
-            businessNameState = uniqueBusinessName.size > 1;
-            billCurrencyNameState = uniqueBillCurrencyName.size > 1;
-
-            // TODO: 选中行下的发票详情信息
-            const settleChargeArr: any[] = [];
-            selectedRows.map((item: any)=> {
-                settleChargeArr.push(...(item.unWriteOffCharges || []));
-            });
-            setSettleChargeList(settleChargeArr);
-        }
-        setSettleInfo({
-            // TODO: 客户、账单币种是否相同
-            businessNameState, billCurrencyNameState,
-            // TODO: 选中行的客户、账单币种
-            businessId: selectRow.businessId || 0, businessName: selectRow.businessName,
-            billCurrencyName: selectRow.billCurrencyName
-        });
-    }
-    /**
      * @Description: TODO: 搜索核销列表数据
      * @author XXQ
      * @date 2023/9/13
@@ -151,26 +111,53 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
      */
     const handleFinish = async (val: any) => {
         try {
-            await handleQuerySeaExportInfo(val);
+            await handleQueryAuditJob(val);
         } catch (e) {
             message.error(e);
         }
     };
 
+    /**
+     * @Description: TODO: 核销单票
+     * @author XXQ
+     * @date 2023/9/19
+     * @returns
+     */
+    async function handleAuditJob() {
+        setLoading(true);
+        try {
+            const result: API.Result = await auditJob({jobIdList: selectedKeys});
+            if (result.success) {
+                message.success('success!');
+                await handleQueryAuditJob(searchInfo);
+            } else {
+                if (result.message) message.error(result.message);
+            }
+            setLoading(false);
+        } catch (e) {
+            setLoading(false);
+            message.error(e);
+        }
+    }
+
+    async function handleChangeTabs(keys: string) {
+        await handleQueryAuditJob(searchInfo, keys)
+    }
+
 
     const columns: ProColumns[] = [
-        {title: 'Type', dataIndex: 'type', width: 60, align: 'center',},
-        {title: 'B-Line', dataIndex: 'bline', width: 60, align: 'center',},
-        {title: 'Invoice No.', dataIndex: 'num', width: 180, align: 'center',},
-        {title: 'Job No.', dataIndex: 'jobCodes', key: 'jobCode', width: 150, align: 'center',},
-        {title: type === 1 ? 'Payer' : 'Vendor', dataIndex: 'businessName',},
-        {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 90, align: 'center'},
-        // TODO: valueType 数据显示格式，
-        //  详情见 https://procomponents.ant.design/components/schema#%E8%87%AA%E5%AE%9A%E4%B9%89-valuetype
-        {title: 'Bill Amount', dataIndex: 'unWriteOffBillInTaxAmount', width: 120, align: 'center',},
-        {title: 'Issue By', dataIndex: 'createUserName', width: 150, align: 'center'},
-        {title: 'Issue Date', dataIndex: 'createTime', width: 100, align: 'center', valueType: 'date'},
-        // {title: 'Completion Date', dataIndex: 'completionDate', width: 100, align: 'center', valueType: 'date'},
+        {title: 'B-Line', dataIndex: 'businessLine', width: 60, align: 'center',},
+        {title: 'Job No.', dataIndex: 'jobCodes', width: 150, align: 'center',},
+        {title: 'Customer', dataIndex: 'businessName',},
+        {title: 'Taking Date', dataIndex: 'takingDate', width: 100, align: 'center', valueType: 'date'},
+        {title: 'Complete Date', dataIndex: 'completeDate', width: 110, align: 'center', valueType: 'date'},
+        {title: 'Sales', dataIndex: 'sales', width: 90, align: 'center'},
+        {title: 'Creator', dataIndex: 'creator', width: 90, align: 'center'},
+        {title: 'BMS Volume', dataIndex: 'bmsVolume', width: 90, align: 'center'},
+        {title: 'AR in HKD', dataIndex: 'arLocal', width: 90, align: 'center'},
+        {title: 'AP in HKD', dataIndex: 'apLocal', width: 90, align: 'center'},
+        {title: 'Profit Ratio', dataIndex: 'profitRatio', width: 90, align: 'center'},
+        {title: 'Status', dataIndex: 'status', width: 90, align: 'center', },
     ];
 
     const rowSelection: any = {
@@ -178,8 +165,33 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
         // 注释该行则默认不显示下拉选项
         columnWidth: 26,
         selectedRowKeys: selectedKeys,
-        onChange: handleTableRowChange,
+        onChange: (selectedRowKeys: React.Key[]) => setSelectedKeys(selectedRowKeys),
     };
+
+    const tabItemChildren = (
+        <ProTable<any>
+            bordered
+            rowKey={'id'}
+            size="middle"
+            search={false}
+            options={false}
+            columns={columns}
+            dateFormatter="string"
+            dataSource={dataSource}
+            tableAlertRender={false}
+            rowSelection={rowSelection}
+            locale={{emptyText: 'No Data'}}
+            className={'antd-pro-table-expandable'}
+        />
+    );
+
+    const items: TabsProps['items'] = [
+        {key: '1', label: 'Outstanding', children: tabItemChildren,},
+        {key: '2', label: 'Processing', children: tabItemChildren,},
+        {key: '3', label: 'BMS Error', children: tabItemChildren,},
+        {key: '4', label: 'Oracle Error', children: tabItemChildren,},
+    ];
+
 
     return (
         <PageContainer
@@ -205,16 +217,17 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
                     render: () => {
                         return (
                             <FooterToolbar extra={<Button onClick={() => history.goBack()}>Back</Button>}>
-                                <SettlementInvoiceModal
-                                    type={type}
-                                    settleInfo={settleInfo}
-                                    settleChargeList={settleChargeList}
-                                />
+                                <Button
+                                    disabled={selectedKeys?.length === 0}
+                                    type={'primary'} onClick={handleAuditJob} loading={loading}
+                                >
+                                    Audit
+                                </Button>
                             </FooterToolbar>
                         );
                     },
                 }}
-                request={async (params: any) => initLoading ? handleQuerySeaExportInfo(params) : {}}
+                request={async (params: any) => initLoading ? handleQueryAuditJob(params) : {}}
             >
                 {/* 搜索 */}
                 <ProCard className={'ant-pro-card-search'}>
@@ -223,21 +236,27 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
                             <Row gutter={24}>
                                 <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={4}>
                                     <ProFormSelect
-                                        name="type"
-                                        label="Cettle Type"
+                                        placeholder={''}
+                                        name={"businessType"}
+                                        label={"Business Line"}
                                         style={{minWidth: 150}}
-                                        options={[{label: 'AR', value: 1}, {label: 'AP', value: 2}]}
-                                        fieldProps={{
-                                            onChange: (val: any) => setType(val),
-                                        }}
+                                        options={[{label: 'All', value: 0}, ...BUSINESS_LINE]}
+                                    />
+                                </Col>
+                                <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={4}>
+                                    <ProFormSelect
+                                        placeholder={''}
+                                        name="billingMonth"
+                                        label="Billing Month"
+                                        options={AccountPeriodList}
                                     />
                                 </Col>
                                 <Col xs={24} sm={24} md={12} lg={12} xl={10} xxl={10}>
                                     <SearchProFormSelect
                                         qty={5}
                                         isShowLabel={true}
-                                        id={'settlementPartyId'}
-                                        name={'settlementPartyId'}
+                                        id={'customerId'}
+                                        name={'customerId'}
                                         label={"Customer or Paying Agent"}
                                         filedValue={'id'} filedLabel={'nameFullEn'}
                                         query={{branchId: '1665596906844135426', buType: 1}}
@@ -247,49 +266,47 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
                             </Row>
                             <Row gutter={24}>
                                 <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
-                                    <ProFormText name="invoiceNum" label="Invoice No." placeholder=""/>
-                                </Col>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
                                     <ProFormText name="jobCode" label="Job No." placeholder=""/>
+                                </Col>
+                                <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={4}>
+                                    <ProFormSelect
+                                        label="Department"
+                                        name="departmentId"
+                                        placeholder={''}
+                                        options={[]}
+                                    />
+                                </Col>
+                                <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={4}>
+                                    <ProFormSelect
+                                        label="Sales"
+                                        name="salesId"
+                                        placeholder={''}
+                                        options={[]}
+                                    />
                                 </Col>
                                 <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={8}>
                                     <ProFormDateRangePicker
                                         placeholder={''}
-                                        name="invoiceIssueDate" label="Invoice Issue Date"
+                                        name="invoiceIssueDate" label="Complete Date (Time-Span)"
                                     />
                                 </Col>
                             </Row>
                         </Col>
                         <Col span={3} className={'ant-row-search-btn'}>
-                            <Button icon={<SearchOutlined/>} htmlType={'submit'}>Search</Button>
+                            <Button icon={<SearchOutlined/>} htmlType={'submit'} loading={loading}>Search</Button>
                         </Col>
                     </Row>
                 </ProCard>
                 <ProCard>
-                    <Row gutter={24}>
-                        <Col span={12}/>
-                        <Col span={12}>
-                            <ExecutionConditions
-                                validateData={settleInfo}
-                                hiddenState={{hiddenBusinessLine: true, hiddenExRate: true}}
-                            />
-                        </Col>
-                    </Row>
-                    <ProTable<any>
-                        bordered
-                        rowKey={'id'}
-                        size="middle"
-                        search={false}
-                        options={false}
-                        columns={columns}
-                        loading={loading}
-                        dateFormatter="string"
-                        dataSource={dataSource}
-                        tableAlertRender={false}
-                        rowSelection={rowSelection}
-                        locale={{emptyText: 'No Data'}}
-                        className={'antd-pro-table-expandable'}
-                    />
+                    <Spin spinning={loading}>
+                        <Tabs
+                            type="card"
+                            items={items}
+                            activeKey={activeKey}
+                            destroyInactiveTabPane={true}
+                            onChange={handleChangeTabs}
+                        />
+                    </Spin>
                 </ProCard>
             </ProForm>
         </PageContainer>

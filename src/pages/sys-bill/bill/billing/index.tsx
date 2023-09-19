@@ -12,6 +12,7 @@ import SearchProFormSelect from '@/components/SearchProFormSelect'
 import {useModel} from '@@/plugin-model/useModel'
 import {BUSINESS_LINE_ENUM} from '@/utils/enum'
 import {history} from 'umi'
+import {BUSINESS_LINE} from '@/utils/common-data'
 
 const initSearchData: any = {
     jobNumber: "",
@@ -305,16 +306,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                                         name="jobBusinessLine"
                                         label="Business Line"
                                         style={{minWidth: 150}}
-                                        options={[
-                                            {label: 'All', value: 0},
-                                            {label: 'Freight Forwarding', value: 1},
-                                            {label: 'Project Logistics', value: 2},
-                                            {label: 'Contract Logistics', value: 3},
-                                            {label: 'E-Commercial', value: 4},
-                                            // {label: 'Shipping Agency', value: 5},
-                                            // {label: 'Shipping Booking', value: 6},
-                                            // {label: 'Shipping Container', value: 7},
-                                        ]}
+                                        options={[{label: 'All', value: 0}, ...BUSINESS_LINE]}
                                     />
                                 </Col>
                                 <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={4}>

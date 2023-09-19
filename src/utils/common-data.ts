@@ -130,3 +130,14 @@ export const TERMS_PAYMENT = [
     {value: 8, label: '(PT) Freight prepaid at the third place'},
     {value: 9, label: '(CT) Freight Collect at the third place'},
 ];
+
+
+export const BUSINESS_LINE = [
+    {label: 'Freight Forwarding', value: 1},
+    {label: 'Project Logistics', value: 2},
+    {label: 'Contract Logistics', value: 3},
+    {label: 'E-Commercial', value: 4},
+    // {label: 'Shipping Agency', value: 5},
+    // {label: 'Shipping Booking', value: 6},
+    // {label: 'Shipping Container', value: 7},
+];
