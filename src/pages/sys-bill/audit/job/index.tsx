@@ -34,7 +34,7 @@ const initSearchData: any = {
 // TODO: 默认为 true；当首次加载数据后，改为 【false】
 let initLoading = true;
 
-const Settlement: React.FC<RouteChildrenProps> = () => {
+const JobAudit: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
     const {location} = history;
 
@@ -295,4 +295,4 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
         </PageContainer>
     )
 }
-export default Settlement;
+export default JobAudit;

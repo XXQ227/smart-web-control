@@ -136,6 +136,27 @@ const bill_route = {
             ],
             ...MICRO_APP_CARGO('bill'),
         },
+        {
+            name: 'audit',
+            icon: 'icon-audit',
+            path: '/bill/audit',
+            // component: './sys-bill/invoice',
+            routes: [
+                {
+                    name: 'job',
+                    icon: 'icon-audit-order',
+                    path: '/bill/audit/job',
+                    component: './sys-bill/audit/job',
+                },
+                {
+                    name: 'invoice',
+                    icon: 'icon-audit-financial',
+                    path: '/bill/audit/invoice',
+                    component: './sys-bill/audit/invoice',
+                },
+            ],
+            ...MICRO_APP_CARGO('bill'),
+        },
     ],
 };
 

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {Input} from 'antd'
 
 interface Props {
-    id: any,
+    id?: any,
     value: any,
     valueStr?: string,
     className?: string,
@@ -42,6 +42,7 @@ const InputEditNumber: React.FC<Props> = (props) => {
     return (
         <Input
             id={props.id}
+            placeholder={''}
             autoComplete='off'
             onChange={handleChange}
             className={props.className}
