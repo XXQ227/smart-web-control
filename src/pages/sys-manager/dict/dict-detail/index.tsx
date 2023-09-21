@@ -139,7 +139,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                 record.isChange = false;
                 newData.splice(index, 1, record);
                 if (result.success) {
-                    message.success('success');
+                    message.success('Success');
                     setDictDetailListVO(newData);
                 } else {
                     message.error(result.message);
@@ -181,7 +181,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
             newData.splice(index, 1, record);
         }
         if (result.success) {
-            message.success('success');
+            message.success('Success');
             setDictDetailListVO(newData);
         } else {
             message.error(result.message);

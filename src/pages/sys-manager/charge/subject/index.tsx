@@ -123,7 +123,7 @@ const SubjectIndex: React.FC<Props> = () => {
                     const newData: APIStandardCGItem[] = ls.cloneDeep(StandardCGItemListVO);
                     newData.splice(index, 1, record);
                     setStandardCGItemListVO(newData);
-                    message.success('success');
+                    message.success('Success');
                 }
                 setLoading(false);
             })

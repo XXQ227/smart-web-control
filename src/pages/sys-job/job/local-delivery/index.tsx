@@ -2,7 +2,7 @@ import React, {useState, useRef} from 'react';
 import BasicInfo from './basicInfo';
 import {Modal, Tabs, Spin, Button, message, Form} from "antd";
 import type {TabsProps} from 'antd';
-import '../style.less'
+import '../style.less';
 import type { FormListActionType, ProFormInstance } from "@ant-design/pro-components";
 import {
     ProFormList,
@@ -11,15 +11,19 @@ import {
     ProCard
 } from "@ant-design/pro-components";
 import {ExclamationCircleFilled, LeftOutlined, SaveOutlined} from "@ant-design/icons";
-import type { RouteChildrenProps } from 'react-router';
 import {history} from "@@/core/history";
 import {getFormErrorMsg} from "@/utils/units";
 import {useParams, useModel} from "umi";
 
+interface Props {
+    type: string,
+    handleChangeTabs: (value: string) => void,
+}
+
 const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
-const LocalDelivery: React.FC<RouteChildrenProps> = () => {
+const LocalDelivery: React.FC<Props> = (props) => {
     const [form] = Form.useForm();
     const urlParams: any = useParams();
     const jobId = atob(urlParams.id);
@@ -260,6 +264,9 @@ const LocalDelivery: React.FC<RouteChildrenProps> = () => {
             }
             if (result.success) {
                 message.success('Success!!!');
+                if (id === '0') {
+                    props.handleChangeTabs(props.type);
+                }
                 // TODO: 把当前服务的 id 存下来
                 setId(result.data.id);
                 setTabList([]);

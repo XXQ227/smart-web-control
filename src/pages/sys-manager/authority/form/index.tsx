@@ -67,7 +67,7 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
         };
         // const result: API.Result = await AuthResource(val);
         // if (result.success) {
-        //     message.success('success');
+        //     message.success('Success');
         // } else {
         //     message.error(result.message);
         // }

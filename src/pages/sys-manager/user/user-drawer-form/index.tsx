@@ -56,7 +56,7 @@ const UserDrawerForm: React.FC<Props> = (props) => {
                     values.id = result.data;
                 }
                 if (result.success) {
-                    message.success('success');
+                    message.success('Success');
                     props.handleSave(values);
                     if (result.success) setOpen(false);
                 } else {

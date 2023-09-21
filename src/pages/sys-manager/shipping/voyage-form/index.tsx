@@ -86,7 +86,7 @@ const VoyageForm: React.FC<RouteChildrenProps> = (props) => {
             result = await editVoyage(param);
         }
         if (result.success) {
-            message.success('success');
+            message.success('Success');
             if (id === '0') history.push({pathname: `/manager/shipping/voyage/form/${btoa(result.data)}`});
         } else {
             message.error(result.message)

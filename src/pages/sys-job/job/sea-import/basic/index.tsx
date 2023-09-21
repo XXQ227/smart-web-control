@@ -68,7 +68,7 @@ const Basic: React.FC<Props> = (props) => {
                             <SearchProFormSelect
                                 required
                                 qty={5}
-                                isShowLabel={true}
+                                isShowLabel
                                 id={'switchBlAgentId'}
                                 name={'switchBlAgentId'}
                                 label={"Switch B/L Agent"}
@@ -81,10 +81,11 @@ const Basic: React.FC<Props> = (props) => {
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={12} xl={12} xxl={12}>
                             <SearchProFormSelect
+                                required
                                 qty={5}
+                                isShowLabel
                                 id={'carrierId'}
                                 name={'carrierId'}
-                                isShowLabel={true}
                                 label={"Shipping Line (Carrier)"}
                                 filedValue={'id'} filedLabel={'nameFullEn'}
                                 valueObj={{value: serviceInfo?.carrierId, label: serviceInfo?.carrierNameEn}}
@@ -118,12 +119,14 @@ const Basic: React.FC<Props> = (props) => {
                 {/* 外港代理、外贸合同号 */}
                 <Col xs={24} sm={24} md={12} lg={8} xl={8} xxl={5}>
                     <SearchProFormSelect
+                        required
                         qty={5}
+                        isShowLabel
                         id={'polAgentId'}
-                        isShowLabel={true}
                         name={'polAgentId'}
                         label={"POL Agent"}
                         filedValue={'id'} filedLabel={'nameFullEn'}
+                        valueObj={{value: serviceInfo?.polAgentId, label: serviceInfo?.polAgentNameEn}}
                         query={{branchId: '1665596906844135426', buType: 1}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         handleChangeData={(val: any, option: any) => handleChange('polAgentId', val, option)}
@@ -136,8 +139,12 @@ const Basic: React.FC<Props> = (props) => {
                 {/* 业务完成日 */}
                 <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={4} className={'completeDate'}>
                     <ProFormDatePicker
-                        required rules={[{required: true, message: 'COMPLETE DATE'}]}
-                        width="md" name="completeDate" label="COMPLETE DATE" placeholder=""
+                        // required
+                        width="md"
+                        name="completeDate"
+                        label="COMPLETE DATE"
+                        placeholder=""
+                        // rules={[{required: true, message: 'COMPLETE DATE'}]}
                     />
                 </Col>
             </Row>

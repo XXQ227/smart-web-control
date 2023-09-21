@@ -136,7 +136,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
             try {
                 const result: API.Result = await editInvoice({id: invoiceDetail.id, remark});
                 if (result.success) {
-                    message.success('success!');
+                    message.success('Success!');
                     const newData = invoiceList.slice(0);
                     const target: any = newData.find((item: any) => item.id === invoiceDetail.id);
                     newData.splice(invoiceDetail.index, 1, target);
@@ -179,7 +179,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
         try {
             const result: API.Result = await cancelInvoice({id: record.id});
             if (result.success) {
-                message.success('success');
+                message.success('Success');
                 // TODO: 删除成功后，过滤当前费发票。不再显示
                 const invoiceArr: any[] = invoiceList.filter((item: any) => item.id !== record.id);
                 setInvoiceList(invoiceArr);

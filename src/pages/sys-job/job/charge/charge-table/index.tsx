@@ -279,7 +279,7 @@ const ChargeTable: React.FC<Props> = (props) => {
             setCGList(newData);
             form?.setFieldsValue({[formName]: newData});
             handleChangeData(newData);
-            message.success('success');
+            message.success('Success');
         } else {
             selectArr = selectArr.map((item: any) => ({
                 ...item, type: CGType === 1 ? 2 : CGType === 2 ? 1 : CGType === 5 ? 6 : 5,
@@ -329,7 +329,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                 handleChangeData(chargeArr);
                 form?.setFieldsValue({[formName]: chargeArr});
                 handleClearSelected();
-                message.success('success');
+                message.success('Success');
             } else {
                 message.error(result.message);
             }

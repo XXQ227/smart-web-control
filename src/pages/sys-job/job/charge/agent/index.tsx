@@ -175,7 +175,7 @@ const Agent: React.FC<Props> = (props) => {
         setCGList(newData);
         form?.setFieldsValue({reimbursementChargeList: newData});
         handleChangeData(newData);
-        message.success('success');
+        message.success('Success');
         handleClearSelected();
     }
 
@@ -301,7 +301,7 @@ const Agent: React.FC<Props> = (props) => {
                 setCGList(chargeArr);
                 handleClearSelected();
                 form?.setFieldsValue({reimbursementChargeList: chargeArr});
-                message.success('success');
+                message.success('Success');
             } else {
                 message.error(result.message);
             }

@@ -175,7 +175,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
                     result = await submitCharges(params);
                 }
                 if (result.success) {
-                    message.success('success');
+                    message.success('Success');
                     await handleQueryJobChargeInfo();
                     setSubmitStatus({toManager: true, toBilling: true});
                 } else {
@@ -228,7 +228,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
 
                 const result: API.Result = await saveCharges(params);
                 if (result.success) {
-                    message.success('success');
+                    message.success('Success');
                     await handleQueryJobChargeInfo();
                 } else {
                     setLoading(false);

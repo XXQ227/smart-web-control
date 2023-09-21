@@ -15,7 +15,7 @@ interface Props {
 }
 
 const Cargo: React.FC<Props> = (props) => {
-    const {title,} = props;
+    const {title} = props;
 
     return (
         <ProCard title={title} bordered={true} headerBordered collapsible className={'ant-card'}>
@@ -26,7 +26,6 @@ const Cargo: React.FC<Props> = (props) => {
                             <ProFormRadio.Group
                                 label="Cargo Type"
                                 name={'cargoType'}
-                                // initialValue={NBasicInfo?.OceanTransportTypeID}
                                 options={[
                                     {label: 'FCL', value: 1,},
                                     {label: 'LCL', value: 2,},

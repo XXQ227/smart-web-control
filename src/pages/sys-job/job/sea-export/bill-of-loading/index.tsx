@@ -13,16 +13,19 @@ interface Props {
     formRef: any;
     title: string;
     serviceInfo: any;
-    isSave: boolean;
+    isSave: boolean;             // 判断是否点击了保存
+    headerInfo: any;             // 单票基础信息（单票号、单票Id）
+    isChangeValue: boolean;      // 提单号改变
     state?: string;
 }
 const { confirm } = Modal;
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const BillOfLoading: React.FC<Props> = (props) => {
-    const {form, formRef, serviceInfo, isSave, state} = props;
+    const {form, formRef, serviceInfo, isSave, headerInfo, state, isChangeValue} = props;
     const actionRef = useRef<FormListActionType<{name: string;}>>();
     const [loading, setLoading] = useState(false);
+    const jobNo = headerInfo?.jobNo;
 
     const {
         deleteBillOfLoading
@@ -41,15 +44,47 @@ const BillOfLoading: React.FC<Props> = (props) => {
     billOfLoadingQTY.current = Object.keys(billOfLoadingEntityList).length;
     const [firstLabelName, setFirstLabelName] = useState<string>('');
     const initBillInfo: any = {
-        jobId: serviceInfo.jobId, serviceId: serviceInfo.id, id: ID_STRING(),
+        jobId: serviceInfo.jobId || headerInfo?.jobId, serviceId: serviceInfo.id, id: ID_STRING(),
         shipper: '', consignee: '', destinationAgent: '', notifyParty: '', alsoNotify: '',
     };
 
+    // TODO: 每当保存后，重新加载数据的时候都需要清空一下配置选项卡的内容
     useEffect(() => {
-        if (!isSave) {
+        if (isSave) {
             setBillInfoItems([]);
         }
     }, [isSave]);
+
+    // TODO: 当只有一条收发通信息并且后台传回来的提单号是空的情况下，用户输入了提单号，就把提单号复制到收发通信息里面去；
+    //  如果在没有提单号的情况下保存，收发通信息里面的提单号默认是单票号
+    useEffect(() => {
+        if (!serviceInfo?.mblNum && form?.getFieldValue('mblNum') && billInfoItems?.length === 1 && billOfLoadingQTY.current === 1) {
+            const key = Object.keys(billOfLoadingEntityList)[0];
+            const blNum = billOfLoadingEntityList[key][0].blNum;
+            const currentValues = formRef.current?.getFieldsValue();
+            // TODO: 后台传回来的收发通信息里的提单号和单票号是一样的时候，用户输入了提单号，才能把提单号复制到收发通信息里面去；
+            if (blNum === jobNo) {
+                setBillInfoItems(prevTabList => {
+                    const updatedTabList = [...prevTabList];
+                    const activeTab = updatedTabList.find(tab => tab.key === activeKeyRef.current);
+                    if (activeTab) {
+                        activeTab.label = form?.getFieldValue('mblNum');
+                    }
+                    return updatedTabList;
+                });
+                // 使用 setFieldsValue 更新表单字段
+                formRef.current?.setFieldsValue({
+                    ...currentValues,
+                    [key]: [
+                        {
+                            ...currentValues[key][0], // 保留对象中的其他属性
+                            blNum: form?.getFieldValue('mblNum'), // 更新 blNum
+                        },
+                    ],
+                });
+            }
+        }
+    }, [isChangeValue]);
 
     const BlDOM = (label: string, fieldName: string, valData: string, item: any, index: number) => {
         return (
@@ -151,14 +186,15 @@ const BillOfLoading: React.FC<Props> = (props) => {
 
     useEffect(()=> {
         // TODO：当后台传回来的收发通信息是空并且billOfLoadingQTY.current的值为0时，创建一条空的收发通信息
+        //  最初始创建的收发通信息里面的提单号默认是单票号
         if (serviceInfo?.billOfLoadingEntity?.length === 0 && billOfLoadingQTY.current === 0) {
-            setBillOfLoadingEntityList({['1']: [{...initBillInfo, blNum: form?.getFieldValue('mblNum')}]});
+            setBillOfLoadingEntityList({['1']: [{...initBillInfo, blNum: jobNo}]});
             setBillInfoItems([
                 {
-                    label: form?.getFieldValue('mblNum'),
+                    label: jobNo,
                     key: '1',
                     closable: true,
-                    children: renderContent('1', {['1']: [{...initBillInfo, blNum: form?.getFieldValue('mblNum')}]}),
+                    children: renderContent('1', {['1']: [{...initBillInfo, blNum: jobNo}]}),
                 },
             ]);
             setFirstLabelName('1');

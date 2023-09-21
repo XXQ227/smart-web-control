@@ -116,7 +116,7 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
     const handleUpload = async () => {
         const result: any = await uploadCTCenter({UserID: getUserID(), CTID: Number(atob(params?.id)), custType: CTCenterType});
         if (result.Result) {
-            message.success('success!');
+            message.success('Success!');
         } else {
             message.error(result.Content);
         }

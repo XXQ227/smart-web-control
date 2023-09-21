@@ -1,7 +1,7 @@
-import styles from './index.less';
 import React, { useState} from "react";
-import {Modal, Button, Divider, Radio} from 'antd';
+import {Modal, Button, Row, Col, Radio, Divider} from 'antd';
 import {IconFont} from "@/utils/units";
+import './index.less';
 
 interface Props {
     open: boolean,
@@ -18,17 +18,20 @@ interface Option {
 interface CustomRadioProps {
     option: Option;
     checked: boolean;
+    disabled: boolean;
     onChange: (value: string) => void;
 }
 
-const CustomRadio: React.FC<CustomRadioProps> = ({ option, checked, onChange }) => {
+const CustomRadio: React.FC<CustomRadioProps> = ({ option, checked, disabled, onChange }) => {
     const handleClick = () => {
-        onChange(option.value);
+        if (!disabled) {
+            onChange(option.value);
+        }
     };
 
     return (
-        <Radio.Button value={option.value} checked={checked} onClick={handleClick}>
-            <IconFont type={option.icon} />
+        <Radio.Button value={option.value} checked={checked} disabled={disabled} onClick={handleClick} >
+            <IconFont type={option.icon} disabled={disabled}/>
             <label onClick={handleClick}>{option.label}</label>
         </Radio.Button>
     );
@@ -36,46 +39,6 @@ const CustomRadio: React.FC<CustomRadioProps> = ({ option, checked, onChange }) 
 
 const AddServiceModal: React.FC<Props> = (props) => {
     const [checkedValue, setCheckedValue] = useState('');
-
-    /*
-    const [transportID, setTransportID] = useState(0);
-    const serviceList = [
-        {
-            serviceName: 'Sea Import',
-            Key: 1,
-            Icon: 'icon-sea'
-        },
-        {
-            serviceName: 'Sea Export',
-            Key: 2,
-            Icon: 'icon-sea'
-        },
-        {
-            serviceName: 'Cross-border',
-            Key: 3,
-            Icon: 'icon-truck'
-        },
-        {
-            serviceName: 'Air Import',
-            Key: 4,
-            Icon: 'icon-air'
-        },
-        {
-            serviceName: 'Air Export',
-            Key: 5,
-            Icon: 'icon-air'
-        }
-    ]
-    const StepsOnChange = (index: number, Type: number, List: any) => {
-        console.log(index, Type, List)
-        switch (Type) {
-            case 1:
-                setTransportID(index)
-                break;
-            default:
-                break;
-        }
-    }*/
 
     const handleAddService = () => {
         props.onOk(checkedValue)
@@ -92,17 +55,50 @@ const AddServiceModal: React.FC<Props> = (props) => {
     }
 
     const options = [
-        { label: 'Sea Import', value: 'Sea Import', icon: 'icon-sea' },
-        { label: 'Sea Export', value: 'Sea Export', icon: 'icon-sea' },
-        { label: 'Cross-border', value: 'Cross-border', icon: 'icon-truck' },
-        { label: 'Air Import', value: 'Air Import', icon: 'icon-air' },
-        { label: 'Air Export', value: 'Air Export', icon: 'icon-air' },
-        { label: 'Local Delivery', value: 'Local Delivery', icon: 'icon-LocalDelivery' },
+        { label: 'Sea Import', value: 'sea-import', icon: 'icon-sea' },
+        { label: 'Sea Export', value: 'sea-export', icon: 'icon-sea' },
+        { label: 'ForeignVehicle', value: 'foreignVehicle', icon: 'icon-ForeignVehicle' },
+        { label: 'Land Forwarder', value: 'land-forwarder', icon: 'icon-LandForwarder' },
+        { label: 'Air Import', value: 'air-import', icon: 'icon-air' },
+        { label: 'Air Export', value: 'air-export', icon: 'icon-air' },
+        { label: 'Local Delivery', value: 'local-delivery', icon: 'icon-LocalDelivery' },
+        { label: 'Warehouse', value: 'warehouse', icon: 'icon-Warehouse' },
+        { label: 'VAS', value: 'vas', icon: 'icon-VAS' },
+        { label: 'CFS', value: 'cfs', icon: 'icon-CFS' },
+        { label: 'Supply Chain Finance', value: 'supply-chain-finance', icon: 'icon-SupplyChainFinance' },
+        { label: 'Container Leasing', value: 'container-leasing', icon: 'icon-ContainerLeasing' },
     ];
+
+    // 创建三个子数组，分别包含6个、4个和2个选项
+    const column1Options = options.slice(0, 6);
+    const column2Options = options.slice(6, 10);
+    const column3Options = options.slice(10, 12);
+
+    // 渲染单个选项
+    const renderOption = (option: Option) => (
+        <CustomRadio
+            key={option.value}
+            option={option}
+            checked={checkedValue === option.value}
+            onChange={handleRadioChange}
+            disabled={options.indexOf(option) > 3 && options.indexOf(option) !== 6}
+        />
+    );
+
+    // 渲染每一列
+    const renderColumn = (columnOptions: any[]) => (
+        <Col span={7} key={columnOptions[0].value}>
+            <Radio.Group className="antRadio" value={checkedValue}
+                         // onChange={(e) => handleRadioChange(e.target.value)}
+            >
+                {columnOptions.map(renderOption)}
+            </Radio.Group>
+        </Col>
+    );
 
     return (
         <Modal
-            className={styles.addServiceModal}
+            className={'addServiceModal'}
             open={props.open}
             bodyStyle={{height: 500}}
             onOk={handleAddService}
@@ -113,35 +109,22 @@ const AddServiceModal: React.FC<Props> = (props) => {
                 <Button htmlType={"button"} key="back" onClick={handleCancel}>
                     Cancel
                 </Button>,
-                <Button htmlType={"button"} key="submit" type="primary" onClick={handleAddService}>
+                <Button htmlType={"button"} key="submit" type="primary" disabled={!checkedValue} onClick={handleAddService}>
                     Next
                 </Button>,
             ]}
         >
-            <Divider orientation="left">Service Type</Divider>
-            <Radio.Group className={styles.antRadio} value={checkedValue} onChange={(e) => handleRadioChange(e.target.value)}>
-                {/*<Space direction="vertical">*/}
-                    {options.map(option => (
-                        <CustomRadio key={option.value} option={option} checked={checkedValue === option.value} onChange={handleRadioChange} />
-                    ))}
-                {/*</Space>*/}
-            </Radio.Group>
-
-            {/*<div>
-                <Steps
-                    current={transportID}
-                    onChange={(Cur) => StepsOnChange(Cur, 1, serviceList)}
-                >
-                    {serviceList.map(item => (
-                        <Steps
-                            key={item.serviceName}
-                            title={item.serviceName}
-                            icon={<IconFont type={item.Icon} />}
-
-                        />
-                    ))}
-                </Steps>
-            </div>*/}
+            <Row gutter={8}>
+                {renderColumn(column1Options)}
+                <Col span={1} flex="auto" style={{ textAlign: "center" }}>
+                    <Divider type="vertical" style={{ height: '100%' }} />
+                </Col>
+                {renderColumn(column2Options)}
+                <Col span={1} flex="auto" style={{ textAlign: "center" }}>
+                    <Divider type="vertical" style={{ height: '100%' }} />
+                </Col>
+                {renderColumn(column3Options)}
+            </Row>
         </Modal>
     );
 };
