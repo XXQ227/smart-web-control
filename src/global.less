@@ -864,10 +864,15 @@ ol {
 
 // TODO: antd 原生样式名
 .ant-pro-table {
+  .ant-table-container {
+    border-left: 0.3px solid !important;
+  }
   .ant-table-thead {
     th {
-      border: 0.3px solid!important;
-      background-color: #0073EAFF!important;
+      border-top: 0.3px solid !important;
+      border-right: 0.3px solid !important;
+      border-bottom: 0.3px solid !important;
+      background-color: @primary-color !important;
     }
     .anticon-info-circle{
       svg {
@@ -876,8 +881,9 @@ ol {
     }
   }
   .ant-table-tbody {
-    td{
-      border: 0.3px solid!important;
+    td {
+      border-right: 0.3px solid !important;
+      border-bottom: 0.3px solid !important;
       padding-top: 3px!important;
       padding-bottom: 3px!important;
     }
