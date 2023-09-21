@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react';
-import type {RouteChildrenProps} from 'react-router'
+import React, {useState} from 'react';
+import type {RouteChildrenProps} from 'react-router';
 import BasicInfo from './basic-info';
 import Cargo from './cargo';
 import Payment from './payment';
-import {FooterToolbar, ProCard, ProForm, ProFormTextArea} from '@ant-design/pro-components'
-import {Button, Col, Form, message, Row, Spin} from 'antd'
-import {LeftOutlined, SaveOutlined} from '@ant-design/icons'
-import {history} from '@@/core/history'
-import {getFormErrorMsg, rowGrid} from '@/utils/units'
-import {useModel, useParams} from 'umi'
+import {FooterToolbar, ProCard, ProForm, ProFormTextArea} from '@ant-design/pro-components';
+import {Button, Col, Form, message, Row, Spin} from 'antd';
+import {LeftOutlined, SaveOutlined} from '@ant-design/icons';
+import {history} from '@@/core/history';
+import {getFormErrorMsg, rowGrid} from '@/utils/units';
+import {useModel, useParams} from 'umi';
 
 const FormItem = Form.Item;
 
@@ -44,11 +44,6 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
 
     const [CJobInfo, setCJobInfo] = useState<any>({});
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-
-    }, [])
-
     //endregion
 
     /**
@@ -101,15 +96,16 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
             if (id === '0') {
                 if (values.accountPeriodId) {
                     const target: any = AccountPeriodList.find((item: any)=> item.value === values.accountPeriodId);
-                    values.accountPeriodInformation = target.oldLabel;
+                    values.accountPeriodInformation = target.label;
                 }
                 result = await addJob(values);
             } else {
-                result = await editJob({...CJobInfo,...values});
+                result = await editJob({...CJobInfo,...values, id});
             }
             if (result?.success) {
                 setLoading(false);
-                message.success('success!!');
+                message.success('Success!!!');
+                await handleQueryJobInfo({id: id === '0' ? result.data : id})
                 if (id === '0') {
                     history.push({pathname: `/job/job-info/form/${btoa(result.data)}`})
                 }

@@ -3,7 +3,7 @@ import _ from 'lodash';
 import {createFromIconfontCN} from '@ant-design/icons';
 import {Descriptions} from "antd";
 
-export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_uvuq27c187.js';
+export const icon_font_url = '//at.alicdn.com/t/c/font_3886045_hl6doo5caz4.js';
 
 // TODO: 系统五字码
 export const SYSTEM_ID = 99003;
@@ -562,37 +562,6 @@ export function getTitleInfo(code: string, intl: any, defaultMessage: string) {
 }
 
 /**
- * @Description: TODO 获取业务线名称
- * @author XXQ
- * @date 2022/12/15
- * @returns
- * @param businessLineID
- */
-export function getBusinessLineName(businessLineID: number) {
-    let name = "";
-    switch (businessLineID) {
-        case 1:
-            name = "Project Logistics";
-            break;
-        case 2:
-            name = "Contract Logistics";
-            break;
-        case 3:
-            name = "E-Commercial";
-            break;
-        case 4:
-            name = "Shipping Agency";
-            break;
-        case 5:
-            name = "Freight Forwarding";
-            break;
-        default:
-            break;
-    }
-    return name;
-}
-
-/**
  * @Description: TODO 选择账期月
  * @author XXQ
  * @date 2023/5/3
@@ -751,19 +720,19 @@ export function getFormErrorMsg(errorInfo: any = []) {
     return errInfo;
 }
 
-export function HeaderInfo(NBasicInfo: any, LockDate: string, SalesManName?: string) {
+export function HeaderInfo(NBasicInfo: any) {
     return (
         <Descriptions className={'headerList'} size="small" column={{xs: 1, sm: 1, md: 2, lg: 3, xl: 3, xxl: 7}}>
             <Descriptions.Item
-                label="Business Line">{getBusinessLineName(NBasicInfo?.BusinessLineID)}</Descriptions.Item>
-            <Descriptions.Item label="Job No.">{NBasicInfo?.Code}</Descriptions.Item>
-            <Descriptions.Item label="Shipment Type">{NBasicInfo?.BizTypeEN}</Descriptions.Item>
-            <Descriptions.Item label="Sales">{SalesManName}</Descriptions.Item>
-            <Descriptions.Item label="Creator">{NBasicInfo?.Operator}</Descriptions.Item>
+                label="Business Line">{NBasicInfo?.businessLine}</Descriptions.Item>
+            <Descriptions.Item label="Job No.">{NBasicInfo?.jobNo}</Descriptions.Item>
+            <Descriptions.Item label="Shipment Type">{NBasicInfo?.shipmentType}</Descriptions.Item>
+            <Descriptions.Item label="Sales">{NBasicInfo?.sales}</Descriptions.Item>
+            <Descriptions.Item label="Creator">{NBasicInfo?.creator}</Descriptions.Item>
             <Descriptions.Item
-                label="Taking Date">{!!LockDate ? moment(LockDate).format("YYYY-MM-DD") : ""}</Descriptions.Item>
+                label="Taking Date">{NBasicInfo?.takingDate}</Descriptions.Item>
             <Descriptions.Item
-                label="Last Modified">{NBasicInfo?.LastEditor} / {NBasicInfo?.LastEditDate ? moment(NBasicInfo?.LastEditDate).format("YYYY-MM-DD") : ""}</Descriptions.Item>
+                label="Last Modified">{NBasicInfo?.lastEditor}{NBasicInfo?.lastModified ? ' / ' : ''}{NBasicInfo?.lastModified}</Descriptions.Item>
         </Descriptions>
     )
 }
@@ -956,4 +925,45 @@ export function getTransferDate (dataString: string) {
         result = `${year} ${monthName}`;
     }
     return result;
+}
+
+/**
+ * @Description: TODO: 获取服务类型名称
+ * @author LLS
+ * @date 2023/9/19
+ * @param checkedValue
+ * @returns
+ */
+export function getServiceTypeName (checkedValue: string) {
+    if (checkedValue) {
+        switch (checkedValue) {
+            case 'sea-import':
+                return 'Sea (Import)';
+            case 'sea-export':
+                return 'Sea (Export)';
+            case 'foreignVehicle':
+                return 'ForeignVehicle';
+            case 'land-forwarder':
+                return 'Land Forwarder';
+            case 'air-import':
+                return 'Air (Import)';
+            case 'air-export':
+                return 'Air (Export)';
+            case 'local-delivery':
+                return 'Local Delivery';
+            case 'warehouse':
+                return 'Warehouse';
+            case 'vas':
+                return 'VAS';
+            case 'cfs':
+                return 'CFS';
+            case 'supply-chain-finance':
+                return 'Supply Chain Finance';
+            case 'Container Leasing':
+                return 'container-leasing';
+            default:
+                break;
+        }
+    }
+    return '';
 }

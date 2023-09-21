@@ -1,24 +1,28 @@
-import React, {useEffect, useRef, useState} from 'react';
-import type {RouteChildrenProps} from 'react-router'
+import React, {useRef, useState} from 'react';
 import Basic from "./basic";
 import Pickup from "./pickup";
 import Ports from "./port";
 import Containers from "./containers";
 import BillOfLoading from "./bill-of-loading";
 import Remark from "./remark";
-import '../style.less'
+import '../style.less';
 import {FooterToolbar, ProForm} from '@ant-design/pro-components';
 import type {ProFormInstance} from '@ant-design/pro-components';
-import {Button, Form, message, Spin} from 'antd'
-import {LeftOutlined, SaveOutlined} from '@ant-design/icons'
-import {history} from '@@/core/history'
-import {getFormErrorMsg} from '@/utils/units'
-import {useParams, useModel} from 'umi'
-import moment from 'moment'
+import {Button, Form, message, Spin} from 'antd';
+import {LeftOutlined, SaveOutlined} from '@ant-design/icons';
+import {history} from '@@/core/history';
+import {getFormErrorMsg} from '@/utils/units';
+import {useParams, useModel} from 'umi';
+import moment from 'moment';
+
+interface Props {
+    headerInfo: any,
+    handleChangeTabs: (value: string) => void,
+}
 
 const FormItem = Form.Item;
 
-const SeaExport: React.FC<RouteChildrenProps> = () => {
+const SeaExport: React.FC<Props> = (props) => {
     const [form] = Form.useForm();
     const formRef = useRef<ProFormInstance>();
     const urlParams: any = useParams();
@@ -35,7 +39,7 @@ const SeaExport: React.FC<RouteChildrenProps> = () => {
     const [loading, setLoading] = useState(false);
     const [seaExportInfo, setSeaExportInfo] = useState<any>({});
     const [id, setId] = useState<string>('0');
-    const [isSave, setIsSave] = useState(true);
+    const [isSave, setIsSave] = useState(false);
     const [state, setState] = useState('');
     const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
 
@@ -55,14 +59,14 @@ const SeaExport: React.FC<RouteChildrenProps> = () => {
                 if (result.data) {
                     setId(result.data.id);
                 } else {
-                    result.data = {blTypeId: '1'};
+                    result.data = {blTypeId: '1', billOfLoadingEntity: []};
                 }
             } else {
                 result = {success: true, data: {blTypeId: '1'}};
             }
             setLoading(false);
             setSeaExportInfo(result.data || {});
-            return result.data;
+            return result.data || {};
         } catch (e) {
             message.error(e);
             return {};
@@ -129,12 +133,15 @@ const SeaExport: React.FC<RouteChildrenProps> = () => {
                 result = await editSeaExport(params);
             }
             if (result.success) {
-                message.success('success!!!');
-                if (id === '0') setId(result.data);
-                setIsSave(false);
+                message.success('Success!!!');
+                if (id === '0') {
+                    setId(result.data);
+                    props.handleChangeTabs('sea-export');
+                }
+                setIsSave(true);
                 await handleQuerySeaExportInfo();
                 setState('add');
-                setIsSave(true);
+                setIsSave(false);
             } else {
                 if (result.message) message.error(result.message);
             }
@@ -207,7 +214,10 @@ const SeaExport: React.FC<RouteChildrenProps> = () => {
                 <Containers {...baseForm}/>
 
                 {/* 收发通信息 */}
-                <BillOfLoading {...baseForm} formRef={formRef} title={'Bill Of Loading'} isSave={isSave} state={state}/>
+                <BillOfLoading
+                    {...baseForm} formRef={formRef} title={'Bill Of Loading'}
+                    isSave={isSave} headerInfo={props.headerInfo} state={state} isChangeValue={isChangeValue}
+                />
 
                 <Remark title={'Remark'} />
             </ProForm>

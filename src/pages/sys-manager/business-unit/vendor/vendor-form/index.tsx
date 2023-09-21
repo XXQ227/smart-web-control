@@ -93,11 +93,11 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
     const handleSelectPayers = (val: any, option: any) => {
         const clientObj: API.APIKey$Value = ClientVO?.find((item: API.APIKey$Value) => item.Key === val) || {};
         if (clientObj.Key) {
-            message.success('success!');
+            message.success('Success!');
         } else {
             const clientArr: API.APIKey$Value[] = ls.cloneDeep(ClientVO)
             clientArr.push({Key: val, Value: option.label});
-            message.success('success!');
+            message.success('Success!');
             setClientVO(clientArr);
         }
     }

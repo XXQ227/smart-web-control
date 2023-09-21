@@ -1,77 +1,71 @@
 @import '~antd/es/style/themes/default.less';
 
 .addServiceModal {
-  :global {
-    .ant-modal-content {
+  .ant-modal-content {
+    border-radius: 11px;
+
+    .ant-modal-header {
       border-radius: 11px;
+      border: none !important;
+      padding-bottom: 0;
 
-      .ant-modal-header {
-        border-radius: 11px;
-        border: none !important;
-        padding-bottom: 0;
+      .ant-modal-title{
+        text-align: center;
+        font-size: 24px;
+        margin-top: 10px;
+      }
+    }
 
-        .ant-modal-title{
-          text-align: center;
-          font-size: 24px;
-          margin-top: 10px;
-        }
+    .ant-modal-body {
+      margin-top: 25px;
+      margin-left: 35px;
+    }
+
+    .ant-modal-footer {
+      height: 110px;
+      border: none !important;
+      padding-right: 80px;
+
+      .ant-btn {
+        width: 168px;
+        height: 44px;
+        border: none;
+        font-size: 16px;
+        border-radius: 5px;
       }
 
-      .ant-modal-body {
-        padding-top: 0;
+      .ant-btn-default {
+        background-color: rgb(45, 45, 49);
+        margin-right: 15px;
       }
-
-      .ant-modal-footer {
-        height: 110px;
-        border: none !important;
-        padding-right: 80px;
-
-        .ant-btn {
-          width: 168px;
-          height: 44px;
-          border: none;
-          font-size: 16px;
-          border-radius: 5px;
-        }
-
-        .ant-btn-default {
-          background-color: rgb(45, 45, 49);
-          margin-right: 15px;
-        }
-      }
-
     }
   }
 
   .antRadio {
-    margin: 20px 42px;
+    .ant-radio-button-wrapper {
+      width: 258px;
+      height: 70px;
+      margin-bottom: 5px;
+      border: 1px solid transparent;
+    }
 
-    :global {
-      .ant-radio-button-wrapper {
-        width: 215px;
-        height: 70px;
-        margin-bottom: 20px;
-        border: 1px solid transparent;
-      }
+    .ant-radio-button-wrapper-checked {
+      border: 1px solid #165c94;
+    }
 
-      .ant-radio-button-wrapper-checked {
-        border: 1px solid #165c94;
-      }
+    .ant-radio-button-wrapper:not(:first-child)::before {
+      background-color: transparent !important;
+    }
 
-      .ant-radio-button-wrapper:not(:first-child)::before {
-        background-color: transparent !important;
-      }
-
-      .ant-radio-button-wrapper span:not(:first-child) {
-        display: flex;
-        align-items: center;
-      }
+    .ant-radio-button-wrapper span:not(:first-child) {
+      display: flex;
+      align-items: center;
     }
 
     svg {
       width: 60px;
       height: 60px;
-      margin-right: 17px;
+      margin-right: 15px;
       margin-top: 3px;
     }
 
@@ -79,7 +73,6 @@
       font-size: 16px;
       cursor: pointer;
     }
-
   }
 }
 

@@ -15,13 +15,13 @@ import {
 import {useCallback, useState} from "react";
 
 export default () => {
+    const [jobHeaderInfo, setJobHeaderInfo] = useState({});
     const [ServiceTypeList, setServiceTypeList] = useState([]);
     // TODO: 用于分配实装数据
     const [CargoInfo, setCargoInfo] = useState<any>({});
     const [jobInfo, setJobInfo] = useState<any>({});
 
     //region TODO: 接口
-
     // region job
     // TODO: 获取单票业务详情数据
     const queryJobInfo = useCallback(async (params: APIModel.GetCJobByID) => {
@@ -29,15 +29,16 @@ export default () => {
         const response: API.Result = await queryJobInfoAPI(params);
         if (!response) return;
         if (response.success) {
-            response.data.cargoInformationParam = response.data.cargoInformationResult || {};
-            response.data.termsParam = response.data.termsResult || {};
+            response.data.cargoInformationParam = response?.data?.cargoInformationResult || {};
+            response.data.termsParam = response?.data?.termsResult || {};
             // TODO: job 的服务信息
+            setJobHeaderInfo(response?.data?.jobCommonInformationResult || {});
             setServiceTypeList(response?.data?.serviceTypeList || []);
             setCargoInfo(response?.data?.cargoInformationResult || {});
             setJobInfo(response?.data || {});
-            delete response.data.cargoInformationResult;
-            delete response.data.termsResult;
-            delete response.data.service;
+            delete response?.data?.cargoInformationResult;
+            delete response?.data?.termsResult;
+            delete response?.data?.service;
         }
         return response;
     }, []);
@@ -90,7 +91,7 @@ export default () => {
             } else {
                 response.data.billOfLoadingEntity = [];
             }*/
-            delete response.data.service;
+            delete response.data?.service;
         }
         return response;
     }, []);
@@ -204,6 +205,7 @@ export default () => {
         addJob,
         editJob,
 
+        jobHeaderInfo,
         ServiceTypeList,
 
         querySeaExportInfo,

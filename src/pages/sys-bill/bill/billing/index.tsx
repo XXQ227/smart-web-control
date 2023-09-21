@@ -188,7 +188,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
         try {
             const result: API.Result = await createInvoice(params);
             if (result.success) {
-                message.success('success!');
+                message.success('Success!');
                 await handleQueryPendingInvoicingCharges(searchInfo);
             } else {
                 message.error('error');
@@ -221,7 +221,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
             // TODO: 返回结果变量
             const result: API.Result = await rejectCharges(params);
             if (result.success) {
-                message.success('success');
+                message.success('Success');
                 await handleQueryPendingInvoicingCharges(searchInfo);
             } else {
                 if (result.message) message.error(result.message);

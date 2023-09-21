@@ -119,7 +119,7 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
             result = await editProject(param);
         }
         if (result.success) {
-            message.success('success');
+            message.success('Success');
             if (id === '0') history.push({pathname: `/manager/project/form/${btoa(result.data)}`});
         } else {
             message.error(result.message)

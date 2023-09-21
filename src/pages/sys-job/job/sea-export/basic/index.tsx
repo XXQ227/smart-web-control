@@ -200,7 +200,7 @@ const Basic: React.FC<Props> = (props) => {
                                 onChange: (e) => setIsOriginal(e === '1')
                             }}
                         />
-                        {isOriginal ? <ProFormText label="B/L QTY" name={'blQty'}/> : null}
+                        {isOriginal ? <ProFormText label="B/L QTY" name={'blQty'} placeholder=''/> : null}
                     </div>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
                         <Form.Item name={'placeOfIssueCode'} label={'Place and Date of Issue'}>

@@ -47,7 +47,7 @@ const DictForm: React.FC<RouteChildrenProps> = () => {
     const onFinish = async (val: any) => {
         const result: API.Result = await addDict(val);
         if (result.success) {
-            message.success('success');
+            message.success('Success');
         } else {
             message.error(result.message)
         }

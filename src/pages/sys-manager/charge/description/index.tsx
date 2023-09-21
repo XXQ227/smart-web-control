@@ -130,7 +130,7 @@ const DescriptionIndex: React.FC<Props> = () => {
                     const newData: APICGItem[] = ls.cloneDeep(CGItemListVO);
                     newData.splice(index, 1, record);
                     setCGItemListVO(newData);
-                    message.success('success');
+                    message.success('Success');
                 }
                 setLoading(false);
             })

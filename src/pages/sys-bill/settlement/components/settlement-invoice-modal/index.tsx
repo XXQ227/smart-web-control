@@ -42,7 +42,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                 console.log(val, params);
                 const result: API.Result = await addBankSlip(params);
                 if (result.success) {
-                    message.success('success!');
+                    message.success('Success!');
                     handleModalOP(false, true);
                 } else {
                     if (result.message) message.error(result.message);

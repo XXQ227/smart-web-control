@@ -78,7 +78,6 @@ const JobList: React.FC<RouteChildrenProps> = () => {
         params.currentPage = params.current || 1;
         params.pageSize = params.pageSize || 20;
         result = await queryJobList(params as APIModel.SearchJobParams);
-        console.log(result);
         setJobList(result.data || []);
         setLoading(false);
         return result;

@@ -3,20 +3,22 @@ import Basic from "./basic";
 import Ports from "./port";
 import Remark from "@/pages/sys-job/job/sea-export/remark";
 import Containers from "@/pages/sys-job/job/sea-export/containers";
-import {Button, Form, message, Spin} from 'antd'
-import '../style.less'
-import type {RouteChildrenProps} from 'react-router'
-import {FooterToolbar, ProForm} from '@ant-design/pro-components'
-import {LeftOutlined, SaveOutlined} from '@ant-design/icons'
-import {history} from '@@/core/history'
-import {getFormErrorMsg} from '@/utils/units'
-import {useModel} from 'umi'
-import {useParams} from 'umi'
-import moment from 'moment/moment'
+import {Button, Form, message, Spin} from 'antd';
+import '../style.less';
+import {FooterToolbar, ProForm} from '@ant-design/pro-components';
+import {LeftOutlined, SaveOutlined} from '@ant-design/icons';
+import {history} from '@@/core/history';
+import {getFormErrorMsg} from '@/utils/units';
+import {useModel, useParams} from 'umi';
+import moment from 'moment/moment';
+
+interface Props {
+    handleChangeTabs: (value: string) => void,
+}
 
 const FormItem = Form.Item;
 
-const SeaImport: React.FC<RouteChildrenProps> = () => {
+const SeaImport: React.FC<Props> = (props) => {
     const [form] = Form.useForm();
     const urlParams: any = useParams();
     const jobId = atob(urlParams.id);
@@ -59,7 +61,6 @@ const SeaImport: React.FC<RouteChildrenProps> = () => {
         return result.data || {};
     }
 
-
     // TODO: 保存进口服务单票
     const handleFinish = async (values: Record<string, any>) => {
         try {
@@ -91,8 +92,11 @@ const SeaImport: React.FC<RouteChildrenProps> = () => {
                 result = await editSeaImport(params);
             }
             if (result.success) {
-                message.success('success!!!');
-                if (id === '0') setId(result?.data?.id || '0');
+                message.success('Success!!!');
+                if (id === '0') {
+                    setId(result?.data?.id || '0');
+                    props.handleChangeTabs('sea-import');
+                }
             } else {
                 if (result.message) message.error(result.message);
             }

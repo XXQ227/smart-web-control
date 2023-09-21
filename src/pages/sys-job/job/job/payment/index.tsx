@@ -17,14 +17,6 @@ interface Props {
 const Payment: React.FC<Props> = (props) => {
     const {title, termsParam, form, FormItem} = props;
 
-    useMemo(() => {
-
-    }, [])
-
-    useEffect(() => {
-
-    }, [])
-
     /**
      * @Description: TODO: 动态改值
      * @author XXQ
@@ -45,26 +37,27 @@ const Payment: React.FC<Props> = (props) => {
                 break;
             default: break;
         }
-        console.log(setValueObj);
         form.setFieldsValue(setValueObj);
     }
-
 
     return (
         <ProCard title={title} bordered={true} className={'ant-card pro-form-payment'} headerBordered collapsible>
             <Row gutter={rowGrid}>
                 <Col xs={24} sm={24} md={12} lg={12} xl={6} xxl={6}>
                     <ProFormSelect
+                        required
                         placeholder=''
                         label="Incoterms"
                         name={['termsParam', 'incotermsId']}
                         options={TERMS_INCOTERMS}
+                        rules={[{required: true, message: 'Incoterms'}]}
                     />
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={6} xxl={6}>
                     <FormItem
                         label={'Shipment Term'}
                         name={['termsParam', 'shipmentTermId']}
+                        rules={[{required: true, message: 'Shipment Term'}]}
                     >
                         <SearchModal
                             qty={20}
@@ -80,27 +73,33 @@ const Payment: React.FC<Props> = (props) => {
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={6} xxl={6}>
                     <ProFormSelect
+                        required
                         placeholder=''
                         label='Payment Term'
                         name={['termsParam', 'paymentTermId']}
                         options={TERMS_PAYMENT}
+                        rules={[{required: true, message: 'Payment Term'}]}
                     />
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={6} xxl={6}>
-                    <Form.Item name={['termsParam', 'payableAtCode']} label={'Payable AT'}>
+                    <FormItem
+                        label={'Payable AT'}
+                        name={['termsParam', 'payableAtCode']}
+                        rules={[{required: true, message: 'Payable AT'}]}
+                    >
                         <SearchTable
                             qty={10}
                             rowKey={'code'}
                             modalWidth={950}
                             showHeader={true}
                             title={'Payable AT'}
-                            // className={'textRight'}
+                            className={'textRight'}
                             text={termsParam?.payableAtNameEn}
                             name={['termsParam', 'payableAtCode']}
                             url={"/apiBase/sea/querySeaCommon"}
                             handleChangeData={(val: any, option: any) => handleChange('payableAtCode', val, option)}
                         />
-                    </Form.Item>
+                    </FormItem>
                 </Col>
             </Row>
             <Row gutter={24}>

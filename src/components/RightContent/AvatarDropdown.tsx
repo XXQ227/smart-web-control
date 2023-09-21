@@ -25,7 +25,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
         if (key === 'logout') {
             const result: API.Result = await iamUserLogIn();
             if (result.success) {
-                message.success('success!');
+                message.success('Success!');
                 history.push(`/user/login`);
                 return;
             } else {

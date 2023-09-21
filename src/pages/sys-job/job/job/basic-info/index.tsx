@@ -2,8 +2,8 @@ import React from 'react';
 import {ProCard, ProFormDatePicker, ProFormRadio, ProFormSelect, ProFormText, ProFormSwitch} from '@ant-design/pro-components';
 import {Col, Row, Divider} from 'antd';
 import {rowGrid} from '@/utils/units';
-import SearchProFormSelect from '@/components/SearchProFormSelect'
-import {useModel} from 'umi'
+import SearchProFormSelect from '@/components/SearchProFormSelect';
+import {useModel} from 'umi';
 
 interface Props {
     title: string;
@@ -12,15 +12,19 @@ interface Props {
 }
 
 const BasicInfo: React.FC<Props> = (props) => {
-    const  {title, form, CJobInfo} = props;
+    const {title, form, CJobInfo} = props;
 
-    const {SalesList} = useModel('manager.user', (res: any) => ({SalesList: res.SalesList}));
+    const {
+        SalesList
+    } = useModel('manager.user', (res: any) => ({
+        SalesList: res.SalesList
+    }));
 
     const {
         AccountPeriodList
     } = useModel('common', (res: any)=> ({
         AccountPeriodList: res.AccountPeriodList,
-    }))
+    }));
 
     /**
      * @Description: TODO:
@@ -32,11 +36,10 @@ const BasicInfo: React.FC<Props> = (props) => {
      * @returns
      */
     const handleChange = (filedName: string, val: any, option?: any) => {
-        console.log(val, filedName, option);
         const setValueObj: any = {[filedName]: val};
         switch (filedName) {
             case 'accountPeriodId':
-                setValueObj.accountPeriodInformation = option?.oldLabel;
+                setValueObj.accountPeriodInformation = option?.label;
                 break;
             case 'customerId':
                 setValueObj.customerNameCn = option?.nameFullCn;
@@ -70,29 +73,34 @@ const BasicInfo: React.FC<Props> = (props) => {
             <Row gutter={rowGrid}>
                 <Col xs={24} sm={24} md={12} lg={12} xl={7} xxl={4}>
                     <ProFormRadio.Group
+                        required
                         label="Business Type"
-                        name={'businessType'}
+                        name='businessType'
                         options={[
                             {label: 'Free Hand', value: 1,},
                             {label: 'R/O Shipment', value: 2,},
                         ]}
+                        rules={[{required: true, message: 'Business Type'}]}
                     />
-
                     <ProFormSelect
+                        required
                         width="md"
                         placeholder=''
                         label='Job Month'
                         options={AccountPeriodList}
-                        name={'accountPeriodId'}
+                        name='accountPeriodId'
+                        rules={[{required: true, message: 'Job Month'}]}
                         fieldProps={{
                             onChange: (val: any, option: any)=> handleChange('accountPeriodId', val, option)
                         }}
                     />
                     <ProFormDatePicker
+                        required
                         width="md"
                         placeholder=''
                         label="Order Taking Date"
-                        name={'orderTakingDate'}
+                        name='orderTakingDate'
+                        rules={[{required: true, message: 'Order Taking Date'}]}
                     />
                 </Col>
                 <Col xs={24} sm={24} md={12} lg={12} xl={7} xxl={4}>
@@ -111,13 +119,14 @@ const BasicInfo: React.FC<Props> = (props) => {
                         placeholder=''
                         name={'orderNum'}
                         label='Purchase/Shipment Order (Customer)'
-                        // initialValue={principalInfo?.ClientInvoNum}
                     />
                     <ProFormDatePicker
+                        required
                         width="md"
                         placeholder=''
                         label="Completion Date"
                         name={'completionDate'}
+                        rules={[{required: true, message: 'Completion Date'}]}
                     />
                 </Col>
                 <Col xs={0} sm={0} md={0} lg={0} xl={1} xxl={1} flex="auto" style={{ textAlign: "center" }}>
@@ -126,8 +135,9 @@ const BasicInfo: React.FC<Props> = (props) => {
                 <Col xs={24} sm={24} md={15} lg={13} xl={9} xxl={5}>
                     {/* 客户 */}
                     <SearchProFormSelect
+                        required
                         qty={5}
-                        isShowLabel={true}
+                        isShowLabel
                         width={"lg"}
                         label="Customer" id={'customerId'} name={'customerId'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
@@ -138,9 +148,10 @@ const BasicInfo: React.FC<Props> = (props) => {
                     />
                     {/* 付款方 */}
                     <SearchProFormSelect
+                        required
                         qty={5}
+                        isShowLabel
                         width={"lg"}
-                        isShowLabel={true}
                         label='Cargo Owner' id={'cargoOwnerId'} name={'cargoOwnerId'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
                         valueObj={{value: CJobInfo.cargoOwnerId, label: CJobInfo.cargoOwnerNameEn}}
@@ -150,9 +161,11 @@ const BasicInfo: React.FC<Props> = (props) => {
                     />
                     {/* 货主/业务指定人 */}
                     <SearchProFormSelect
+                        required
                         qty={5}
-                        width={"lg"} isShowLabel={true}
-                        id='payerId' name={'payerId'} label={'Paying Agent'}
+                        isShowLabel
+                        width={"lg"}
+                        label={'Paying Agent'} id={'payerId'} name={'payerId'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
                         valueObj={{value: CJobInfo.payerId, label: CJobInfo.payerNameEn}}
                         query={{branchId: '1665596906844135426', buType: 1, payerFlag: 1}}
@@ -165,12 +178,14 @@ const BasicInfo: React.FC<Props> = (props) => {
                 </Col>
                 <Col xs={24} sm={24} md={7} lg={9} xl={7} xxl={4}>
                     <SearchProFormSelect
+                        required
                         qty={5}
-                        width={"lg"} isShowLabel={true}
-                        label="Project" id={'projectId'} name={'projectId'}
+                        isShowLabel
+                        width={"lg"}
+                        label={'Project'} id={'projectId'} name={'projectId'}
                         valueObj={{value: CJobInfo.projectId, label: CJobInfo.projectName}}
-                        url={'/apiBase/project/queryProjectCommon'}
                         query={{branchId: '0', type: 1, currentPage: 1, pageSize: 8}}
+                        url={'/apiBase/project/queryProjectCommon'}
                         handleChangeData={(val: any, option: any) => handleChange('projectId', val, option)}
                     />
                     <ProFormSwitch

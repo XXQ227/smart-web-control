@@ -118,7 +118,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                 record.isChange = false;
                 newData.splice(index, 1, record);
                 if (result.success) {
-                    message.success('success');
+                    message.success('Success');
                     setDictListVO(newData);
                 } else {
                     message.error(result.message);
@@ -160,7 +160,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
             newData.splice(index, 1, record);
         }
         if (result.success) {
-            message.success('success');
+            message.success('Success');
             setDictListVO(newData);
         } else {
             message.error(result.message);

@@ -13,7 +13,6 @@ interface Props {
 const Ports: React.FC<Props> = (props) => {
     const {form, serviceInfo} = props;
 
-
     const [portNameInfo, setPortNameInfo] = useState({
         portOfLoadingNameEn: serviceInfo.portOfLoadingNameEn,
         placeOfReceiptNameEn: serviceInfo.placeOfReceiptNameEn,
@@ -58,7 +57,6 @@ const Ports: React.FC<Props> = (props) => {
                 {/* 抵港日期、卸货日期 */}
                 <Col xs={24} sm={24} md={24} lg={8} xl={4} xxl={4}>
                     <ProFormDatePicker width="md" name="eta" label="ETA" placeholder=""/>
-
                     <ProFormDatePicker width="md" name="dischargingDate" label="Discharging Date" placeholder=""/>
                 </Col>
                 <Col xs={0} sm={0} md={0} lg={0} xl={1} xxl={1} flex="auto" style={{ textAlign: "center" }}>
@@ -68,7 +66,11 @@ const Ports: React.FC<Props> = (props) => {
                     {/* 收货地、卸货港、装货港 */}
                     <Row gutter={rowGrid}>
                         <Col xs={24} sm={24} md={24} lg={8} xl={8} xxl={8}>
-                            <Form.Item label={'Place of Receipt'} name={'placeOfReceiptCode'}>
+                            <Form.Item
+                                label={'Place of Receipt'}
+                                name={'placeOfReceiptCode'}
+                                rules={[{required: true, message: 'Place of Receipt'}]}
+                            >
                                 <SearchTable
                                     qty={20}
                                     rowKey={'code'}
@@ -84,7 +86,11 @@ const Ports: React.FC<Props> = (props) => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={8} xl={8} xxl={8}>
-                            <Form.Item label={'Port of Discharge'} name={'portOfDischargeCode'}>
+                            <Form.Item
+                                label={'Port of Discharge'}
+                                name={'portOfDischargeCode'}
+                                rules={[{required: true, message: 'Port of Discharge'}]}
+                            >
                                 <SearchTable
                                     qty={20}
                                     rowKey={'code'}
@@ -99,7 +105,11 @@ const Ports: React.FC<Props> = (props) => {
                             </Form.Item>
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={8} xl={8} xxl={8}>
-                            <Form.Item label={'Port of Loading'} name={'portOfLoadingCode'}>
+                            <Form.Item
+                                label={'Port of Loading'}
+                                name={'portOfLoadingCode'}
+                                rules={[{required: true, message: 'Port of Loading'}]}
+                            >
                                 <SearchTable
                                     qty={20}
                                     rowKey={'code'}

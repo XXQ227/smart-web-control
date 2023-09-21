@@ -150,7 +150,7 @@ const InvoiceTypeListIndex: React.FC<RouteChildrenProps> = () => {
                 record.isChange = false;
                 newData.splice(index, 1, record);
                 if (result.success) {
-                    message.success('success');
+                    message.success('Success');
                     setInvoiceTypeListVO(newData);
                 } else {
                     message.error(result.message);
