@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Button, Col, Divider, Form, Row, Space, Table} from "antd";
+import {Button, Col, Divider, Row, Space, Table} from "antd";
 import {IconFont, rowGrid} from "@/utils/units";
 import {ProCard, ProFormText} from "@ant-design/pro-components";
 import SearchTable from "@/components/SearchTable";
@@ -8,13 +8,15 @@ import type {ColumnsType} from "antd/es/table";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
 
 interface Props {
-    title: string;
-    form: any;
-    serviceInfo: any;
+    title: string,
+    form: any,
+    FormItem: any,
+    serviceInfo: any,
+    handleProFormValueChange: (value: any) => void,
 }
 
 const Ports: React.FC<Props> = (props) => {
-    const {serviceInfo, form} = props;
+    const {title, form, FormItem, serviceInfo} = props;
 
     const [portNameInfo, setPortNameInfo] = useState({
         portOfLoadingNameEn: serviceInfo.portOfLoadingNameEn,
@@ -25,7 +27,6 @@ const Ports: React.FC<Props> = (props) => {
 
     const [isReload, setIsReload] = useState<boolean>(false);
 
-    // const handleChange = (fieldName: string, val: any, option?: any) => {
     function handleChange (fieldName: string, val: any, option?: any) {
         let setPortInfoVal: any = {};
         const portInfo = JSON.parse(JSON.stringify(portNameInfo)) || {};
@@ -59,8 +60,7 @@ const Ports: React.FC<Props> = (props) => {
             case "finalDestinationCode":
                 portInfo.finalDestinationNameEn = option?.name;
                 setPortInfoVal = {
-                    ...portInfo,
-                    ...portNameInfo, finalDestinationPrintOnBill: option?.name
+                    ...portInfo, finalDestinationPrintOnBill: option?.name,
                 };
                 break;
             default:
@@ -69,6 +69,7 @@ const Ports: React.FC<Props> = (props) => {
         setPortNameInfo(portInfo);
         setIsReload(true);
         form.setFieldsValue({[fieldName]: val, ...setPortInfoVal});
+        props.handleProFormValueChange({[fieldName]: val, ...setPortInfoVal});
     }
 
     const handleAdd = () => {
@@ -117,20 +118,19 @@ const Ports: React.FC<Props> = (props) => {
     ];
     //endregion
 
-
     return (
         <ProCard
             collapsible
             headerBordered
             bordered={true}
-            title={props.title}
+            title={title}
             className={'ant-card seaExportPort'}
         >
             <Row gutter={rowGrid}>
                 {/*装货港、卸货港*/}
                 <Col xs={24} sm={24} md={24} lg={20} xl={12} xxl={8}>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
-                        <Form.Item label={'Port of Loading'} name={'portOfLoadingCode'}>
+                        <FormItem label={'Port of Loading'} name={'portOfLoadingCode'}>
                             <SearchTable
                                 qty={20}
                                 rowKey={'code'}
@@ -143,7 +143,7 @@ const Ports: React.FC<Props> = (props) => {
                                 text={portNameInfo.portOfLoadingNameEn}
                                 handleChangeData={(val: any, option: any) => handleChange('portOfLoadingCode', val, option)}
                             />
-                        </Form.Item>
+                        </FormItem>
                         <span className={'siteSpaceSpan'}/>
                         <ProFormText
                             width={'sm'}
@@ -154,7 +154,7 @@ const Ports: React.FC<Props> = (props) => {
                         />
                     </Space>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
-                        <Form.Item label={'Port of Discharge'} name={'portOfDischargeCode'}>
+                        <FormItem label={'Port of Discharge'} name={'portOfDischargeCode'}>
                             <SearchTable
                                 qty={20}
                                 rowKey={'code'}
@@ -167,7 +167,7 @@ const Ports: React.FC<Props> = (props) => {
                                 text={portNameInfo.portOfDischargeNameEn}
                                 handleChangeData={(val: any, option: any) => handleChange('portOfDischargeCode', val, option)}
                             />
-                        </Form.Item>
+                        </FormItem>
                         <span className={'siteSpaceSpan'}/>
                         <ProFormText
                             width={'sm'}
@@ -184,7 +184,7 @@ const Ports: React.FC<Props> = (props) => {
                 {/*交货地、目的地*/}
                 <Col xs={24} sm={24} md={24} lg={20} xl={11} xxl={8}>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
-                        <Form.Item label={'Place of Receipt'} name={'placeOfReceiptCode'}>
+                        <FormItem label={'Place of Receipt'} name={'placeOfReceiptCode'}>
                             <SearchTable
                                 qty={20}
                                 rowKey={'code'}
@@ -199,7 +199,7 @@ const Ports: React.FC<Props> = (props) => {
                                 handleChangeReload={()=> setIsReload(false)}
                                 handleChangeData={(val: any, option: any) => handleChange('placeOfReceiptCode', val, option)}
                             />
-                        </Form.Item>
+                        </FormItem>
                         <span className={'siteSpaceSpan'}/>
                         <ProFormText
                             width={'sm'}
@@ -210,7 +210,7 @@ const Ports: React.FC<Props> = (props) => {
                         />
                     </Space>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
-                        <Form.Item label={'Final Destination'} name={'finalDestinationCode'}>
+                        <FormItem label={'Final Destination'} name={'finalDestinationCode'}>
                             <SearchTable
                                 qty={20}
                                 rowKey={'code'}
@@ -225,7 +225,7 @@ const Ports: React.FC<Props> = (props) => {
                                 handleChangeReload={()=> setIsReload(false)}
                                 handleChangeData={(val: any, option: any) => handleChange('finalDestinationCode', val, option)}
                             />
-                        </Form.Item>
+                        </FormItem>
                         <span className={'siteSpaceSpan'}/>
                         <ProFormText
                             width={'sm'}

@@ -1,18 +1,21 @@
 import React, {useState} from 'react';
-import type {RouteChildrenProps} from 'react-router';
 import BasicInfo from './basic-info';
 import Cargo from './cargo';
 import Payment from './payment';
 import {FooterToolbar, ProCard, ProForm, ProFormTextArea} from '@ant-design/pro-components';
-import {Button, Col, Form, message, Row, Spin} from 'antd';
-import {LeftOutlined, SaveOutlined} from '@ant-design/icons';
+import {Button, Col, Form, message, Modal, Row, Spin} from 'antd';
+import {ExclamationCircleFilled, LeftOutlined, SaveOutlined} from '@ant-design/icons';
 import {history} from '@@/core/history';
 import {getFormErrorMsg, rowGrid} from '@/utils/units';
 import {useModel, useParams} from 'umi';
 
+interface Props {
+    handleChangedTabName: (value: string) => void,
+}
+const { confirm } = Modal;
 const FormItem = Form.Item;
 
-const JobInfo: React.FC<RouteChildrenProps> = () => {
+const JobInfo: React.FC<Props> = (props) => {
     const params: any = useParams();
     const id = atob(params.id);
     const [form] = Form.useForm();
@@ -44,6 +47,7 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
 
     const [CJobInfo, setCJobInfo] = useState<any>({});
     const [loading, setLoading] = useState(false);
+    const [isChange, setIsChange] = useState(false);
     //endregion
 
     /**
@@ -79,6 +83,20 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
     }
 
     /**
+     * @Description: TODO: 当 ProForm 表单修改时，调用此方法
+     * @author LLS
+     * @date 2023/9/22
+     * @param changeValues   ProForm 表单修改的参数
+     * @returns
+     */
+    const handleProFormValueChange = (changeValues: any) => {
+        if (changeValues) {
+            props.handleChangedTabName('Job');
+            setIsChange(true);
+        }
+    }
+
+    /**
      * @Description: TODO: 保存单票信息
      * @author XXQ
      * @date 2023/8/7
@@ -88,7 +106,6 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
     const handleFinish = async (values: any) => {
         setLoading(true);
         try {
-            console.log(values)
             let result: API.Result;
             values.branchId = '1665596906844135426';
             values.businessLine = 1;
@@ -105,18 +122,44 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
             if (result?.success) {
                 setLoading(false);
                 message.success('Success!!!');
-                await handleQueryJobInfo({id: id === '0' ? result.data : id})
+                await handleQueryJobInfo({id: id === '0' ? result.data : id});
                 if (id === '0') {
-                    history.push({pathname: `/job/job-info/form/${btoa(result.data)}`})
+                    history.push({pathname: `/job/job-info/form/${btoa(result.data)}`});
                 }
+                props.handleChangedTabName('');
+                setIsChange(false);
             } else {
                 if (result.message) message.error(result.message);
                 setLoading(false);
             }
         } catch (e) {
-            message.error(e)
+            message.error(e);
         }
     };
+
+    /**
+     * @Description: TODO: 返回
+     * @author LLS
+     * @date 2023/9/22
+     * @returns
+     */
+    const handleBack = () => {
+        if (isChange) {
+            confirm({
+                title: `Confirm return ?`,
+                content: 'The current information has been modified.',
+                icon: <ExclamationCircleFilled />,
+                okText: 'Yes',
+                okType: 'danger',
+                cancelText: 'No',
+                onOk() {
+                    history.push({pathname: '/job/job-list'});
+                }
+            });
+        } else {
+            history.push({pathname: '/job/job-list'});
+        }
+    }
 
     const baseForm = {form, FormItem};
 
@@ -134,19 +177,14 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
                     render: () =>
                         <FooterToolbar
                             style={{height: 55}}
-                            extra={
-                                <Button
-                                    icon={<LeftOutlined/>}
-                                    onClick={() => history.push({pathname: '/job/job-list'})}
-                                >Back</Button>
-                            }>
-                            <Button
-                                icon={<SaveOutlined/>}
-                                key={'submit'} type={'primary'} htmlType={'submit'}
-                            >Save</Button>
+                            extra={<Button icon={<LeftOutlined/>} onClick={handleBack}>Back</Button>}>
+                            <Button icon={<SaveOutlined/>} key={'submit'} type={'primary'}
+                                    htmlType={'submit'}>Save</Button>
                         </FooterToolbar>
                     ,
                 }}
+                // TODO: 空间有改数据时触动
+                onValuesChange={handleProFormValueChange}
                 onFinish={handleFinish}
                 onFinishFailed={async (values: any) => {
                     if (values.errorFields?.length > 0) {
@@ -161,10 +199,14 @@ const JobInfo: React.FC<RouteChildrenProps> = () => {
 
                 <Cargo title={'Cargo'}/>
 
-                <Payment {...baseForm} termsParam={CJobInfo.termsParam || {}} title={'Payment & Shipping Terms'}/>
+                <Payment
+                    {...baseForm}
+                    termsParam={CJobInfo.termsParam || {}}
+                    title={'Payment & Shipping Terms'}
+                    handleProFormValueChange={handleProFormValueChange}
+                />
 
-                <ProCard title={'Remark'} bordered={true} className={'ant-card pro-form-payment'} headerBordered
-                         collapsible>
+                <ProCard title={'Remark'} bordered={true} className={'ant-card pro-form-payment'} headerBordered collapsible>
                     <Row gutter={rowGrid}>
                         <Col span={24}>
                             <ProFormTextArea

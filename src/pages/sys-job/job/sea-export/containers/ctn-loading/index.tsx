@@ -25,6 +25,7 @@ interface Props {
     type?: string;
     serviceId: string;
     containerList: any[];
+    handleProFormValueChange: (value: any) => void,
 }
 
 const CTNLoading: React.FC<Props> = (props) => {
@@ -52,6 +53,7 @@ const CTNLoading: React.FC<Props> = (props) => {
             setSelectedRowIDs(selectedRowKeys)
         },
     };
+
     /**
      * @Description: TODO: 实装箱信息修改
      * @author XXQ
@@ -67,14 +69,24 @@ const CTNLoading: React.FC<Props> = (props) => {
         const newData: any[] = ls.cloneDeep(cTNActualList);
         const target = newData.find((item: any)=> item.id === rowID);
         target[filedName] = val?.target ? val.target.value : val;
-
+        // TODO: 需要存箱型名字
+        if (filedName === 'ctnModelId') {
+            target.ctnModelName = option.label;
+        }
         newData.splice(index, 1, target);
         // TODO: 当 【件、重、尺】 有编辑时，需要重新计算 【Loading Summary】 的值
         if (['qty', 'grossWeight', 'measurement'].includes(filedName)) {
             getCtnBalance(newData);
         }
-        form.setFieldsValue({'containersLoadingDetailEntityList': newData});
+        form.setFieldsValue({
+            [`${filedName}_table_${target.id}`]: target[filedName],
+            containersLoadingDetailEntityList: newData
+        });
         setCTNActualList(newData);
+        props.handleProFormValueChange({
+            [`${filedName}_table_${target.id}`]: target[filedName],
+            containersLoadingDetailEntityList: newData
+        });
     }
 
     // TODO: 添加箱量
@@ -89,6 +101,7 @@ const CTNLoading: React.FC<Props> = (props) => {
         const newData = cTNActualList.slice(0).filter((item: any)=> !selectedRowIDs.includes(item.id));
         form.setFieldsValue({'containersLoadingDetailEntityList': newData});
         setCTNActualList(newData);
+        setSelectedRowIDs([]);
     };
 
     //region TODO: 引入预配箱信息、把货信息的 【件、重、尺】 均分到每个箱中
@@ -320,7 +333,7 @@ const CTNLoading: React.FC<Props> = (props) => {
                 />
         },
         {
-            title: 'qty', dataIndex: "qty", width: '8%', className: "textCenter",
+            title: 'QTY', dataIndex: "qty", width: '8%', className: "textCenter",
             render: (text: any, record, index) =>
                 <FormItemInput
                     required
@@ -374,11 +387,10 @@ const CTNLoading: React.FC<Props> = (props) => {
                 >
                     <SearchModal
                         qty={20}
-                        title={'SIZE'}
+                        title={'Packaging Methods'}
                         modalWidth={500}
-                        query={{SystemID: 4}}
                         text={record.packagingMethodName}
-                        // id={`packagingMethodId_table_${record.id}`}
+                        query={{SystemID: 4}}
                         url={"/apiLocal/MCommon/GetPKGTypeByStr"}
                         handleChangeData={(val: any, option: any) => onChange(index, record.id, 'packagingMethodId', val, option)}
                     />
@@ -392,7 +404,11 @@ const CTNLoading: React.FC<Props> = (props) => {
             {
                 title: 'SIZE', dataIndex: 'ctnModelId', width: '10%', className: "textCenter",
                 render: (text: any, record, index) =>
-                    <FormItem name={`ctnModelId_table_${record.id}`} initialValue={record.ctnModelName}>
+                    <FormItem
+                        name={`ctnModelId_table_${record.id}`}
+                        initialValue={record.ctnModelName}
+                        required rules={[{required: true, message: 'SIZE'}]}
+                    >
                         <SearchModal
                             qty={30}
                             title={'SIZE'}
@@ -408,7 +424,7 @@ const CTNLoading: React.FC<Props> = (props) => {
                 title: 'Yard Container No.', dataIndex: "YardCTNNum", className: "textCenter",
                 render: (text: any, record, index) =>
                     <FormItemInput
-                        placeholder={''}
+                        placeholder=''
                         initialValue={text}
                         name={`YardCTNNum_table_${record.id}`}
                         onChange={(val: any) => onChange(index, record.id, 'yardCTNNum', val)}
@@ -479,10 +495,10 @@ const CTNLoading: React.FC<Props> = (props) => {
             <Row gutter={24}>
                 <Col xs={24} sm={24} md={24} lg={24} xl={24} xxl={20} className={'summary'}>
                     <Space className={'siteSpace'}>
-                        <div style={{margin: '3px 3px 0 0'}}>Loading Summary</div>
+                        <div style={{margin: '0 3px 1px 0'}}>Loading Summary</div>
                         <span className={'siteSpaceSpan'}/>
                         <div className={'loading'}>
-                            <span>qty：<b>{loadingSummary.qty}</b></span>
+                            <span>QTY：<b>{loadingSummary.qty}</b></span>
                             <span>G.W.：<b>{loadingSummary.grossWeight}</b></span>
                             <span>Meas：<b>{loadingSummary.measurement}</b></span>
                         </div>
@@ -490,12 +506,12 @@ const CTNLoading: React.FC<Props> = (props) => {
                     <IconFont type={iconFortStr} className={'iconfont'}/>
                     <Space className={'siteSpace'}>
                         <div className={'cargo'}>
-                            <span>qty：<b>{CargoInfo.qty}</b></span>
+                            <span>QTY：<b>{CargoInfo.qty}</b></span>
                             <span>G.W.：<b>{CargoInfo.grossWeight}</b></span>
                             <span>Meas：<b>{CargoInfo.measurement}</b></span>
                         </div>
                         <span className={'siteSpaceSpan'}/>
-                        <div style={{margin: '3px 0 0 3px'}}>Cargo Summary</div>
+                        <div style={{marginLeft: '3px'}}>Cargo Summary</div>
                     </Space>
                     {/* // TODO: 用于验证箱型的【件重尺】是否跟 【CargoInfo】中的匹配 */}
                     <ProFormText

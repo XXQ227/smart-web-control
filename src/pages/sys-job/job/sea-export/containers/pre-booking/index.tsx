@@ -19,6 +19,7 @@ interface Props {
     serviceId: string;
     CTNPlanList?: APIModel.PreBookingList[];
     preBookingList: APIModel.PreBookingList[];
+    handleProFormValueChange: (value: any) => void,
 }
 
 const FormItem = Form.Item;
@@ -55,6 +56,10 @@ const ProBooking: React.FC<Props> = (props) => {
             preBookingContainersEntityList: newData
         });
         setContainerList(newData);
+        props.handleProFormValueChange({
+            [`${filedName}_ctn_table_${target.id}`]: target[filedName],
+            preBookingContainersEntityList: newData
+        });
     }
 
     const preBookingColumns: ColumnsType<APIModel.PreBookingList> = [

@@ -3,10 +3,10 @@ import Basic from "./basic";
 import Ports from "./port";
 import Remark from "@/pages/sys-job/job/sea-export/remark";
 import Containers from "@/pages/sys-job/job/sea-export/containers";
-import {Button, Form, message, Spin} from 'antd';
+import {Button, Form, message, Modal, Spin} from 'antd';
 import '../style.less';
 import {FooterToolbar, ProForm} from '@ant-design/pro-components';
-import {LeftOutlined, SaveOutlined} from '@ant-design/icons';
+import {ExclamationCircleFilled, LeftOutlined, SaveOutlined} from '@ant-design/icons';
 import {history} from '@@/core/history';
 import {getFormErrorMsg} from '@/utils/units';
 import {useModel, useParams} from 'umi';
@@ -14,8 +14,9 @@ import moment from 'moment/moment';
 
 interface Props {
     handleChangeTabs: (value: string) => void,
+    handleChangedTabName: (value: string) => void,
 }
-
+const { confirm } = Modal;
 const FormItem = Form.Item;
 
 const SeaImport: React.FC<Props> = (props) => {
@@ -34,6 +35,7 @@ const SeaImport: React.FC<Props> = (props) => {
     const [loading, setLoading] = useState(false);
     const [seaImportInfo, setSeaImportInfo] = useState<any>({});
     const [id, setId] = useState<string>('0');
+    const [isChange, setIsChange] = useState(false);
 
     /**
      * @Description: TODO: 获取海运出口信息
@@ -59,6 +61,20 @@ const SeaImport: React.FC<Props> = (props) => {
         }
         setSeaImportInfo(result.data || {});
         return result.data || {};
+    }
+
+    /**
+     * @Description: TODO: 当 ProForm 表单修改时，调用此方法
+     * @author LLS
+     * @date 2023/9/22
+     * @param changeValues   ProForm 表单修改的参数
+     * @returns
+     */
+    const handleProFormValueChange = (changeValues: any) => {
+        if (changeValues) {
+            props.handleChangedTabName('Sea (Import)');
+            setIsChange(true);
+        }
     }
 
     // TODO: 保存进口服务单票
@@ -97,6 +113,8 @@ const SeaImport: React.FC<Props> = (props) => {
                     setId(result?.data?.id || '0');
                     props.handleChangeTabs('sea-import');
                 }
+                props.handleChangedTabName('');
+                setIsChange(false);
             } else {
                 if (result.message) message.error(result.message);
             }
@@ -105,7 +123,31 @@ const SeaImport: React.FC<Props> = (props) => {
         }
     };
 
-    const baseForm = {form, FormItem, serviceInfo: seaImportInfo};
+    /**
+     * @Description: TODO: 返回
+     * @author LLS
+     * @date 2023/9/22
+     * @returns
+     */
+    const handleBack = () => {
+        if (isChange) {
+            confirm({
+                title: `Confirm return ?`,
+                content: 'The current information has been modified.',
+                icon: <ExclamationCircleFilled />,
+                okText: 'Yes',
+                okType: 'danger',
+                cancelText: 'No',
+                onOk() {
+                    history.push({pathname: '/job/job-list'});
+                }
+            });
+        } else {
+            history.push({pathname: '/job/job-list'});
+        }
+    }
+
+    const baseForm = {form, FormItem, serviceInfo: seaImportInfo, handleProFormValueChange};
 
     return (
         <Spin spinning={loading}>
@@ -121,13 +163,15 @@ const SeaImport: React.FC<Props> = (props) => {
                         return (
                             <FooterToolbar
                                 style={{height: 55}}
-                                extra={<Button icon={<LeftOutlined/>} onClick={() => history.goBack()}>Back</Button>}>
+                                extra={<Button icon={<LeftOutlined/>} onClick={handleBack}>Back</Button>}>
                                 <Button icon={<SaveOutlined/>} key={'submit'} type={'primary'}
                                         htmlType={'submit'}>Save</Button>
                             </FooterToolbar>
                         );
                     },
                 }}
+                // TODO: 空间有改数据时触动
+                onValuesChange={handleProFormValueChange}
                 onFinish={handleFinish}
                 onFinishFailed={async (values: any) => {
                     if (values.errorFields?.length > 0) {
@@ -144,7 +188,7 @@ const SeaImport: React.FC<Props> = (props) => {
                 {/* 港口信息 */}
                 <Ports {...baseForm} title={'Port'}/>
 
-                <Containers{...baseForm} type={'import'}/>
+                <Containers {...baseForm} type={'import'}/>
 
                 <Remark type={'import'} title={'Remark'}/>
             </ProForm>
