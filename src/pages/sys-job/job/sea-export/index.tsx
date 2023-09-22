@@ -8,8 +8,8 @@ import Remark from "./remark";
 import '../style.less';
 import {FooterToolbar, ProForm} from '@ant-design/pro-components';
 import type {ProFormInstance} from '@ant-design/pro-components';
-import {Button, Form, message, Spin} from 'antd';
-import {LeftOutlined, SaveOutlined} from '@ant-design/icons';
+import {Button, Form, message, Modal, Spin} from 'antd';
+import {ExclamationCircleFilled, LeftOutlined, SaveOutlined} from '@ant-design/icons';
 import {history} from '@@/core/history';
 import {getFormErrorMsg} from '@/utils/units';
 import {useParams, useModel} from 'umi';
@@ -18,8 +18,9 @@ import moment from 'moment';
 interface Props {
     headerInfo: any,
     handleChangeTabs: (value: string) => void,
+    handleChangedTabName: (value: string) => void,
 }
-
+const { confirm } = Modal;
 const FormItem = Form.Item;
 
 const SeaExport: React.FC<Props> = (props) => {
@@ -42,6 +43,7 @@ const SeaExport: React.FC<Props> = (props) => {
     const [isSave, setIsSave] = useState(false);
     const [state, setState] = useState('');
     const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
+    const [isChange, setIsChange] = useState(false);
 
     /**
      * @Description: TODO: 获取海运出口信息
@@ -142,6 +144,8 @@ const SeaExport: React.FC<Props> = (props) => {
                 await handleQuerySeaExportInfo();
                 setState('add');
                 setIsSave(false);
+                props.handleChangedTabName('');
+                setIsChange(false);
             } else {
                 if (result.message) message.error(result.message);
             }
@@ -160,13 +164,39 @@ const SeaExport: React.FC<Props> = (props) => {
      */
     const handleProFormValueChange = (changeValues: any) => {
         Object.keys(changeValues).map((item: any) => {
+            props.handleChangedTabName('Sea (Export)');
+            setIsChange(true);
             if (item === 'mblNum') {
                 setIsChangeValue(!isChangeValue);
             }
         })
     }
 
-    const baseForm = {form, FormItem, serviceInfo: seaExportInfo};
+    /**
+     * @Description: TODO: 返回
+     * @author LLS
+     * @date 2023/9/22
+     * @returns
+     */
+    const handleBack = () => {
+        if (isChange) {
+            confirm({
+                title: `Confirm return ?`,
+                content: 'The current information has been modified.',
+                icon: <ExclamationCircleFilled />,
+                okText: 'Yes',
+                okType: 'danger',
+                cancelText: 'No',
+                onOk() {
+                    history.push({pathname: '/job/job-list'});
+                }
+            });
+        } else {
+            history.push({pathname: '/job/job-list'});
+        }
+    }
+
+    const baseForm = {form, FormItem, serviceInfo: seaExportInfo, handleProFormValueChange};
 
     return (
         <Spin spinning={loading}>
@@ -178,21 +208,18 @@ const SeaExport: React.FC<Props> = (props) => {
                 className={'basicInfoProForm'}
                 submitter={{
                     // 完全自定义整个区域
-                    render: () => {
-                        return (
-                            <FooterToolbar
-                                style={{height: 55}}
-                                extra={<Button icon={<LeftOutlined/>} onClick={() => history.goBack()}>Back</Button>}>
-                                <Button icon={<SaveOutlined/>} key={'submit'} type={'primary'}
-                                        htmlType={'submit'}>Save</Button>
-                            </FooterToolbar>
-                        );
-                    },
+                    render: () =>
+                        <FooterToolbar
+                            style={{height: 55}}
+                            extra={<Button icon={<LeftOutlined/>} onClick={handleBack}>Back</Button>}>
+                            <Button icon={<SaveOutlined/>} key={'submit'} type={'primary'}
+                                    htmlType={'submit'}>Save</Button>
+                        </FooterToolbar>
+                    ,
                 }}
                 initialValues={seaExportInfo}
                 // TODO: 空间有改数据时触动
                 onValuesChange={handleProFormValueChange}
-                // formKey={'sea-export-information'}
                 onFinish={handleFinish}
                 onFinishFailed={async (values: any) => {
                     if (values.errorFields?.length > 0) {

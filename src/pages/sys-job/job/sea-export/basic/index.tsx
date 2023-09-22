@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Col, Divider, Form, Row, Space} from "antd";
+import {Col, Divider, Row, Space} from "antd";
 import {rowGrid} from "@/utils/units";
 import {
     ProCard,
@@ -14,11 +14,13 @@ import SearchTable from '@/components/SearchTable';
 interface Props {
     title: string,
     form: any,
+    FormItem: any,
     serviceInfo: any,
+    handleProFormValueChange: (value: any) => void,
 }
 
 const Basic: React.FC<Props> = (props) => {
-    const {form, serviceInfo} = props;
+    const {form, serviceInfo, FormItem} = props;
     const [isOriginal, setIsOriginal] = useState(serviceInfo?.blTypeId === '1');
 
     /**
@@ -55,6 +57,7 @@ const Basic: React.FC<Props> = (props) => {
                 break;
             case 'placeOfIssueCode':
                 setValueObj.placeOfIssueNameEn = option?.name;
+                props.handleProFormValueChange(setValueObj);
                 break;
             default: break;
         }
@@ -203,7 +206,7 @@ const Basic: React.FC<Props> = (props) => {
                         {isOriginal ? <ProFormText label="B/L QTY" name={'blQty'} placeholder=''/> : null}
                     </div>
                     <Space direction="horizontal" align="center" className={'siteSpace'}>
-                        <Form.Item name={'placeOfIssueCode'} label={'Place and Date of Issue'}>
+                        <FormItem name={'placeOfIssueCode'} label={'Place and Date of Issue'}>
                             <SearchTable
                                 qty={10}
                                 rowKey={'code'}
@@ -215,7 +218,7 @@ const Basic: React.FC<Props> = (props) => {
                                 url={"/apiBase/sea/querySeaCommon"}
                                 handleChangeData={(val: any, option: any) => handleChange('placeOfIssueCode', val, option)}
                             />
-                        </Form.Item>
+                        </FormItem>
                         <span className={'siteSpaceSpan'}/>
                         <ProFormDatePicker name="placeOfDate" placeholder=""/>
                     </Space>

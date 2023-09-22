@@ -1,17 +1,19 @@
 import React, {useState} from 'react';
-import {Col, Divider, Row, Form} from "antd";
+import {Col, Divider, Row} from "antd";
 import {rowGrid} from "@/utils/units";
 import {ProCard, ProFormDatePicker, ProFormText} from "@ant-design/pro-components";
 import SearchTable from "@/components/SearchTable";
 
 interface Props {
-    title: string;
-    form: any;
-    serviceInfo: any;
+    title: string,
+    form: any,
+    FormItem: any,
+    serviceInfo: any,
+    handleProFormValueChange: (value: any) => void,
 }
 
 const Ports: React.FC<Props> = (props) => {
-    const {form, serviceInfo} = props;
+    const {form, FormItem, serviceInfo} = props;
 
     const [portNameInfo, setPortNameInfo] = useState({
         portOfLoadingNameEn: serviceInfo.portOfLoadingNameEn,
@@ -42,6 +44,7 @@ const Ports: React.FC<Props> = (props) => {
         }
         setPortNameInfo(portNameInfo);
         form.setFieldsValue({[fieldName]: val, ...setPortInfoVal});
+        props.handleProFormValueChange({[fieldName]: val, ...setPortInfoVal});
     }
     //endregion
 
@@ -66,7 +69,7 @@ const Ports: React.FC<Props> = (props) => {
                     {/* 收货地、卸货港、装货港 */}
                     <Row gutter={rowGrid}>
                         <Col xs={24} sm={24} md={24} lg={8} xl={8} xxl={8}>
-                            <Form.Item
+                            <FormItem
                                 label={'Place of Receipt'}
                                 name={'placeOfReceiptCode'}
                                 rules={[{required: true, message: 'Place of Receipt'}]}
@@ -83,10 +86,10 @@ const Ports: React.FC<Props> = (props) => {
                                     text={portNameInfo.placeOfReceiptNameEn}
                                     handleChangeData={(val: any, option: any) => handleChange('placeOfReceiptCode', val, option)}
                                 />
-                            </Form.Item>
+                            </FormItem>
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={8} xl={8} xxl={8}>
-                            <Form.Item
+                            <FormItem
                                 label={'Port of Discharge'}
                                 name={'portOfDischargeCode'}
                                 rules={[{required: true, message: 'Port of Discharge'}]}
@@ -102,10 +105,10 @@ const Ports: React.FC<Props> = (props) => {
                                     text={portNameInfo.portOfDischargeNameEn}
                                     handleChangeData={(val: any, option: any) => handleChange('portOfDischargeCode', val, option)}
                                 />
-                            </Form.Item>
+                            </FormItem>
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={8} xl={8} xxl={8}>
-                            <Form.Item
+                            <FormItem
                                 label={'Port of Loading'}
                                 name={'portOfLoadingCode'}
                                 rules={[{required: true, message: 'Port of Loading'}]}
@@ -121,7 +124,7 @@ const Ports: React.FC<Props> = (props) => {
                                     text={portNameInfo.portOfLoadingNameEn}
                                     handleChangeData={(val: any, option: any) => handleChange('portOfLoadingCode', val, option)}
                                 />
-                            </Form.Item>
+                            </FormItem>
                         </Col>
                     </Row>
                     {/* 码头、作业区 */}

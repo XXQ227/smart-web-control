@@ -296,7 +296,6 @@ const ChargeTable: React.FC<Props> = (props) => {
         handleChangeRows([], []);
     }
 
-
     /**
      * @Description: TODO: 删除费用
      * @author XXQ
@@ -520,7 +519,6 @@ const ChargeTable: React.FC<Props> = (props) => {
             handleChangeRows(selectedRowKeys, selectedRows);
         },
     };
-
 
     return (
         <ProCard title={title} bordered={true} headerBordered className={'ant-card'}>

@@ -18,6 +18,7 @@ import {useParams, useModel} from "umi";
 interface Props {
     type: string,
     handleChangeTabs: (value: string) => void,
+    handleChangedTabName: (value: string) => void,
 }
 
 const { confirm } = Modal;
@@ -48,6 +49,7 @@ const LocalDelivery: React.FC<Props> = (props) => {
     const activeKeyRef = useRef(activeKey);
     activeKeyRef.current = activeKey;
     const newTabIndex = useRef(1);
+    const [isChange, setIsChange] = useState(false);
 
     /**
      * @Description: TODO: 当修改批次名称时，同时修改选项卡头显示的文字
@@ -254,7 +256,6 @@ const LocalDelivery: React.FC<Props> = (props) => {
             const cleanedDataWithJobId = dataWithJobId.map((data) => {
                 return removeTableProperties(data);
             });
-            console.log(cleanedDataWithJobId);
 
             let result: API.Result;
             if (id === '0') {
@@ -273,6 +274,8 @@ const LocalDelivery: React.FC<Props> = (props) => {
                 // 清空控件数据
                 formRef?.current?.resetFields();
                 await handleQueryLocalDeliveryInfo('add');
+                props.handleChangedTabName('');
+                setIsChange(false);
             } else {
                 message.error(result.message);
             }
@@ -379,6 +382,44 @@ const LocalDelivery: React.FC<Props> = (props) => {
         }
     };
 
+    /**
+     * @Description: TODO: 当 ProForm 表单修改时，调用此方法
+     * @author LLS
+     * @date 2023/9/22
+     * @param changeValues   ProForm 表单修改的参数
+     * @returns
+     */
+    const handleProFormValueChange = (changeValues: any) => {
+        if (changeValues) {
+            props.handleChangedTabName('Local Delivery');
+            setIsChange(true);
+        }
+    }
+
+    /**
+     * @Description: TODO: 返回
+     * @author LLS
+     * @date 2023/9/22
+     * @returns
+     */
+    const handleBack = () => {
+        if (isChange) {
+            confirm({
+                title: `Confirm return ?`,
+                content: 'The current information has been modified.',
+                icon: <ExclamationCircleFilled />,
+                okText: 'Yes',
+                okType: 'danger',
+                cancelText: 'No',
+                onOk() {
+                    history.push({pathname: '/job/job-list'});
+                }
+            });
+        } else {
+            history.push({pathname: '/job/job-list'});
+        }
+    }
+
     return (
         <Spin spinning={loading}>
             <ProForm
@@ -392,14 +433,13 @@ const LocalDelivery: React.FC<Props> = (props) => {
                     render: () =>
                         <FooterToolbar
                             style={{height: 55}}
-                            extra={
-                                <Button icon={<LeftOutlined/>} onClick={() => history.goBack()}>Back</Button>
-                            }>
-                            <Button icon={<SaveOutlined/>} key={'submit'} type={'primary'} htmlType={'submit'}>
-                                Save
-                            </Button>
+                            extra={<Button icon={<LeftOutlined/>} onClick={handleBack}>Back</Button>}>
+                            <Button icon={<SaveOutlined/>} key={'submit'} type={'primary'}
+                                    htmlType={'submit'}>Save</Button>
                         </FooterToolbar>
                 }}
+                // TODO: 空间有改数据时触动
+                onValuesChange={handleProFormValueChange}
                 onFinish={handleFinish}
                 onFinishFailed={async (values: any) => {
                     if (values.errorFields?.length > 0) {

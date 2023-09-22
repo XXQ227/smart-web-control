@@ -937,6 +937,12 @@ export function getTransferDate (dataString: string) {
 export function getServiceTypeName (checkedValue: string) {
     if (checkedValue) {
         switch (checkedValue) {
+            case 'job':
+                return 'Job';
+            case 'charge':
+                return 'Charge';
+            case 'refund-charge':
+                return 'Refund-Charge';
             case 'sea-import':
                 return 'Sea (Import)';
             case 'sea-export':

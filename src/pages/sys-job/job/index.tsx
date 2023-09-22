@@ -45,6 +45,7 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [headerInfo, setHeaderInfo] = useState({});
+    const [changedTabName, setChangedTabName] = useState('');
 
     useEffect(() => {
         setLoading(true);
@@ -86,9 +87,33 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
         setIsModalOpen(state);
     };
 
+    /**
+     * @Description: TODO: 导航栏切换事件
+     * @author LLS
+     * @date 2023/9/21
+     * @param key
+     * @returns
+     */
     const onTabChange = (key: string) => {
-        setActiveKey(key);
-        window.scroll({top: 0});
+        // TODO: 返回时判断有没有编辑过，有就弹出提示
+        if (!changedTabName) {
+            setActiveKey(key);
+            window.scroll({top: 0});
+        } else {
+            confirm({
+                title: `Confirm to switch to ${getServiceTypeName(key)} ?`,
+                content: 'The current information has been modified.',
+                icon: <ExclamationCircleFilled />,
+                okText: 'Yes',
+                okType: 'danger',
+                cancelText: 'No',
+                onOk() {
+                    setChangedTabName('');
+                    setActiveKey(key);
+                    window.scroll({top: 0});
+                }
+            });
+        }
     };
 
     /**
@@ -103,15 +128,14 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
         const newPanes = [...tabList];
         const targetIndex = tabList.findIndex((pane) => pane.key === checkedValue);
         if (targetIndex < 0) {
+            setChangedTabName('');
             newPanes.push({ tab: getServiceTypeName(checkedValue), key: checkedValue, closable: true });
             setTabList(newPanes);
             setActiveKey(checkedValue);
         } else {
             message.warning({
                 content: 'This service type has already been added.',
-                style: {
-                    fontSize: 16,
-                },
+                style: {fontSize: 16},
                 duration: 5,
             });
         }
@@ -138,6 +162,7 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
                     setActiveKey(key);
                 }
                 setTabList(newPanes);
+                setChangedTabName('');
             },
             onCancel() {
                 console.log('Cancel');
@@ -151,13 +176,25 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
     ) => {
         if (action === 'add') {
             if (id !== '0') {
-                showModal(true);
+                if (!changedTabName) {
+                    showModal(true);
+                } else {
+                    confirm({
+                        title: `Confirm to add new service ?`,
+                        content: 'The current information has been modified.',
+                        icon: <ExclamationCircleFilled />,
+                        okText: 'Yes',
+                        okType: 'danger',
+                        cancelText: 'No',
+                        onOk() {
+                            showModal(true);
+                        }
+                    });
+                }
             } else {
                 message.warning({
                     content: 'Please save the Job information first.',
-                    style: {
-                        fontSize: 16,
-                    },
+                    style: {fontSize: 16},
                     duration: 5,
                 });
             }
@@ -183,6 +220,8 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
         });
     }
 
+    const baseProps = {...props, handleChangeTabs, handleChangedTabName: (value: string) => setChangedTabName(value) };
+
     return (
         <PageContainer
             title={false}
@@ -203,14 +242,14 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
                 onEdit: onEdit,
             }}
         >
-            {activeKey === 'job' && <JobInfo {...props} />}
-            {activeKey === 'charge' && !isCreate && <JobChargeInfo {...props}/>}
-            {activeKey === 'refund-charge' && !isCreate && <ChargeRefund {...props}/>}
-            {activeKey === 'sea-import' && <SeaImport {...props} handleChangeTabs={(value)=> handleChangeTabs(value)}/>}
-            {activeKey === 'sea-export' && <SeaExport {...props} headerInfo={headerInfo} handleChangeTabs={(value)=> handleChangeTabs(value)}/>}
-            {activeKey === 'foreignVehicle' && <LocalDelivery {...props} type='foreignVehicle' handleChangeTabs={(value)=> handleChangeTabs(value)}/>}
-            {activeKey === 'land-forwarder' && <LocalDelivery {...props} type='land-forwarder' handleChangeTabs={(value)=> handleChangeTabs(value)}/>}
-            {activeKey === 'local-delivery' && <LocalDelivery {...props} type='local-delivery' handleChangeTabs={(value)=> handleChangeTabs(value)}/>}
+            {activeKey === 'job' && <JobInfo {...baseProps}/>}
+            {activeKey === 'charge' && !isCreate && <JobChargeInfo {...baseProps}/>}
+            {activeKey === 'refund-charge' && !isCreate && <ChargeRefund {...baseProps}/>}
+            {activeKey === 'sea-import' && <SeaImport {...baseProps}/>}
+            {activeKey === 'sea-export' && <SeaExport {...baseProps} headerInfo={headerInfo}/>}
+            {activeKey === 'foreignVehicle' && <LocalDelivery {...baseProps} type='foreignVehicle'/>}
+            {activeKey === 'land-forwarder' && <LocalDelivery {...baseProps} type='land-forwarder'/>}
+            {activeKey === 'local-delivery' && <LocalDelivery {...baseProps} type='local-delivery'/>}
 
             <AddServiceModal
                 open={isModalOpen}

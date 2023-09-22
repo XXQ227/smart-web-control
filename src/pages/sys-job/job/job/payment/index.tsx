@@ -1,6 +1,6 @@
-import React, {useEffect, useMemo} from 'react';
+import React from 'react';
 import {ProCard, ProFormSelect, ProFormText} from '@ant-design/pro-components';
-import {Col, Form, Row} from 'antd';
+import {Col, Row} from 'antd';
 import {rowGrid} from '@/utils/units';
 import SearchModal from '@/components/SearchModal';
 import SearchTable from '@/components/SearchTable';
@@ -12,6 +12,7 @@ interface Props {
     termsParam: APIModel.Terms,
     form: any,
     FormItem: any,
+    handleProFormValueChange: (value: any) => void,
 }
 
 const Payment: React.FC<Props> = (props) => {
@@ -38,6 +39,7 @@ const Payment: React.FC<Props> = (props) => {
             default: break;
         }
         form.setFieldsValue(setValueObj);
+        props.handleProFormValueChange(setValueObj);
     }
 
     return (

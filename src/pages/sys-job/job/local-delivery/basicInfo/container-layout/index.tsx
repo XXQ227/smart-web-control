@@ -160,6 +160,7 @@ const ContainerLayout: React.FC<Props> = (props) => {
             preBookingContainersEntityList: newData
         });
         setContainerList(newData);
+        setSelectedRowIDs([]);
     };
 
     return (

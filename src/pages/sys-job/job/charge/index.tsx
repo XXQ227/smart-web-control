@@ -37,7 +37,6 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
 
     // TODO: 用来判断是否是第一次加载数据
     const [loading, setLoading] = useState(false);
-
     const [payCGList, setPayCGList] = useState<APICGInfo[]>([]);
     const [receiveCGList, setReceiveCGList] = useState<APICGInfo[]>([]);
     const [proxyCGList, setProxyCGList] = useState<APICGInfo[]>([]);
@@ -49,10 +48,6 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
 
     // TODO: 加载状态，当调接口重新获取数据时，更新状态，且同步更新子组件 <charge-table> 的数据
     const [isReload, setIsReload] = useState<boolean>(false);
-
-    useEffect(() => {
-
-    }, [])
 
     async function handleQueryJobChargeInfo() {
         if (!loading) setLoading(true);
@@ -365,7 +360,6 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                     {...baseCGDON}
                     CGList={proxyCGList}
                 />
-
             </ProForm>
         </Spin>
     )
