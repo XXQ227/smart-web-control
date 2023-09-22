@@ -42,6 +42,7 @@ const job_route = {
             path: '/job/job-info',
             // 只有在编辑页面时，才显示
             access: 'isJobEditPage',
+            hideInMenu: true,   // 隐藏不显示
             routes: [
                 {
                     path: '/job/job-info',
@@ -73,7 +74,7 @@ const bill_route = {
     routes: [
         {
             path: '/bill',
-            redirect: '/bill/ticket',
+            redirect: '/bill/billing/ar',
         },
         {
             name: 'billing',
@@ -106,8 +107,8 @@ const bill_route = {
             name: 'settlement',
             icon: 'icon-settlement',
             path: '/bill/settlement',
-            // component: './sys-bill/invoice',
-            routes: [
+            component: './sys-bill/settlement',
+            /*routes: [
                 {
                     name: 'outstanding',
                     icon: 'icon-settlement',
@@ -126,7 +127,7 @@ const bill_route = {
                     path: '/bill/settlement/settle-log',
                     component: './sys-bill/settlement/log',
                 },
-            ],
+            ],*/
             ...MICRO_APP_CARGO('bill'),
         },
         {

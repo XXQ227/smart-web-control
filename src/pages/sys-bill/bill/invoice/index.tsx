@@ -203,7 +203,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
     const columns: ProColumns[] = [
         {title: 'Type', dataIndex: 'type', width: 60, align: 'center'},
         {title: 'B-Line', dataIndex: 'jobBusinessLine', width: 60, align: 'center', valueEnum: BUSINESS_LINE_ENUM},
-        {title: 'Invoice No.', dataIndex: 'invoiceNum', width: 90},
+        {title: 'Invoice No.', dataIndex: 'invoiceNum', width: 150},
         {title: 'Job No.', dataIndex: 'jobsNumber', width: 150},
         {title: 'Payer / Vendor', dataIndex: 'customerOrPayingAgentName',},
         {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 100, align: 'center'},
@@ -213,7 +213,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
         {title: 'Issue Date', dataIndex: 'issueDate', width: 100, align: 'center', valueType: 'date'},
         {title: 'Issue by', dataIndex: 'issueName', width: 130, align: 'center'},
         {
-            title: 'Action', width: 100,
+            title: 'Action', width: 100, className: 'ant-table-col-action',
             render: (text, record, index) =>
                 <Fragment>
                     <IconFont

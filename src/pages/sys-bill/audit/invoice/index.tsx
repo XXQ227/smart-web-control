@@ -79,8 +79,7 @@ const InvoiceAudit: React.FC<RouteChildrenProps> = () => {
         try {
             // TODO: 账期
             if (AccountPeriodList?.length === 0) await queryAccountPeriodCommon({
-                branchId: '1665596906844135426',
-                name: ''
+                branchId: '1665596906844135426', name: ''
             });
 
             const params: any = {...initSearchData, ...JSON.parse(JSON.stringify(val))};
@@ -233,6 +232,7 @@ const InvoiceAudit: React.FC<RouteChildrenProps> = () => {
                                     />
                                 </Col>
                                 <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={4}>
+                                    {/* Job 所属的账期月，这里默认值是本月，如果搜索出“下个月”的Job的话，也是可以审核的，只是关账时不强制审核非本月的 Job*/}
                                     <ProFormSelect
                                         placeholder={''}
                                         name="billingMonth"
@@ -291,7 +291,7 @@ const InvoiceAudit: React.FC<RouteChildrenProps> = () => {
                 </ProCard>
 
                 {/* Search Result */}
-                <ProCard>
+                <ProCard className={'ant-tabs-style'}>
                     <Spin spinning={loading}>
                         <Tabs
                             type="card"

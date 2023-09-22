@@ -2,13 +2,12 @@ import React, {useState} from 'react';
 import {Input} from 'antd'
 
 interface Props {
-    id?: any,
-    value: any,
-    valueStr?: string,
-    className?: string,
-
-    // TODO: 保存
-    handleChangeData: (val: any) => void,
+    id?: any;
+    value: any;
+    valueStr?: string;
+    className?: string;
+    disabled?: boolean;
+    handleChangeData: (val: any) => void;   // TODO: 保存
 }
 
 const InputEditNumber: React.FC<Props> = (props) => {
@@ -28,7 +27,6 @@ const InputEditNumber: React.FC<Props> = (props) => {
     function handleChange (val: any, state?: any) {
         const valData = val?.target ? val?.target?.value || null : val;
         if(state === 'onBlue') {
-            props.handleChangeData(valData);
             // 失去焦点，取消编辑状态
             setIsEdit(false);
         } else {
@@ -45,6 +43,7 @@ const InputEditNumber: React.FC<Props> = (props) => {
             placeholder={''}
             autoComplete='off'
             onChange={handleChange}
+            disabled={!!props.disabled}
             className={props.className}
             value={isEdit ? value || '' : props.valueStr}
             // 获取焦点时，进入编辑状态

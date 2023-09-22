@@ -887,6 +887,19 @@ ol {
 .antd-pro-table-expandable {
   .ant-pro-card-body {
     padding: 0!important;
+    .ant-table-tbody {
+      .ant-table-cell {
+        padding: 4px!important;
+      }
+      .ant-table-col-action {
+        padding: 4px 8px!important;
+      }
+    }
+    .ant-table-thead {
+      .ant-table-col-yellow {
+        background-color: #D39E59!important;
+      }
+    }
   }
   .ant-table-row-expand-icon-cell {
     width: 26px!important;
@@ -1077,6 +1090,29 @@ ol {
         float: left;
         margin-left: 25px;
       }
+    }
+  }
+}
+
+// TODO: Tabs 定制样式（黄底白字）
+.ant-tabs-style{
+  .ant-tabs-nav {
+    .ant-tabs-nav-list {
+      .ant-tabs-tab-active {
+        background-color: #D39E59;
+        .ant-tabs-tab-btn {
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
+.antd-pro-table-expandable {
+  .ant-table-thead {
+    .ant-table-row-expand-icon-cell {
+      width: 20px!important;
+      min-width: 20px!important;
     }
   }
 }

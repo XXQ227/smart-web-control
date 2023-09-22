@@ -13,7 +13,7 @@ const Welcome: React.FC = () => {
                 <Alert
                     message={intl.formatMessage({
                         id: 'pages.welcome.useSmartSystem',
-                        defaultMessage: '欢迎使用 Smart HK 系统',
+                        defaultMessage: '欢迎使用 EHK 系统',
                     })}
                     type="success"
                     showIcon

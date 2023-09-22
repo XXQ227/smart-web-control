@@ -91,7 +91,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         // route: routes,
         // TODO: 顶部右侧
         disableContentMargin: false,
-        title: 'Smart HK',
+        title: 'EHK',
         // TODO: 水印
         waterMarkProps: {
             content: initialState?.userInfo?.DisplayName,

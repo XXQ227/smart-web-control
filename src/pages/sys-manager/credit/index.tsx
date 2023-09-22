@@ -326,7 +326,7 @@ const CreditListIndex: React.FC<RouteChildrenProps> = () => {
                 breadcrumb: {},
             }}
         >
-            <ProCard className={'ant-card-pro-table'}>
+            <ProCard className={'ant-card-pro-table ant-tabs-style'}>
                 <Tabs defaultActiveKey='1' items={items} destroyInactiveTabPane={true} onChange={onChange}/>
             </ProCard>
         </PageContainer>

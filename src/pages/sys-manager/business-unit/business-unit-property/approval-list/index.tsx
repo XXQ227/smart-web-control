@@ -175,7 +175,7 @@ const SettlementList: React.FC<RouteChildrenProps> = () => {
                 breadcrumb: {},
             }}
         >
-            <ProCard className={'ant-card ant-card-pro-table'}>
+            <ProCard className={'ant-card ant-card-pro-table ant-tabs-style'}>
                 <Tabs destroyInactiveTabPane={true} activeKey={activeKey} items={items} onChange={handleTabsChange} />
             </ProCard>
             <FooterToolbar extra={<Button>返回</Button>}>
