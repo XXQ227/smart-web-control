@@ -10,24 +10,40 @@ import '../../style.less'
 
 interface Props {
     type: number;       // TODO: 核销类型:1-收款核销2-付款核销3-预付款核销
+    hidden?: boolean;   // TODO: 是否隐藏操作按钮
     settleInfo: any;    // TODO: 核销发票数据
     settleChargeList: any[];
 }
 
 const SettlementInvoiceModal: React.FC<Props> = (props) => {
     const [form] = Form.useForm();
-    const {type, settleInfo, settleChargeList} = props;
+    const {type, hidden, settleInfo, settleChargeList} = props;
+
+    const initSettleInfo: any = {
+        method: 2, serverAmount: 0, discountAmount: 0, serverAmountStr: '0', discountAmountStr: '0',
+        receivePayTime: moment(new Date()).format('YYYY-MM-DD'),    // TODO: 默认为当前时间
+    };
+
+    // TODO: 银行信息
+    const bankList = [
+        {value: '123456415354', label: '中国银行'},
+        {value: '214520456845', label: '渣打银行'},
+        {value: '524486532545', label: '汇丰银行'},
+    ];
+
+
+
 
     // TODO: 核销列表数据
     const [open, setOpen] = useState<boolean>(false);
     const [dataSource, setDataSource] = useState<any[]>([]);
 
-    const [settleInfoState, setSettleInfoState] = useState<any>({method: 1});
+    const [settleInfoState, setSettleInfoState] = useState<any>(initSettleInfo);
 
     const {
-        addBankSlip,
+        invoiceWriteOff,
     } = useModel('accounting.settlement', (res: any) => ({
-        addBankSlip: res.addBankSlip,
+        invoiceWriteOff: res.invoiceWriteOff,
     }));
 
     useEffect(() => {
@@ -58,29 +74,43 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
      * @param filedName
      * @param val
      * @param index
+     * @param option
      * @returns
      */
-    function handleRowChange(filedName: string, val: any, index?: number) {
-        if (filedName === 'settleAmount' && typeof index === 'number') {
+    function handleRowChange(filedName: string, val: any, index?: number, option?: any) {
+        // TODO: 【filedName === 'amount' && typeof index === 'number'】：操作费用行的数据
+        if (filedName === 'amount' && typeof index === 'number') {
+            // TODO: 编辑费用行核销金额
             const newData: any[] = dataSource.slice(0);
             const target: any = dataSource[index];
-            target[filedName] = val;
-            target[`${filedName}Str`] = val;
+            target[filedName] = Number(val);
+            target[`${filedName}Str`] = formatNumToMoney(Number(val));
             form.setFieldsValue({[`${filedName}_table_${target.id}`]: val});
             target.ratio = keepDecimal((Number(val) / target.billInTaxAmount) * 100, 2) + '%';
             newData.splice(index, 1, target);
+
+            // TODO: 获取总的核销金额填入 核销
+            const settleAMT = newData.reduce((total: any, item: any) => total + (item.amount || 0), 0);
+            // TODO: 更新 【settleChargeList】 数据，用做保存用
+            form.setFieldsValue({settleChargeList: newData, amount: settleAMT});
             setDataSource(newData);
+            setSettleInfoState((newSettleInfo: any) =>
+                ({...newSettleInfo, amount: settleAMT, amountStr: formatNumToMoney(settleAMT)})
+            );
         } else {
+            const newSettleInfo: any = JSON.parse(JSON.stringify(settleInfoState));
+            newSettleInfo[filedName] = val;
+            // TODO: 编辑核销信息：需要联动处理其他数据时
             let setFiledObj: any = {[filedName]: val};
             if (filedName === 'method' && val === 2) {
                 setFiledObj = {
                     ...setFiledObj,
-                    bankAccount: '',
+                    bankAccount: 2,
                     serverAmount: 0.00,
                 }
+            } else if (filedName === 'bankAccount') {
+                newSettleInfo.bankName = option.bankName;
             }
-            const newSettleInfo: any = JSON.parse(JSON.stringify(settleInfoState));
-            newSettleInfo[filedName] = val;
             if (['amount', 'serverAmount', 'discountAmount'].includes(filedName)) {
                 newSettleInfo[`${filedName}Str`] = formatNumToMoney(val);
             }
@@ -106,20 +136,64 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                         delete val[key];
                     }
                 }
-                // TODO: 整理参数
-                const params: any = {
-                    ...val,
-                    receivePayTime: moment(val.receivePayTime).format('YYYY-MM-DD'),
-                    type, branchId: '1665596906844135426',
-                    settlementPartyId: settleInfo.businessId || '0',
-                    settlementPartyName: settleInfo.businessName,
-                };
-                const result: API.Result = await addBankSlip(params);
-                if (result.success) {
-                    message.success('Success!');
-                    handleModalOP(false);
-                } else {
-                    if (result.message) message.error(result.message);
+                try {
+                    // TODO: 整理发票费用行数据数据
+                    const invoiceList: any[] = [], invoNumArr: string[] = [];
+                    let isPartial: boolean = false;
+                    if (val.settleChargeList?.length > 0) {
+                        val.settleChargeList.map((item: any) => {
+                            // TODO: 当存在该发票号时
+                            if (invoNumArr.includes(item.invoiceNum)) {
+                                // TODO: 累加当前发票下费用的核销金额
+                                invoiceList.map((cg: any)=> ({
+                                    ...cg, amount: cg.amount + item.amount,
+                                    chargeList: cg.chargeList.push(item),
+                                }));
+                            } else {
+                                // TODO: 不存在该发票时，需要整理发票上传参数格式数据
+                                const obj: any = {
+                                    id: item.invoiceId, invoiceNum: item.invoiceNum, amount: item.amount,
+                                    chargeList: [item],
+                                }
+                                invoiceList.push(obj);
+                                invoNumArr.push(item.invoiceNum);
+                            }
+                            if (item.ratio !== '100%') {
+                                isPartial = true;
+                            }
+                        })
+                        delete val.settleChargeList;
+                    }
+
+                    const method: number = [2, 3].includes(val.method) ? val.method : 1;
+                    let bankName: string = '';
+                    // TODO: 【method === 1】：银行核销
+                    if (method === 1) {
+                        bankName = bankList.find((item: any) => item.value === val.method)?.label || '';
+                    }
+
+                    // TODO: 整理参数
+                    const params: any = {
+                        ...val,
+                        method,         // TODO: 核销方式（到账类型）: * 1-银行核销 * 2-现金核销 * 3-Offset Settle(0金额代收代付核销)
+                        bankName,       // TODO: 银行名
+                        invoiceList,
+                        status: isPartial ? 2 : 3,  // TODO: 核销状态 1-未核销 2-部份核销 3-全部核销
+                        receivePayTime: moment(val.receivePayTime).format('YYYY-MM-DD'),
+                        type, branchId: '1665596906844135426',
+                        settlementPartyId: settleInfo.businessId,
+                        settlementPartyName: settleInfo.businessName,
+                    };
+
+                    const result: API.Result = await invoiceWriteOff(params);
+                    if (result.success) {
+                        message.success('success!');
+                        handleModalOP(false);
+                    } else {
+                        if (result.message) message.error(result.message);
+                    }
+                } catch (e) {
+                    message.error(e)
                 }
             })
             .catch((errorInfo) => {
@@ -129,18 +203,20 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
     }
 
     const columns: ProColumns[] = [
+        {title: 'Job No.', dataIndex: 'jobCode'},
         {title: 'Invoice No.', dataIndex: 'invoiceNum'},
-        {title: 'Issue By', dataIndex: 'issueBy', width: 150, align: 'center'},
-        {title: 'Issue Date', dataIndex: 'issueDate', width: 100, align: 'center', valueType: 'date'},
+        // {title: 'Issue By', dataIndex: 'issueBy', width: 150, align: 'center'},
+        // {title: 'Issue Date', dataIndex: 'issueDate', width: 100, align: 'center', valueType: 'date'},
+        {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 110, align: 'right'},
         {title: 'Bill Amount', dataIndex: 'billInTaxAmount', width: 110, align: 'right'},
-        {title: 'Unsettled AMT', dataIndex: 'unsettledAmount', width: 110, align: 'right'},
+        {title: 'Unsettled AMT', dataIndex: 'unWriteOffBillInTaxAmount', width: 110, align: 'right'},
         {title: 'Ratio', dataIndex: 'ratio', width: 80, align: 'center'},
         {
-            title: 'Settle Amount', dataIndex: 'settleAmount', width: 125, align: 'center',
+            title: 'Settle AMT', dataIndex: 'amount', width: 125, align: 'center',
             tooltip: 'Name is required; \n\r Must be a number with at most two decimal places.',
             render: (text, record: any, index) => (
                 <Form.Item
-                    name={`settleAmount_table_${record.id}`}
+                    name={`amount_table_${record.id}`}
                     rules={[
                         {required: true, message: 'Settle Amount'},
                         {pattern: /^\d+(\.\d{1,2})?$/, message: 'Must be a number with at most two decimal places.'},
@@ -149,9 +225,9 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                             validator(_, value) {
                                 console.log(record.billInTaxAmount, value);
                                 if (!!value) {
-                                    if (record.billInTaxAmount >= value) {
+                                    if (Number(record.billInTaxAmount) >= value) {
                                         return Promise.resolve();
-                                    } else if (record.billInTaxAmount <= value) {
+                                    } else if (Number(record.billInTaxAmount) <= value) {
                                         return Promise.reject(new Error(`The Settle Amount cannot exceed ${record.billInTaxAmount}.`));
                                     }
                                 }
@@ -161,8 +237,8 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                     ]}
                 >
                     <InputEditNumber
-                        value={record.settleAmount} valueStr={record.settleAmountStr}
-                        handleChangeData={(val) => handleRowChange('settleAmount', val, index)}
+                        value={record.amount} valueStr={record.amountStr}
+                        handleChangeData={(val) => handleRowChange('amount', val, index)}
                     />
                 </Form.Item>
             )
@@ -172,7 +248,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
     // TODO: 加总核销金额
     let settleTotal: number = 0, billInTaxTotal: number = 0;
     if (settleChargeList?.length > 0) {
-        settleTotal = settleChargeList.reduce((total: any, item: any) => total + (item.settleAmount || 0), 0);
+        settleTotal = settleChargeList.reduce((total: any, item: any) => total + (item.amount || 0), 0);
         billInTaxTotal = settleChargeList.reduce((total: any, item: any) => total + (item.billInTaxAmount || 0), 0);
         settleTotal = keepDecimal(settleTotal);
         billInTaxTotal = keepDecimal(billInTaxTotal);
@@ -182,7 +258,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
     return (
         <Fragment>
             <Button
-                type={'primary'} onClick={() => handleModalOP(true)}
+                type={'primary'} onClick={() => handleModalOP(true)} hidden={hidden}
                 disabled={settleChargeList?.length === 0 || settleInfo.businessLineState || settleInfo.billCurrencyNameState}
             >Settle</Button>
 
@@ -195,7 +271,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                 onOk={handleCreateSettle}
                 onCancel={() => handleModalOP(false)}
             >
-                <Form form={form} name={'modalForm'} layout={'vertical'} initialValues={{method: 1}}>
+                <Form form={form} name={'modalForm'} layout={'vertical'} initialValues={initSettleInfo}>
                     <Row gutter={24} style={{marginBottom: 24}}>
                         <Col span={17}>Payer / Vendor：<b>{settleInfo.businessName}</b></Col>
                         <Col span={7}>Bill CURR：<b>{settleInfo.billCurrencyName}</b></Col>
@@ -212,10 +288,10 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                                 label={'Account Type'}
                                 rules={[{required: true, message: 'Account Type'}]}
                                 fieldProps={{
-                                    onSelect: (val: any) => handleRowChange('method', val)
+                                    onSelect: (val: any) => handleRowChange('method', val, 0)
                                 }}
                                 options={[
-                                    {label: '中国银行', value: 1},
+                                    ...bankList,
                                     {label: 'CASH 現金', value: 2},
                                     {label: 'Hedge Offset 對沖抵消', value: 3},
                                 ]}
@@ -227,8 +303,11 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                                 name="bankAccount"
                                 label={'Account No.'}
                                 rules={[{required: settleInfoState.method !== 2, message: 'Account No.'}]}
+                                fieldProps={{
+                                    onSelect: (val: any, option: any) => handleRowChange('bankAccount', val, 0, option)
+                                }}
                                 options={[
-                                    {label: '012-601-0-011722-3', value: 1},
+                                    {label: '012-601-0-011722-3', value: 1, bankName: ''},
                                     {label: 'NONE', value: 2}
                                 ]}
                             />
@@ -264,6 +343,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                                 ]}
                             >
                                 <InputEditNumber
+                                    disabled={true}
                                     value={settleInfoState.amount} valueStr={settleInfoState.amountStr}
                                     handleChangeData={(val) => handleRowChange('amount', val)}
                                 />
@@ -281,7 +361,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                                 ]}
                             >
                                 <InputEditNumber
-                                    value={settleInfoState.settleAmount} valueStr={settleInfoState.serverAmountStr}
+                                    value={settleInfoState.serverAmount} valueStr={settleInfoState.serverAmountStr}
                                     handleChangeData={(val) => handleRowChange('serverAmount', val)}
                                 />
                             </Form.Item>
@@ -338,6 +418,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                                     )
                                 }}
                             />
+                            <ProFormText name={'settleChargeList'} hidden={true} />
                         </Col>
                     </Row>
                     <Row gutter={24}>
@@ -347,7 +428,6 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                             />
                         </Col>
                     </Row>
-
                 </Form>
             </Modal>
         </Fragment>

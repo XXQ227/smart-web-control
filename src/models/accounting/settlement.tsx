@@ -1,7 +1,6 @@
 import {useCallback} from "react";
 import {
-    addBankSlipAPI,
-    deleteWriteOffAPI, queryUnWriteOffInvoiceAPI, queryWriteOffAPI, queryWriteOffInfoAPI
+    deleteWriteOffAPI, invoiceWriteOffAPI, queryUnWriteOffInvoiceAPI, queryWriteOffAPI, queryWriteOffInfoAPI
 } from '@/services/smart/accounting/settlement'
 
 
@@ -46,14 +45,15 @@ export default () => {
         return await deleteWriteOffAPI(params);
     }, []);
 
-    // TODO: 保存银行水单
-    //   POST /accounting/web/bankSlip/addBankSlip
-    //   API ID:108900822
-    //   API URL:https://app.apifox.com/link/project/2684231/apis/api-108900822
-    const addBankSlip = useCallback(async (params: any) => {
+    // TODO: 发票核销
+    //   POST /accounting/web/writeOff/invoiceWriteOff
+    //   API ID:111583235
+    //   API URL:https://app.apifox.com/link/project/2684231/apis/api-111583235
+    const invoiceWriteOff = useCallback(async (params: any) => {
         // TODO: 请求后台 API
-        return await addBankSlipAPI(params);
+        return await invoiceWriteOffAPI(params);
     }, []);
+
 
     //endregion
 
@@ -64,6 +64,6 @@ export default () => {
         queryWriteOff,
         queryWriteOffInfo,
         deleteWriteOff,
-        addBankSlip,
+        invoiceWriteOff,
     }
 }

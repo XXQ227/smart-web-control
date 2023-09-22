@@ -11,7 +11,6 @@ interface Props {
     rules?: any,
     disabled?: boolean,
     required?: boolean,
-    FormItem: any,
     onSelect?: (val: any) => void,
 }
 

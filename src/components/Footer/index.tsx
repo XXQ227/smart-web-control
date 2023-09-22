@@ -19,8 +19,8 @@ const Footer: React.FC = () => {
             copyright={`${currentYear} ${defaultMessage}`}
             links={[
                 {
-                    key: 'Smart HK',
-                    title: 'Smart HK',
+                    key: 'EHK',
+                    title: 'EHK',
                     href: 'https://pro.ant.design',
                     blankTarget: true,
                 },
@@ -31,8 +31,8 @@ const Footer: React.FC = () => {
                     blankTarget: true,
                 },
                 {
-                    key: 'Smart HK System',
-                    title: 'Smart HK System',
+                    key: 'EHK System',
+                    title: 'EHK System',
                     href: 'https://ant.design',
                     blankTarget: true,
                 },

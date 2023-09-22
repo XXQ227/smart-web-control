@@ -47,12 +47,12 @@ export async function deleteWriteOffAPI(body: any) {
 
 
 
-// TODO: 保存银行水单
-//   POST /accounting/web/bankSlip/addBankSlip
-//   API ID:108900822
-//   API URL:https://app.apifox.com/link/project/2684231/apis/api-108900822
-export async function addBankSlipAPI(body: any) {
-  return request(`/apiAccounting/writeOff/addBankSlip/`, {
+// TODO: 发票核销
+//   POST /accounting/web/writeOff/invoiceWriteOff
+//   API ID:111583235
+//   API URL:https://app.apifox.com/link/project/2684231/apis/api-111583235
+export async function invoiceWriteOffAPI(body: any) {
+  return request(`/apiAccounting/writeOff/invoiceWriteOff/`, {
     method: 'POST',
     body
   });

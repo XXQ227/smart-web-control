@@ -80,6 +80,11 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
             // TODO: 没有账期时，获取账期数据账期
             if (AccountPeriodList?.length === 0) await queryAccountPeriodCommon({branchId: '1665596906844135426', name: ''});
 
+            if (val.invoiceIssueDate?.length > 0) {
+                val.invoiceIssueStartDate = val.invoiceIssueDate[0];
+                val.invoiceIssueEndDate = val.invoiceIssueDate[1];
+            }
+
             const params: any = {...initSearchData, ...JSON.parse(JSON.stringify(val))};
 
             const result: API.Result = await queryAuditJob(params);
@@ -130,8 +135,8 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
 
     const columns: ProColumns[] = [
         {title: 'B-Line', dataIndex: 'businessLine', width: 60, align: 'center',},
-        {title: 'Job No.', dataIndex: 'jobCodes', width: 150, align: 'center',},
-        {title: 'Customer', dataIndex: 'businessName',},
+        {title: 'Job No.', dataIndex: 'jobCode', width: 150, align: 'center',},
+        {title: 'Customer', dataIndex: 'customerName',},
         {title: 'Taking Date', dataIndex: 'takingDate', width: 100, align: 'center', valueType: 'date'},
         {title: 'Complete Date', dataIndex: 'completeDate', width: 110, align: 'center', valueType: 'date'},
         {title: 'Sales', dataIndex: 'sales', width: 90, align: 'center'},
@@ -177,9 +182,7 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
 
 
     return (
-        <PageContainer
-            header={{breadcrumb: {}}}
-        >
+        <PageContainer header={{breadcrumb: {}}}>
             <ProForm
                 form={form}
                 omitNil={false}
@@ -280,7 +283,7 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
                         </Col>
                     </Row>
                 </ProCard>
-                <ProCard>
+                <ProCard className={'ant-tabs-style'}>
                     <Spin spinning={loading}>
                         <Tabs
                             type="card"
