@@ -17,7 +17,7 @@ const PortListIndex: React.FC<RouteChildrenProps> = () => {
             }}
         >
             <ProCard
-                className={'ant-card-pro-table'}
+                className={'ant-card-pro-table ant-card-pro-tabs'}
                 tabs={{
                     activeKey,
                     tabPosition: 'left',
