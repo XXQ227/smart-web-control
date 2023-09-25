@@ -27,6 +27,8 @@ const UserDrawerForm: React.FC<Props> = (props) => {
     const [open, setOpen] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(false);
 
+    const [defaultDepartmentName, setDefaultDepartmentName] = useState('');
+
     /**
      * @Description: TODO: 保存
      * @author XXQ
@@ -43,6 +45,7 @@ const UserDrawerForm: React.FC<Props> = (props) => {
                 values.branchId = 0;
                 // values.departmentId = 0;
                 values.salesFlag = values.salesFlag ? 1 : 0;
+                values.defaultDepartmentName = defaultDepartmentName || UserInfo.defaultDepartmentName;
 
                 let result: API.Result;
                 // TODO: 保存、添加 公共参数
@@ -185,13 +188,14 @@ const UserDrawerForm: React.FC<Props> = (props) => {
                                 </Col>
                                 <Col span={6}>
                                     <SearchProFormSelect
-                                        required={true}
+                                        // required={true}
                                         isShowLabel={true}
                                         placeholder=''
                                         label='Department'
                                         id='departmentId'
                                         name='defaultDepartmentId'
                                         url={'/apiBase/department/queryDepartmentCommon'}
+                                        handleChangeData={(val, option: any) => setDefaultDepartmentName(option.label)}
                                     />
                                 </Col>
                                 <Col span={6}>

@@ -7,7 +7,6 @@ import ls from 'lodash'
 import {ID_STRING} from '@/utils/units'
 import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 import FormItemSelect from '@/components/FormItemComponents/FormItemSelect'
-import {getCurrencyList} from '@/utils/auths'
 
 type APIBank = APIManager.Bank;
 

@@ -112,53 +112,13 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
 
 
     const columns: ProColumns<APIUser>[] = [
-        {
-            title: 'Display Name',
-            dataIndex: 'nameDisplay',
-            disable: true,
-            align: 'center',
-        },
-        {
-            title: 'Login Name',
-            dataIndex: 'nameLogin',
-            disable: true,
-            align: 'center',
-        },
-        {
-            title: 'Email',
-            dataIndex: 'email',
-            width: 160,
-            disable: true,
-            ellipsis: true,
-        },
-        {
-            title: 'Department',
-            dataIndex: 'defaultDepartmentId',
-            width: 150,
-            disable: true,
-            align: 'center',
-        },
-        {
-            title: 'Sinotrans Code',
-            dataIndex: 'codeSino',
-            width: 160,
-            disable: true,
-            align: 'center',
-        },
-        {
-            title: 'Sales',
-            dataIndex: 'salesFlag',
-            width: 160,
-            disable: true,
-            align: 'center',
-            valueEnum: SALES_ENUM,
-        },
-        {
-            title: 'Action',
-            width: 110,
-            disable: true,
-            align: 'center',
-            className: 'cursorStyle',
+        {title: 'Display Name', dataIndex: 'nameDisplay', disable: true, align: 'center',},
+        {title: 'Login Name', dataIndex: 'nameLogin', disable: true, align: 'center',},
+        {title: 'Email', dataIndex: 'email', width: 160, disable: true, ellipsis: true,},
+        {title: 'Department', dataIndex: 'defaultDepartmentName', width: 150, disable: true, align: 'center',},
+        {title: 'Sinotrans Code', dataIndex: 'codeSino', width: 160, disable: true, align: 'center',},
+        {title: 'Sales', dataIndex: 'salesFlag', width: 160, disable: true, align: 'center', valueEnum: SALES_ENUM,},
+        {title: 'Action', width: 110, disable: true, align: 'center', className: 'cursorStyle',
             render: (text, record, index) => {
                 return (
                     <Fragment>

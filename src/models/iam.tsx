@@ -1,6 +1,6 @@
 import {useCallback} from "react";
 import {
-    iamUserLogInAPI,
+    iamUserLogInAPI, logoutAPI,
 } from '@/services/smart/iam'
 
 
@@ -14,10 +14,21 @@ export default () => {
         console.log(result);
         return result;
     }, []);
+
+
+    // TODO: 退出登录
+    //   POST /auth/iam/logout
+    //   API ID:95955722
+    //   API URL:https://app.apifox.com/link/project/2684231/apis/api-95955722
+    const logout = useCallback(async (params: any) => {
+        // TODO: 请求后台 API
+        return await logoutAPI(params);
+    }, []);
     //endregion
 
 
     return {
         iamUserLogIn,
+        logout,
     }
 }

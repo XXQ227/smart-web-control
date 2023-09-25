@@ -4,7 +4,7 @@ import type { ProColumns} from '@ant-design/pro-components';
 import {FooterToolbar, PageContainer, ProCard, ProTable} from '@ant-design/pro-components';
 import {Button,} from 'antd';
 import {useModel} from 'umi';
-import {getUserID} from '@/utils/auths';
+import {USER_ID} from '@/utils/auths';
 import {history} from '@@/core/history'
 import {EditOutlined} from '@ant-design/icons'
 
@@ -22,7 +22,7 @@ const searchParams: APICVSearchParams = {
     PageNum: 1,
     PageSize: 15,
     CTType: 1,
-    UserID: getUserID(),
+    UserID: USER_ID(),
 };
 
 const CVCenterList: React.FC<RouteChildrenProps> = () => {

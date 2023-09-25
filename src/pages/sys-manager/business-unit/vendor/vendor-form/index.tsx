@@ -15,7 +15,7 @@ import {
     ProFormTreeSelect
 } from '@ant-design/pro-components'
 import {Button, Col, Form, Row, Tag} from 'antd'
-import {getUserID} from '@/utils/auths'
+import {USER_ID} from '@/utils/auths'
 import SearchModal from '@/components/SearchModal'
 import {message} from 'antd/es'
 import ls from 'lodash';
@@ -79,12 +79,12 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const handleGetCTPByID = async () => {
-        const result: any = await getGetCTPByID({UserID: getUserID(), CTPID: Number(atob(params?.id))});
+        const result: any = await getGetCTPByID({UserID: USER_ID(), CTPID: Number(atob(params?.id))});
         setCVInfoVO(result);
         return result;
     }
     // const handleGetCTPByID = useMemo(async ()=> {
-    //     const result: any = await getGetCTPByID({UserID: getUserID(), CTPID: Number(atob(params?.id))});
+    //     const result: any = await getGetCTPByID({UserID: USER_ID(), CTPID: Number(atob(params?.id))});
     //     setCVInfoVO(result);
     //  /   return result;
     // }, [getGetCTPByID, params?.id])
@@ -487,7 +487,7 @@ const CVCenterForm: React.FC<RouteChildrenProps> = (props) => {
                         btnName={'Add Payer'}
                         url={'/api/MCommon/GetCTNameByStrOrType'}
                         query={{
-                            CTType: 1, PageSize: 10, UserID: getUserID(),
+                            CTType: 1, PageSize: 10, UserID: USER_ID(),
                             SystemID: 8, IsJobCustomer: true, searchPayer: true
                         }}
                         handleChangeData={handleSelectPayers}

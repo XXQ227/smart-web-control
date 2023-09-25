@@ -2,6 +2,7 @@ import {loginSmart, iamUserLogInAPI} from '@/services/smart/login';
 import {useCallback, useState} from "react";
 import {setSystemMes} from "@/utils/auths";
 import {message} from 'antd'
+import {logoutAPI} from '@/services/smart/iam'
 
 export default () => {
     const userInfoSession: any = {};
@@ -10,7 +11,7 @@ export default () => {
     const [resResult, setResResult] = useState({});
 
     /**
-     * @Description: TODO 登录
+     * @Description: TODO Smart 系统登录
      * @author XXQ
      * @date 2023/2/7
      * @param params: {LoginName: string, Password: string, SystemID: int}
@@ -29,7 +30,20 @@ export default () => {
     }, []);
 
     /**
-     * @Description: TODO 推出登录
+     * @Description: TODO 退出登录
+     * @author XXQ
+     * @date 2023/2/7
+     * @param params: {LoginName: string, Password: string, SystemID: int}
+     * @returns
+     */
+    const logout = useCallback(async (params: API.LoginParams) => {
+        return await logoutAPI(params);
+    }, []);
+
+
+
+    /**
+     * @Description: TODO IAM 登录
      * @author XXQ
      * @date 2023/2/7
      * @returns
@@ -52,6 +66,7 @@ export default () => {
     return {
         userInfo,
         login,
+        logout,
         iamUserLogIn,
         resResult,
     }

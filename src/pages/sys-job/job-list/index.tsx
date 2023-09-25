@@ -25,8 +25,8 @@ const JobList: React.FC<RouteChildrenProps> = () => {
     } = useModel('job.joblist', (res: any) => ({
         queryJobList: res.queryJobList,
     }));
-    const initInfo = useModel('@@initialState');
-    const initialState: any = initInfo?.initialState || {};
+    // const initInfo = useModel('@@initialState');
+    // const initialState: any = initInfo?.initialState || {};
 
     const [loading, setLoading] = useState<boolean>(false);
     const [jobList, setJobList] = useState<APICJobListItem[]>([]);
@@ -121,7 +121,7 @@ const JobList: React.FC<RouteChildrenProps> = () => {
         >
             <ProCard className={'ant-card-pro-table'}>
                 <ProTable<APICJobListItem>
-                    rowKey={'ID'}
+                    rowKey={'id'}
                     // search={false}
                     options={false}
                     bordered={true}
