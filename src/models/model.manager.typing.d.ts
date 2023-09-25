@@ -521,6 +521,7 @@ declare namespace APIManager {
     type Branch = {
         id: string,                       // TODO: 主键 ID
         contactName?: string;             // TODO: 联系人
+        iamCompanyOrgCode?: string;       // TODO: IAM公司编码
         phone?: string;                   // TODO: 电话
         address?: string;                 // TODO: 公司地址
         cityName?: string;                // TODO: 公司所在城市

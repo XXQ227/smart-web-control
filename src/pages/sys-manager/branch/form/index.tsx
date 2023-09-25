@@ -92,6 +92,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
         const newBankList = filterObjects(BankListVO);
         const param: any = {
             contactName: val.contactName,
+            iamCompanyOrgCode: val.iamCompanyOrgCode,
             phone: val.phone,
             address: val.address,
             cityName: val.cityName,
@@ -238,18 +239,18 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormText
+                                name='iamCompanyOrgCode'
+                                placeholder=''
+                                label='IAM Num'
+                                tooltip='length: 20'
+                                rules={[{max: 20, message: 'length: 20'}]}
+                            />
+                            <ProFormText
                                 name='taxNum'
                                 placeholder=''
                                 label='Tax Num'
                                 tooltip='length: 50'
                                 rules={[{max: 50, message: 'length: 50'}]}
-                            />
-                            <ProFormText
-                                name='orgId'
-                                placeholder=''
-                                label='Oracle ID'
-                                tooltip='length: 15'
-                                rules={[{max: 15, message: 'length: 15'}]}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
@@ -283,10 +284,10 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
                             <ProFormText
+                                name='orgId'
                                 placeholder=''
-                                label='AUC Num'
+                                label='Oracle ID'
                                 tooltip='length: 15'
-                                name='orgCreateId'
                                 rules={[{max: 15, message: 'length: 15'}]}
                             />
                         </Col>
@@ -310,6 +311,15 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                                 label='Code'
                                 tooltip='length: 10'
                                 rules={[{max: 10, message: 'length: 10'}]}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
+                            <ProFormText
+                                placeholder=''
+                                label='AUC Num'
+                                tooltip='length: 15'
+                                name='orgCreateId'
+                                rules={[{max: 15, message: 'length: 15'}]}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={5}>
