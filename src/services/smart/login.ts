@@ -11,12 +11,10 @@ export async function loginSmart(body: API.LoginParams) {
     // data: body,
   });
 }
+
 export async function loginIAM(body: API.LoginParams) {
   return request(`/apiIAM/User/Login?${stringify(body)}`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
     // data: body,
   });
 }

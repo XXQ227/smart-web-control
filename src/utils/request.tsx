@@ -1,4 +1,4 @@
-import {getBranchID, getUserID, getAccess_Token} from '@/utils/auths'
+import {USER_ID, ACCESS_TOKEN, BRANCH_ID} from '@/utils/auths'
 import {message, notification} from 'antd';
 import {SYSTEM_ID, SYSTEM_KEY_TEST} from '@/utils/units'
 
@@ -59,11 +59,12 @@ export function request(url: string, options: any) {
     };
     newOptions.headers = {
         Accept: '*/*',
-        'Content-Type': 'application/json; charset=utf-8',
-        Authorization: getAccess_Token(),
         Lang: 'zh-CN',
-        UserID: getUserID(),
-        BranchID: getBranchID(),
+        'Content-Type': 'application/json; charset=utf-8',
+        UserID: USER_ID(),
+        BranchID: BRANCH_ID(),
+        auth: ACCESS_TOKEN(),
+        zone: 8,
         ...newOptions.headers
     };
     if (url.indexOf('/apiIAM') > -1) {
@@ -74,7 +75,13 @@ export function request(url: string, options: any) {
             keyid: SYSTEM_KEY_TEST,
             clientId: SYSTEM_ID,
             ...newOptions.headers
-        }
+        };
+    }
+    if (ACCESS_TOKEN()) {
+        newOptions.headers = {
+            ...newOptions.headers,
+            Cookie: `auth=${ACCESS_TOKEN()}`,
+        };
     }
     if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
         newOptions.body = JSON.stringify(newOptions.body);

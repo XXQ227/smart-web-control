@@ -241,7 +241,10 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
             {title: 'Payer / Vendor', dataIndex: 'settlementPartyName',},
             {title: 'Bill AMT', dataIndex: 'invoiceAmount', width: 100, align: 'center',},
             {title: 'Invoice AMT', dataIndex: 'unWriteOffBillInTaxAmount', width: 100, align: 'center',},
-            {title: 'Settled AMT', dataIndex: 'settledAmount', width: 100, align: 'center',},
+            {
+                title: 'Settled AMT', dataIndex: 'settledAmount', width: 100,
+                align: 'center', className: 'ant-table-col-yellow'
+            },
             {title: 'Settled', dataIndex: 'settleState', width: 90, align: 'center',},
             {title: 'Settle by', dataIndex: 'settleBy', width: 150, align: 'center'},
             {title: 'Settle Date', dataIndex: 'settleTime', width: 100, align: 'center', valueType: 'date'},
@@ -251,7 +254,10 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
                     <>
                         <FormOutlined
                             color={'#1765AE'}
-                            onClick={() => {setSettleId(record.id); setSettleOpen(true)}}
+                            onClick={() => {
+                                setSettleId(record.id);
+                                setSettleOpen(true)
+                            }}
                         />
                         <Popconfirm
                             placement={'topRight'}

@@ -1,4 +1,4 @@
-import {getUserInfo} from '@/utils/auths';
+import {USER_INFO} from '@/utils/auths';
 
 const { NODE_ENV } = process.env;
 
@@ -32,7 +32,7 @@ export default {
             // mountElementId: 'job',  // 注意这里是子应用要挂载在父应用上的节点id
             props: {
                 isMenu: false,
-                userInfo: getUserInfo(),
+                userInfo: USER_INFO(),
             },
             jsSandbox: true, // 是否启用 js 沙箱，默认为 false
             prefetch: true, // 是否启用 prefetch 特性，默认为 true
@@ -45,7 +45,7 @@ export default {
             // mountElementId: 'bill',  // 注意这里是子应用要挂载在父应用上的节点id
             props: {
                 isMenu: false,
-                userInfo: getUserInfo(),
+                userInfo: USER_INFO(),
             },
             jsSandbox: true, // 是否启用 js 沙箱，默认为 false
             prefetch: true, // 是否启用 prefetch 特性，默认为 true
@@ -58,7 +58,7 @@ export default {
             // mountElementId: 'manager',  // 注意这里是子应用要挂载在父应用上的节点id
             props: {
                 isMenu: false,
-                userInfo: getUserInfo(),
+                userInfo: USER_INFO(),
             },
             jsSandbox: true, // 是否启用 js 沙箱，默认为 false
             prefetch: true, // 是否启用 prefetch 特性，默认为 true

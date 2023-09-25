@@ -2,10 +2,12 @@ import {PageContainer, ProCard} from '@ant-design/pro-components';
 import {Alert, Card} from 'antd';
 import React from 'react';
 import {useIntl} from 'umi';
+import {ACCESS_TOKEN, TOKEN} from '@/utils/auths'
 
 const Welcome: React.FC = () => {
     const intl = useIntl();
 
+    console.log(TOKEN(), ACCESS_TOKEN());
 
     return (
         <PageContainer>

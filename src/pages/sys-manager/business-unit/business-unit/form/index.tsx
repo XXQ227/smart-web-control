@@ -9,7 +9,7 @@ import {
     ProFormText,
 } from '@ant-design/pro-components'
 import {Button, Col, Form, Popover, Row, Space, Radio} from 'antd'
-import {getUserID} from '@/utils/auths'
+import {USER_ID} from '@/utils/auths'
 import {useModel, history} from 'umi'
 import {message} from 'antd/es'
 import {getFormErrorMsg, rowGrid, IconFont, getValue} from "@/utils/units";
@@ -114,7 +114,7 @@ const BusinessUnitForm: React.FC<RouteChildrenProps> = (props) => {
     }*/
 
     const handleUpload = async () => {
-        const result: any = await uploadCTCenter({UserID: getUserID(), CTID: Number(atob(params?.id)), custType: CTCenterType});
+        const result: any = await uploadCTCenter({UserID: USER_ID(), CTID: Number(atob(params?.id)), custType: CTCenterType});
         if (result.Result) {
             message.success('Success!');
         } else {

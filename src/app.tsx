@@ -6,7 +6,7 @@ import {PageLoading, SettingDrawer} from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig} from 'umi';
 import {Link, history} from 'umi';
 import defaultSettings from '../config/defaultSettings';
-import {getUserID, getUserInfo} from "@/utils/auths";
+import {USER_ID, USER_INFO, setSystemMes} from "@/utils/auths";
 import {icon_font_url} from '@/utils/units';
 import ls from 'lodash';
 import Exception403 from '@/pages/exception/403';
@@ -34,25 +34,30 @@ export async function getInitialState(): Promise<{
     isJobEditPage?: boolean;// TODO: 是否是编辑页面
     fetchUserInfo?: () => Promise<APIModel.LoginUserInfo | undefined>;
 }> {
-    const {push, location: {search, pathname, query}} = history;
+    const {location: {search, pathname, query}} = history;
     const fetchUserInfo = async () => {
         try {
-            // console.log(history);
             // TODO: 拿到 code 的值
             if (search) {
                 // TODO: 从地址栏拿到 IAM 返回的 code 请求后台 API, 获取当前用户信息
                 const result: any = await iamUserLogInAPI({code: query?.code});
                 if (result.success) {
-                    console.log(JSON.stringify(result.data));
+                    console.log(result.data);
+                    // TODO: 设置到 session 中
+                    setSystemMes(result.data?.tokenResult);
+                    return result.data;
                 } else {
-                    message.error(result.message);
+                    if (result.message) message.error(result.message);
                     // TODO: 登录验证不成功时，关闭系统页面窗口
-                    setTimeout(()=> window.close(), 1500);
+                    setTimeout(()=> window.close(), 2000);
                 }
             }
-            return getUserInfo();
+            return USER_INFO();
         } catch (error) {
-            push(loginPath);
+            console.log(error);
+            // message.error(error);
+            // TODO: 登录验证不成功时，关闭系统页面窗口
+            // setTimeout(()=> window.close(), 2000);
         }
         return undefined;
     };
@@ -72,20 +77,6 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
     // eslint-disable-next-line prefer-const
     let initInfo: any = ls.cloneDeep(initialState) || {};
 
-    /**
-     * @Description: TODO 选中分组后，重新获取 <单票列表> 的数据
-     * @author XXQ
-     * @date 2023/3/30
-     * @param selectedRows  选中的分组的行
-     * @returns
-     */
-    const onChangeGroup = (selectedRows: object) => {
-        // 把分组信息存到初始化数据中
-        initInfo.groupInfo = selectedRows;
-        setInitialState(initInfo);
-    }
-
-    const {location} = history;
     return {
         iconfontUrl: icon_font_url,
         // route: routes,
@@ -113,20 +104,10 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
             // 当前页面的路径 <history>
             const newPathname = history?.location?.pathname;
             // 上一个页面的路径
-            const oldPathname = location?.pathname;
-            // 如果没有登录【!getUserID()】，重定向到登录页面【/user/login】
-            if (!getUserID() && newPathname !== loginPath) {
+            // const oldPathname = location?.pathname;
+            // 如果没有登录【!USER_ID()】，重定向到登录页面【/user/login】
+            if (!USER_ID() && newPathname !== loginPath) {
                 // history.push(loginPath);
-            } else {
-                /*initInfo.isJobEditPage = history?.location?.pathname?.indexOf('/job/job/') > -1;
-                setInitialState(initInfo);
-                const newPathnameArr = newPathname?.split('/') ?? [];
-                const oldPathParamsArr = oldPathname.split('/') ?? [];
-                // 当路径为 <route.ts> 中定义的路径时，重新配置路径
-                if (newPathname.indexOf('/job/job-info/') > -1 && newPathnameArr[4] === ':id') {
-                    // 参数用旧的，路径用新的
-                    history.push({pathname: `/job/job-info/${newPathnameArr[3]}/${oldPathParamsArr[4]}`});
-                }*/
             }
         },
         // TODO: 左侧菜单拦的点击设置

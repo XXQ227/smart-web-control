@@ -10,7 +10,7 @@ import ProForm, {
 } from '@ant-design/pro-form';
 
 import styles from './BaseView.less';
-import {getUserInfo, initUserInfo} from '@/utils/auths'
+import {USER_INFO, initUserInfo} from '@/utils/auths'
 import city from '../geographic/city.json';         // 城市信息
 import province from '../geographic/province.json'; // 省份信息
 
@@ -42,7 +42,7 @@ const AvatarView = ({avatar}: { avatar: string }) => (
 );
 
 const BaseView: React.FC = () => {
-    const userInfo = getUserInfo() || initUserInfo;     // 用户基本信息
+    const userInfo = USER_INFO() || initUserInfo;     // 用户基本信息
 
     const getAvatarURL = () => {
         if (userInfo) {

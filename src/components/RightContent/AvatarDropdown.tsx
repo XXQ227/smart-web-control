@@ -5,7 +5,7 @@ import React from 'react';
 import {history, useModel} from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
-import {getUserInfo, initUserInfo} from "@/utils/auths";
+import {USER_INFO, initUserInfo} from "@/utils/auths";
 
 export type GlobalHeaderRightProps = {
     menu?: boolean;
@@ -15,21 +15,19 @@ const avatar = 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/Biazfanxma
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
     // const {initialState, setInitialState} = useModel('@@initialState');
-    const userInfo = getUserInfo() || initUserInfo;
-    const {iamUserLogIn} = useModel('login', (res: any)=> ({
-        iamUserLogIn: res.iamUserLogIn,
-    }));
+    const userInfo = USER_INFO() || initUserInfo;
+    const {logout} = useModel('login', (res: any)=> ({logout: res.logout}));
 
     const onMenuClick = async (key: string) => {
         // 退出登录，并且将当前的 url 保存
         if (key === 'logout') {
-            const result: API.Result = await iamUserLogIn();
+            const result: API.Result = await logout();
             if (result.success) {
-                message.success('Success!');
-                history.push(`/user/login`);
+                message.success('success!');
+                window.close();
                 return;
             } else {
-                message.error(result.message);
+                if (result.message) message.error(result.message);
             }
         }
         history.push(`/account/${key}`);

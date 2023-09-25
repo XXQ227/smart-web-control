@@ -20,107 +20,66 @@ export const initUserInfo = {
 /**
  * 设置客户端固定信息，如userID，Auth等
  * */
-export function setSystemMes(sysMes: any = initUserInfo) {
-    //设置token到客户端，并且同时设置登录用户权限到客户端
-    sessionStorage.setItem('user-info', JSON.stringify(sysMes));
-    sessionStorage.setItem('authID', sysMes.AuthIDList);
-    sessionStorage.setItem('auth', sysMes.AuthorityIDList);
-    sessionStorage.setItem('password', sysMes.password);
-    sessionStorage.setItem('userName', sysMes.DisplayName);
-    sessionStorage.setItem('userID', sysMes.ID);
-    sessionStorage.setItem('branchID', sysMes.BranchID);
-    sessionStorage.setItem('access_token', sysMes.Token);
-    sessionStorage.setItem('cityID', sysMes.CityID);
-    sessionStorage.setItem('cityName', sysMes.CityName);
-    sessionStorage.setItem('countryID', sysMes.CountryID);
-    sessionStorage.setItem('countryName', sysMes.CountryName);
-    sessionStorage.setItem('funcCurrency', sysMes.FuncCurrency);
-    sessionStorage.setItem('IsOpenAccount', sysMes.IsOpenAccount);
-    sessionStorage.setItem('IsSalesMan', sysMes.IsSalesMan);
-    sessionStorage.setItem('DivisionID', sysMes.DivisionID);
-    sessionStorage.setItem('branchCode', sysMes.BranchCode);
-    sessionStorage.setItem('FineReportURL', sysMes.FinereportURL);
+export function setSystemMes(tokenResult: any = initUserInfo) {
+
+    // TODO: 设置token到客户端，并且同时设置登录用户权限到客户端
+    sessionStorage.setItem('token', JSON.stringify(tokenResult));
+
+    sessionStorage.setItem('access_token', tokenResult.access_token);
+    sessionStorage.setItem('id_token', tokenResult.id_token);
+    sessionStorage.setItem('refresh_token', tokenResult.refresh_token);
+
+    // TODO: 用户信息
+    const userInfo: any = tokenResult.userInfo || {};
+    sessionStorage.setItem('user_info', userInfo);
+    sessionStorage.setItem('userId', userInfo.id);
+    sessionStorage.setItem('sino_no', userInfo.userId);
+    sessionStorage.setItem('user_code', userInfo.userId);
+
+    // TODO: 公司信息
+    sessionStorage.setItem('branch', userInfo.branch);                      // TODO: 公司信息
+
+    const branchInfo: any = userInfo?.branch || {};
+    sessionStorage.setItem('branchId', branchInfo.id);
+    sessionStorage.setItem('branch_address', branchInfo.address);
+    sessionStorage.setItem('branch_contactName', branchInfo.contactName);       // TODO: 公司法人
+    sessionStorage.setItem('funcCurrencyName', tokenResult.funcCurrencyName);   // TODO: 本位币
+    sessionStorage.setItem('iamCompanyOrgCode', tokenResult.iamCompanyOrgCode);   // TODO: 公司 IAM 号
+    // TODO: 公司币种数据集合
     sessionStorage.setItem('currencyList', JSON.stringify([{value: 'CNY', label: 'CNY'}, {value: 'HKD', label: 'HKD'}]));
 }
 
-// 设置密码
-export function setPassword(password: string) {
-    sessionStorage.setItem('password', password);
-}
+//region TODO: token 信息
+export const TOKEN = () => JSON.parse(sessionStorage.getItem('token') || '');
+// TODO: access_token
+export const ACCESS_TOKEN = () => sessionStorage.getItem('access_token');
+//endregion
 
-export function getPassword() {
-    return sessionStorage.getItem('password');
-}
+//region 公司信息
+// TODO: 公司详情信息
+export const BRANCH = () => sessionStorage.getItem('branch');
 
-// region 获取数据
-export function getUserInfo() {
-    const userInfo = sessionStorage.getItem('user-info');
-    return userInfo && userInfo !== 'undefined' ? JSON.parse(userInfo) || initUserInfo : initUserInfo;
-}
-export function getAccess_Token() {
-    return sessionStorage.getItem('access_token');
-}
-export function getAuthority() {
-    return sessionStorage.getItem('auth');
-}
-export function getAuthIDList() {
-    return sessionStorage.getItem('authID');
-}
+// TODO: 公司 id
+export const BRANCH_ID = () => Number(sessionStorage.getItem('branchId'));
 
-export function getCurrentUser() {
-    return sessionStorage.getItem('userName');
-}
+// TODO: 公司本位币
+export const FUNC_CURRENCY_NAME = () => sessionStorage.getItem('funcCurrencyName');
 
-export function getUserID() {
-    return Number(sessionStorage.getItem('userID'));
-}
+// TODO: IAM 公司 Code
+export const IAM_COMPANY_ORG_CODE = () => sessionStorage.getItem('iamCompanyOrgCode');
+//endregion
 
-export function getBranchID() {
-    return Number(sessionStorage.getItem('branchID'));
-}
 
-export function getCityID() {
-    return Number(sessionStorage.getItem('cityID'));
-}
+// region 用户信息
+// TODO: 用户信息
+export const USER_INFO = () => sessionStorage.getItem('user_info');
+// TODO: 用户 ID
+export const USER_ID = () => Number(sessionStorage.getItem('userId'));
 
-export function getCityName() {
-    return sessionStorage.getItem('cityName');
-}
+// TODO: 外运员工号
+export const SINOTRANS_NO = () => Number(sessionStorage.getItem('user_code'));
 
-export function getCountryID() {
-    return Number(sessionStorage.getItem('countryID'));
-}
-
-export function getCountryName() {
-    return sessionStorage.getItem('countryName');
-}
-
-export function getFuncCurrency() {
-    return sessionStorage.getItem('funcCurrency');
-}
-
-export function getCurrencyList() {
-    return JSON.parse(sessionStorage.getItem('currencyList') || '');
-}
-
-export function getIsOpenAccount() {
-    return sessionStorage.getItem('IsOpenAccount');
-}
-
-export function getIsSalesMan() {
-    return sessionStorage.getItem('IsSalesMan');
-}
-
-export function getDivisionID() {
-    return Number(sessionStorage.getItem('DivisionID'));
-}
-
-export function getBranchCode() {
-    return sessionStorage.getItem('branchCode');
-}
-
-export function getFineReportURL() {
-    return sessionStorage.getItem('FineReportURL');
-}
+// TODO: 币种集合
+export const CURRENCY_LIST = () => JSON.parse(sessionStorage.getItem('currencyList') || '');
 //  endregion
 
