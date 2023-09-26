@@ -18,6 +18,11 @@ export const LOCAL_LANGUAGE = false;
 // TODO: 定义字符串 id <时间戳字符串>
 export const ID_STRING = () => 'ID_' + Date.now().toString();
 
+// TODO: 获取时区
+export const CURRENT_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
+// export const local_timezone = pytz.timezone(CURRENT_TIMEZONE);
+
+
 // TODO: 栅格布局
 export const rowGrid = { xs: 8, sm: 16, md: 24, lg: 32 };
 export const colGrid = { span: 6, xs: 8, md: 8, lg: 6, xl: 6, xxl: 4 };
