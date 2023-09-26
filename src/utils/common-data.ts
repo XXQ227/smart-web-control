@@ -1,6 +1,18 @@
 // TODO: 行业地位
 import type {ColumnsType} from 'antd/es/table'
 
+// TODO: 币种
+export const CURRENCY = [
+    {value: 'CNY', label: 'CNY'},
+    {value: 'HKD', label: 'HKD'},
+    {value: 'THB', label: 'THB'},
+    {value: 'VND', label: 'VND'},
+    {value: 'USD', label: 'USD'},
+    {value: 'EUR', label: 'EUR'},
+    {value: 'JPY', label: 'JPY'},
+    {value: 'KRW', label: 'KRW'},
+];
+
 // TODO: 行业地位
 export const POSITION_IN_INDUSTRY = [
     {value: 1, label: 'Vary Bad 差'},

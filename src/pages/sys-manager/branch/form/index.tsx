@@ -15,6 +15,7 @@ import {history, useModel} from 'umi'
 import {getFormErrorMsg, rowGrid} from '@/utils/units'
 import BankIndex from '@/pages/sys-manager/branch/form/bank'
 import SearchProFormSelect from '@/components/SearchProFormSelect'
+import {CURRENCY} from "@/utils/common-data";
 
 type APIBranch = APIManager.Branch;
 type APIBank = APIManager.Bank;
@@ -298,10 +299,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                                 label='Currency'
                                 name='funcCurrencyName'
                                 rules={[{required: true, message: 'Currency'}]}
-                                options={[
-                                    {label: 'HKD', value: 'HKD'},
-                                    {label: 'CNY', value: 'CNY'},
-                                ]}
+                                options={CURRENCY}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={5}>
@@ -330,12 +328,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                                 placeholder=""
                                 label="Currencies"
                                 rules={[{required: true, message: 'Currencies'}]}
-                                options={[
-                                    {label: 'HKD', value: 'HKD'},
-                                    {label: 'USD', value: 'USD'},
-                                    {label: 'SGD', value: 'SGD'},
-                                    {label: 'CNY', value: 'CNY'},
-                                ]}
+                                options={CURRENCY}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={5}>
