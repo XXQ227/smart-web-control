@@ -1,6 +1,6 @@
 import {USER_ID, ACCESS_TOKEN, BRANCH_ID} from '@/utils/auths'
 import {message, notification} from 'antd';
-import {CURRENT_TIMEZONE, SYSTEM_ID, SYSTEM_KEY_TEST} from '@/utils/units'
+import {LOCAL_TIME_ZONE, SYSTEM_ID, SYSTEM_KEY_TEST} from '@/utils/units'
 
 
 const codeMessage = {
@@ -64,8 +64,7 @@ export function request(url: string, options: any) {
         UserID: USER_ID(),
         BranchID: BRANCH_ID(),
         auth: ACCESS_TOKEN(),
-        // zone: CURRENT_TIMEZONE,
-        zone: 8,
+        zone: LOCAL_TIME_ZONE(),
         ...newOptions.headers
     };
     if (url.indexOf('/apiIAM') > -1) {

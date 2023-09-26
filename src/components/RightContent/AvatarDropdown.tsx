@@ -5,17 +5,15 @@ import React from 'react';
 import {history, useModel} from 'umi';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
-import {USER_INFO, initUserInfo} from "@/utils/auths";
+import {USER_NAME, USER_ID} from "@/utils/auths";
 
 export type GlobalHeaderRightProps = {
-    menu?: boolean;
+    menu?: any;
 };
 
 const avatar = 'https://gw.alipayobjects.com/zos/antfincdn/XAosXuNZyF/BiazfanxmamNRoxxVxka.png';
 
-const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
-    // const {initialState, setInitialState} = useModel('@@initialState');
-    const userInfo = USER_INFO() || initUserInfo;
+const AvatarDropdown: React.FC<GlobalHeaderRightProps> = () => {
     const {logout} = useModel('login', (res: any)=> ({logout: res.logout}));
 
     const onMenuClick = async (key: string) => {
@@ -29,6 +27,8 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
             } else {
                 if (result.message) message.error(result.message);
             }
+        } else if (key === 'center') {
+            return;
         }
         history.push(`/account/${key}`);
     }
@@ -46,7 +46,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
 
     const items: MenuProps['items'] = [
         {
-            key: 'center', disabled: !userInfo?.ID, icon: <UserOutlined/>,
+            key: 'center', disabled: !!USER_ID(), icon: <UserOutlined/>,
             label: (
                 <a target="_blank" rel="noopener noreferrer" onClick={() => onMenuClick('center')}>
                     个人中心
@@ -54,7 +54,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
             ),
         },
         {
-            key: 'settings', disabled: !userInfo?.ID, icon: <SettingOutlined/>,
+            key: 'settings', disabled: !!USER_ID(), icon: <SettingOutlined/>,
             label: (
                 <a target="_blank" rel="noopener noreferrer" onClick={() => onMenuClick('settings')}>
                     个人设置
@@ -77,7 +77,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({menu}) => {
             <a target="_blank" rel="noopener noreferrer" onClick={()=> onMenuClick('center')}>
                 <span className={`${styles.action} ${styles.account}`}>
                     <Avatar size="small" className={styles.avatar} src={avatar} alt="avatar"/>
-                    <span className={`${styles.name} anticon`}>{userInfo.DisplayName}</span>
+                    <span className={`${styles.name} anticon`}>{USER_NAME()}</span>
                 </span>
             </a>
         </HeaderDropdown>

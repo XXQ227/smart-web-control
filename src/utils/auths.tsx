@@ -33,6 +33,7 @@ export function setSystemMes(tokenResult: any = initUserInfo) {
     const userInfo: any = tokenResult.userInfo || {};
     sessionStorage.setItem('user_info', userInfo);
     sessionStorage.setItem('userId', userInfo.id);
+    sessionStorage.setItem('user_name', userInfo.chineseName);
     sessionStorage.setItem('sino_no', userInfo.userId);
     sessionStorage.setItem('user_code', userInfo.userId);
 
@@ -60,7 +61,7 @@ export const ACCESS_TOKEN = () => sessionStorage.getItem('access_token');
 export const BRANCH = () => sessionStorage.getItem('branch');
 
 // TODO: 公司 id
-export const BRANCH_ID = () => Number(sessionStorage.getItem('branchId'));
+export const BRANCH_ID = () => sessionStorage.getItem('branchId');
 
 // TODO: 公司本位币
 export const FUNC_CURRENCY_NAME = () => sessionStorage.getItem('funcCurrencyName');
@@ -74,10 +75,13 @@ export const IAM_COMPANY_ORG_CODE = () => sessionStorage.getItem('iamCompanyOrgC
 // TODO: 用户信息
 export const USER_INFO = () => sessionStorage.getItem('user_info');
 // TODO: 用户 ID
-export const USER_ID = () => Number(sessionStorage.getItem('userId'));
+export const USER_ID = () => sessionStorage.getItem('userId');
+
+// TODO: 用户名
+export const USER_NAME = () => sessionStorage.getItem('user_name');
 
 // TODO: 外运员工号
-export const SINOTRANS_NO = () => Number(sessionStorage.getItem('user_code'));
+export const SINOTRANS_NO = () => sessionStorage.getItem('user_code');
 
 // TODO: 币种集合
 export const CURRENCY_LIST = () => JSON.parse(sessionStorage.getItem('currencyList') || '');

@@ -6,7 +6,7 @@ import {PageLoading, SettingDrawer} from '@ant-design/pro-components';
 import type { RunTimeLayoutConfig} from 'umi';
 import {Link, history} from 'umi';
 import defaultSettings from '../config/defaultSettings';
-import {USER_ID, USER_INFO, setSystemMes} from "@/utils/auths";
+import {USER_INFO, setSystemMes} from "@/utils/auths";
 import {icon_font_url} from '@/utils/units';
 import ls from 'lodash';
 import Exception403 from '@/pages/exception/403';
@@ -42,7 +42,6 @@ export async function getInitialState(): Promise<{
                 // TODO: 从地址栏拿到 IAM 返回的 code 请求后台 API, 获取当前用户信息
                 const result: any = await iamUserLogInAPI({code: query?.code});
                 if (result.success) {
-                    console.log(result.data);
                     // TODO: 设置到 session 中
                     setSystemMes(result.data?.tokenResult);
                     return result.data;
@@ -76,7 +75,7 @@ export async function getInitialState(): Promise<{
 export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
     // eslint-disable-next-line prefer-const
     let initInfo: any = ls.cloneDeep(initialState) || {};
-
+    const {location: {search}} = history;
     return {
         iconfontUrl: icon_font_url,
         // route: routes,
@@ -102,13 +101,9 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         // TODO: 页面切换时触发
         onPageChange: () => {
             // 当前页面的路径 <history>
-            const newPathname = history?.location?.pathname;
-            // 上一个页面的路径
-            // const oldPathname = location?.pathname;
-            // 如果没有登录【!USER_ID()】，重定向到登录页面【/user/login】
-            if (!USER_ID() && newPathname !== loginPath) {
-                // history.push(loginPath);
-            }
+            const {location: {pathname}} = history;
+            // TODO: 加上 IAM 跳转过来的 access_token
+            history.push(pathname + search);
         },
         // TODO: 左侧菜单拦的点击设置
         // collapsedButtonRender: ()=> 222,

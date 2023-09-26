@@ -27,6 +27,19 @@ export const CURRENT_TIMEZONE = Intl.DateTimeFormat().resolvedOptions().timeZone
 export const rowGrid = { xs: 8, sm: 16, md: 24, lg: 32 };
 export const colGrid = { span: 6, xs: 8, md: 8, lg: 6, xl: 6, xxl: 4 };
 
+/**
+ * @Description: TODO: 获取当前所在时区数
+ * @author XXQ
+ * @date 2023/9/26
+ * @returns
+ */
+export function LOCAL_TIME_ZONE() {
+    // TODO: 使用getTimezoneOffset()方法来获取当前时区。这个方法返回当前时区与 UTC 相差的分钟数(比如：在东8区，返回-480。)
+    const localTimeZone = new Date().getTimezoneOffset();
+    // TODO: 转成小时数并返回
+    return keepDecimal(localTimeZone / 60, 0);
+}
+
 
 /**
  * 用于并排显示

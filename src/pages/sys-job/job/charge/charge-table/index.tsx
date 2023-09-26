@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Button, Col, Divider, Popconfirm, Row, Select, Form, Space, message} from 'antd';
 import {DeleteOutlined, PlusOutlined, FormOutlined} from '@ant-design/icons';
 import {useModel} from 'umi';
-import {getBranchID, USER_ID} from '@/utils/auths';
+import {BRANCH_ID, USER_ID} from '@/utils/auths';
 import {formatNumToMoney, ID_STRING, keepDecimal} from '@/utils/units';
 import InputEditNumber from '@/components/InputEditNumber'
 import {CHARGE_STATE_ENUM} from '@/utils/enum'
@@ -230,7 +230,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                 // TODO: 没有，则从后台获取
                 // 当账单我听币种跟原币不一样时，从后台获取汇率
                 const valueObj = {CurrencyOrig: record.orgCurrencyName, CurrencyABill: val, UserID: USER_ID()};
-                const options: any = {headers: {BranchID: getBranchID()}}
+                const options: any = {headers: {BranchID: BRANCH_ID()}}
                 fetch(`/api/ABill/GetABillEXRate?${stringify(valueObj)}`, options)
                     .then(response => response.json())
                     .then((result: any) => {
