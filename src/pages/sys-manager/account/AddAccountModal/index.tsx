@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from 'react';
+import React, {Fragment, useState, useEffect} from 'react';
 import {
     ProForm,
     ProFormDatePicker,
@@ -9,20 +9,14 @@ import {getFormErrorMsg, rowGrid} from "@/utils/units";
 import {EditOutlined, PlusOutlined, FileSearchOutlined, CaretDownOutlined} from "@ant-design/icons";
 import {message} from "antd/es";
 import {useModel} from 'umi';
-import type moment from 'moment';
+import moment from 'moment';
+import {BRANCH_ID} from "@/utils/auths";
 
 export type LocationState = Record<string, unknown>;
 
 const AccountTypeList = [
     {value: 1, label: 'Normal'},
     {value: 2, label: 'Additional'}
-];
-
-const accountCurrArr = [
-    {currencyName: 'CNY', rateValue: ''},
-    {currencyName: 'USD', rateValue: ''},
-    {currencyName: 'THB', rateValue: ''},
-    {currencyName: 'EUR', rateValue: ''},
 ];
 
 interface Props {
@@ -37,9 +31,11 @@ const AddAccountModal: React.FC<Props> = (props) => {
     const [open, setOpen] = useState(false);
     const [form] = Form.useForm();
     const [loading, setLoading] = useState<boolean>(false);
-    const [accountCurrList, setAccountCurrList] = useState<any[]>(accountCurrArr);
+    const [accountCurrList, setAccountCurrList] = useState<any[]>([]);
+    const [funcCurrency, setFuncCurrency] = useState<string>('CNY');
     const [startDate, setStartDate] = useState<string | null>(null);
     const [AccountInfoVO, setAccountInfoVO] = useState<any>({});
+    const [isChange, setIsChange] = useState<boolean>(false);
 
     const {
         queryAccountPeriodInfo, addAccountPeriod, editAccountPeriod
@@ -49,6 +45,25 @@ const AddAccountModal: React.FC<Props> = (props) => {
         editAccountPeriod: res.editAccountPeriod,
     }));
 
+    const {
+        queryBranchCurrencyCommon, BranchCurrency, funcCurrencyName
+    } = useModel('common', (res: any)=> ({
+        queryBranchCurrencyCommon: res.queryBranchCurrencyCommon,
+        BranchCurrency: res.BranchCurrency,
+        funcCurrencyName: res.funcCurrencyName,
+    }))
+
+    useEffect(() => {
+        if (BranchCurrency.length !== 0 && funcCurrencyName) {
+            const currencies: { currencyName: string, rateValue: string }[] = BranchCurrency.map((currencyName: any) => ({
+                currencyName,
+                rateValue: ''
+            }));
+            setAccountCurrList(currencies || []);
+            setFuncCurrency(funcCurrencyName);
+        }
+    }, [BranchCurrency, funcCurrencyName, isChange]);
+
     /**
      * @Description: TODO: 查询账期详情
      * @author LLS
@@ -57,15 +72,26 @@ const AddAccountModal: React.FC<Props> = (props) => {
      */
     const handleGetAccountInfo = async () => {
         setLoading(true);
+        if (id === '0' || (BranchCurrency?.length === 0 && !funcCurrencyName)) {
+            await queryBranchCurrencyCommon({id: BRANCH_ID()});
+            setIsChange(!isChange);
+        }
         const result: any = await queryAccountPeriodInfo({id});
         if (result.success) {
             setAccountInfoVO(result.data);
-            setAccountCurrList(result.data?.exrateBOList || accountCurrArr);
+            setStartDate(result.data?.dateStart);
+            if (id !== '0' && result.data?.accountPeriodExrateBOList) {
+                setAccountCurrList(result.data?.accountPeriodExrateBOList);
+                const accountPeriodExrateBOList = form?.getFieldValue('accountPeriodExrateBOList');
+                if (accountPeriodExrateBOList?.length) {
+                    form?.setFieldsValue({accountPeriodExrateBOList: result.data?.accountPeriodExrateBOList});
+                }
+            }
         } else {
             message.error(result.message);
         }
         setLoading(false);
-        return result;
+        return result.data || {};
     }
 
     /*const onChange = (val: any, filedName: string, e: any) => {
@@ -107,7 +133,7 @@ const AddAccountModal: React.FC<Props> = (props) => {
             setStartDate(date);
             const dateEnd = form?.getFieldValue('dateEnd');
             // 如果已选择了End Date并且在Start Date之前，则重置End Date
-            if (dateEnd && dateEnd.isBefore(date)) {
+            if (dateEnd && moment(dateEnd)?.isBefore(date)) {
                 form.setFieldsValue({'dateEnd': null});
             }
         }
@@ -128,7 +154,7 @@ const AddAccountModal: React.FC<Props> = (props) => {
         target.rateValue = e?.target?.value;
         currArr.splice(indexCurr, 1, target);
         setAccountCurrList(currArr);
-        form.setFieldsValue({exrateBOList: currArr});
+        form.setFieldsValue({accountPeriodExrateBOList: currArr});
         // TODO: 内部人民币统计汇率，在创建账期时，使用当期业务人民币汇率
         if (filedName === 'CNY') {
             form.setFieldsValue({funcCnyRate: e?.target?.value});
@@ -159,7 +185,7 @@ const AddAccountModal: React.FC<Props> = (props) => {
         let result: API.Result;
         if (id === '0') {
             // TODO: 新增账期
-            val.branchId = '0';
+            val.branchId = BRANCH_ID();
             val.statusDeferra = 0;    // TODO: 递延状态
             val.statusPredicted = 0;  // TODO: 预估状态
             result = await addAccountPeriod(val);
@@ -168,7 +194,6 @@ const AddAccountModal: React.FC<Props> = (props) => {
             val.id = id;
             result = await editAccountPeriod(val);
         }
-        console.log(result);
         if (result?.success) {
             message.success('Success');
             handleModal();
@@ -306,20 +331,19 @@ const AddAccountModal: React.FC<Props> = (props) => {
                                                     width={90}
                                                     required
                                                     placeholder=''
-                                                    name={item.currencyName}
-                                                    initialValue={item.rateValue}
+                                                    name={['accountPeriodExrateBOList', indexCurr, 'rateValue']}
                                                     rules={[{required: true, message: 'Is required'},{ pattern: /[0-9]+$/, message: 'Only numbers can be entered' }]}
                                                     fieldProps={{
                                                         onChange: (e: any)=> handleChangeCurrency(e, item.currencyName, indexCurr)
                                                     }}
                                                 />
                                             </Col>
-                                            <Col> HKD</Col>
+                                            <Col> {funcCurrency}</Col>
                                         </Row>
                                     </Col>
                                 )}
                                 {/* // TODO: 用于保存时，获取数据用 */}
-                                <Form.Item hidden={true} name={'exrateBOList'} />
+                                <Form.Item hidden={true} name={'accountPeriodExrateBOList'} />
                             </Row>
 
                             <Row gutter={rowGrid}>
@@ -339,7 +363,7 @@ const AddAccountModal: React.FC<Props> = (props) => {
                                                 rules={[{required: true, message: 'Is required'},{ pattern: /[0-9]+$/, message: 'Only numbers can be entered' }]}
                                             />
                                         </Col>
-                                        <Col> HKD</Col>
+                                        <Col> {funcCurrency}</Col>
                                     </Row>
                                 </Col>
                             </Row>

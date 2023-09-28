@@ -8,6 +8,7 @@ import {ACCOUNT_PERIOD_ES_STATUS_ENUM, ACCOUNT_PERIOD_STATE_ENUM, ACCOUNT_PERIOD
 import {IconFont} from '@/utils/units'
 import moment from 'moment'
 import AddAccountModal from "@/pages/sys-manager/account/AddAccountModal";
+import {BRANCH_ID} from "@/utils/auths";
 
 const { Search } = Input;
 
@@ -17,7 +18,7 @@ type APISearchAccountParams = APIManager.SearchAccountParams;
 // TODO: 获取账期列表的请求参数
 const searchParams: APISearchAccountParams = {
     finaYear: moment(new Date()).year().toString(),
-    branchId: '1665596906844135426',
+    branchId: BRANCH_ID() || '0',
 };
 
 const AccountListIndex: React.FC<RouteChildrenProps> = () => {

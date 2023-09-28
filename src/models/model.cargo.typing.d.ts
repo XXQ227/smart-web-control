@@ -279,6 +279,7 @@ declare namespace APIModel {
         packagingMethodId?: number | null;
         packagingMethodName?: string;
         TareWeight?: string;
+        serviceId?: any;
     }
     type HouseBill = {
         SignMethodID?: number;

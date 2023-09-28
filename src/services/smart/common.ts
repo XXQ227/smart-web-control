@@ -27,3 +27,11 @@ export async function queryInvoiceTypeCommonAPI(body: any) {
   });
 }
 
+/** 查询公司币种通用列表 */
+export async function queryBranchCurrencyCommonAPI(body: any) {
+  return request(`/apiBase/branch/queryBranchCurrencyCommon`, {
+    method: 'POST',
+    body
+  });
+}
+

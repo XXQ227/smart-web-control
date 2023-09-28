@@ -11,21 +11,35 @@ import FormItemSelect from '@/components/FormItemComponents/FormItemSelect'
 type APIBank = APIManager.Bank;
 
 interface Props {
+    form: any,
     BankList: any[],
     handleChangeBank: (data: any) => void,
     handleOperateBank: (bankAccountId: string) => Promise<API.Result>,
 }
 
 const BankIndex: React.FC<Props> = (props) => {
-    const { BankList } = props;
+    const { form, BankList } = props;
 
     const [loading, setLoading] = useState<boolean>(false);
     const [BankListVO, setBankListVO] = useState<any[]>(BankList || []);
+    const currencies = form?.getFieldValue('currencies');
+    const CURRENCY: { value: string; label: string }[] = currencies?.map((currency: any) => ({
+        value: currency,
+        label: currency
+    }));
 
     const handleAddBank = () => {
-        const newData: APIBank[] = ls.cloneDeep(BankListVO) || [];
-        newData.push({ id: ID_STRING(), name: '', isChange: true });
-        setBankListVO(newData);
+        if (currencies?.length > 0) {
+            const newData: APIBank[] = ls.cloneDeep(BankListVO) || [];
+            newData.push({ id: ID_STRING(), name: '', isChange: true });
+            setBankListVO(newData);
+        } else {
+            message.warning({
+                content: 'Please select currencies first.',
+                style: {fontSize: 16},
+                duration: 5,
+            });
+        }
     }
 
     /**
@@ -145,8 +159,7 @@ const BankIndex: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItemSelect
                     required
-                    // options={getCurrencyList()}
-                    options={[{value: 'CNY', label: 'CNY'}, {value: 'HKD', label: 'HKD'}]}
+                    options={CURRENCY}
                     id={`currencyName${record.id}`}
                     name={`currencyName${record.id}`}
                     initialValue={record.currencyName}

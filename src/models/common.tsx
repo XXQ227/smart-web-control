@@ -1,5 +1,6 @@
 import {useCallback, useState} from "react";
 import {
+    queryBranchCurrencyCommonAPI,
     queryDictCommonAPI, queryDictDetailCommonAPI, queryInvoiceTypeCommonAPI
 } from '@/services/smart/common'
 import {queryAccountPeriodCommonAPI, queryStartAccountPeriodInfoAPI} from '@/services/smart/manager/account'
@@ -19,6 +20,8 @@ export default () => {
     const [CTNModelList, setCTNModelList] = useState([]);
     const [AccountPeriodList, setAccountPeriodList] = useState([]);
     const [InvoTypeList, setInvoTypeList] = useState([]);
+    const [BranchCurrency, setBranchCurrency] = useState([]);
+    const [funcCurrencyName, setFuncCurrencyName] = useState('');
 
     // TODO: 获取字典数据
     const queryDictCommon = useCallback(async (params: {dictCodes: any}) => {
@@ -127,6 +130,20 @@ export default () => {
         }
     }, []);
 
+    // TODO: 查询公司币种通用列表
+    // POST /base/web/branch/queryBranchCurrencyCommon
+    // API ID:113532987
+    // API URL:https://app.apifox.com/link/project/2684231/apis/api-113532987
+    const queryBranchCurrencyCommon = useCallback(async (params: {name: string, branchId: any}) => {
+        // TODO: 请求后台 API
+        const response = await queryBranchCurrencyCommonAPI(params);
+        if (!response) return;
+        if (response.success) {
+            setBranchCurrency(response?.data?.branchCurrencies || []);
+            setFuncCurrencyName(response?.data?.funcCurrencyName);
+        }
+    }, []);
+
     return {
         queryDictCommon,
         queryDictCommonReturn,
@@ -144,5 +161,8 @@ export default () => {
         queryStartAccountPeriodInfo,
         queryInvoiceTypeCommon,
         InvoTypeList,
+        queryBranchCurrencyCommon,
+        BranchCurrency,
+        funcCurrencyName,
     }
 }

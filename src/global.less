@@ -840,7 +840,6 @@ ol {
   }
 }
 
-
 // TODO: 港口
 .antd-pro-table-port-list {
   .ant-pro-card-body {
@@ -876,6 +875,12 @@ ol {
       font-size: 16px;
       font-weight: bold;
     }
+    th.scrollStyle {
+      border-right: none !important;
+    }
+    .ant-table-cell-scrollbar:not([rowspan]) {
+      box-shadow: none;
+    }
     .anticon-info-circle {
       svg {
         color: red;
@@ -883,6 +888,10 @@ ol {
     }
   }
   .ant-table-tbody {
+    tr.ant-table-measure-row td {
+      border-bottom: none !important;
+      padding: 0 !important;
+    }
     td {
       border-right: 0.3px solid !important;
       border-bottom: 0.3px solid !important;
@@ -1026,19 +1035,20 @@ ol {
       .ant-input-search-customer {
         border-radius: 6px;
         height: 35px;
+        border: 0.3px solid !important;
       }
 
       //表格行被点击时的样式<背景颜色>
-      .blue-bg, .blue-bg .ant-table-cell-row-hover {
+      .hover-bg, .hover-bg .ant-table-cell-row-hover {
         background-color: rgb(211, 158, 89) !important;
-        .ant-table-cell {
+        /*.ant-table-cell {
           border-right: 1px solid #000 !important;
           border-bottom: 1px solid #000 !important;
           border-top: 1px solid #000 !important;
         }
         .ant-table-cell:first-child {
           border-left: 1px solid #000 !important;
-        }
+        }*/
       }
 
       .ant-account-form {

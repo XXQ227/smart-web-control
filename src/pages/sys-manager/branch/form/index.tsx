@@ -46,6 +46,8 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
     const [BranchInfoVO, setBranchInfoVO] = useState<any>({});
     const [BankListVO, setBankListVO] = useState<any>([]);
     const [loading, setLoading] = useState<boolean>(false);
+    const [selectedCurrencies, setSelectedCurrencies] = useState<any>([]);  // 银行信息已选择的币种选项存储在 selectedCurrencies 中
+    const [isChangeValue, setIsChangeValue] = useState<boolean>(false);
     //endregion
 
     /**
@@ -60,6 +62,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
         if (result.success) {
             setBranchInfoVO(result.data);
             setBankListVO(result.data?.bankAccountList);
+            setSelectedCurrencies(result.data?.bankAccountList?.map((item: any) => item.currencyName) || []);
         } else {
             message.error(result.message);
         }
@@ -149,7 +152,10 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const handleChangeBank = (data: any) => {
-        setBankListVO(data)
+        // 使用 map 方法提取 currencyName 属性
+        const currencyNames: string[] = data.map((item: any) => item.currencyName);
+        setSelectedCurrencies(currencyNames);
+        setBankListVO(data);
     }
 
     /**
@@ -174,6 +180,21 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
         return result;
     }
 
+    /**
+     * @Description: TODO: 当 ProForm 表单修改时，调用此方法
+     * @author LLS
+     * @date 2023/9/26
+     * @param changeValues   ProForm 表单修改的参数
+     * @returns
+     */
+    const handleProFormValueChange = (changeValues: any) => {
+        Object.keys(changeValues).map((item: any) => {
+            if (item === 'currencies') {
+                setIsChangeValue(!isChangeValue);
+            }
+        })
+    }
+
     return (
         <PageContainer
             loading={loading}
@@ -191,6 +212,8 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                 // TODO: 设置默认值
                 initialValues={BranchInfoVO}
                 formKey={'branch-information'}
+                // TODO: 空间有改数据时触动
+                onValuesChange={handleProFormValueChange}
                 // TODO: 提交数据
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
@@ -327,8 +350,12 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
                                 mode="multiple"
                                 placeholder=""
                                 label="Currencies"
+                                allowClear={false}
                                 rules={[{required: true, message: 'Currencies'}]}
-                                options={CURRENCY}
+                                options={CURRENCY.map((currency) => ({
+                                    ...currency,
+                                    disabled: selectedCurrencies.includes(currency.value),
+                                }))}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={16} xl={12} xxl={5}>
@@ -357,6 +384,7 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
 
                 <ProCard className={'ant-card-pro-table'}>
                     <BankIndex
+                        form={form}
                         BankList={BankListVO}
                         handleChangeBank={(data: any) => handleChangeBank(data)}
                         handleOperateBank={(bankAccountId: string) => handleOperateBank(bankAccountId)}

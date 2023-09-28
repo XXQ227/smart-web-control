@@ -29,7 +29,7 @@ interface Props {
 }
 
 const CTNLoading: React.FC<Props> = (props) => {
-    const {type, form, containerList} = props;
+    const {type, form, containerList, serviceId} = props;
 
     const {CargoInfo} = useModel('job.job', (res: any) => ({CargoInfo: res.CargoInfo}))
     const {queryDictCommonReturn} = useModel('common', (res: any) => ({queryDictCommonReturn: res.queryDictCommonReturn,}))
@@ -118,7 +118,7 @@ const CTNLoading: React.FC<Props> = (props) => {
             let actualArr: APIModel.CTNActualList[] = [];
             preBookingList.map((item: any) => {
                 const obj: APIModel.CTNActualList = {
-                    id: ID_STRING(), ctnModelId: item.ctnModelId, ctnModelName: item.ctnModelName
+                    id: ID_STRING(), ctnModelId: item.ctnModelId, ctnModelName: item.ctnModelName, serviceId
                 };
                 // TODO: 当箱量大于 1 时。循环箱量
                 if (item.qty > 1) {

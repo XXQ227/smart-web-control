@@ -106,7 +106,6 @@ const AddCustomerModal: React.FC<Props> = (props) => {
      * @returns
      */
     const handleModal = (operationType: number) => {
-        console.log(customerVO);
         setSearchVal('');
         setCurRowIndex(null)
         setDataSourceList([]);
@@ -127,7 +126,6 @@ const AddCustomerModal: React.FC<Props> = (props) => {
      * @returns
      */
     const handleChange = (record: any, index: number | undefined) => {
-        console.log(record)
         if (curRowIndex !== index) {
             console.log(record.data)
             setCustomerVO(record.data)
@@ -139,11 +137,6 @@ const AddCustomerModal: React.FC<Props> = (props) => {
             setAddButtonDisabled(true)
         }
     }
-
-    /*function handleRowChange(val: any, option?: any) {
-        console.log(val)
-        console.log(option)
-    }*/
 
     return (
         <Modal
@@ -187,7 +180,7 @@ const AddCustomerModal: React.FC<Props> = (props) => {
                         dataSource={dataSourceList}
                         search={false}
                         showHeader={false}
-                        rowClassName={(record, index) => index == curRowIndex ? 'blue-bg' : ''}
+                        rowClassName={(record, index) => index == curRowIndex ? 'hover-bg' : ''}
                         onRow={(record, index) => {
                             return {
                                 onClick: () => {

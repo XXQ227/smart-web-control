@@ -110,21 +110,17 @@ const BusinessUnitListIndex: React.FC<RouteChildrenProps> = (props) => {
     }
 
     const onFinish = async (val: APISearchBUParams) => {
-        console.log(searchParams);
-        console.log(val);
         const params: APISearchBUParams = {
             ...searchParams,
             ...val,
             createTimeStart: val.createTimeStart,
             createTimeEnd: val.createTimeEnd,
         };
-        console.log(params);
         setSearchParams(params);
         await handleQueryBU(params);
     }
 
     const onFinishFailed = (val: any) => {
-        console.log(val);
         const errInfo = getFormErrorMsg(val);
         message.error(errInfo);
     }
@@ -267,28 +263,31 @@ const BusinessUnitListIndex: React.FC<RouteChildrenProps> = (props) => {
         >
             {renderSearch()}
 
-            <ProTable<APIBU>
-                rowKey={'id'}
-                options={false}
-                bordered={true}
-                loading={loading}
-                columns={columns}
-                params={searchParams}
-                dataSource={BUListVO}
-                search={false}
-                rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
-                pagination={{
-                    showSizeChanger: true,
-                    ...pagination,
-                    pageSizeOptions: [20, 30, 50, 100],
-                    onChange: (page, pageSize) => {
-                        // searchParams.currentPage = page;
-                        searchParams.pageSize = pageSize;
-                        setSearchParams(searchParams);
-                    },
-                }}
-                request={handleQueryBU}
-            />
+            <ProCard className={'ant-card-pro-table'}>
+                <ProTable<APIBU>
+                    className={'antd-pro-table-port-list'}
+                    rowKey={'id'}
+                    options={false}
+                    bordered={true}
+                    loading={loading}
+                    columns={columns}
+                    params={searchParams}
+                    dataSource={BUListVO}
+                    search={false}
+                    rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
+                    pagination={{
+                        showSizeChanger: true,
+                        ...pagination,
+                        pageSizeOptions: [20, 30, 50, 100],
+                        onChange: (page, pageSize) => {
+                            // searchParams.currentPage = page;
+                            searchParams.pageSize = pageSize;
+                            setSearchParams(searchParams);
+                        },
+                    }}
+                    request={handleQueryBU}
+                />
+            </ProCard>
         </PageContainer>
     )
 }

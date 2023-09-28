@@ -374,28 +374,32 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
             }}
         >
             {renderSearch()}
-            <ProTable<APIBUP>
-                rowKey={'id'}
-                search={false}
-                options={false}
-                bordered={true}
-                loading={loading}
-                columns={columns}
-                params={searchParams}
-                dataSource={BUPListVO}
-                rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
-                pagination={{
-                    showSizeChanger: true,
-                    ...pagination,
-                    pageSizeOptions: [20, 30, 50, 100],
-                    onChange: (page, pageSize) => {
-                        // searchParams.currentPage = page;
-                        searchParams.pageSize = pageSize;
-                        setSearchParams(searchParams);
-                    },
-                }}
-                request={handleQueryBUP}
-            />
+
+            <ProCard className={'ant-card-pro-table'}>
+                <ProTable<APIBUP>
+                    className={'antd-pro-table-port-list'}
+                    rowKey={'id'}
+                    search={false}
+                    options={false}
+                    bordered={true}
+                    loading={loading}
+                    columns={columns}
+                    params={searchParams}
+                    dataSource={BUPListVO}
+                    rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : ''}
+                    pagination={{
+                        showSizeChanger: true,
+                        ...pagination,
+                        pageSizeOptions: [20, 30, 50, 100],
+                        onChange: (page, pageSize) => {
+                            // searchParams.currentPage = page;
+                            searchParams.pageSize = pageSize;
+                            setSearchParams(searchParams);
+                        },
+                    }}
+                    request={handleQueryBUP}
+                />
+            </ProCard>
 
             <Modal
                 className={'ant-add-modal'}

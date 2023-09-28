@@ -436,7 +436,7 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
             title: 'Action',
             width: 75,
             align: 'center',
-            className: 'cursorStyle',
+            className: 'scrollStyle cursorStyle',
             render: (text, record, index) => {
                 return (
                     <Fragment>
@@ -469,6 +469,7 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
         {
             title: 'Payer Name',
             dataIndex: 'nameFullEn',
+            className: 'scrollStyle',
             ellipsis: true,
         },
     ];
@@ -584,31 +585,34 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
         >
             {renderSearch()}
 
-            <ProTable<APIPayer>
-                rowKey={'id'}
-                options={false}
-                bordered={true}
-                loading={loading}
-                columns={columns}
-                params={searchParams}
-                dataSource={PayerListVO}
-                search={false}
-                pagination={{
-                    showSizeChanger: true,
-                    ...pagination,
-                    pageSizeOptions: [20, 30, 50, 100],
-                    onChange: (page, pageSize) => {
-                        // searchParams.currentPage = page;
-                        searchParams.pageSize = pageSize;
-                        setSearchParams(searchParams);
-                    },
-                }}
-                rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : record.id === payerHighlightedRow ? 'ant-table-row-highlight-row' : ''}
-                onRow={(record) => ({
-                    id: `row-${record.id}`, // 给每一行添加唯一的ref属性
-                })}
-                request={handleQueryPayer}
-            />
+            <ProCard className={'ant-card-pro-table'}>
+                <ProTable<APIPayer>
+                    className={'antd-pro-table-port-list'}
+                    rowKey={'id'}
+                    options={false}
+                    bordered={true}
+                    loading={loading}
+                    columns={columns}
+                    params={searchParams}
+                    dataSource={PayerListVO}
+                    search={false}
+                    pagination={{
+                        showSizeChanger: true,
+                        ...pagination,
+                        pageSizeOptions: [20, 30, 50, 100],
+                        onChange: (page, pageSize) => {
+                            // searchParams.currentPage = page;
+                            searchParams.pageSize = pageSize;
+                            setSearchParams(searchParams);
+                        },
+                    }}
+                    rowClassName={(record)=> record.enableFlag ? 'ant-table-row-disabled' : record.id === payerHighlightedRow ? 'ant-table-row-highlight-row' : ''}
+                    onRow={(record) => ({
+                        id: `row-${record.id}`, // 给每一行添加唯一的ref属性
+                    })}
+                    request={handleQueryPayer}
+                />
+            </ProCard>
 
             {/* TODO: Payer 与 Customer 的关系弹框 */}
             <Modal

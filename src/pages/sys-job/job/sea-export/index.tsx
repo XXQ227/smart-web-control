@@ -114,13 +114,13 @@ const SeaExport: React.FC<Props> = (props) => {
             if (params.preBookingContainersEntityList?.length > 0) {
                 params.preBookingContainersEntityList =
                     params.preBookingContainersEntityList.map((item: any) =>
-                        ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id, jobId})
+                        ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id, jobId, serviceId: id})
                     );
             }
             if (params.containersLoadingDetailEntityList?.length > 0) {
                 params.containersLoadingDetailEntityList =
                     params.containersLoadingDetailEntityList.map((item: any) =>
-                        ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id, jobId})
+                        ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id, jobId, serviceId: id})
                     );
             }
             // TODO: 提单信息
