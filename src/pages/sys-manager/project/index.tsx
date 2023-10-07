@@ -82,7 +82,6 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
         setLoading(false);
     }
 
-
     /**
      * @Description: TODO 获取单票数据集合
      * @author LLS

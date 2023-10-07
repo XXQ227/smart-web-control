@@ -139,7 +139,6 @@ const BranchForm: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const onFinishFailed = (val: any) => {
-        console.log(val);
         const errInfo = getFormErrorMsg(val);
         message.error(errInfo);
     }

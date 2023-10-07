@@ -6,6 +6,7 @@ import {history, useModel, useParams} from 'umi';
 import {getFormErrorMsg} from '@/utils/units';
 import ChargeTable from '@/pages/sys-job/job/charge/charge-table';
 import Agent from '@/pages/sys-job/job/charge/agent';
+import {LeftOutlined, SaveOutlined} from "@ant-design/icons";
 
 const FormItem = Form.Item;
 
@@ -293,7 +294,9 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                     // 完全自定义整个区域
                     render: () => {
                         return (
-                            <FooterToolbar extra={<Button onClick={() => history.goBack()}>Back</Button>}>
+                            <FooterToolbar
+                                style={{height: 55}}
+                                extra={<Button icon={<LeftOutlined/>} onClick={() => history.push({pathname: '/job/job-list'})}>Back</Button>}>
                                 <Button
                                     onClick={() => handeSubmit(1)}
                                     type={'primary'} disabled={submitStatus.toManager}
@@ -307,7 +310,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                                     type={'primary'} disabled={submitStatus.toBilling}
                                 >Reject</Button>
 
-                                <Button type={'primary'} htmlType={'submit'}>Save</Button>
+                                <Button icon={<SaveOutlined/>} key={'submit'} type={'primary'} htmlType={'submit'}>Save</Button>
                             </FooterToolbar>
                         );
                     },

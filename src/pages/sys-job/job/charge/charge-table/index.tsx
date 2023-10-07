@@ -365,6 +365,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                 >
                     <SearchModal
                         qty={13}
+                        isTextAlignCenter
                         title={'Description'}
                         value={record.itemId}
                         text={record.itemName}
@@ -384,6 +385,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                 >
                     <SearchModal
                         qty={13}
+                        isTextAlignCenter
                         id={`CTID${record.id}`}
                         value={record.businessId}
                         text={record.businessName}
@@ -404,6 +406,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                 >
                     <SearchModal
                         qty={13}
+                        isTextAlignCenter
                         title={'Unit'}
                         value={record.unitId}
                         text={record.unitName}
@@ -423,8 +426,10 @@ const ChargeTable: React.FC<Props> = (props) => {
                     initialValue={record.qty} name={`qty_table_${record.id}`}
                 >
                     <InputEditNumber
-                        value={text} valueStr={record.qtyStr}
-                        id={`qty${record.id}`} className={'isNumber-inp'}
+                        value={text}
+                        valueStr={record.qtyStr}
+                        id={`qty${record.id}`}
+                        className={'isNumber-inp-center'}
                         handleChangeData={(val) => handleRowChange(index, record.id, 'qty', val)}
                     />
                 </FormItem>,

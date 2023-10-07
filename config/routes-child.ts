@@ -274,28 +274,28 @@ const manager_route = {
         // TODO: 信控数据
         {
             name: 'credit_list',
-            icon: 'icon-charge-manage',
+            icon: 'icon-credit',
             path: '/manager/credit',
             component: './sys-manager/credit',
         },
         {
             hideInMenu: true,   // 隐藏不显示
             name: 'credit_info',
-            icon: 'icon-charge-manage',
+            icon: 'icon-credit',
             path: '/manager/credit/form/:id',
             component: './sys-manager/credit/form',
         },
         {
             hideInMenu: true,   // 隐藏不显示
             name: 'credit_info',
-            icon: 'icon-charge-manage',
+            icon: 'icon-credit',
             path: '/manager/credit/form/:id/:buId',
             component: './sys-manager/credit/form',
         },
         {
             hideInMenu: true,   // 隐藏不显示
             name: 'credit_approval',
-            icon: 'icon-charge-manage',
+            icon: 'icon-credit',
             path: '/manager/credit/approval/:id',
             component: './sys-manager/credit/approval',
         },
@@ -388,15 +388,15 @@ const manager_route = {
         {
             name: 'project_list',
             icon: 'icon-project',
-            path: '/manager/project/list',
-            component: './sys-manager/project/project-list',
+            path: '/manager/project',
+            component: './sys-manager/project',
         },
         {
             hideInMenu: true,   // 隐藏不显示
             name: 'project_info',
             icon: 'icon-project',
             path: '/manager/project/form/:id',
-            component: './sys-manager/project/project-form',
+            component: './sys-manager/project/form',
         },
         // TODO: 用户
         {
@@ -408,14 +408,14 @@ const manager_route = {
         // TODO: edi
         {
             name: 'edi',
-            icon: 'icon-project',
+            icon: 'icon-EDI',
             path: '/manager/edi/list',
             component: './sys-manager/edi',
         },
         {
             hideInMenu: true,   // 隐藏不显示
             name: 'edi_info',
-            icon: 'icon-project',
+            icon: 'icon-EDI',
             path: '/manager/edi/form/:id',
             component: './sys-manager/edi/form',
         },

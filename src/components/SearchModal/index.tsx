@@ -22,14 +22,15 @@ interface Props {
     filedValue?: string,    // TODO: 用于显示返回结果 【value】 的返回参数
     filedLabel?: string,    // TODO: 用于显示返回结果 【label】 的参数
     handleChangeData: (val: any, option?: any) => void,   // TODO: 选中后，返回的结果
-    isBtn?: boolean,        // TODO: 是否为按钮
-    btnName?: string        // TODO: 按钮名字
+    isBtn?: boolean,                    // TODO: 是否为按钮
+    btnName?: string                    // TODO: 按钮名字
+    isTextAlignCenter?: boolean,        // TODO: 是否文字居中
 }
 
 const SearchModal: React.FC<Props> = (props) => {
     const {
         url, query, qty, filedValue, filedLabel,
-        isBtn, btnName, disabled,
+        isBtn, btnName, disabled, isTextAlignCenter,
     } = props;
 
     const [visible, setVisible] = useState<boolean>(false);     // TODO: Modal 隐藏显示开关
@@ -198,24 +199,24 @@ const SearchModal: React.FC<Props> = (props) => {
                     onChange={handleModal}
                     onClick={handleModal}
                     onKeyDown={handleKeyDown}
-                    className={'searchModal-input'}
+                    className={`searchModal-input ${isTextAlignCenter ? 'searchModal-input-text' : ''} `}
                 />
-                // <ProFormText
-                //     required={props.required}
-                //     id={props.id}
-                //     name={showText}
-                //     initialValue={showText}
-                //     disabled={disabled}
-                //     className={'searchModal-input'}
-                //     placeholder=''
-                //     rules={props.rules}
-                //     fieldProps={{
-                //         autoComplete: 'off',
-                //         onChange: handleModal,
-                //         onClick: handleModal,
-                //         onKeyDown: handleKeyDown,
-                //     }}
-                // />
+                /*<ProFormText
+                    required={props.required}
+                    id={props.id}
+                    name={showText}
+                    initialValue={showText}
+                    disabled={disabled}
+                    className={'searchModal-input'}
+                    placeholder=''
+                    rules={props.rules}
+                    fieldProps={{
+                        autoComplete: 'off',
+                        onChange: handleModal,
+                        onClick: handleModal,
+                        onKeyDown: handleKeyDown,
+                    }}
+                />*/
             }
             {
                 !visible ? null :
