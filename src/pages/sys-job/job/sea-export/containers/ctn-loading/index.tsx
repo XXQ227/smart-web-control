@@ -421,13 +421,13 @@ const CTNLoading: React.FC<Props> = (props) => {
                     </FormItem>
             },
             {
-                title: 'Yard Container No.', dataIndex: "YardCTNNum", className: "textCenter",
+                title: 'Yard Container No.', dataIndex: "yardContainerNum", className: "textCenter",
                 render: (text: any, record, index) =>
                     <FormItemInput
                         placeholder=''
                         initialValue={text}
-                        name={`YardCTNNum_table_${record.id}`}
-                        onChange={(val: any) => onChange(index, record.id, 'yardCTNNum', val)}
+                        name={`yardContainerNum_table_${record.id}`}
+                        onChange={(val: any) => onChange(index, record.id, 'yardContainerNum', val)}
                     />
             }
         );
