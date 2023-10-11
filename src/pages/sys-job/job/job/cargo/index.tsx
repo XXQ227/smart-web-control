@@ -39,7 +39,7 @@ const Cargo: React.FC<Props> = (props) => {
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6} className={'custom-input'}>
                             <ProFormDigit
                                 placeholder='' label={'Chargeable Weight'} min={0}
-                                name={['cargoInformationParam', 'chargeableWeight']} fieldProps={{addonAfter: 'HKD'}}
+                                name={['cargoInformationParam', 'chargeableWeight']} fieldProps={{addonAfter: 'KG'}}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6} className={'custom-input'}>
@@ -61,7 +61,7 @@ const Cargo: React.FC<Props> = (props) => {
                         <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={5} className={'custom-input'}>
                             <ProFormDigit
                                 placeholder='' label={'Cargo Value'} min={0}
-                                name={['cargoInformationParam', 'cargoValue']} fieldProps={{addonAfter: 'KG'}}
+                                name={['cargoInformationParam', 'cargoValue']} fieldProps={{addonAfter: 'HKD'}}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={5} xxl={5} className={'custom-input'}>

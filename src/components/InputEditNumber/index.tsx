@@ -11,7 +11,6 @@ interface Props {
 }
 
 const InputEditNumber: React.FC<Props> = (props) => {
-
     // 设置是否是编辑
     const [isEdit, setIsEdit] = useState<boolean>(false);
     const [value, setValue] = useState<any>(props.value || null);

@@ -38,7 +38,7 @@ const Pickup: React.FC<Props> = (props) => {
                 </Col>
                 {/* 货/箱 抵港日期 */}
                 <Col xs={24} sm={24} md={8} lg={8} xl={5} xxl={3}>
-                    <ProFormDatePicker width={'md'} placeholder="" label="POL Terminal Receipt" name='polTerminalReceipt'/>
+                    <ProFormDatePicker width={'md'} placeholder="" label="POL Terminal Receipt" name='polTerminalReceiptDate'/>
                 </Col>
                 {/* 提 货/箱 日期 */}
                 <Col xs={24} sm={24} md={8} lg={8} xl={5} xxl={3}>

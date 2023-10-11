@@ -139,9 +139,10 @@ const Basic: React.FC<Props> = (props) => {
                 <Col xs={0} sm={0} md={0} lg={0} xl={1} xxl={1} flex="auto" style={{ textAlign: "center" }}>
                     <Divider type="vertical" style={{ height: '100%' }} />
                 </Col>
-                {/* 业务完成日 */}
-                <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={3} className={'completeDate'}>
-                    <ProFormDatePicker width="md" name="complateDate" label="COMPLETE DATE" placeholder=""/>
+                {/* 订舱号 业务完成日 */}
+                <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={3}>
+                    <ProFormText name="bookingNum" label="Booking No." placeholder=""/>
+                    <div className='completeDate'><ProFormDatePicker width="md" name="completeDate" label="COMPLETE DATE" placeholder=""/></div>
                 </Col>
             </Row>
 

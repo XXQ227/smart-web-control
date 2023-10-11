@@ -105,7 +105,7 @@ const SeaExport: React.FC<Props> = (props) => {
             if (values.siCutOffTime) values.siCutOffTime = moment(values.siCutOffTime).format('YYYY-MM-DD hh:mm:ss');
             values.placeOfDate = values.placeOfDate ? values.placeOfDate : '';
             values.pickupDate = values.pickupDate ? values.pickupDate : '';
-            values.polTerminalReceipt = values.polTerminalReceipt ? values.polTerminalReceipt : '';
+            values.polTerminalReceiptDate = values.polTerminalReceiptDate ? values.polTerminalReceiptDate : '';
             values.loadingDate = values.loadingDate ? values.loadingDate : '';
             // TODO: 组合 modal 跟后修改的（values） 的数据
             const params: any = {jobId, ...values};
