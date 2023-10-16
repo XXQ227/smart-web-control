@@ -10,6 +10,7 @@ import {IconFont, getFormErrorMsg, ID_STRING} from "@/utils/units";
 import ls from "lodash";
 import FormItemInput from "@/components/FormItemComponents/FormItemInput";
 import FormItemRadio from "@/components/FormItemComponents/FormItemRadio";
+import {BRANCH_ID} from "@/utils/auths";
 
 const {Search} = Input;
 
@@ -17,7 +18,12 @@ type APIInvoiceType = APIManager.InvoiceType;
 type APISearchInvoiceType = APIManager.SearchInvoiceTypeParams;
 
 // TODO: 获取发票类型列表的请求参数
-const initSearchParam = {name: '', currentPage: 1, pageSize: 20};
+const initSearchParam = {
+    branchId: BRANCH_ID(),
+    name: '',
+    currentPage: 1,
+    pageSize: 20
+};
 
 const InvoiceTypeListIndex: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();

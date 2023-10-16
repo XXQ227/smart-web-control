@@ -1,6 +1,7 @@
 declare namespace APIManager {
     //region TODO:  BU BUP
     type SearchBUParams = {
+        branchId?: string | null;
         bupType?: number,
         name?: string,
         createTimeStart?: string,
@@ -298,7 +299,7 @@ declare namespace APIManager {
     //region TODO: 账期
     type SearchAccountParams = {
         finaYear: string;
-        branchId: string;
+        branchId?: string | null;
     };
 
     type AccountPeriod = {
@@ -406,6 +407,7 @@ declare namespace APIManager {
     //region TODO: 费目管理
     // TODO: 标准费目
     type SearchStandardCGItemParams = {
+        branchId?: string | null;
         name?: string;
         code?: string;
         currentPage?: number | null;
@@ -432,6 +434,7 @@ declare namespace APIManager {
     };
     // TODO: 费目
     type SearchCGItemParams = {
+        branchId?: string | null;
         name?: string;
         code?: string;
         currentPage?: number | null;
@@ -643,6 +646,7 @@ declare namespace APIManager {
 
     //region TODO: 发票类型
     type SearchInvoiceTypeParams = {
+        branchId?: string | null;
         name?: string,
         currentPage?: number,
         pageSize?: number,

@@ -54,3 +54,12 @@ export async function operateBranchAPI(body: APIManager.Branch, options?: { [key
   });
 }
 
+/** TODO: 查询公司原币到账单币汇率 */
+export async function queryCurrentExRateByTwoCurrencyAsyncAPI(body: any, options?: { [key: string]: any }) {
+  return request(`/apiBase/branch/queryCurrentExRateByTwoCurrencyAsync`, {
+    method: 'POST',
+    body,
+    ...(options || {}),
+  });
+}
+

@@ -149,6 +149,7 @@ function getCGItem (item: any, type?: number) {
         orgUnitPriceStr: formatNumToMoney(item.orgUnitPrice),
         orgAmountStr: formatNumToMoney(item.orgAmount),
         orgBillExrateStr: formatNumToMoney(item.orgBillExrate),
+        billInTaxAmountStr: formatNumToMoney(item.billInTaxAmount),
     };
     if (type === 3) {
         result = {

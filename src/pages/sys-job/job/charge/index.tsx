@@ -1,12 +1,13 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import {FooterToolbar, ProForm} from '@ant-design/pro-components';
 import {Button, Col, Form, message, Row, Space, Spin} from 'antd';
 import {history, useModel, useParams} from 'umi';
-import {getFormErrorMsg} from '@/utils/units';
+import {formatNumToMoney, getFormErrorMsg, keepDecimal} from '@/utils/units';
 import ChargeTable from '@/pages/sys-job/job/charge/charge-table';
 import Agent from '@/pages/sys-job/job/charge/agent';
 import {LeftOutlined, SaveOutlined} from "@ant-design/icons";
+import {BRANCH_ID} from "@/utils/auths";
 
 const FormItem = Form.Item;
 
@@ -16,6 +17,7 @@ type APICGInfo = APIModel.PRCGInfo;
 const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
     const urlParams: any = useParams();
     const jobId = atob(urlParams.id);
+
     //region TODO: 数据层
     const {
         queryChargesByJobId, saveCharges, submitCharges, rejectCharges,
@@ -25,6 +27,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
         submitCharges: res.submitCharges,
         rejectCharges: res.rejectCharges,
     }));
+
     const {
         queryInvoiceTypeCommon, InvoTypeList,
     } = useModel('common', (res: any)=> ({
@@ -53,7 +56,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
     async function handleQueryJobChargeInfo() {
         if (!loading) setLoading(true);
         if (InvoTypeList?.length === 0) {
-            await queryInvoiceTypeCommon({branchId: '1665596906844135426', name: ''});
+            await queryInvoiceTypeCommon({branchId: BRANCH_ID()});
         }
         const result: API.Result = await queryChargesByJobId({id: jobId});
         setLoading(false);
@@ -192,8 +195,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                 idList.push(...agentApCGIdArr);
             }
 
-            const params: any = {idList, jobId, type, branchId: '1665596906844135426', taxMethod: 0};
-
+            const params: any = {idList, jobId, type, branchId: BRANCH_ID(), taxMethod: 0};
             try {
                 // TODO: 返回结果变量
                 let result: API.Result;
@@ -235,7 +237,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                     }
                 }
                 const params = {
-                    jobId, branchId: '1665596906844135426', taxMethod: 1,
+                    jobId, branchId: BRANCH_ID(), taxMethod: 1,
                     ...values, chargeList: [],
                 };
 
@@ -337,8 +339,14 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                     </Col>
                     <Col span={12}>
                         <Row gutter={24}>
-                            <Col span={12}>Profit</Col>
-                            <Col span={12}>Margin Profit</Col>
+                            <Col span={12}>
+                                <span>Profit: </span>
+                                <span style={{fontWeight: 'bold'}}>{formatNumToMoney(renderProfit(receiveCGList, payCGList).Profit)}</span>
+                            </Col>
+                            <Col span={12}>
+                                <span>Profit Ratio: </span>
+                                <span style={{fontWeight: 'bold'}}>{renderProfit(receiveCGList, payCGList).ProfitRatio}%</span>
+                            </Col>
                         </Row>
                     </Col>
                 </Row>
@@ -368,3 +376,51 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
     )
 }
 export default JobChargeInfo;
+
+/**
+ * @Description: TODO: 统计出根据各币种总数和各币种汇率折算成本位币的总额
+ * @author LLS
+ * @date 2023/10/12
+ * @param cgList    费用集合
+ * @returns
+ */
+export function renderTotalAmountFunc(cgList: any[]) {
+    let localAmount = 0;
+    if (cgList?.length > 0) {
+        cgList.map((item: any) => {
+            if (!item) return true;
+            if (item.funcAmountInTax) {
+                localAmount += item.funcAmountInTax;
+            } else if (item.orgCurrencyName === 'HKD') {
+                localAmount += item.orgAmount;
+            } else if (item.billCurrencyName === 'HKD') {
+                localAmount += item.billInTaxAmount;
+            } else {
+                localAmount += item.orgAmount * item.orgBillExrate;
+            }
+            return true;
+        });
+    }
+    return localAmount;
+}
+
+/**
+ * @Description: TODO: 计算毛利
+ * Profit:毛利 = 收入-支出
+ * ProfitRatio:毛利率 = 毛利/支出
+ * @author LLS
+ * @date 2023/10/12
+ * @returns
+ * @param receiveCGList  AR费用集合
+ * @param payCGList      AP费用集合
+ */
+export function renderProfit(receiveCGList: APICGInfo[], payCGList: APICGInfo[]) {
+    const result = {Profit: 0, ProfitRatio: 0};
+    const ARTotal = renderTotalAmountFunc(receiveCGList || []) || 0;
+    const APTotal = renderTotalAmountFunc(payCGList || []) || 0;
+    const Profit = keepDecimal(ARTotal - APTotal, 2) || 0;
+    result.Profit = Number(Profit);
+    const GrossProfitRate = Profit && Math.abs(ARTotal) > 0 ? (keepDecimal((Math.abs(Profit) / ARTotal) * 100, 3)) : 0;
+    result.ProfitRatio = Profit > 0 ? Math.abs(Number(GrossProfitRate)) : Number(GrossProfitRate);
+    return result;
+}

@@ -7,15 +7,16 @@ import {Button, Divider, Form, Input, message, Popconfirm} from 'antd'
 import {IconFont, getFormErrorMsg, ID_STRING} from '@/utils/units'
 import DividerCustomize from '@/components/Divider'
 import ls from 'lodash'
+import {BRANCH_ID} from "@/utils/auths";
 
 const {Search} = Input;
-
 
 type APIStandardCGItem = APIManager.StandardCGItem;
 type APISearchStandardCGItem = APIManager.SearchStandardCGItemParams;
 
 // TODO: 获取单票集的请求参数
 const searchParams: APISearchStandardCGItem = {
+    branchId: BRANCH_ID(),
     name: '',
     code: '',
     currentPage: 1,
@@ -25,7 +26,6 @@ const searchParams: APISearchStandardCGItem = {
 interface Props {}
 
 const SubjectIndex: React.FC<Props> = () => {
-
     const [form] = Form.useForm();
     const {
         queryChargeStandard, addChargeStandard, editChargeStandard, deleteChargeStandard, operateChargeStandard

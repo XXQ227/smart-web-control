@@ -312,7 +312,7 @@ declare namespace APIModel {
     type PRCGInfo = {
         jobId: string;
         jobCode: string;
-        branchId: string;
+        branchId: string | null;
         jobBusinessLine: string;
         businessId?: string;
         businessName?: string;
@@ -344,6 +344,7 @@ declare namespace APIModel {
         billCurrencyName?: string;
         billUnitPrice?: any;
         billInTaxAmount?: any;
+        billInTaxAmountStr?: string;
         billNoTaxAmount?: any;
         billTaxAmount?: any;
         billWriteOffAmount?: any;

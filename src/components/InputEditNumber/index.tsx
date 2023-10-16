@@ -36,6 +36,17 @@ const InputEditNumber: React.FC<Props> = (props) => {
         props.handleChangeData(valData);
     }
 
+    /**
+     * @Description: TODO: 获取焦点
+     * @author LLS
+     * @date 2023/10/13
+     * @param val
+     * @returns
+     */
+    const handleFocus = (val: any) => {
+        if (isEdit && val?.target?.value !== props.value) setValue(props.value);
+    }
+
     return (
         <Input
             id={props.id}
@@ -47,7 +58,8 @@ const InputEditNumber: React.FC<Props> = (props) => {
             value={isEdit ? value || '' : props.valueStr}
             // 获取焦点时，进入编辑状态
             onFocusCapture={()=> setIsEdit(true)}
-            onBlur={(e)=> handleChange(e, 'onBlue')}
+            onBlur={(e) => handleChange(e, 'onBlue')}
+            onFocus={handleFocus}
         />
     )
 }

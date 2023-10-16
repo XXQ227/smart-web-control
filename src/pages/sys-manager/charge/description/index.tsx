@@ -9,6 +9,7 @@ import DividerCustomize from '@/components/Divider'
 import ls from 'lodash'
 import SearchModal from '@/components/SearchModal'
 import FormItemInput from '@/components/FormItemComponents/FormItemInput'
+import {BRANCH_ID} from "@/utils/auths";
 
 const {Search} = Input;
 
@@ -18,6 +19,7 @@ type APISearchCGItem = APIManager.SearchCGItemParams;
 
 // TODO: 获取单票集的请求参数
 const searchParams: APISearchCGItem = {
+    branchId: BRANCH_ID(),
     name: '',
     code: '',
     currentPage: 1,
@@ -55,7 +57,6 @@ const DescriptionIndex: React.FC<Props> = () => {
         const result: API.Result = await queryChargeItem(params);
         setCGItemListVO(result.data);
         setLoading(false);
-        console.log(result);
         return result;
     }
 

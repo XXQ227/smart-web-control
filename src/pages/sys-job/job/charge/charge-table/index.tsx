@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Col, Divider, Popconfirm, Row, Select, Form, Space, message} from 'antd';
-import {DeleteOutlined, PlusOutlined, FormOutlined} from '@ant-design/icons';
+import {Button, Col, Popconfirm, Row, Select, Form, Space, message} from 'antd';
+import {DeleteOutlined, PlusOutlined, FormOutlined, CopyOutlined} from '@ant-design/icons';
 import {useModel} from 'umi';
-import {BRANCH_ID, USER_ID} from '@/utils/auths';
-import {formatNumToMoney, ID_STRING, keepDecimal} from '@/utils/units';
+import {BRANCH_ID, CURRENCY_LIST, FUNC_CURRENCY_NAME} from '@/utils/auths';
+import {formatNumToMoney, IconFont, ID_STRING, keepDecimal} from '@/utils/units';
 import InputEditNumber from '@/components/InputEditNumber'
 import {CHARGE_STATE_ENUM} from '@/utils/enum'
-import {stringify} from 'querystring';
 import ls from 'lodash';
 import SearchModal from '@/components/SearchModal';
 import {ProCard, ProFormText, ProTable} from "@ant-design/pro-components";
@@ -21,7 +20,7 @@ type APICGInfo = APIModel.PRCGInfo;
 interface Props {
     CGType: number,             // TODO: 费用类型：1：ar; 2：ap
     CGList: APICGInfo[],        // TODO: 费用集合
-    isReturn: boolean,          // TODO: 单票 id
+    isRefund: boolean,          // TODO: 是否是 Refund
     jobId: any,                 // TODO: 单票 id
     isReload: boolean,      // TODO: 是否是 ar/ap 交互复制
     title: string,              // TODO: 抬头数据
@@ -38,11 +37,17 @@ interface Props {
 const ChargeTable: React.FC<Props> = (props) => {
     const {
         jobId, CGType, CGList, form, formName,
-        InvoTypeList, title, isReturn,
+        InvoTypeList, title, isRefund,
         // TODO: 是否是 ar/ap 交互复制
         isReload, handleChangeCopyState
     } = props;
-    const CurrencyOpts = ['CNY', 'HKD', 'USD'];
+
+    const {
+        queryCurrentExRateByTwoCurrencyAsync,
+    } = useModel('manager.branch', (res: any) => ({
+        queryCurrentExRateByTwoCurrencyAsync: res.queryCurrentExRateByTwoCurrencyAsync,
+    }));
+
     const {jobInfo} = useModel('job.job', (res: any) => ({jobInfo: res.jobInfo}));
     const {deleteCharges} = useModel('job.jobCharge', (res: any) => ({deleteCharges: res.deleteCharges}));
 
@@ -85,10 +90,12 @@ const ChargeTable: React.FC<Props> = (props) => {
      */
     const handleAdd = () => {
         const invoTypeObj: any = InvoTypeList[0];
+        // 根据公司的本位币定义默认的原币种ID
+        const CurrencyNameOfBranch = CURRENCY_LIST()?.find((x: any) => x.currencyName === FUNC_CURRENCY_NAME()) || {};
         const newDataObj: APICGInfo = {
             jobId,
             jobCode: jobInfo.code,
-            branchId: '1665596906844135426',
+            branchId: BRANCH_ID(),
             jobBusinessLine: '1',
             businessId: '',
             businessName: '',
@@ -108,18 +115,19 @@ const ChargeTable: React.FC<Props> = (props) => {
             settlementType: 0,
             type: CGType,
             state: 1,
-            orgCurrencyName: '',
-            orgUnitPrice: 0,
+            orgCurrencyName: CurrencyNameOfBranch.currencyName,
+            orgUnitPrice: '',
             orgUnitPriceStr: '',
             orgAmount: 0,
-            orgAmountStr: '',
-            orgBillExrate: 0,
-            orgBillExrateStr: '',
+            orgAmountStr: '0',
+            orgBillExrate: 1,
+            orgBillExrateStr: '1',
             qty: '',
             qtyStr: '',
-            billCurrencyName: '',
+            billCurrencyName: CurrencyNameOfBranch.currencyName,
             billUnitPrice: 0,
             billInTaxAmount: 0,
+            billInTaxAmountStr: '0',
             billNoTaxAmount: 0,
             billTaxAmount: 0,
             billWriteOffAmount: 0,
@@ -140,17 +148,75 @@ const ChargeTable: React.FC<Props> = (props) => {
     }
 
     /**
+     * @Description: TODO 查询公司原币到账单币汇率
+     * @author LLS
+     * @date 2023/10/16
+     * @returns
+     * @param index           费用序列行
+     * @param currencyBill    账单币种
+     * @param currencyOrig    原币币种
+     */
+    async function handleQueryCurrentExRateByTwoCurrencyAsync (index: number, currencyBill: any, currencyOrig: any){
+        let data = {}
+        try {
+            const result: any = await queryCurrentExRateByTwoCurrencyAsync({currencyIDOrig: currencyOrig, currencyIDDest: currencyBill, branchId: BRANCH_ID()});
+            // TODO: 获取【原币到账单币种、账单币种到本位币】的汇率。
+            data = {
+                ExRate: result?.data?.exRateConvert,
+                ExRateStr: formatNumToMoney(keepDecimal(result?.data?.exRateConvert, 8)),
+                EXRateABill: result?.data?.exRateBill
+            };
+            // TODO: 把从后台获取的【原币、账单币搭配汇率】存到本地，供下次使用<下次不再调用接口>
+            const newCurrRateArr: any[] = ls.cloneDeep(currRateList);
+            newCurrRateArr.push({
+                CurrencyOrig: currencyOrig, CurrencyABill: currencyBill,
+                EXRateABill: result?.data?.exRateBill, EXRateConvert: result?.data?.exRateConvert
+            });
+            setCurrRateList(newCurrRateArr);
+        } catch (e) {
+            message.error(e);
+        }
+        return data;
+    }
+
+    /**
+     * @Description: TODO: 账单币种选择
+     * @author XXQ
+     * @date 2023/4/13
+     * @param index           费用序列行
+     * @param currencyBill    账单币种
+     * @param currencyOrig    原币币种
+     * @param rowID           费用行ID
+     * @returns
+     */
+    const handleChangeCurrBill = async (index: number, currencyBill: any, currencyOrig: any, rowID: any) => {
+        // TODO: 判断本地是否存在原币，账单币种的搭配汇率
+        const currRateObj: any = currRateList.find((item: any) =>
+            item.CurrencyOrig === currencyOrig && item.CurrencyABill === currencyBill
+        ) || {};
+        if (currRateObj.EXRateConvert) {
+            // TODO: 有则拿前当前的
+            const data = {ExRate: currRateObj.EXRateConvert, ExRateStr: formatNumToMoney(currRateObj.EXRateConvert)}
+            await handleRowChange(index, rowID, 'billCurrencyName', currencyBill, data);
+        } else {
+            // TODO: 没有，则从后台获取
+            const data: any = await handleQueryCurrentExRateByTwoCurrencyAsync(index, currencyBill, currencyOrig);
+            await handleRowChange(index, rowID, 'billCurrencyName', currencyBill, data);
+        }
+    }
+
+    /**
      * @Description: TODO：费用行编辑
      * @author XXQ
      * @date 2023/4/10
      * @param index     费用索引行
-     * @param rowID     费用行
+     * @param rowID     费用行ID
      * @param filedName 当前操作字段
      * @param val       当前行结果
      * @param data      选中的数据集
      * @returns
      */
-    function handleRowChange(index: number, rowID: any, filedName: string, val: any, data?: any) {
+    async function handleRowChange(index: number, rowID: any, filedName: string, val: any, data?: any) {
         const newData: APICGInfo[] = cgList?.map((item: APICGInfo) => ({...item})) || [];
         const target: any = newData.find((item: APICGInfo) => item.id === rowID) || {};
 
@@ -162,22 +228,17 @@ const ChargeTable: React.FC<Props> = (props) => {
         if (['qty', 'orgUnitPrice'].includes(filedName)) {
             // TODO: 千分符转换
             target[`${filedName}Str`] = formatNumToMoney(keepDecimal(target[filedName], 5));
-            if (target.qty && target.orgUnitPrice) {
-                target.orgAmount = keepDecimal(target.qty * target.orgUnitPrice);
-                target.orgAmountStr = formatNumToMoney(target.orgAmount);
-            }
+            target.orgAmount = keepDecimal(target.qty * target.orgUnitPrice) || 0;
+            target.orgAmountStr = formatNumToMoney(target.orgAmount);
+        } else if (filedName === 'itemId') {
+            target.itemName = data.label;
+            target.itemSubjectCode = CGType === 1 ? data.subjectCodeAr : data.subjectCodeAp;
         } else if (filedName === 'businessId') {
             target.businessName = data.nameFullEn;
             target.businessNameFullEn = data.nameFullEn;
             target.businessOracleId = data.oracleCustomerCode || '123456';
-        } else if (filedName === 'itemId') {
-            target.itemName = data.label;
-            target.itemSubjectCode = CGType === 1 ? data.subjectCodeAr : data.subjectCodeAp;
         } else if (filedName === 'unitId') {
             target.unitName = data.label;
-        } else if (filedName === 'orgBillExrate') {
-            // TODO: 千分符转换
-            target[`${filedName}Str`] = formatNumToMoney(keepDecimal(target[filedName], 7));
         } else if (['orgCurrencyName', 'billCurrencyName'].includes(filedName)) {
             setFieldsVal[`orgBillExrate_table_${rowID}`] = data?.ExRate || 1;
             if (filedName === 'orgCurrencyName') {
@@ -188,6 +249,9 @@ const ChargeTable: React.FC<Props> = (props) => {
             // TODO: 更新原币到账单币种的汇率
             target.orgBillExrate = data?.ExRate || 1;
             target.orgBillExrateStr = data?.ExRateStr || '1';
+        } else if (filedName === 'orgBillExrate') {
+            // TODO: 千分符转换
+            target[`${filedName}Str`] = formatNumToMoney(keepDecimal(target[filedName], 8));
         } else if (filedName === 'remark') {
             setChargeRecord({});
             setChargeIndex(0);
@@ -197,7 +261,27 @@ const ChargeTable: React.FC<Props> = (props) => {
             target.billUnitPrice = target.orgUnitPrice * target.orgBillExrate;
         }
         if (target.orgAmount && target.orgBillExrate) {
-            target.billInTaxAmount = target.orgAmount * target.orgBillExrate;
+            target.billInTaxAmount = keepDecimal(target.orgAmount * target.orgBillExrate);
+            target.billInTaxAmountStr = formatNumToMoney(target.billInTaxAmount);
+        }
+        if (target.billInTaxAmount && target.orgCurrencyName && target.billCurrencyName) {
+            // TODO: 判断账单币种选择时是否传回来了【账单币种到本位币】的汇率
+            if (data?.EXRateABill) {
+                target.funcAmountInTax = keepDecimal(target.billInTaxAmount * data?.EXRateABill);
+            } else {
+                // TODO: 判断本地是否存在原币，账单币种的搭配汇率
+                const currRateObj: any = currRateList.find((item: any) =>
+                    item.CurrencyOrig === target.orgCurrencyName && item.CurrencyABill === target.billCurrencyName
+                ) || {};
+                // TODO: 有则拿前当前的【账单币种到本位币】的汇率
+                if (currRateObj?.EXRateABill) {
+                    target.funcAmountInTax = keepDecimal(target.billInTaxAmount * currRateObj?.EXRateABill);
+                } else {
+                    // TODO: 没有，则从后台获取
+                    const valueObj: any = await handleQueryCurrentExRateByTwoCurrencyAsync(index, target.billCurrencyName, target.orgCurrencyName);
+                    target.funcAmountInTax = keepDecimal(target.billInTaxAmount * valueObj?.EXRateABill);
+                }
+            }
         }
         // target.isChange = true;
         newData.splice(index, 1, target);
@@ -205,53 +289,6 @@ const ChargeTable: React.FC<Props> = (props) => {
         form?.setFieldsValue(setFieldsVal);
         setCGList(newData);
         handleChangeData(newData);
-    }
-
-    /**
-     * @Description: TODO: 账单币种选择
-     * @author XXQ
-     * @date 2023/4/13
-     * @param index     费用序列行
-     * @param val       选中的账单币种
-     * @param record    费用行
-     * @returns
-     */
-    function handleChangeABillCurr(index: number, val: any, record: APICGInfo) {
-        if (val !== record.orgCurrencyName) {
-            // TODO: 判断本地是否存在原币，账单币种的搭配汇率
-            const currRateObj: any = currRateList.find((item: any) =>
-                item.CurrencyOrig === record.orgCurrencyName && item.CurrencyABill === val
-            ) || {};
-            if (currRateObj.EXRateConvert) {
-                // TODO: 有则拿前当前的；
-                const data = {ExRate: currRateObj.EXRateConvert, ExRateStr: formatNumToMoney(currRateObj.EXRateConvert)}
-                handleRowChange(index, record.id, 'billCurrencyName', val, data);
-            } else {
-                // TODO: 没有，则从后台获取
-                // 当账单我听币种跟原币不一样时，从后台获取汇率
-                const valueObj = {CurrencyOrig: record.orgCurrencyName, CurrencyABill: val, UserID: USER_ID()};
-                const options: any = {headers: {BranchID: BRANCH_ID()}}
-                fetch(`/api/ABill/GetABillEXRate?${stringify(valueObj)}`, options)
-                    .then(response => response.json())
-                    .then((result: any) => {
-                        // TODO: 获取【原币到账单币种、账单币种到本位币】的汇率。
-                        const data = {ExRate: result.EXRateConvert, ExRateStr: formatNumToMoney(result.EXRateConvert)};
-                        // TODO: 把从后台获取的【原币、账单币搭配汇率】存到本地，供下次使用<下次不再调用接口>
-                        const newCurrRateArr: any[] = ls.cloneDeep(currRateList);
-                        newCurrRateArr.push({
-                            CurrencyOrig: record.orgCurrencyName, CurrencyABill: val,
-                            EXRateABill: result.EXRateABill, EXRateConvert: result.EXRateConvert
-                        });
-                        setCurrRateList(newCurrRateArr);
-                        handleRowChange(index, record.id, 'billCurrencyName', val, data);
-                    })
-                    .catch(e => {
-                        console.log(e);
-                    });
-            }
-        } else {
-            handleRowChange(index, record.id, 'billCurrencyName', val, {ExRate: 1, ExRateStr: 1});
-        }
     }
 
     const handleEditRemark = (index: number, record: any) => {
@@ -336,25 +373,6 @@ const ChargeTable: React.FC<Props> = (props) => {
     }
     // endregion
 
-    // const renderTableFooter = (
-    //     <div className={'ant-table-footer-info'}>
-    //         <div className={'ant-div-left'}>
-    //             <Space>
-    //                 <span className={'ant-table-title-label'}>Total：</span>
-    //                 <label>{}</label>
-    //             </Space>
-    //         </div>
-    //         <div className={'ant-div-right'}>
-    //             <Space>
-    //                 <span className={'ant-table-title-label'}>Total HKD：</span>
-    //                 <label>{}</label>
-    //             </Space>
-    //         </div>
-    //     </div>
-    // );
-
-    // endregion
-
     const cgColumns: ProColumns<APICGInfo>[] = [
         {
             title: 'Description', dataIndex: 'itemName', width: '13%',
@@ -370,14 +388,14 @@ const ChargeTable: React.FC<Props> = (props) => {
                         value={record.itemId}
                         text={record.itemName}
                         id={`CGItemID${record.id}`}
-                        query={{branchId: '1665596906844135426'}}
+                        query={{branchId: BRANCH_ID()}}
                         url={'/apiBase/chargeItem/queryChargeItemCommon'}
                         handleChangeData={(val: any, option: any)=> handleRowChange(index, record.id, 'itemId', val, option)}
                     />
                 </FormItem>
         },
         {
-            title: CGType === 1 ? 'Payer' : 'Vendor', dataIndex: 'businessName', align: 'center',
+            title: CGType === 1 ? 'Payer' : 'Vendor', dataIndex: 'businessName', align: 'center', width: '15%',
             render: (text: any, record: APICGInfo, index) =>
                 <FormItem
                     rules={[{required: true, message: CGType === 1 ? 'Payer' : 'Vendor'}]}
@@ -389,7 +407,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                         id={`CTID${record.id}`}
                         value={record.businessId}
                         text={record.businessName}
-                        query={{branchId: '1665596906844135426'}}
+                        query={{branchId: BRANCH_ID()}}
                         title={CGType === 1 ? 'Payer' : 'Vendor'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
@@ -398,10 +416,10 @@ const ChargeTable: React.FC<Props> = (props) => {
                 </FormItem>
         },
         {
-            title: 'Unit', dataIndex: 'unitName', align: 'center', width: '6%',
+            title: 'Unit', dataIndex: 'unitName', align: 'center', width: '5%',
             render: (text: any, record: APICGInfo, index) =>
                 <FormItem
-                    rules={[{required: true, message: 'Unit!'}]}
+                    rules={[{required: true, message: 'Unit'}]}
                     name={`unitId_table_${record.id}`} initialValue={record.unitId}
                 >
                     <SearchModal
@@ -418,12 +436,16 @@ const ChargeTable: React.FC<Props> = (props) => {
                 </FormItem>
         },
         {
-            title: 'QTY', dataIndex: 'qty', align: 'center', width: '6%',
+            title: 'QTY', dataIndex: 'qty', align: 'center', width: '5%',
             render: (text: any, record: APICGInfo, index) =>
                 <FormItem
                     // TODO: 一定要有 initialValue: 用于设置初始值
-                    rules={[{required: true, message: `qty`}]}
-                    initialValue={record.qty} name={`qty_table_${record.id}`}
+                    rules={[
+                        {required: true, message: `QTY`},
+                        {pattern: /^-?([1-9]\d*|0)(\.\d{0,5})?$/, message: 'Must be 0.00000 in numeric format'}
+                    ]}
+                    initialValue={record.qty}
+                    name={`qty_table_${record.id}`}
                 >
                     <InputEditNumber
                         value={text}
@@ -435,12 +457,12 @@ const ChargeTable: React.FC<Props> = (props) => {
                 </FormItem>,
         },
         {
-            title: 'Unit Price', dataIndex: 'orgUnitPrice', align: 'center', width: '10%',
+            title: 'Unit Price', dataIndex: 'orgUnitPrice', align: 'center', width: '9%',
             render: (text: any, record: APICGInfo, index) =>
                 <FormItem
                     rules={[
                         {required: true, message: `Unit Price`},
-                        {pattern: isReturn ? /^-((\d+(\.\d{0,5})?)|(\d*\.\d{1,5}))$/ : /^/, message: 'Must be a negative number'},
+                        {pattern: isRefund ? /^-((\d+(\.\d{0,5})?)|(\d*\.\d{1,5}))$/ : /^/, message: 'Must be a negative number'},
                     ]}
                     initialValue={record.orgUnitPrice} name={`orgUnitPrice_table_${record.id}`}
                 >
@@ -451,7 +473,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                     />
                 </FormItem>,
         },
-        {title: 'Amount', dataIndex: 'orgAmountStr', align: 'right', width: '10%',},
+        {title: 'Amount', dataIndex: 'orgAmountStr', align: 'right', width: '9%',},
         {
             title: 'CURR', dataIndex: 'orgCurrencyName', align: 'center', width: '7%',
             render: (text: any, record: APICGInfo, index) =>
@@ -463,7 +485,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                         dropdownMatchSelectWidth={false}
                         onSelect={(e) => handleRowChange(index, record.id, 'orgCurrencyName', e)}
                     >
-                        {CurrencyOpts?.map((key: string) => <Option key={key} value={key}>{key}</Option>)}
+                        {CURRENCY_LIST()?.map((key: any) => <Option key={key.currencyName} value={key.currencyName}>{key.currencyName}</Option>)}
                     </Select>
                 </FormItem>,
         },
@@ -476,16 +498,16 @@ const ChargeTable: React.FC<Props> = (props) => {
                 >
                     <Select
                         dropdownMatchSelectWidth={false}
-                        onSelect={(e) => handleChangeABillCurr(index, e, record)}
+                        onSelect={(e) => handleChangeCurrBill(index, e, record.orgCurrencyName, record.id)}
                     >
-                        {CurrencyOpts?.map((key: string) => <Option key={key} value={key}>{key}</Option>)}
+                        {CURRENCY_LIST()?.map((key: any) => <Option key={key.currencyName} value={key.currencyName}>{key.currencyName}</Option>)}
                     </Select>
                 </FormItem>,
         },
         {
-            title: 'Ex Rate', dataIndex: 'orgBillExrate', align: 'center', width: '8%',
-            render: (text: any, record: APICGInfo, index) =>
-                <FormItem
+            title: 'Ex Rate', dataIndex: 'orgBillExrate', align: 'center', width: '7%',
+            render: (text: any, record: APICGInfo, index) => {
+                return <FormItem
                     rules={[{required: true, message: `Ex Rate`}]}
                     initialValue={record.orgBillExrate} name={`orgBillExrate_table_${record.id}`}
                 >
@@ -495,19 +517,21 @@ const ChargeTable: React.FC<Props> = (props) => {
                         handleChangeData={(val) => handleRowChange(index, record.id, 'orgBillExrate', val)}
                     />
                 </FormItem>
+            }
         },
-        {title: 'State', dataIndex: 'state', align: 'center', width: '8%', valueEnum: CHARGE_STATE_ENUM,},
+        {title: 'Bill Amount', dataIndex: 'billInTaxAmountStr', align: 'right', width: '10%'},
+        {title: 'State', dataIndex: 'state', align: 'center', width: '9%', valueEnum: CHARGE_STATE_ENUM},
         {
-            title: 'Action', align: 'center', width: 60,
+            title: 'Action', align: 'center', width: 50,
             render: (_: any, record: any, index: number) =>
                 <>
-                    <Popconfirm
+                    {/*<Popconfirm
                         onConfirm={() => handleDeleteCharge(record.id)}
                         title="Sure to delete?" okText={'Yes'} cancelText={'No'}
                     >
                         <DeleteOutlined color={'red'}/>
                         <Divider type='vertical'/>
-                    </Popconfirm>
+                    </Popconfirm>*/}
                     <FormOutlined color={'#1765AE'} onClick={()=> handleEditRemark(index, record)} />
                 </>
         },
@@ -529,16 +553,25 @@ const ChargeTable: React.FC<Props> = (props) => {
         <ProCard title={title} bordered={true} headerBordered className={'ant-card'}>
             <Row gutter={24} className={'ant-margin-bottom-24'}>
                 <Col span={24}>
-                    <Row gutter={24} style={{marginBottom: 12}}>
+                    <Row gutter={24} style={{marginBottom: 10}}>
                         <Col span={8} className={'ant-table-title-info'}>
                             <div className={'ant-div-left'}>
                                 {/*<span className={'ant-table-title-label'}>AR</span>*/}
-                                <Space>
-                                    <Button disabled={selectedKeys?.length === 0} onClick={() => handleDeleteCharge()}>Remove</Button>
-                                    <Button disabled={selectedKeys?.length === 0} onClick={() => handleCopy('same')}>Copy</Button>
-                                    <Button disabled={selectedKeys?.length === 0} onClick={() => handleCopy('noSame')}>
-                                        Copy to {[1, 5].includes(CGType) ? 'AP' : 'AR'}
-                                    </Button>
+                                <Space className='ant-btn-charge'>
+                                    <Popconfirm
+                                        onConfirm={() => handleDeleteCharge()}
+                                        title="Sure to delete?"
+                                        okText={'Yes'} cancelText={'No'}
+                                        disabled={selectedKeys?.length === 0}
+                                    >
+                                        <Button icon={<DeleteOutlined/>} disabled={selectedKeys?.length === 0}>Remove</Button>
+                                    </Popconfirm>
+                                    <Button icon={<CopyOutlined />} disabled={selectedKeys?.length === 0}
+                                            onClick={() => handleCopy('same')}>Copy</Button>
+                                    <Button icon={<IconFont type={'icon-Copy-To'}/>}
+                                            disabled={selectedKeys?.length === 0}
+                                            onClick={() => handleCopy('noSame')}
+                                    >Copy to {[1, 5].includes(CGType) ? 'AP' : 'AR'}</Button>
                                 </Space>
                             </div>
                         </Col>
@@ -601,6 +634,8 @@ export function renderAmountByCurrency(cgList: any[]) {
                 localAmount += item.orgAmount;
             } else if (item.billCurrencyName === 'HKD') {
                 localAmount += item.billInTaxAmount;
+            } else {
+                localAmount += item.orgAmount * item.orgBillExrate;
             }
             return true;
         });

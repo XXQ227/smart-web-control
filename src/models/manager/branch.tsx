@@ -5,7 +5,7 @@ import {
     editBranchAPI,
     operateBranchAPI,
     queryBranchAPI,
-    queryBranchInfoAPI
+    queryBranchInfoAPI, queryCurrentExRateByTwoCurrencyAsyncAPI
 } from '@/services/smart/manager/branch'
 
 type APIBranch = APIManager.Branch;
@@ -44,6 +44,11 @@ export default () => {
     const operateBranch = useCallback(async (params: APIBranch)=> {
         return await operateBranchAPI(params);
     }, [])
+
+    // TODO: 查询公司原币到账单币汇率
+    const queryCurrentExRateByTwoCurrencyAsync = useCallback(async (params: any)=> {
+        return await queryCurrentExRateByTwoCurrencyAsyncAPI(params);
+    }, [])
     //endregion
 
     return {
@@ -53,5 +58,6 @@ export default () => {
         editBranch,
         deleteBranch,
         operateBranch,
+        queryCurrentExRateByTwoCurrencyAsync,
     }
 }

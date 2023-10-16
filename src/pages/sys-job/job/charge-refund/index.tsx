@@ -288,7 +288,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
                     CGType={5}
                     title={'AR'}
                     {...baseCGDON}
-                    isReturn={true}
+                    isRefund={true}
                     isReload={isReload}
                     CGList={refundARCGList}
                     formName={'refundARCGList'}
@@ -299,7 +299,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
                     CGType={6}
                     title={'AP'}
                     {...baseCGDON}
-                    isReturn={true}
+                    isRefund={true}
                     isReload={isReload}
                     CGList={refundAPCGList}
                     formName={'refundAPCGList'}

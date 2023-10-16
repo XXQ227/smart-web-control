@@ -44,10 +44,10 @@ export function setSystemMes(tokenResult: any = initUserInfo) {
     sessionStorage.setItem('branchId', branchInfo.id);
     sessionStorage.setItem('branch_address', branchInfo.address);
     sessionStorage.setItem('branch_contactName', branchInfo.contactName);       // TODO: 公司法人
-    sessionStorage.setItem('funcCurrencyName', tokenResult.funcCurrencyName);   // TODO: 本位币
+    sessionStorage.setItem('funcCurrencyName', branchInfo.funcCurrencyName);   // TODO: 本位币
     sessionStorage.setItem('iamCompanyOrgCode', tokenResult.iamCompanyOrgCode);   // TODO: 公司 IAM 号
     // TODO: 公司币种数据集合
-    sessionStorage.setItem('currencyList', JSON.stringify([{value: 'CNY', label: 'CNY'}, {value: 'HKD', label: 'HKD'}]));
+    sessionStorage.setItem('currencyList', JSON.stringify(userInfo.exrateEntity));
 }
 
 //region TODO: token 信息
