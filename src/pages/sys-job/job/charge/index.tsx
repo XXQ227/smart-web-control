@@ -250,7 +250,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                 }
 
                 if (params.payCGList?.length > 0) {
-                    params.payCGList = params.payCGList.map((item: any)=>
+                    params.payCGList = params.payCGList.map((item: any) =>
                         ({...item, id: item.id.indexOf('ID_') > -1 ? '0' : item.id})
                     );
                     params.chargeList.push(...params.payCGList);
@@ -258,7 +258,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
                 }
 
                 if (params.reimbursementChargeList?.length > 0) {
-                    params.reimbursementChargeList = params.reimbursementChargeList.map((item: any)=>
+                    params.reimbursementChargeList = params.reimbursementChargeList.map((item: any) =>
                         ({...item, receiveId: item.receiveId.indexOf('ID_') > -1 ? '0' : item.receiveId})
                     );
                 }

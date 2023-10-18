@@ -193,6 +193,7 @@ const SearchModal: React.FC<Props> = (props) => {
                 :
                 <Input
                     id={props.id}
+                    title={showText}
                     value={showText}
                     autoComplete={'off'}
                     disabled={disabled}

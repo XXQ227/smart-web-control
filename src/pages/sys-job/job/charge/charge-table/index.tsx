@@ -4,13 +4,13 @@ import {DeleteOutlined, PlusOutlined, FormOutlined, CopyOutlined} from '@ant-des
 import {useModel} from 'umi';
 import {BRANCH_ID, CURRENCY_LIST, FUNC_CURRENCY_NAME} from '@/utils/auths';
 import {formatNumToMoney, IconFont, ID_STRING, keepDecimal} from '@/utils/units';
-import InputEditNumber from '@/components/InputEditNumber'
-import {CHARGE_STATE_ENUM} from '@/utils/enum'
+import InputEditNumber from '@/components/InputEditNumber';
+import {CHARGE_STATE_ENUM} from '@/utils/enum';
 import ls from 'lodash';
 import SearchModal from '@/components/SearchModal';
 import {ProCard, ProFormText, ProTable} from "@ant-design/pro-components";
 import type {ProColumns} from '@ant-design/pro-table';
-import ChargeRemark from '@/pages/sys-job/job/charge/charge-remark'
+import ChargeRemark from '@/pages/sys-job/job/charge/charge-remark';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -140,7 +140,7 @@ const ChargeTable: React.FC<Props> = (props) => {
             departmentCode: 1,
             salespersonCode: 1,
             operatorCode: 1,
-            remark: 'test',
+            remark: '',
         };
         const newData: APICGInfo[] = [...cgList, newDataObj];
         setCGList(newData);
@@ -333,22 +333,6 @@ const ChargeTable: React.FC<Props> = (props) => {
         handleChangeRows([], []);
     }
 
-    /**
-     * @Description: TODO: 删除费用
-     * @author XXQ
-     * @date 2023/4/10
-     * @param rowID     费用行
-     * @returns
-     */
-    async function handleDeleteCharge(rowID?: any) {
-        if (rowID) {
-            // eslint-disable-next-line @typescript-eslint/no-use-before-define
-            await handleRemove([rowID]);
-        } else {
-            // eslint-disable-next-line @typescript-eslint/no-use-before-define
-            await handleRemove(selectedKeys);
-        }
-    }
     // TODO: 删除费用
     const handleRemove = async (idList: any[]) => {
         if (idList?.length > 0) {
@@ -371,6 +355,21 @@ const ChargeTable: React.FC<Props> = (props) => {
             }
         }
     }
+
+    /**
+     * @Description: TODO: 删除费用
+     * @author XXQ
+     * @date 2023/4/10
+     * @param rowID     费用行
+     * @returns
+     */
+    async function handleDeleteCharge(rowID?: any) {
+        if (rowID) {
+            await handleRemove([rowID]);
+        } else {
+            await handleRemove(selectedKeys);
+        }
+    }
     // endregion
 
     const cgColumns: ProColumns<APICGInfo>[] = [
@@ -387,7 +386,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                         title={'Description'}
                         value={record.itemId}
                         text={record.itemName}
-                        id={`CGItemID${record.id}`}
+                        id={`itemId${record.id}`}
                         query={{branchId: BRANCH_ID()}}
                         url={'/apiBase/chargeItem/queryChargeItemCommon'}
                         handleChangeData={(val: any, option: any)=> handleRowChange(index, record.id, 'itemId', val, option)}
@@ -461,7 +460,7 @@ const ChargeTable: React.FC<Props> = (props) => {
             render: (text: any, record: APICGInfo, index) =>
                 <FormItem
                     rules={[
-                        {required: true, message: `Unit Price`},
+                        {required: true, message: 'Unit Price'},
                         {pattern: isRefund ? /^-((\d+(\.\d{0,5})?)|(\d*\.\d{1,5}))$/ : /^/, message: 'Must be a negative number'},
                     ]}
                     initialValue={record.orgUnitPrice} name={`orgUnitPrice_table_${record.id}`}
@@ -493,7 +492,7 @@ const ChargeTable: React.FC<Props> = (props) => {
             title: 'Bill CURR', dataIndex: 'billCurrencyName', align: 'center', width: '8%',
             render: (text: any, record: APICGInfo, index) =>
                 <FormItem
-                    rules={[{required: true, message: `Bill CUR`}]}
+                    rules={[{required: true, message: 'Bill CUR'}]}
                     initialValue={record.billCurrencyName} name={`billCurrencyName_table_${record.id}`}
                 >
                     <Select
@@ -506,9 +505,9 @@ const ChargeTable: React.FC<Props> = (props) => {
         },
         {
             title: 'Ex Rate', dataIndex: 'orgBillExrate', align: 'center', width: '7%',
-            render: (text: any, record: APICGInfo, index) => {
-                return <FormItem
-                    rules={[{required: true, message: `Ex Rate`}]}
+            render: (text: any, record: APICGInfo, index) =>
+                <FormItem
+                    rules={[{required: true, message: 'Ex Rate'}]}
                     initialValue={record.orgBillExrate} name={`orgBillExrate_table_${record.id}`}
                 >
                     <InputEditNumber
@@ -516,8 +515,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                         id={`orgBillExrate${record.id}`} className={'isNumber-inp'}
                         handleChangeData={(val) => handleRowChange(index, record.id, 'orgBillExrate', val)}
                     />
-                </FormItem>
-            }
+                </FormItem>,
         },
         {title: 'Bill Amount', dataIndex: 'billInTaxAmountStr', align: 'right', width: '10%'},
         {title: 'State', dataIndex: 'state', align: 'center', width: '9%', valueEnum: CHARGE_STATE_ENUM},
@@ -532,7 +530,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                         <DeleteOutlined color={'red'}/>
                         <Divider type='vertical'/>
                     </Popconfirm>*/}
-                    <FormOutlined color={'#1765AE'} onClick={()=> handleEditRemark(index, record)} />
+                    <FormOutlined color={'#1765AE'} onClick={() => handleEditRemark(index, record)} />
                 </>
         },
     ];
