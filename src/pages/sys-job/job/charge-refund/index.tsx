@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
 import {FooterToolbar, ProForm} from '@ant-design/pro-components';
-import {Button, Form, message, Spin} from 'antd';
+import {Button, Col, Form, message, Row, Space, Spin} from 'antd';
 import {history, useModel, useParams} from 'umi';
-import {getFormErrorMsg} from '@/utils/units';
+import {formatNumToMoney, getFormErrorMsg} from '@/utils/units';
 import ChargeTable from '@/pages/sys-job/job/charge/charge-table';
-import {BRANCH_ID} from '@/utils/auths'
+import {BRANCH_ID} from "@/utils/auths";
+import {renderProfit} from "@/pages/sys-job/job/charge";
 
 const FormItem = Form.Item;
 
@@ -15,6 +16,7 @@ type APICGInfo = APIModel.PRCGInfo;
 const ChargeRefund: React.FC<RouteChildrenProps> = () => {
     const urlParams: any = useParams();
     const jobId = atob(urlParams.id);
+
     //region TODO: 数据层
     const {
         queryChargesByJobId, saveCharges, submitCharges, rejectCharges,
@@ -37,11 +39,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
 
     // TODO: 用来判断是否是第一次加载数据
-    const [isReload, setIsReload] = useState<boolean>(false);
-
-    // TODO: 用来判断是否是第一次加载数据
     const [loading, setLoading] = useState(false);
-
     const [refundARCGList, setRefundARCGList] = useState<APICGInfo[]>([]);
     const [refundAPCGList, setRefundAPCGList] = useState<APICGInfo[]>([]);
 
@@ -50,14 +48,13 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
     const [selectedRowObj, setSelectedRowObj] = useState<any>({});
     const [submitStatus, setSubmitStatus] = useState<any>({toManager: true, toBilling: true});
 
-    useEffect(() => {
-
-    }, [])
+    // TODO: 加载状态，当调接口重新获取数据时，更新状态，且同步更新子组件 <charge-table> 的数据
+    const [isReload, setIsReload] = useState<boolean>(false);
 
     async function handleQueryJobChargeInfo() {
         if (!loading) setLoading(true);
         if (InvoTypeList?.length === 0) {
-            await queryInvoiceTypeCommon({branchId: BRANCH_ID(), name: ''});
+            await queryInvoiceTypeCommon({branchId: BRANCH_ID()});
         }
         const result: API.Result = await queryChargesByJobId({id: jobId});
         setLoading(false);
@@ -143,7 +140,6 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
         setSelectedKeyObj(selectedKeyObj);
         setSelectedRowObj(selectedRowObj);
     }
-
 
     /**
      * @Description: TODO:  费用提交主管、财务或 费用被主管、财务驳回
@@ -244,7 +240,6 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
 
     // TODO: 传给子组件的参数
     const baseCGDON: any = {jobId, form, FormItem, InvoTypeList, handleChangeData, handleChangeRows};
-
     // console.log(refundARCGList);
 
     return (
@@ -285,9 +280,33 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
                 }}
                 request={async () => handleQueryJobChargeInfo()}
             >
+                <Row gutter={24} className={'ant-row-charge-submit-info'}>
+                    <Col span={12}>
+                        <Row gutter={24}>
+                            <Col span={12}>
+                                <Space>
+                                    {/*<Button type={'primary'}>Submit </Button>*/}
+                                    {/*<Button type={'primary'}>Submit</Button>*/}
+                                </Space>
+                            </Col>
+                        </Row>
+                    </Col>
+                    <Col span={12}>
+                        <Row gutter={24}>
+                            <Col span={12}>
+                                <span>Profit: </span>
+                                <span style={{fontWeight: 'bold'}}>{formatNumToMoney(renderProfit(refundARCGList, refundAPCGList).Profit)}</span>
+                            </Col>
+                            <Col span={12}>
+                                <span>Profit Ratio: </span>
+                                <span style={{fontWeight: 'bold'}}>{renderProfit(refundARCGList, refundAPCGList).ProfitRatio}%</span>
+                            </Col>
+                        </Row>
+                    </Col>
+                </Row>
                 <ChargeTable
                     CGType={5}
-                    title={'AR'}
+                    title={'Re-AR'}
                     {...baseCGDON}
                     isRefund={true}
                     isReload={isReload}
@@ -298,7 +317,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
 
                 <ChargeTable
                     CGType={6}
-                    title={'AP'}
+                    title={'Re-AP'}
                     {...baseCGDON}
                     isRefund={true}
                     isReload={isReload}

@@ -61,7 +61,7 @@ const JobChargeInfo: React.FC<RouteChildrenProps> = () => {
         const result: API.Result = await queryChargesByJobId({id: jobId});
         setLoading(false);
         if (result.success) {
-            const {chargeAPList, chargeARList,  reimbursementChargeList} = result.data;
+            const {chargeAPList, chargeARList, reimbursementChargeList} = result.data;
             setPayCGList(chargeAPList || []);
             setReceiveCGList(chargeARList || []);
             setProxyCGList(reimbursementChargeList || []);

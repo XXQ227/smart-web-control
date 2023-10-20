@@ -232,7 +232,7 @@ const ChargeTable: React.FC<Props> = (props) => {
             target.orgAmountStr = formatNumToMoney(target.orgAmount);
         } else if (filedName === 'itemId') {
             target.itemName = data.label;
-            target.itemSubjectCode = CGType === 1 ? data.subjectCodeAr : data.subjectCodeAp;
+            target.itemSubjectCode = [1, 5].includes(CGType) ? data.subjectCodeAr : data.subjectCodeAp;
         } else if (filedName === 'businessId') {
             target.businessName = data.nameFullEn;
             target.businessNameFullEn = data.nameFullEn;
@@ -394,10 +394,10 @@ const ChargeTable: React.FC<Props> = (props) => {
                 </FormItem>
         },
         {
-            title: CGType === 1 ? 'Payer' : 'Vendor', dataIndex: 'businessName', align: 'center', width: '15%',
+            title: [1, 5].includes(CGType) ? 'Payer' : 'Vendor', dataIndex: 'businessName', align: 'center', width: '15%',
             render: (text: any, record: APICGInfo, index) =>
                 <FormItem
-                    rules={[{required: true, message: CGType === 1 ? 'Payer' : 'Vendor'}]}
+                    rules={[{required: true, message: [1, 5].includes(CGType) ? 'Payer' : 'Vendor'}]}
                     name={`businessId_table_${record.id}`} initialValue={record.businessId}
                 >
                     <SearchModal
@@ -407,7 +407,7 @@ const ChargeTable: React.FC<Props> = (props) => {
                         value={record.businessId}
                         text={record.businessName}
                         query={{branchId: BRANCH_ID()}}
-                        title={CGType === 1 ? 'Payer' : 'Vendor'}
+                        title={[1, 5].includes(CGType) ? 'Payer' : 'Vendor'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         handleChangeData={(val: any, option: any)=> handleRowChange(index, record.id, 'businessId', val, option)}
