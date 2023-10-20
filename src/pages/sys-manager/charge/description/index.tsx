@@ -262,7 +262,7 @@ const DescriptionIndex: React.FC<Props> = () => {
                         <DividerCustomize hidden={!record.isChange}/>
                         <IconFont
                             hidden={record.id?.indexOf('ID_') > -1}
-                            type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
+                            type={record.enableFlag ? 'icon-lock-2' : 'icon-unlock-2'}
                         />
                     </Popconfirm>
                     <Popconfirm

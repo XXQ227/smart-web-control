@@ -8,6 +8,7 @@ import {ExclamationCircleFilled, LeftOutlined, SaveOutlined} from '@ant-design/i
 import {history} from '@@/core/history';
 import {getFormErrorMsg, rowGrid} from '@/utils/units';
 import {useModel, useParams} from 'umi';
+import {BRANCH_ID} from '@/utils/auths'
 
 interface Props {
     handleChangedTabName: (value: string) => void,
@@ -65,7 +66,7 @@ const JobInfo: React.FC<Props> = (props) => {
             // TODO: 业务线
             if (BusinessLineList?.length === 0) await queryDictCommon({dictCodes: ['business_line']});
             // TODO: 账期
-            if (AccountPeriodList?.length === 0) await queryAccountPeriodCommon({branchId: '1665596906844135426', name: ''});
+            if (AccountPeriodList?.length === 0) await queryAccountPeriodCommon({branchId: BRANCH_ID(), name: ''});
             let result: API.Result;
             if (paramsVal.id !== '0') {
                 result = await queryJobInfo(paramsVal);
@@ -107,7 +108,7 @@ const JobInfo: React.FC<Props> = (props) => {
         setLoading(true);
         try {
             let result: API.Result;
-            values.branchId = '1665596906844135426';
+            values.branchId = BRANCH_ID();
             values.businessLine = 1;
             values.orderStatus = 0;
             if (id === '0') {

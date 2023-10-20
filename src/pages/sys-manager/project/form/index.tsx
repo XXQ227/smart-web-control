@@ -16,6 +16,7 @@ import {history, useModel} from 'umi'
 import {getFormErrorMsg} from '@/utils/units'
 import SearchProFormSelect from "@/components/SearchProFormSelect";
 import {LeftOutlined, SaveOutlined} from "@ant-design/icons";
+import {BRANCH_ID} from '@/utils/auths'
 
 type APIProject = APIManager.Project;
 
@@ -99,7 +100,7 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
             nameShort: val.nameShort,
             managerId: val.managerId,
             oracleId: val.oracleId,
-            branchId: '1665596906844135426',
+            branchId: BRANCH_ID(),
             industryType: val.industryType,
             contractId: val.contractId || '',
             pmsCode: val.pmsCode,
@@ -236,7 +237,7 @@ const ProjectForm: React.FC<RouteChildrenProps> = (props) => {
                                 id={'contractId'}
                                 name={'contractId'}
                                 filedValue={'id'} filedLabel={'nameFullEn'}
-                                query={{branchId: '1665596906844135426', buType: 1}}
+                                query={{branchId: BRANCH_ID(), buType: 1}}
                                 url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                                 valueObj={{value: ProjectInfoVO?.contractId, label: ProjectInfoVO?.contractName}}
                             />

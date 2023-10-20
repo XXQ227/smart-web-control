@@ -4,6 +4,7 @@ import {Col, Row, Divider} from 'antd';
 import {rowGrid} from '@/utils/units';
 import SearchProFormSelect from '@/components/SearchProFormSelect';
 import {useModel} from 'umi';
+import {BRANCH_ID} from '@/utils/auths'
 
 interface Props {
     title: string;
@@ -142,7 +143,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                         label="Customer" id={'customerId'} name={'customerId'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
                         valueObj={{value: CJobInfo.customerId, label: CJobInfo.customerNameEn}}
-                        query={{branchId: '1665596906844135426', buType: 1, payerFlag: 0}}
+                        query={{branchId: BRANCH_ID(), buType: 1, payerFlag: 0}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         handleChangeData={(val: any, option: any) => handleChange('customerId', val, option)}
                     />
@@ -155,7 +156,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                         label='Cargo Owner' id={'cargoOwnerId'} name={'cargoOwnerId'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
                         valueObj={{value: CJobInfo.cargoOwnerId, label: CJobInfo.cargoOwnerNameEn}}
-                        query={{branchId: '1665596906844135426'}}
+                        query={{branchId: BRANCH_ID()}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         handleChangeData={(val: any, option: any) => handleChange('cargoOwnerId', val, option)}
                     />
@@ -168,7 +169,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                         label={'Paying Agent'} id={'payerId'} name={'payerId'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
                         valueObj={{value: CJobInfo.payerId, label: CJobInfo.payerNameEn}}
-                        query={{branchId: '1665596906844135426', buType: 1, payerFlag: 1}}
+                        query={{branchId: BRANCH_ID(), buType: 1, payerFlag: 1}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         handleChangeData={(val: any, option: any) => handleChange('payerId', val, option)}
                     />

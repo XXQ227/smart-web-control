@@ -7,6 +7,7 @@ import {formatNumToMoney, getFormErrorMsg, keepDecimal} from '@/utils/units'
 import InputEditNumber from '@/components/InputEditNumber'
 import moment from 'moment'
 import '../../style.less'
+import {BRANCH_ID} from '@/utils/auths'
 
 interface Props {
     type: number;       // TODO: 核销类型:1-收款核销2-付款核销3-预付款核销
@@ -180,7 +181,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                         invoiceList,
                         status: isPartial ? 2 : 3,  // TODO: 核销状态 1-未核销 2-部份核销 3-全部核销
                         receivePayTime: moment(val.receivePayTime).format('YYYY-MM-DD'),
-                        type, branchId: '1665596906844135426',
+                        type, branchId: BRANCH_ID(),
                         settlementPartyId: settleInfo.businessId,
                         settlementPartyName: settleInfo.businessName,
                     };

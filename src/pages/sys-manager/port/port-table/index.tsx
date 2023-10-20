@@ -158,7 +158,7 @@ const PortTable: React.FC<Props> = (props) => {
                             onConfirm={() => handleOperatePort(index, record, 'enableFlag')}
                         >
                             <Divider type='vertical'/>
-                            <IconFont type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <IconFont type={record.enableFlag ? 'icon-lock-2' : 'icon-unlock-2'}/>
                         </Popconfirm>
                         <Popconfirm
                             onConfirm={() => handleOperatePort(index, record, 'deleteFlag')}

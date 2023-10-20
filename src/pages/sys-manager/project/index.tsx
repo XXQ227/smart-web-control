@@ -148,7 +148,7 @@ const ProjectListIndex: React.FC<RouteChildrenProps> = () => {
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                         >
                             <DividerCustomize />
-                            <IconFont type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <IconFont type={record.enableFlag ? 'icon-lock-2' : 'icon-unlock-2'}/>
                         </Popconfirm>
                         <Popconfirm
                             onConfirm={() => handleOperateProject(index, record, 'delete')}

@@ -129,7 +129,7 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                         >
                             <Divider type='vertical'/>
-                            <IconFont type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <IconFont type={record.enableFlag ? 'icon-lock-2' : 'icon-unlock-2'}/>
                         </Popconfirm>
                         <Popconfirm
                             okText={'Yes'} cancelText={'No'}

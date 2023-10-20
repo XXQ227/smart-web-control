@@ -61,7 +61,7 @@ export const ACCESS_TOKEN = () => sessionStorage.getItem('access_token');
 export const BRANCH = () => sessionStorage.getItem('branch');
 
 // TODO: 公司 id
-export const BRANCH_ID = () => sessionStorage.getItem('branchId');
+export const BRANCH_ID = () => sessionStorage.getItem('branchId') || '1665596906844135426';
 
 // TODO: 公司本位币
 export const FUNC_CURRENCY_NAME = () => sessionStorage.getItem('funcCurrencyName');

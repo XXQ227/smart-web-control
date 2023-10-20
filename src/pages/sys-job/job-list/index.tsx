@@ -5,6 +5,7 @@ import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components';
 import {history, useModel} from 'umi';
 import {IconFont} from '@/utils/units';
 import {EditOutlined} from '@ant-design/icons';
+import {BRANCH_ID} from '@/utils/auths'
 
 type APICJobListItem = APIModel.CJobListItem;
 
@@ -12,7 +13,7 @@ type APICJobListItem = APIModel.CJobListItem;
 const cjobListParams: APIModel.SearchJobParams = {
     searchKey: '',
     customerOrCargoId: '',
-    branchId: '1665596906844135426',
+    branchId: BRANCH_ID(),
     currentPage: 1,
     pageSize: 20,
 };

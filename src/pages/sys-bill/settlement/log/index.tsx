@@ -16,6 +16,7 @@ import {getFormErrorMsg} from '@/utils/units'
 import SearchProFormSelect from '@/components/SearchProFormSelect'
 import {useModel} from '@@/plugin-model/useModel'
 import {BUSINESS_LINE} from '@/utils/common-data'
+import {BRANCH_ID} from '@/utils/auths'
 
 const initSearchData: any = {
     jobNumber: "",
@@ -158,7 +159,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                                         name={'customerOrPayingAgentId'}
                                         label={"Customer or Paying Agent"}
                                         filedValue={'id'} filedLabel={'nameFullEn'}
-                                        query={{branchId: '1665596906844135426', buType: 1}}
+                                        query={{branchId: BRANCH_ID(), buType: 1}}
                                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                                     />
                                 </Col>

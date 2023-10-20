@@ -20,12 +20,13 @@ import {useModel} from '@@/plugin-model/useModel'
 import {history} from 'umi'
 import {BUSINESS_LINE} from '@/utils/common-data'
 import SearchProFormSelect from '@/components/SearchProFormSelect'
+import {BRANCH_ID} from '@/utils/auths'
 
 const initSearchData: any = {
     businessType: "",
     customerId: null,
     jobCode: "",
-    branchId: '1665596906844135426',
+    branchId: BRANCH_ID(),
     bmsUploadStatus: 1,
 };
 
@@ -78,7 +79,7 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
         try {
 
             // TODO: 没有账期时，获取账期数据账期
-            if (AccountPeriodList?.length === 0) await queryAccountPeriodCommon({branchId: '1665596906844135426', name: ''});
+            if (AccountPeriodList?.length === 0) await queryAccountPeriodCommon({branchId: BRANCH_ID(), name: ''});
 
             if (val.invoiceIssueDate?.length > 0) {
                 val.invoiceIssueStartDate = val.invoiceIssueDate[0];
@@ -245,7 +246,7 @@ const JobAudit: React.FC<RouteChildrenProps> = () => {
                                         name={'customerId'}
                                         label={"Customer or Paying Agent"}
                                         filedValue={'id'} filedLabel={'nameFullEn'}
-                                        query={{branchId: '1665596906844135426', buType: 1}}
+                                        query={{branchId: BRANCH_ID(), buType: 1}}
                                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                                     />
                                 </Col>

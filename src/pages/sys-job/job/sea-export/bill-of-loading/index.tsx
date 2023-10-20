@@ -7,6 +7,7 @@ import type { FormListActionType } from "@ant-design/pro-components";
 import SearchSelectInput from '@/components/SearchSelectInput';
 import {ExclamationCircleFilled, PlusCircleOutlined} from '@ant-design/icons'
 import {useModel} from "@@/plugin-model/useModel";
+import {BRANCH_ID} from '@/utils/auths'
 
 interface Props {
     form: any;
@@ -96,7 +97,7 @@ const BillOfLoading: React.FC<Props> = (props) => {
                             qty={5}
                             id={`SearchInput${label}`}
                             filedValue={'id'} filedLabel={'nameFullEn'}
-                            query={{branchId: '1665596906844135426', buType: 1}}
+                            query={{branchId: BRANCH_ID(), buType: 1}}
                             url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                             handleChangeData={(val: any, option: any) => handleSearchChange(fieldName, val, item, option, index)}
                         />

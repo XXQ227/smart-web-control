@@ -3,6 +3,7 @@ import {Col, Divider, Row} from "antd";
 import {rowGrid} from "@/utils/units";
 import {ProCard, ProFormDatePicker, ProFormSelect, ProFormText} from "@ant-design/pro-components";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
+import {BRANCH_ID} from '@/utils/auths'
 
 interface Props {
     title: string;
@@ -74,7 +75,7 @@ const Basic: React.FC<Props> = (props) => {
                                 label={"Switch B/L Agent"}
                                 filedValue={'id'} filedLabel={'nameFullEn'}
                                 valueObj={{value: serviceInfo?.switchBlAgentId, label: serviceInfo?.switchBlAgentNameEn}}
-                                query={{branchId: '1665596906844135426', buType: 1}}
+                                query={{branchId: BRANCH_ID(), buType: 1}}
                                 url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                                 handleChangeData={(val: any, option: any) => handleChange('switchBlAgentId', val, option)}
                             />
@@ -89,7 +90,7 @@ const Basic: React.FC<Props> = (props) => {
                                 label={"Shipping Line (Carrier)"}
                                 filedValue={'id'} filedLabel={'nameFullEn'}
                                 valueObj={{value: serviceInfo?.carrierId, label: serviceInfo?.carrierNameEn}}
-                                query={{branchId: '1665596906844135426', buType: 1}}
+                                query={{branchId: BRANCH_ID(), buType: 1}}
                                 url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                                 handleChangeData={(val: any, option: any) => handleChange('carrierId', val, option)}
                             />
@@ -127,7 +128,7 @@ const Basic: React.FC<Props> = (props) => {
                         label={"POL Agent"}
                         filedValue={'id'} filedLabel={'nameFullEn'}
                         valueObj={{value: serviceInfo?.polAgentId, label: serviceInfo?.polAgentNameEn}}
-                        query={{branchId: '1665596906844135426', buType: 1}}
+                        query={{branchId: BRANCH_ID(), buType: 1}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         handleChangeData={(val: any, option: any) => handleChange('polAgentId', val, option)}
                     />

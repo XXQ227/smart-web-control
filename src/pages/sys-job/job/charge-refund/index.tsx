@@ -5,6 +5,7 @@ import {Button, Form, message, Spin} from 'antd';
 import {history, useModel, useParams} from 'umi';
 import {getFormErrorMsg} from '@/utils/units';
 import ChargeTable from '@/pages/sys-job/job/charge/charge-table';
+import {BRANCH_ID} from '@/utils/auths'
 
 const FormItem = Form.Item;
 
@@ -56,7 +57,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
     async function handleQueryJobChargeInfo() {
         if (!loading) setLoading(true);
         if (InvoTypeList?.length === 0) {
-            await queryInvoiceTypeCommon({branchId: '1665596906844135426', name: ''});
+            await queryInvoiceTypeCommon({branchId: BRANCH_ID(), name: ''});
         }
         const result: API.Result = await queryChargesByJobId({id: jobId});
         setLoading(false);
@@ -164,7 +165,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
         if (submitCGArr?.length > 0) {
             // TODO: 拿到选中的 ar、ap 费用行 id,
             const idList: string[] = submitCGArr.map((item: any) => item.id) || [];
-            const params: any = {idList, jobId, type, branchId: '1665596906844135426', taxMethod: 0};
+            const params: any = {idList, jobId, type, branchId: BRANCH_ID(), taxMethod: 0};
             try {
                 // TODO: 返回结果变量
                 let result: API.Result;
@@ -206,7 +207,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
                     }
                 }
                 const params = {
-                    jobId, branchId: '1665596906844135426', taxMethod: 1,
+                    jobId, branchId: BRANCH_ID(), taxMethod: 1,
                     ...values, chargeList: [],
                 };
 

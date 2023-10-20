@@ -184,7 +184,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = (props) => {
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                         >
-                            <IconFont type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <IconFont type={record.enableFlag ? 'icon-lock-2' : 'icon-unlock-2'}/>
                         </Popconfirm>
                         <Popconfirm
                             onConfirm={() => handleOperateBranch(index, record, 'delete')}

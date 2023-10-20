@@ -16,6 +16,7 @@ import ls from 'lodash';
 import FormItemInput from "@/components/FormItemComponents/FormItemInput";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
 import moment from "moment/moment";
+import {BRANCH_ID} from '@/utils/auths'
 
 interface Props {
     form?: any,
@@ -185,7 +186,7 @@ const BasicInfo: React.FC<Props> = (props) => {
                         filedValue={'id'} filedLabel={'nameFullEn'}
                         valueObj={{value: data[0]?.truckingCompanyId, label: data[0]?.truckingCompanyNameEn}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
-                        query={{branchId: '1665596906844135426', buType: 1}}
+                        query={{branchId: BRANCH_ID(), buType: 1}}
                         handleChangeData={(val: any, option: any) => handleChange('truckingCompanyId', val, option)}
                     />
                     <div className={'proFormTextContainer'}>

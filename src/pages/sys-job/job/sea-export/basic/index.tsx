@@ -10,6 +10,7 @@ import {
 } from "@ant-design/pro-components";
 import SearchProFormSelect from "@/components/SearchProFormSelect";
 import SearchTable from '@/components/SearchTable';
+import {BRANCH_ID} from '@/utils/auths'
 
 interface Props {
     title: string,
@@ -88,7 +89,7 @@ const Basic: React.FC<Props> = (props) => {
                         id={'bookingAgentId'}
                         name={'bookingAgentId'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
-                        query={{branchId: '1665596906844135426', buType: 1}}
+                        query={{branchId: BRANCH_ID(), buType: 1}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         valueObj={{value: serviceInfo?.bookingAgentId, label: serviceInfo?.bookingAgentNameEn}}
                         handleChangeData={(val: any, option: any) => handleChange('bookingAgentId', val, option)}
@@ -101,7 +102,7 @@ const Basic: React.FC<Props> = (props) => {
                         id={'destinationAgentId'}
                         name={'destinationAgentId'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
-                        query={{branchId: '1665596906844135426', buType: 1}}
+                        query={{branchId: BRANCH_ID(), buType: 1}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         valueObj={{value: serviceInfo?.destinationAgentId, label: serviceInfo?.destinationAgentNameEn}}
                         handleChangeData={(val: any, option: any) => handleChange('destinationAgentId', val, option)}
@@ -117,7 +118,7 @@ const Basic: React.FC<Props> = (props) => {
                         id={'carrierId'}
                         name={'carrierId'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
-                        query={{branchId: '1665596906844135426', buType: 1}}
+                        query={{branchId: BRANCH_ID(), buType: 1}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         valueObj={{value: serviceInfo?.carrierId, label: serviceInfo?.carrierNameEn}}
                         handleChangeData={(val: any, option: any) => handleChange('carrierId', val, option)}
@@ -130,7 +131,7 @@ const Basic: React.FC<Props> = (props) => {
                         id={'shippingAgentId'}
                         name={'shippingAgentId'}
                         filedValue={'id'} filedLabel={'nameFullEn'}
-                        query={{branchId: '1665596906844135426', buType: 1}}
+                        query={{branchId: BRANCH_ID(), buType: 1}}
                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                         valueObj={{value: serviceInfo?.shippingAgentId, label: serviceInfo?.shippingAgentNameEn}}
                         handleChangeData={(val: any, option: any) => handleChange('shippingAgentId', val, option)}

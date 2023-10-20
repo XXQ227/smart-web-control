@@ -318,7 +318,7 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
                             <DividerCustomize hidden={isAdd || !record.isChange} />
                             <IconFont
                                 hidden={isAdd}
-                                type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
+                                type={record.enableFlag ? 'icon-lock-2' : 'icon-unlock-2'}
                             />
                         </Popconfirm>
                         <Popconfirm

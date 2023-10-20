@@ -273,7 +273,7 @@ const InvoiceTypeListIndex: React.FC<RouteChildrenProps> = () => {
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                         >
-                            <IconFont hidden={record.isChange} type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <IconFont hidden={record.isChange} type={record.enableFlag ? 'icon-lock-2' : 'icon-unlock-2'}/>
                         </Popconfirm>
                         <Popconfirm
                             onConfirm={() => handleOperateInvoiceType(index, record, 'delete')}

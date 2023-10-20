@@ -13,6 +13,7 @@ import {useModel} from '@@/plugin-model/useModel'
 import {BUSINESS_LINE_ENUM} from '@/utils/enum'
 import {history} from 'umi'
 import {BUSINESS_LINE} from '@/utils/common-data'
+import {BRANCH_ID} from '@/utils/auths'
 
 const initSearchData: any = {
     jobNumber: "",
@@ -217,7 +218,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
     const handeReject = async (record: any) => {
 
         console.log(record);
-        const params: any = {idList: [record.id], jobId: record.jobId, type: 4, branchId: '1665596906844135426', taxMethod: 0};
+        const params: any = {idList: [record.id], jobId: record.jobId, type: 4, branchId: BRANCH_ID(), taxMethod: 0};
         try {
             // TODO: 返回结果变量
             const result: API.Result = await rejectCharges(params);
@@ -345,7 +346,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                                         name={'customerOrPayingAgentId'}
                                         label={"Customer or Paying Agent"}
                                         filedValue={'id'} filedLabel={'nameFullEn'}
-                                        query={{branchId: '1665596906844135426', buType: 1}}
+                                        query={{branchId: BRANCH_ID(), buType: 1}}
                                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                                     />
                                 </Col>

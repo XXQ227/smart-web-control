@@ -10,6 +10,7 @@ import SearchProFormSelect from '@/components/SearchProFormSelect'
 import {useModel} from '@@/plugin-model/useModel'
 import {BUSINESS_LINE_ENUM} from '@/utils/enum'
 import InvoiceDetails from '@/pages/sys-bill/bill/components/invoice-details'
+import {BRANCH_ID} from '@/utils/auths'
 
 const initSearchData: any = {
     invoiceType: [1],
@@ -287,7 +288,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
                                         name={'customerOrPayingAgentId'}
                                         label={"Customer or Paying Agent"}
                                         filedValue={'id'} filedLabel={'nameFullEn'}
-                                        query={{branchId: '1665596906844135426', buType: 1}}
+                                        query={{branchId: BRANCH_ID(), buType: 1}}
                                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                                     />
                                 </Col>

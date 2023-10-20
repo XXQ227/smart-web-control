@@ -242,7 +242,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                             <DividerCustomize hidden={isAdd} />
                             <IconFont
                                 hidden={isAdd}
-                                type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
+                                type={record.enableFlag ? 'icon-lock-2' : 'icon-unlock-2'}
                             />
                         </Popconfirm>
                         <Popconfirm

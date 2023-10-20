@@ -9,6 +9,7 @@ import {history} from "@@/core/history";
 import FormItemInput from "@/components/FormItemComponents/FormItemInput";
 import SearchModal from "@/components/SearchModal";
 import DividerCustomize from "@/components/Divider";
+import {BRANCH_ID} from '@/utils/auths'
 
 const {Search} = Input;
 
@@ -180,47 +181,30 @@ const ShippingTable: React.FC<Props> = (props) => {
 
     }
 
+    console.log(ShippingListVO);
+
     const voyageColumns: ProColumns<APIVoyage>[] = [
+        {title: 'Voyage', dataIndex: 'name', width: 120, ellipsis: true,},
+        {title: 'Vessel Name', dataIndex: 'vesselName', ellipsis: true,},
+        {title: 'Shipping Line', dataIndex: 'lineName', ellipsis: true,},
+        {title: 'ETD', dataIndex: 'etd', valueType: "date", width: 110, align: 'center', ellipsis: true,},
         {
-            title: 'Voyage',
-            dataIndex: 'name',
-            width: 120,
-            ellipsis: true,
-        },
-        {
-            title: 'Vessel Name',
-            dataIndex: 'vesselName',
-            ellipsis: true,
-        },
-        {
-            title: 'Shipping Line',
-            dataIndex: 'lineName',
-            ellipsis: true,
-        },
-        {
-            title: 'ETD',
-            dataIndex: 'etd',
-            valueType: "date",
-            width: 110,
-            align: 'center',
-            ellipsis: true,
-        },
-        {
-            title: 'Action',
-            width: 110,
-            align: 'center',
-            className: 'cursorStyle',
+            title: 'Action', width: 110, align: 'center', className: 'cursorStyle',
             render: (text, record, index) => {
+                console.log(!!record.enableFlag);
                 return (
                     <Fragment>
-                        <EditOutlined color={'#1765AE'} onClick={() => handleEditShipping(record)}/>
+                        <EditOutlined
+                            onClick={() => handleEditShipping(record)}
+                            color={'#1765AE'} hidden={!!record.enableFlag}
+                        />
                         <Popconfirm
                             okText={'Yes'} cancelText={'No'} placement={'topRight'}
                             title={`Are you sure to ${record.enableFlag ? 'unlock' : 'lock'}?`}
                             onConfirm={() => handleOperateShipping(index, record, 'freeze')}
                         >
-                            <Divider type='vertical'/>
-                            <IconFont type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}/>
+                            <DividerCustomize hidden={!!record.enableFlag} />
+                            <IconFont type={!!record.enableFlag ? 'icon-lock-2' : 'icon-unlock-2'}/>
                         </Popconfirm>
                         <Popconfirm
                             onConfirm={() => handleOperateShipping(index, record, 'delete')}
@@ -325,8 +309,7 @@ const ShippingTable: React.FC<Props> = (props) => {
                     modalWidth={500}
                     value={record.carrierId}
                     text={record.carrierName}
-                    // disabled={record.enableFlag}
-                    disabled={true}
+                    disabled={!!record.enableFlag}
                     url={"/api/MCommon/GetServiceType"}
                     handleChangeData={(val: any, option: any) => handleChangeShipping(index, record, 'carrierId', val)}
                 />
@@ -352,7 +335,7 @@ const ShippingTable: React.FC<Props> = (props) => {
                             <DividerCustomize hidden={!record.isChange} />
                             <IconFont
                                 hidden={isAdd}
-                                type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
+                                type={record.enableFlag ? 'icon-lock-2' : 'icon-unlock-2'}
                             />
                         </Popconfirm>
                         <Popconfirm
@@ -427,16 +410,6 @@ const ShippingTable: React.FC<Props> = (props) => {
             tooltip: 'Code is required',
             className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                /*<FormItemInput
-                    required
-                    placeholder=''
-                    id={`code${record.id}`}
-                    name={`code${record.id}`}
-                    initialValue={record.code}
-                    disabled={record.enableFlag}
-                    rules={[{required: true, message: 'Code'}]}
-                    onChange={(val: any) => handleChangeShipping(index, record, 'code', val)}
-                />*/
                 <SearchModal
                     qty={20}
                     id={'carrierId'}
@@ -444,9 +417,9 @@ const ShippingTable: React.FC<Props> = (props) => {
                     modalWidth={500}
                     value={record.carrierId}
                     text={record.carrierName}
-                    // disabled={record.enableFlag}
-                    disabled={true}
-                    url={"/api/MCommon/GetServiceType"}
+                    disabled={!!record.enableFlag}
+                    query={{branchId: BRANCH_ID(), buType: 1}}
+                    url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                     handleChangeData={(val: any, option: any) => handleChangeShipping(index, record, 'carrierId', val)}
                 />
         },
@@ -471,7 +444,7 @@ const ShippingTable: React.FC<Props> = (props) => {
                             <DividerCustomize hidden={!record.isChange} />
                             <IconFont
                                 hidden={isAdd}
-                                type={record.enableFlag ? 'icon-unlock-2' : 'icon-lock-2'}
+                                type={record.enableFlag ? 'icon-lock-2' : 'icon-unlock-2'}
                             />
                         </Popconfirm>
                         <Popconfirm

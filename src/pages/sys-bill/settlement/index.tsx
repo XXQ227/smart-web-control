@@ -22,12 +22,13 @@ import {history} from 'umi'
 import SettlementInvoiceModal from '@/pages/sys-bill/settlement/components/settlement-invoice-modal'
 import ExecutionConditions from '@/pages/sys-bill/bill/components/execution-conditions/ExecutionConditions'
 import SettledDetailModal from '@/pages/sys-bill/settlement/components/settled-detail-modal'
+import {BRANCH_ID} from '@/utils/auths'
 
 const initSearchData: any = {
     invoiceNum: "",
     settlementPartyId: null,
     jobCode: "",
-    branchId: '1665596906844135426',
+    branchId: BRANCH_ID(),
     queryType: 1,
     type: 1,
     state: '1',       // TODO: 状态: 1-未核销 2-部分核销 3-全部核销
@@ -363,7 +364,7 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
                                         name={'settlementPartyId'}
                                         label={"Customer or Paying Agent"}
                                         filedValue={'id'} filedLabel={'nameFullEn'}
-                                        query={{branchId: '1665596906844135426', buType: 1}}
+                                        query={{branchId: BRANCH_ID(), buType: 1}}
                                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}
                                     />
                                 </Col>
