@@ -12,6 +12,7 @@ import ls from 'lodash';
 import Exception403 from '@/pages/exception/403';
 import {iamUserLogInAPI} from '@/services/smart/iam'
 import {message} from 'antd'
+import routes from '../config/routes'
 
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -27,7 +28,7 @@ export const initialStateConfig = {
  * */
 export async function getInitialState(): Promise<{
     settings?: Partial<LayoutSettings>;
-    userInfo?: APIModel.LoginUserInfo;
+    userInfo?: any;
     loading?: boolean;
     collapsed?: boolean;    // TODO：是否展开左侧菜单栏
     groupInfo?: any;        // TODO: 分组信息
@@ -71,10 +72,53 @@ export async function getInitialState(): Promise<{
     return result;
 }
 
+async function fetchMenuData(params: any) {
+    const isSuperAdmin = false;
+    console.log(params, isSuperAdmin);
+    if (isSuperAdmin) {
+        return [
+            {path: '/', redirect: '/welcome',},
+            {path: '/welcome', name: 'welcome', icon: 'smile', component: './Welcome',},
+            {
+                name: 'manager',
+                icon: 'icon-menu-settlement',
+                path: '/manager',
+                routes: [
+                    {
+                        path: '/manager',
+                        redirect: '/manager',
+                    },
+                    // TODO: 经营单位<Branch>数据
+                    {
+                        name: 'branch_list',
+                        icon: 'icon-branch',
+                        path: '/manager/branch',
+                        component: './sys-manager/branch',
+                    },
+                    {
+                        hideInMenu: true,   // 隐藏不显示
+                        name: 'branch_info',
+                        icon: 'icon-branch',
+                        path: '/manager/branch/form/:id',
+                        component: './sys-manager/branch/form',
+                    },
+                ],
+            },
+            // TODO: 港口数据
+            {name: 'port_list', icon: 'icon-port', path: '/manager/port', component: './sys-manager/port',},
+        ];
+    }
+    // TODO: 调用接口, 获取菜单数据
+    else {
+        return routes || [];
+    }
+}
+
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
     // eslint-disable-next-line prefer-const
     let initInfo: any = ls.cloneDeep(initialState) || {};
+
     const {location: {search}} = history;
     return {
         iconfontUrl: icon_font_url,
@@ -86,11 +130,12 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         waterMarkProps: {
             content: initialState?.userInfo?.DisplayName,
         },
+        // menu: routes,
         // TODO: 历史上工具
         rightContentRender: () => <RightContent/>,
         // TODO: 是否站台
         // collapsed: true,
-        footerRender: () => !!initialState?.userInfo?.ID && <Footer/>,
+        footerRender: () => !!initialState?.userInfo?.id && <Footer/>,
         enableDarkTheme: true,
         // TODO: 菜单的折叠收起事件
         onCollapse: (e) => {
@@ -128,7 +173,16 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         // menuHeaderRender: () =>
         //     location?.pathname?.indexOf('/job') > -1 ?
         //         <WorkSpace onChangeGroup={onChangeGroup} groupInfo={initInfo.groupInfo} /> : null,
-        // menuDataRender: (menuData)=> menuData,
+        menu: {
+            // 每当 initialState?.currentUser?.userid 发生修改时重新执行 request
+            params: {userId: '1658001055903371265',},
+            request: async (params, defaultMenuData) => {
+                // initialState.currentUser 中包含了所有用户信息
+                const menuData = await fetchMenuData(params);
+                return menuData || [];
+            },
+        },
+        menuDataRender: (menuData)=> menuData,
         // 自定义 403 页面
         childrenRender: (children, props) => {
             // if (initialState?.loading) return <PageLoading />;

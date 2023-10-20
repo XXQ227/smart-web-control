@@ -28,7 +28,7 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
     //endregion
 
     useEffect(()=> {
-        console.log(localId, id, localId !== id);
+        // console.log(localId, id, localId !== id);
         if (localId && id && localId !== id) {
             handleGetAuthResourceInfo({id});
         }
