@@ -28,11 +28,10 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
     //endregion
 
     useEffect(()=> {
-        // console.log(localId, id, localId !== id);
         if (localId && id && localId !== id) {
             handleGetAuthResourceInfo({id});
         }
-    }, [])
+    }, [handleGetAuthResourceInfo, id, localId])
 
     /**
      * @Description: TODO: 获取 CV 详情
@@ -115,7 +114,7 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
                 <ProCard title={'Name & Code'} className={'ant-card ant-card-pro-table'}>
                     {/** // TODO: CV Name、CV Name (For Print)、Short Name、CV Identity */}
                     <Row gutter={24}>
-                        <Col span={5}>
+                        <Col span={4} xs={24} sm={24} md={12} lg={24} xl={24} xxl={19}>
                             <ProFormText
                                 required
                                 label='Name'
@@ -125,17 +124,27 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
                                 rules={[{required: true, message: 'Name'}, {max: 64, message: 'length: 64'}]}
                             />
                         </Col>
-                        <Col span={5}>
+                        <Col span={4} xs={24} sm={24} md={12} lg={24} xl={24} xxl={19}>
+                            <ProFormText
+                                required
+                                label='Path Name'
+                                placeholder=''
+                                name='urlName'
+                                tooltip='length: 64'
+                                rules={[{required: true, message: 'Path Name'}, {max: 64, message: 'length: 64'}]}
+                            />
+                        </Col>
+                        <Col span={4} xs={24} sm={23} md={24} lg={24} xl={24} xxl={19}>
                             <ProFormText
                                 required
                                 placeholder=''
                                 name='url'
-                                label='Url'
+                                label='Path'
                                 tooltip='length: 128'
-                                rules={[{required: true, message: 'Url'}, {max: 128, message: 'length: 128'}]}
+                                rules={[{required: true, message: 'Path'}, {max: 128, message: 'length: 128'}]}
                             />
                         </Col>
-                        <Col span={14}>
+                        <Col span={4} xs={24} sm={23} md={24} lg={24} xl={24} xxl={19}>
                             <ProFormText
                                 required
                                 name='icon'

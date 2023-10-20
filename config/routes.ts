@@ -1,5 +1,6 @@
 ﻿// TODO: 微前端 - 路由配置
 import routesChild from './routes-child';
+import {ROUTES_EXCEPTION} from '@/utils/common-data'
 
 
 // TODO: 导出路由信息
@@ -55,4 +56,5 @@ export default [
     // TODO: Chart 系统
     routesChild.chart_route,
     // TODO: 异常页面
+    ROUTES_EXCEPTION
 ];

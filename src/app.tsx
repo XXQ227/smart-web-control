@@ -12,7 +12,6 @@ import ls from 'lodash';
 import Exception403 from '@/pages/exception/403';
 import {iamUserLogInAPI} from '@/services/smart/iam'
 import {message} from 'antd'
-import routes from '../config/routes'
 import {ROUTES_EXCEPTION} from '@/utils/common-data'
 
 
@@ -73,7 +72,7 @@ export async function getInitialState(): Promise<{
     return result;
 }
 
-async function fetchMenuData(params: any) {
+async function fetchMenuData(params: any, defaultMenuData: any) {
     const isSuperAdmin = true;
     let menuData: any = [];
     if (isSuperAdmin) {
@@ -114,9 +113,10 @@ async function fetchMenuData(params: any) {
     }
     // TODO: 调用接口, 获取菜单数据
     else {
-        menuData = routes || [];
+        menuData = defaultMenuData || [];
     }
     menuData.push(ROUTES_EXCEPTION);
+    console.log(menuData, defaultMenuData);
     return menuData;
 }
 
@@ -179,16 +179,16 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         // menuHeaderRender: () =>
         //     location?.pathname?.indexOf('/job') > -1 ?
         //         <WorkSpace onChangeGroup={onChangeGroup} groupInfo={initInfo.groupInfo} /> : null,
-        menu: {
-            // 每当 initialState?.currentUser?.userid 发生修改时重新执行 request
-            params: {userId: '1658001055903371265',},
-            request: async (params, defaultMenuData) => {
-                // initialState.currentUser 中包含了所有用户信息
-                const menuData = await fetchMenuData(params);
-                return menuData || [];
-            },
-        },
-        menuDataRender: (menuData)=> menuData,
+        // menu: {
+        //     // 每当 initialState?.currentUser?.userid 发生修改时重新执行 request
+        //     params: {userId: '1658001055903371265',},
+        //     request: async (params, defaultMenuData) => {
+        //         // initialState.currentUser 中包含了所有用户信息
+        //         const menuData = await fetchMenuData(params, defaultMenuData);
+        //         return menuData || [];
+        //     },
+        // },
+        // menuDataRender: (menuData)=> menuData,
         // 自定义 403 页面
         childrenRender: (children, props) => {
             // if (initialState?.loading) return <PageLoading />;
