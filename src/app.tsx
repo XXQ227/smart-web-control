@@ -12,7 +12,7 @@ import ls from 'lodash';
 import Exception403 from '@/pages/exception/403';
 import {iamUserLogInAPI} from '@/services/smart/iam'
 import {message} from 'antd'
-import {ROUTES_EXCEPTION} from '@/utils/common-data'
+// import {ROUTES_EXCEPTION} from '@/utils/common-data'
 
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -115,7 +115,7 @@ async function fetchMenuData(params: any, defaultMenuData: any) {
     else {
         menuData = defaultMenuData || [];
     }
-    menuData.push(ROUTES_EXCEPTION);
+    // menuData.push(ROUTES_EXCEPTION);
     console.log(menuData, defaultMenuData);
     return menuData;
 }
