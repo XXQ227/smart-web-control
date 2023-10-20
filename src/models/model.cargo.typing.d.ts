@@ -7,7 +7,7 @@ declare namespace APIModel {
         AuthorityIDList: string;
         password: string;
         DisplayName: string;
-        ID: number;
+        id: any;
         BranchID: number;
         Token: string;
         CityID: number;
