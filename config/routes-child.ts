@@ -178,26 +178,6 @@ const manager_route = {
             path: '/manager/branch/form/:id',
             component: './sys-manager/branch/form',
         },
-        // TODO: 字典表数据维护
-        {
-            name: 'dict',
-            icon: 'icon-dictionary',
-            path: '/manager/dict',
-            component: './sys-manager/dict',
-        },
-        {
-            name: 'dict_type',
-            hideInMenu: true,   // 隐藏不显示
-            path: '/manager/dict/form/:id',
-            component: './sys-manager/dict/form',
-        },
-        // TODO: 港口数据
-        {
-            name: 'port_list',
-            icon: 'icon-port',
-            path: '/manager/port',
-            component: './sys-manager/port',
-        },
         // TODO: 业务单位
         {
             name: 'business_unit',
@@ -327,6 +307,13 @@ const manager_route = {
             path: '/manager/charge',
             component: './sys-manager/charge',
         },
+        // TODO: 发票类型
+        {
+            name: 'invoiceType_list',
+            icon: 'icon-invoiceType',
+            path: '/manager/invoiceType/list',
+            component: './sys-manager/invoiceType',
+        },
         // TODO: 费用模板数据
         {
             name: 'charge_template_list',
@@ -362,13 +349,6 @@ const manager_route = {
             icon: 'icon-charge-quotation',
             path: '/manager/charge-quotation/form/:id',
             component: './sys-manager/charge-quotation/form',
-        },
-        // TODO: 发票类型
-        {
-            name: 'invoiceType_list',
-            icon: 'icon-invoiceType',
-            path: '/manager/invoiceType/list',
-            component: './sys-manager/invoiceType',
         },
         // TODO: 部门
         {
@@ -419,7 +399,7 @@ const manager_route = {
             path: '/manager/edi/form/:id',
             component: './sys-manager/edi/form',
         },
-        // TODO: 用户
+        // TODO: 用户权限
         {
             name: 'auth',
             icon: 'icon-auth',

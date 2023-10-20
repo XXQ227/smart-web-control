@@ -1,6 +1,17 @@
 // TODO: 行业地位
 import type {ColumnsType} from 'antd/es/table'
 
+// TODO: 路由里的异常页面配置
+export const ROUTES_EXCEPTION =     {
+    name: 'exception', icon: 'warning', path: '/exception', hideInMenu: true,   // 隐藏不显示
+    routes: [
+        {path: '/exception', redirect: '/exception/403',},
+        {name: '403', icon: 'smile', path: '/exception/403', component: './exception/403',},
+        {name: '404', icon: 'smile', path: '/exception/404', component: './exception/404',},
+        {name: '500', icon: 'smile', path: '/exception/500', component: './exception/500',},
+    ]
+}
+
 // TODO: 币种
 export const CURRENCY = [
     {value: 'CNY', label: 'CNY'},

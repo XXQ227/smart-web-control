@@ -12,7 +12,7 @@ import ls from 'lodash';
 import Exception403 from '@/pages/exception/403';
 import {iamUserLogInAPI} from '@/services/smart/iam'
 import {message} from 'antd'
-import routes from '../config/routes'
+import {ROUTES_EXCEPTION} from '@/utils/common-data'
 
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -72,46 +72,52 @@ export async function getInitialState(): Promise<{
     return result;
 }
 
-async function fetchMenuData(params: any) {
-    const isSuperAdmin = false;
-    console.log(params, isSuperAdmin);
+async function fetchMenuData(params: any, defaultMenuData: any) {
+    const isSuperAdmin = true;
+    let menuData: any = [];
     if (isSuperAdmin) {
-        return [
+        menuData = [
             {path: '/', redirect: '/welcome',},
-            {path: '/welcome', name: 'welcome', icon: 'smile', component: './Welcome',},
+            {path: '/welcome', name: 'welcome', icon: 'icon-dashboard', component: './Welcome',},
             {
                 name: 'manager',
                 icon: 'icon-menu-settlement',
                 path: '/manager',
                 routes: [
-                    {
-                        path: '/manager',
-                        redirect: '/manager',
-                    },
+                    {path: '/manager', redirect: '/manager',},
                     // TODO: 经营单位<Branch>数据
                     {
-                        name: 'branch_list',
-                        icon: 'icon-branch',
-                        path: '/manager/branch',
-                        component: './sys-manager/branch',
+                        name: 'branch_list', icon: 'icon-branch',
+                        path: '/manager/branch', component: './sys-manager/branch',
                     },
                     {
-                        hideInMenu: true,   // 隐藏不显示
-                        name: 'branch_info',
-                        icon: 'icon-branch',
-                        path: '/manager/branch/form/:id',
-                        component: './sys-manager/branch/form',
+                        name: 'branch_info', icon: 'icon-branch', hideInMenu: true,   // 隐藏不显示
+                        path: '/manager/branch/form/:id', component: './sys-manager/branch/form',
+                    },
+                    // TODO: 字典表数据维护
+                    {name: 'dict', icon: 'icon-dictionary', path: '/manager/dict', component: './sys-manager/dict',},
+                    {
+                        name: 'dict_type', hideInMenu: true,   // 隐藏不显示
+                        path: '/manager/dict/form/:id', component: './sys-manager/dict/form',
+                    },
+                    // TODO: 港口数据
+                    {name: 'port_list', icon: 'icon-port', path: '/manager/port', component: './sys-manager/port',},
+                    // TODO: 用户
+                    {
+                        name: 'user', icon: 'icon-user-manager',
+                        path: '/manager/user', component: './sys-manager/user/user-list',
                     },
                 ],
             },
-            // TODO: 港口数据
-            {name: 'port_list', icon: 'icon-port', path: '/manager/port', component: './sys-manager/port',},
         ];
     }
     // TODO: 调用接口, 获取菜单数据
     else {
-        return routes || [];
+        menuData = defaultMenuData || [];
     }
+    menuData.push(ROUTES_EXCEPTION);
+    console.log(menuData, defaultMenuData);
+    return menuData;
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
@@ -173,16 +179,16 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         // menuHeaderRender: () =>
         //     location?.pathname?.indexOf('/job') > -1 ?
         //         <WorkSpace onChangeGroup={onChangeGroup} groupInfo={initInfo.groupInfo} /> : null,
-        menu: {
-            // 每当 initialState?.currentUser?.userid 发生修改时重新执行 request
-            params: {userId: '1658001055903371265',},
-            request: async (params, defaultMenuData) => {
-                // initialState.currentUser 中包含了所有用户信息
-                const menuData = await fetchMenuData(params);
-                return menuData || [];
-            },
-        },
-        menuDataRender: (menuData)=> menuData,
+        // menu: {
+        //     // 每当 initialState?.currentUser?.userid 发生修改时重新执行 request
+        //     params: {userId: '1658001055903371265',},
+        //     request: async (params, defaultMenuData) => {
+        //         // initialState.currentUser 中包含了所有用户信息
+        //         const menuData = await fetchMenuData(params, defaultMenuData);
+        //         return menuData || [];
+        //     },
+        // },
+        // menuDataRender: (menuData)=> menuData,
         // 自定义 403 页面
         childrenRender: (children, props) => {
             // if (initialState?.loading) return <PageLoading />;

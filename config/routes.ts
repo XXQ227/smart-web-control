@@ -1,5 +1,6 @@
 ﻿// TODO: 微前端 - 路由配置
 import routesChild from './routes-child';
+import {ROUTES_EXCEPTION} from '@/utils/common-data'
 
 
 // TODO: 导出路由信息
@@ -18,7 +19,7 @@ export default [
     {
         path: '/welcome',
         name: 'welcome',
-        icon: 'smile',
+        icon: 'icon-dashboard',
         component: './Welcome',
     },
     // TODO: 用户个人信息
@@ -55,34 +56,5 @@ export default [
     // TODO: Chart 系统
     routesChild.chart_route,
     // TODO: 异常页面
-    {
-        name: 'exception',
-        icon: 'warning',
-        hideInMenu: true,   // 隐藏不显示
-        path: '/exception',
-        routes: [
-            {
-                path: '/exception',
-                redirect: '/exception/403',
-            },
-            {
-                name: '403',
-                icon: 'smile',
-                path: '/exception/403',
-                component: './exception/403',
-            },
-            {
-                name: '404',
-                icon: 'smile',
-                path: '/exception/404',
-                component: './exception/404',
-            },
-            {
-                name: '500',
-                icon: 'smile',
-                path: '/exception/500',
-                component: './exception/500',
-            },
-        ],
-    },
+    ROUTES_EXCEPTION
 ];
