@@ -54,7 +54,6 @@ export async function getInitialState(): Promise<{
             }
             return USER_INFO();
         } catch (error) {
-            console.log(error);
             // message.error(error);
             // TODO: 登录验证不成功时，关闭系统页面窗口
             // setTimeout(()=> window.close(), 2000);
@@ -109,8 +108,6 @@ export async function getInitialState(): Promise<{
     userInfo.menus = menuData;
     //endregion
 
-    console.log(userInfo);
-
     // initialState 的返回结果
     const result: any = {userInfo, fetchUserInfo, settings: defaultSettings,};
     // 如果不是登录页面，执行
@@ -125,7 +122,6 @@ export async function getInitialState(): Promise<{
 export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
     // eslint-disable-next-line prefer-const
     let initInfo: any = ls.cloneDeep(initialState) || {};
-    console.log(initInfo);
     const {location: {search}} = history;
 
     // TODO: 调用接口, 获取菜单数据
@@ -170,8 +166,6 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         else {
             menuData = defaultMenuData || [];
         }
-        // menuData.push(ROUTES_EXCEPTION);
-        console.log(menuData);
         return menuData;
     }
 
@@ -211,33 +205,10 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
                 // initialState.currentUser 中包含了所有用户信息
                 const menuData = await fetchMenuData(params, defaultMenuData);
                 return menuData || [];
+                // TODO: 生产环境可用此
+                // return initInfo?.userInfo?.menus;
             },
         },
-        /*menuItemRender: (menuItemProps, defaultDom) => {
-            if (menuItemProps.isUrl || !menuItemProps.path) {
-                return defaultDom;
-            } else {
-                // return menuItemProps;
-                return (
-                    <Link to={menuItemProps.path}>
-                        {defaultDom}
-                    </Link>
-                );
-            }
-        },*/
-        /*menuItemRender: (menuItemProps, defaultDom) => {
-            console.log(menuItemProps, menuItemProps);
-            if (menuItemProps.isUrl || !menuItemProps.path) {
-                return defaultDom;
-            } else {
-                // return menuItemProps;
-                return (
-                    <Link to={menuItemProps.path}>
-                        {defaultDom}
-                    </Link>
-                );
-            }
-        },*/
         // menuRender: initInfo?.userInfo?.menus || [],
         // TODO: 左侧菜单拦的点击设置
         // collapsedButtonRender: ()=> 222,
