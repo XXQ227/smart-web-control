@@ -3,29 +3,6 @@ declare namespace APIModel {
 
     //region TODO: 用户登录后返回信息
     type LoginUserInfo = {
-        AuthIDList: any;
-        AuthorityIDList: string;
-        password: string;
-        DisplayName: string;
-        id: any;
-        BranchID: number;
-        Token: string;
-        CityID: number;
-        CityName: string;
-        CountryID: number;
-        CountryName: string;
-        FuncCurrency: string;
-        IsOpenAccount: boolean;
-        IsSalesMan: boolean;
-        DivisionID: number;
-        BranchCode: string;
-        FinereportURL: string;
-        PUAList: any;
-        Email: string;
-        geographic?: {
-            province?: { label?: string; key?: string };
-            city?: { label?: string; key?: string };
-        };
     };
     //endregion
 
@@ -107,7 +84,7 @@ declare namespace APIModel {
             PayMethodOpts?: API.APIKey$Value[];
             PayInvoTypeList?: InvoiceType[];
             ResInvoTypeList?: InvoiceType[];
-            UserInfo: LoginUserInfo;
+            UserInfo: any;
             NJobDetailDto?: NJobDetailDto;
             AccountPeriodInfo?: AccountPeriodInfo;
         }

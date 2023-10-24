@@ -33,7 +33,7 @@ export async function getInitialState(): Promise<{
     collapsed?: boolean;    // TODO：是否展开左侧菜单栏
     groupInfo?: any;        // TODO: 分组信息
     isJobEditPage?: boolean;// TODO: 是否是编辑页面
-    fetchUserInfo?: () => Promise<APIModel.LoginUserInfo | undefined>;
+    fetchUserInfo?: () => Promise<any>;
 }> {
     const {location: {search, pathname, query}} = history;
     const fetchUserInfo = async () => {
@@ -61,18 +61,9 @@ export async function getInitialState(): Promise<{
         }
         return undefined;
     };
-    const userInfo = await fetchUserInfo();
-    // initialState 的返回结果
-    const result: any = {userInfo, fetchUserInfo, settings: defaultSettings,};
-    // 如果不是登录页面，执行
-    if (pathname !== loginPath) {
-        result.groupInfo = {id: 1, title: 'Bayer Project'};
-        return result;
-    }
-    return result;
-}
+    const userInfo = await fetchUserInfo() || {};
 
-async function fetchMenuData(params: any, defaultMenuData: any) {
+    //region TODO: 动态获取菜单数据
     const isSuperAdmin = true;
     let menuData: any = [];
     if (isSuperAdmin) {
@@ -113,22 +104,80 @@ async function fetchMenuData(params: any, defaultMenuData: any) {
     }
     // TODO: 调用接口, 获取菜单数据
     else {
-        menuData = defaultMenuData || [];
+        menuData = [];
     }
-    // menuData.push(ROUTES_EXCEPTION);
-    console.log(menuData, defaultMenuData);
-    return menuData;
+    userInfo.menus = menuData;
+    //endregion
+
+    console.log(userInfo);
+
+    // initialState 的返回结果
+    const result: any = {userInfo, fetchUserInfo, settings: defaultSettings,};
+    // 如果不是登录页面，执行
+    if (pathname !== loginPath) {
+        result.groupInfo = {id: 1, title: 'Bayer Project'};
+        return result;
+    }
+    return result;
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
     // eslint-disable-next-line prefer-const
     let initInfo: any = ls.cloneDeep(initialState) || {};
-
+    console.log(initInfo);
     const {location: {search}} = history;
+
+    // TODO: 调用接口, 获取菜单数据
+    const fetchMenuData = async (params: any, defaultMenuData: any) => {
+        const isSuperAdmin = true;
+        let menuData: any = [];
+        if (!isSuperAdmin) {
+            menuData = [
+                {path: '/', redirect: '/welcome',},
+                {path: '/welcome', name: 'welcome', icon: 'icon-dashboard',},
+                {
+                    name: 'manager', icon: 'icon-menu-settlement', path: '/manager',
+                    routes: [
+                        {path: '/manager', redirect: '/manager',},
+                        // TODO: 经营单位<Branch>数据
+                        {
+                            name: 'branch_list', icon: 'icon-branch',
+                            path: '/manager/branch',
+                        },
+                        {
+                            name: 'branch_info', icon: 'icon-branch', hideInMenu: true,   // 隐藏不显示
+                            path: '/manager/branch/form/:id',
+                        },
+                        // TODO: 字典表数据维护
+                        {name: 'dict', icon: 'icon-dictionary', path: '/manager/dict',},
+                        {
+                            name: 'dict_type', hideInMenu: true,   // 隐藏不显示
+                            path: '/manager/dict/form/:id',
+                        },
+                        // TODO: 港口数据
+                        {name: 'port_list', icon: 'icon-port', path: '/manager/port',},
+                        // TODO: 用户
+                        {
+                            name: 'user', icon: 'icon-user-manager',
+                            path: '/manager/user',
+                        },
+                    ],
+                },
+            ];
+        }
+        // TODO: 调用接口, 获取菜单数据
+        else {
+            menuData = defaultMenuData || [];
+        }
+        // menuData.push(ROUTES_EXCEPTION);
+        console.log(menuData);
+        return menuData;
+    }
+
+
     return {
         iconfontUrl: icon_font_url,
-        // route: routes,
         // TODO: 顶部右侧
         disableContentMargin: false,
         title: 'EHK',
@@ -136,7 +185,6 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         waterMarkProps: {
             content: initialState?.userInfo?.DisplayName,
         },
-        // menu: routes,
         // TODO: 历史上工具
         rightContentRender: () => <RightContent/>,
         // TODO: 是否站台
@@ -144,9 +192,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         footerRender: () => !!initialState?.userInfo?.id && <Footer/>,
         enableDarkTheme: true,
         // TODO: 菜单的折叠收起事件
-        onCollapse: (e) => {
-            // console.log(e);
-        },
+        // onCollapse: (e) => {console.log(e);},
         // TODO: 侧边菜单宽度
         siderWidth: 130,
         // TODO: 页面切换时触发
@@ -156,6 +202,43 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
             // TODO: 加上 IAM 跳转过来的 access_token
             history.push(pathname + search);
         },
+        // TODO: 动态获取菜单数据
+        // menuDataRender: ()=> initInfo?.userInfo?.menus,
+        menu: {
+            // 每当 initialState?.currentUser?.userid 发生修改时重新执行 request
+            params: {userId: '1658001055903371265',},
+            request: async (params, defaultMenuData) => {
+                // initialState.currentUser 中包含了所有用户信息
+                const menuData = await fetchMenuData(params, defaultMenuData);
+                return menuData || [];
+            },
+        },
+        /*menuItemRender: (menuItemProps, defaultDom) => {
+            if (menuItemProps.isUrl || !menuItemProps.path) {
+                return defaultDom;
+            } else {
+                // return menuItemProps;
+                return (
+                    <Link to={menuItemProps.path}>
+                        {defaultDom}
+                    </Link>
+                );
+            }
+        },*/
+        /*menuItemRender: (menuItemProps, defaultDom) => {
+            console.log(menuItemProps, menuItemProps);
+            if (menuItemProps.isUrl || !menuItemProps.path) {
+                return defaultDom;
+            } else {
+                // return menuItemProps;
+                return (
+                    <Link to={menuItemProps.path}>
+                        {defaultDom}
+                    </Link>
+                );
+            }
+        },*/
+        // menuRender: initInfo?.userInfo?.menus || [],
         // TODO: 左侧菜单拦的点击设置
         // collapsedButtonRender: ()=> 222,
         links: isDev
@@ -179,16 +262,6 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         // menuHeaderRender: () =>
         //     location?.pathname?.indexOf('/job') > -1 ?
         //         <WorkSpace onChangeGroup={onChangeGroup} groupInfo={initInfo.groupInfo} /> : null,
-        // menu: {
-        //     // 每当 initialState?.currentUser?.userid 发生修改时重新执行 request
-        //     params: {userId: '1658001055903371265',},
-        //     request: async (params, defaultMenuData) => {
-        //         // initialState.currentUser 中包含了所有用户信息
-        //         const menuData = await fetchMenuData(params, defaultMenuData);
-        //         return menuData || [];
-        //     },
-        // },
-        // menuDataRender: (menuData)=> menuData,
         // 自定义 403 页面
         childrenRender: (children, props) => {
             // if (initialState?.loading) return <PageLoading />;
