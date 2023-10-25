@@ -19,6 +19,10 @@ export default {
   'menu.account.logout': 'Logout',
   // TODO: bill
   'menu.bill': 'Billing',
+  'menu.bill.ticket': '单票详情',
+  'menu.bill.bill': 'Billing',
+  'menu.bill.invoice': 'Invoice',
+  'menu.bill.agent': '代收代付',
   'menu.bill.billing': 'Billing',
   'menu.bill.billing.ar': 'AR',
   'menu.bill.billing.ap': 'AP',

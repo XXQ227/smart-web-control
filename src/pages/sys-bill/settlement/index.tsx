@@ -177,7 +177,6 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
         await handleQueryUnWriteOffInvoice(searchInfo, keys);
     }
 
-
     /**
      * @Description: TODO: 删除核销记录
      * @author XXQ
