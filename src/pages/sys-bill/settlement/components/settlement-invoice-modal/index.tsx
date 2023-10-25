@@ -191,7 +191,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                         message.success('success!');
                         handleModalOP(false);
                     } else {
-                        if (result.message) message.error(result.message);
+                        message.error(result.message);
                     }
                 } catch (e) {
                     message.error(e)

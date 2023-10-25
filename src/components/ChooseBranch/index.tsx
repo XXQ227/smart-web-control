@@ -25,7 +25,7 @@ const ChooseBranch: React.FC = () => {
             // TODO: 重新获取公司数据，并且回到 welcome 页面
             history.push('/welcome');
         } else {
-            if (result.message) message.error(result.message);
+            message.error(result.message);
         }
     }
 

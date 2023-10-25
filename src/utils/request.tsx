@@ -99,9 +99,8 @@ export function request(url: string, options: any) {
             }
         })
         .catch((e: any) => {
-            if (e.message) message.error(e.message);
             const status = e.name;
-            const result: any = {success: false, message: ''};
+            const result: any = {success: false, message: e.message};
             if (status === 401) {
                 // history.push('/user/login');
                 return result;

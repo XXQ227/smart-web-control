@@ -88,7 +88,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
             if (result.success) {
                 setInvoiceList(result.data);
             } else {
-                if (result.message) message.error(result.message);
+                message.error(result.message);
             }
             setSearchInfo(val);
             setLoading(false);
@@ -116,7 +116,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
                 setOpen(true);
                 setInvoiceDetail({...record, index, invoiceDetailList: result.data || []});
             } else {
-                if (result.message) message.error(result.message);
+                message.error(result.message);
             }
         } catch (e) {
             message.error(e);
@@ -143,7 +143,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
                     newData.splice(invoiceDetail.index, 1, target);
                     setInvoiceList(newData);
                 } else {
-                    if (result.message) message.error(result.message);
+                    message.error(result.message);
                 }
                 setOpen(false);
                 setLoading(false);
@@ -185,7 +185,7 @@ const PrintInvoice: React.FC<RouteChildrenProps> = () => {
                 const invoiceArr: any[] = invoiceList.filter((item: any) => item.id !== record.id);
                 setInvoiceList(invoiceArr);
             } else {
-                if (result.message) message.error(result.message);
+                message.error(result.message);
             }
         } catch (e) {
             message.error(e);

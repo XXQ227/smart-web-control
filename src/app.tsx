@@ -47,7 +47,7 @@ export async function getInitialState(): Promise<{
                     setSystemMes(result.data?.tokenResult);
                     return result.data;
                 } else {
-                    if (result.message) message.error(result.message);
+                    message.error(result.message);
                     // TODO: 登录验证不成功时，关闭系统页面窗口
                     setTimeout(()=> window.close(), 2000);
                 }

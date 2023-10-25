@@ -89,7 +89,7 @@ const InvoiceAudit: React.FC<RouteChildrenProps> = () => {
             if (result.success) {
                 setDataSource(result.data);
             } else {
-                if (result.message) message.error(result.message);
+                message.error(result.message);
             }
             // TODO: 当 tabKey 有值时，才做更新操作
             if (tabKey) setActiveKey(tabKey);
@@ -117,7 +117,7 @@ const InvoiceAudit: React.FC<RouteChildrenProps> = () => {
                 message.success('success!');
                 await handleQueryAuditJob(searchInfo);
             } else {
-                if (result.message) message.error(result.message);
+                message.error(result.message);
             }
             setLoading(false);
         } catch (e) {

@@ -55,7 +55,7 @@ export async function fetchData(
             return {value: item[resValue], label: item[resLabel], data: item, ...item}
         });
     } else {
-        if (result.message) message.error(result.message);
+        message.error(result.message);
         return {};
     }
     // return fetch(`${url}?${stringify(params)}`, options)

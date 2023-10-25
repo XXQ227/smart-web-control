@@ -193,6 +193,7 @@ const SearchTable: React.FC<Props> = (props) => {
         { title: 'City', align: 'center', width: 260, dataIndex: 'city', className: 'columnsStyle', },
         { title: 'Country', dataIndex: 'country', width: 260, align: 'center', className: 'columnsStyle', },
     ];
+
     return (
         <Fragment>
             {showLabel ? <label style={{display: 'block', marginBottom: 8}}>{props.title}</label> : null}

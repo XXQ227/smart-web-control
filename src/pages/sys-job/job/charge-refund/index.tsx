@@ -69,7 +69,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
             setIsReload(true);
             return result.data || {};
         } else {
-            if (result.message) message.error(result.message);
+            message.error(result.message);
             return {};
         }
     }
@@ -176,7 +176,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
                     await handleQueryJobChargeInfo();
                     setSubmitStatus({toManager: true, toBilling: true});
                 } else {
-                    if (result.message) message.error(result.message);
+                    message.error(result.message);
                 }
             } catch (e) {
                 message.error(e);
@@ -229,7 +229,7 @@ const ChargeRefund: React.FC<RouteChildrenProps> = () => {
                     await handleQueryJobChargeInfo();
                 } else {
                     setLoading(false);
-                    if (result.message) message.error(result.message);
+                    message.error(result.message);
                 }
             })
             .catch((errorInfo) => {

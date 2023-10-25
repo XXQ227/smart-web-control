@@ -116,7 +116,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                 setAPList(result.data);
                 setIsReload(true);
             } else {
-                if (result.message) message.error(result.message);
+                message.error(result.message);
             }
             setSearchInfo(val);
             setLoading(false);
@@ -226,7 +226,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
                 message.success('Success');
                 await handleQueryPendingInvoicingCharges(searchInfo);
             } else {
-                if (result.message) message.error(result.message);
+                message.error(result.message);
             }
         } catch (e) {
             message.error(e);

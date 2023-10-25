@@ -130,7 +130,7 @@ const JobInfo: React.FC<Props> = (props) => {
                 props.handleChangedTabName('');
                 setIsChange(false);
             } else {
-                if (result.message) message.error(result.message);
+                message.error(result.message);
                 setLoading(false);
             }
         } catch (e) {

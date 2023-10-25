@@ -25,7 +25,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = () => {
                 window.close();
                 return;
             } else {
-                if (result.message) message.error(result.message);
+                message.error(result.message);
             }
         } else if (key === 'center') {
             return;

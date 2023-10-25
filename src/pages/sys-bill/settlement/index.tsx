@@ -106,7 +106,7 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
                 }
                 setDataSource(result.data);
             } else {
-                if (result.message) message.error(result.message);
+                message.error(result.message);
             }
             // TODO: 清空复选框数据
             if (selectedKeys?.length > 0) setSelectedKeys([]);
@@ -194,7 +194,7 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
                 const newData: any[] = dataSource.slice(0).splice(index, 1);
                 setDataSource(newData);
             } else {
-                if (result.message) message.error(result.message);
+                message.error(result.message);
             }
             setLoading(false);
         } catch (e) {

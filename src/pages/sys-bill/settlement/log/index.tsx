@@ -77,7 +77,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
             if (result.success) {
                 setDataSource(result.data);
             } else {
-                if (result.message) message.error(result.message);
+                message.error(result.message);
             }
             setLoading(false);
         } catch (e) {
