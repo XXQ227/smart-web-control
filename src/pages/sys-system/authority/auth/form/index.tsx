@@ -128,7 +128,7 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
                             <ProFormText
                                 tooltip='length: 64'
                                 required placeholder=''
-                                label='PathName' name='Path Name'
+                                label='Path Name' name='pathName'
                                 rules={[{required: true, message: 'pathName'}, {max: 64, message: 'length: 64'}]}
                             />
                         </Col>

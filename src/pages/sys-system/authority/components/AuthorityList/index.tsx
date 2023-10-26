@@ -12,12 +12,10 @@ import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 
 const {Search} = Input;
 
-type APIAuthResource = APISystem.AuthResource;
-type APISearchAuthResource = APISystem.SearchAuthResourceParams;
 
 interface Props {
-    AuthList: APIAuthResource[];
-    AuthInvoVO: APIAuthResource;
+    AuthList: any[];
+    AuthInvoVO: any;
 }
 
 const AuthListIndex: React.FC<Props> = (props) => {
@@ -38,8 +36,8 @@ const AuthListIndex: React.FC<Props> = (props) => {
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [AuthResourceListVO, setAuthResourceListVO] = useState<APIAuthResource[]>(AuthList);
-    const [AuthParentVO, setAuthParentVO] = useState<APIAuthResource>(AuthInvoVO);
+    const [AuthResourceListVO, setAuthResourceListVO] = useState<any[]>(AuthList);
+    const [AuthParentVO, setAuthParentVO] = useState<any>(AuthInvoVO);
 
     const [open, setOpen] = useState<boolean>(false);
 
@@ -50,7 +48,7 @@ const AuthListIndex: React.FC<Props> = (props) => {
      * @param params    参数
      * @returns
      */
-    const handleQueryAuthResourceTree = async (params: APISearchAuthResource) => {
+    const handleQueryAuthResourceTree = async (params: any) => {
         setLoading(true);
         // TODO: 分页查询【参数页】
         let result: any = await queryAuthResourceTree(params);
@@ -69,13 +67,13 @@ const AuthListIndex: React.FC<Props> = (props) => {
 
     // TODO: 添加权限
     const handleAddAuth = () => {
-        const addDataObj: APIAuthResource = {
+        const addDataObj: any = {
             id: ID_STRING(), isChange: true, name: '', url: '', icon: '',
             // TODO: parentId：上一层的 id；parentIds：上一层的 parentIds + 上一层自己的 id
             parentId: AuthParentVO.id || '', parentIds: (AuthParentVO.parentIds || '') + AuthParentVO.id
         };
         console.log(addDataObj);
-        const newData: APIAuthResource[] = ls.cloneDeep(AuthResourceListVO);
+        const newData: any[] = ls.cloneDeep(AuthResourceListVO);
         newData.splice(0, 0, addDataObj);
         setAuthResourceListVO(newData);
     }
@@ -90,18 +88,18 @@ const AuthListIndex: React.FC<Props> = (props) => {
      * @param val       编辑值
      * @returns
      */
-    const handleChangeAuthResource = (index: number, record: APIAuthResource, filedName: string, val: any) => {
+    const handleChangeAuthResource = (index: number, record: any, filedName: string, val: any) => {
         record[filedName] = val?.target?.value || val;
         record.isChange = true;
         AuthResourceListVO.splice(index, 1, record);
         setAuthResourceListVO(AuthResourceListVO);
     }
 
-    const handleSaveAuthResource = async (index: number, record: APIAuthResource, state?: string) => {
+    const handleSaveAuthResource = async (index: number, record: any, state?: string) => {
         form.validateFields()
             .then(async () => {
                 let result: API.Result;
-                const newData: APIAuthResource[] = ls.cloneDeep(AuthResourceListVO);
+                const newData: any[] = ls.cloneDeep(AuthResourceListVO);
                 // TODO: 保存、添加 公共参数
                 const params: any = {
                     name: record.name, icon: record.icon, url: record.url, level: 1, type: 1, sort: 1,
@@ -139,10 +137,10 @@ const AuthListIndex: React.FC<Props> = (props) => {
      * @param state     lock：解锁、锁定用户；delete：删除
      * @returns
      */
-    const handleOperateAuthResource = async (record: APIAuthResource, index: number, state: string) => {
+    const handleOperateAuthResource = async (record: any, index: number, state: string) => {
         setLoading(true);
         let result: API.Result = {success: false};
-        const newData: APIAuthResource[] = ls.cloneDeep(AuthResourceListVO);
+        const newData: any[] = ls.cloneDeep(AuthResourceListVO);
         // TODO: 【删除】 操作
         if (state === 'deleteFlag') {
             if (record.id.indexOf('ID_') > -1) {
@@ -174,7 +172,7 @@ const AuthListIndex: React.FC<Props> = (props) => {
         // window.location.reload();
     }
 
-    const columns: ProColumns<APIAuthResource>[] = [
+    const columns: ProColumns<any>[] = [
         {
             title: 'Name', dataIndex: 'name', align: 'left',
             tooltip: 'Name is required', className: 'ant-columns-required',
@@ -192,8 +190,8 @@ const AuthListIndex: React.FC<Props> = (props) => {
                     /> : text
         },
         {
-            title: 'Code', dataIndex: 'urlName', align: 'left', width: 300,
-            tooltip: 'Url is required', className: 'ant-columns-required',
+            title: 'Identity', dataIndex: 'identityCode', align: 'left', width: 300,
+            tooltip: 'Identity is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 record.parentId === AuthParentVO.id || !record.parentId ?
                     <FormItemInput
@@ -201,14 +199,30 @@ const AuthListIndex: React.FC<Props> = (props) => {
                         placeholder=''
                         id={`code_table_${record.id}`}
                         name={`code_table_${record.id}`}
-                        initialValue={record.url}
+                        initialValue={record.identityCode}
                         disabled={record.enableFlag}
-                        rules={[{required: true, message: 'Code'}]}
-                        onChange={(val: any) => handleChangeAuthResource(index, record, 'urlName', val)}
+                        rules={[{required: true, message: 'Identity'}]}
+                        onChange={(val: any) => handleChangeAuthResource(index, record, 'identityCode', val)}
                     /> : text
         },
         {
-            title: 'Url', dataIndex: 'url', align: 'left', width: 300,
+            title: 'Path Name', dataIndex: 'pathName', align: 'left', width: 300,
+            tooltip: 'Path Name is required', className: 'ant-columns-required',
+            render: (text: any, record: any, index) =>
+                record.parentId === AuthParentVO.id || !record.parentId ?
+                    <FormItemInput
+                        required
+                        placeholder=''
+                        id={`code_table_${record.id}`}
+                        name={`code_table_${record.id}`}
+                        initialValue={record.pathName}
+                        disabled={record.enableFlag}
+                        rules={[{required: true, message: 'Path Name'}]}
+                        onChange={(val: any) => handleChangeAuthResource(index, record, 'pathName', val)}
+                    /> : text
+        },
+        {
+            title: 'Url', dataIndex: 'pathUrl', align: 'left', width: 300,
             tooltip: 'Url is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 record.parentId === AuthParentVO.id || !record.parentId ?
@@ -217,10 +231,10 @@ const AuthListIndex: React.FC<Props> = (props) => {
                         placeholder=''
                         id={`url_table_${record.id}`}
                         name={`url_table_${record.id}`}
-                        initialValue={record.url}
+                        initialValue={record.pathUrl}
                         disabled={record.enableFlag}
                         rules={[{required: true, message: 'Url'}]}
-                        onChange={(val: any) => handleChangeAuthResource(index, record, 'url', val)}
+                        onChange={(val: any) => handleChangeAuthResource(index, record, 'pathUrl', val)}
                     /> : text
         },
         {
@@ -233,10 +247,42 @@ const AuthListIndex: React.FC<Props> = (props) => {
                         placeholder=''
                         id={`icon_table_${record.id}`}
                         name={`icon_table_${record.id}`}
-                        initialValue={record.name}
+                        initialValue={record.icon}
                         disabled={record.enableFlag}
                         rules={[{required: true, message: 'Icon'}]}
                         onChange={(val: any) => handleChangeAuthResource(index, record, 'icon', val)}
+                    /> : text
+        },
+        {
+            title: 'Redirect', dataIndex: 'redirect', align: 'left', width: 300,
+            tooltip: 'Redirect is required', className: 'ant-columns-required',
+            render: (text: any, record: any, index) =>
+                record.parentId === AuthParentVO.id || !record.parentId ?
+                    <FormItemInput
+                        required
+                        placeholder=''
+                        id={`url_table_${record.id}`}
+                        name={`url_table_${record.id}`}
+                        initialValue={record.redirect}
+                        disabled={record.enableFlag}
+                        rules={[{required: true, message: 'redirect'}]}
+                        onChange={(val: any) => handleChangeAuthResource(index, record, 'redirect', val)}
+                    /> : text
+        },
+        {
+            title: 'Redirect Path', dataIndex: 'redirectPath', align: 'left', width: 300,
+            tooltip: 'Redirect Path is required', className: 'ant-columns-required',
+            render: (text: any, record: any, index) =>
+                record.parentId === AuthParentVO.id || !record.parentId ?
+                    <FormItemInput
+                        required
+                        placeholder=''
+                        id={`icon_table_${record.id}`}
+                        name={`icon_table_${record.id}`}
+                        initialValue={record.redirectPath}
+                        disabled={record.enableFlag}
+                        rules={[{required: true, message: 'Redirect Path'}]}
+                        onChange={(val: any) => handleChangeAuthResource(index, record, 'redirectPath', val)}
                     /> : text
         },
         {
@@ -272,7 +318,7 @@ const AuthListIndex: React.FC<Props> = (props) => {
 
     return (
         <Fragment>
-            <ProTable<APIAuthResource>
+            <ProTable<any>
                 rowKey={'id'}
                 search={false}
                 options={false}
