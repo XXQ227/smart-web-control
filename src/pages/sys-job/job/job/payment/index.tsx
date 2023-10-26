@@ -95,10 +95,9 @@ const Payment: React.FC<Props> = (props) => {
                             modalWidth={950}
                             showHeader={true}
                             title={'Payable AT'}
-                            className={'textRight'}
                             text={termsParam?.payableAtNameEn}
-                            name={['termsParam', 'payableAtCode']}
                             url={"/apiBase/sea/querySeaCommon"}
+                            name={['termsParam', 'payableAtCode']}
                             handleChangeData={(val: any, option: any) => handleChange('payableAtCode', val, option)}
                         />
                     </FormItem>

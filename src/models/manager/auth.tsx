@@ -2,7 +2,7 @@ import {useCallback} from "react";
 import {
     addAuthResourceAPI, deleteAuthResourceAPI, editAuthResourceAPI, queryAuthResourceTreeAPI,
     queryRoleAPI, addRoleAPI, deleteRoleAPI, editRoleAPI, iamUserOrganizationConvertAPI,
-} from '@/services/smart/manager/auth'
+} from '@/services/smart/system/auth'
 
 type APIAuthResource = APIManager.AuthResource;
 type APIRole = APIManager.Role;

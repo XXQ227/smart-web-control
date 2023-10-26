@@ -60,7 +60,7 @@ export default {
   'menu.manager.user': 'User - Index',
   // TODO: 经营单位员工用户
   'menu.manager.auth': 'Authority - Index',
-  'menu.manager.auth.auth_resource': 'Authority',
+  'menu.manager.auth.auth': 'Authority',
   'menu.manager.auth.auth_form': 'Authority - Information',
   'menu.manager.auth.role': 'Role',
   'menu.manager.auth.role_form': 'Role - Information',

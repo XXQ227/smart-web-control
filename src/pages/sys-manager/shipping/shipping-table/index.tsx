@@ -68,7 +68,7 @@ const ShippingTable: React.FC<Props> = (props) => {
     const handleEditShipping = (record: any) => {
         if (type === 'Voyage') {
             // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-            const url = `/manager/shipping/voyage/form/${btoa(record.id)}`;
+            const url = `/system/shipping/voyage/form/${btoa(record.id)}`;
             // TODO: 跳转页面<带参数>
             history.push({pathname: url})
         } else {
