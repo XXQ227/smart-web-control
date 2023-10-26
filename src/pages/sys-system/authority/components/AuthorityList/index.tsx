@@ -197,10 +197,10 @@ const AuthListIndex: React.FC<Props> = (props) => {
                     <FormItemInput
                         required
                         placeholder=''
-                        id={`code_table_${record.id}`}
-                        name={`code_table_${record.id}`}
-                        initialValue={record.identityCode}
                         disabled={record.enableFlag}
+                        initialValue={record.identityCode}
+                        id={`identityCode_table_${record.id}`}
+                        name={`identityCode_table_${record.id}`}
                         rules={[{required: true, message: 'Identity'}]}
                         onChange={(val: any) => handleChangeAuthResource(index, record, 'identityCode', val)}
                     /> : text
@@ -213,10 +213,10 @@ const AuthListIndex: React.FC<Props> = (props) => {
                     <FormItemInput
                         required
                         placeholder=''
-                        id={`code_table_${record.id}`}
-                        name={`code_table_${record.id}`}
-                        initialValue={record.pathName}
                         disabled={record.enableFlag}
+                        initialValue={record.pathName}
+                        id={`pathName_table_${record.id}`}
+                        name={`pathName_table_${record.id}`}
                         rules={[{required: true, message: 'Path Name'}]}
                         onChange={(val: any) => handleChangeAuthResource(index, record, 'pathName', val)}
                     /> : text
@@ -229,10 +229,10 @@ const AuthListIndex: React.FC<Props> = (props) => {
                     <FormItemInput
                         required
                         placeholder=''
-                        id={`url_table_${record.id}`}
-                        name={`url_table_${record.id}`}
-                        initialValue={record.pathUrl}
                         disabled={record.enableFlag}
+                        initialValue={record.pathUrl}
+                        id={`pathUrl_table_${record.id}`}
+                        name={`pathUrl_table_${record.id}`}
                         rules={[{required: true, message: 'Url'}]}
                         onChange={(val: any) => handleChangeAuthResource(index, record, 'pathUrl', val)}
                     /> : text
@@ -245,10 +245,10 @@ const AuthListIndex: React.FC<Props> = (props) => {
                     <FormItemInput
                         required
                         placeholder=''
-                        id={`icon_table_${record.id}`}
-                        name={`icon_table_${record.id}`}
                         initialValue={record.icon}
                         disabled={record.enableFlag}
+                        id={`icon_table_${record.id}`}
+                        name={`icon_table_${record.id}`}
                         rules={[{required: true, message: 'Icon'}]}
                         onChange={(val: any) => handleChangeAuthResource(index, record, 'icon', val)}
                     /> : text
@@ -261,10 +261,10 @@ const AuthListIndex: React.FC<Props> = (props) => {
                     <FormItemInput
                         required
                         placeholder=''
-                        id={`url_table_${record.id}`}
-                        name={`url_table_${record.id}`}
-                        initialValue={record.redirect}
                         disabled={record.enableFlag}
+                        initialValue={record.redirect}
+                        id={`redirect_table_${record.id}`}
+                        name={`redirect_table_${record.id}`}
                         rules={[{required: true, message: 'redirect'}]}
                         onChange={(val: any) => handleChangeAuthResource(index, record, 'redirect', val)}
                     /> : text
@@ -277,10 +277,10 @@ const AuthListIndex: React.FC<Props> = (props) => {
                     <FormItemInput
                         required
                         placeholder=''
-                        id={`icon_table_${record.id}`}
-                        name={`icon_table_${record.id}`}
-                        initialValue={record.redirectPath}
                         disabled={record.enableFlag}
+                        initialValue={record.redirectPath}
+                        id={`redirectPath_table_${record.id}`}
+                        name={`redirectPath_table_${record.id}`}
                         rules={[{required: true, message: 'Redirect Path'}]}
                         onChange={(val: any) => handleChangeAuthResource(index, record, 'redirectPath', val)}
                     /> : text
