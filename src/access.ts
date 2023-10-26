@@ -12,7 +12,7 @@ export default function access(initialState: { userInfo?: any, isJobEditPage: bo
     isLeadAdmin: authIDList.includes(14),   // 超级管理员权限
     isJobEdit: authIDList.includes(2),      // 业务操作
     isJobCheck: authIDList.includes(3),     // 业务审批
-    // isDictEdit: pathname.indexOf('/manager/dict/form/') > -1,
+    // isDictEdit: pathname.indexOf('/system/dict/form/') > -1,
     isJobEditPage,     // 业务审批
     isSuperAdmin: !!(userInfo?.isSuperAdmin),     // 业务审批
   };

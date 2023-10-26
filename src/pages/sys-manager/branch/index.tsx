@@ -52,7 +52,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = (props) => {
     useEffect(() => {
         const handleBeforeUnload = () => {
             if (props.location.state) {
-                history.push({pathname: '/manager/branch'});
+                history.push({pathname: '/system/branch'});
             }
         };
         window.addEventListener('beforeunload', handleBeforeUnload);
@@ -96,7 +96,7 @@ const BranchListIndex: React.FC<RouteChildrenProps> = (props) => {
     const handleEditBranch = (record: APIBranch) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
         history.push({
-            pathname: `/manager/branch/form/${btoa(record.id)}`,
+            pathname: `/system/branch/form/${btoa(record.id)}`,
             state: {
                 searchParams: searchParams,
             },

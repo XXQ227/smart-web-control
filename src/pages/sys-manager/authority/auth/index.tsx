@@ -1,7 +1,8 @@
 import React, {Fragment, useState} from 'react';
+import type {RouteChildrenProps} from 'react-router';
 import type { ProColumns} from '@ant-design/pro-components';
-import {ProTable} from '@ant-design/pro-components'
-import {useModel, useParams} from 'umi';
+import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
+import {useModel} from 'umi';
 import {Button, Form, Input, message, Popconfirm} from 'antd'
 import {DeleteOutlined, PlusOutlined, SaveOutlined} from '@ant-design/icons'
 import ls from 'lodash'
@@ -15,19 +16,14 @@ const {Search} = Input;
 type APIAuthResource = APIManager.AuthResource;
 type APISearchAuthResource = APIManager.SearchAuthResourceParams;
 
-interface Props {
-    AuthList: APIAuthResource[];
-    AuthInvoVO: APIAuthResource;
-}
 
-const AuthListIndex: React.FC<Props> = (props) => {
-    const urlParams = useParams();
-    // @ts-ignore
-    const id = atob(urlParams.id);
+// TODO: 获取单票集的请求参数
+const searchParams: APISearchAuthResource = {
+    id: 0,
+};
+
+const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
-
-    const {AuthList, AuthInvoVO} = props;
-
     const {
         queryAuthResourceTree, deleteAuthResource, addAuthResource, editAuthResource,
     } = useModel('manager.auth', (res: any) => ({
@@ -38,8 +34,7 @@ const AuthListIndex: React.FC<Props> = (props) => {
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
-    const [AuthResourceListVO, setAuthResourceListVO] = useState<APIAuthResource[]>(AuthList);
-    const [AuthParentVO, setAuthParentVO] = useState<APIAuthResource>(AuthInvoVO);
+    const [AuthResourceListVO, setAuthResourceListVO] = useState<APIAuthResource[]>([]);
 
     /**
      * @Description: TODO 获取单票数据集合
@@ -51,28 +46,20 @@ const AuthListIndex: React.FC<Props> = (props) => {
     const handleGetAuthResourceList = async (params: APISearchAuthResource) => {
         setLoading(true);
         // TODO: 分页查询【参数页】
-        let result: any = await queryAuthResourceTree(params);
+        const result: API.Result = await queryAuthResourceTree(params);
         setLoading(false);
         if (result.success) {
-            setAuthResourceListVO(result.children);
-            result = {data: result.children, success: true, message: '',};
-            delete result.children;
-            setAuthParentVO(result);
+            setAuthResourceListVO(result.data);
         } else {
             message.error(result.message);
         }
-        console.log(result);
         return result;
     }
 
-    // TODO: 添加权限
     const handleAddAuth = () => {
         const addDataObj: APIAuthResource = {
-            id: ID_STRING(), isChange: true, name: '', url: '', icon: '',
-            // TODO: parentId：上一层的 id；parentIds：上一层的 parentIds + 上一层自己的 id
-            parentId: AuthParentVO.id || '', parentIds: (AuthParentVO.parentIds || '') + AuthParentVO.id
+            id: ID_STRING(), isChange: true, name: '', url: '', icon: ''
         };
-        console.log(addDataObj);
         const newData: APIAuthResource[] = ls.cloneDeep(AuthResourceListVO);
         newData.splice(0, 0, addDataObj);
         setAuthResourceListVO(newData);
@@ -90,6 +77,7 @@ const AuthListIndex: React.FC<Props> = (props) => {
      */
     const handleChangeAuthResource = (index: number, record: APIAuthResource, filedName: string, val: any) => {
         const newData: APIAuthResource[] = ls.cloneDeep(AuthResourceListVO);
+        // const newData: APIAuthResource[] = AuthResourceListVO.map((item: APIAuthResource) => ({...item}));
         record[filedName] = val?.target?.value || val;
         record.isChange = true;
         newData.splice(index, 1, record);
@@ -102,10 +90,7 @@ const AuthListIndex: React.FC<Props> = (props) => {
                 let result: API.Result;
                 const newData: APIAuthResource[] = ls.cloneDeep(AuthResourceListVO);
                 // TODO: 保存、添加 公共参数
-                const params: any = {
-                    name: record.name, icon: record.icon, url: record.url, level: 1, type: 1, sort: 1,
-                    parentId: record.parentId || '', parentIds: record.parentIds || ''
-                };
+                const params: any = {name: record.name, icon: record.icon, url: record.url, level: 1, type: 1, sort: 1};
                 // TODO: 添加
                 if (state === 'add') {
                     result = await addAuthResource(params);
@@ -141,14 +126,11 @@ const AuthListIndex: React.FC<Props> = (props) => {
     const handleOperateAuthResource = async (record: APIAuthResource, index: number, state: string) => {
         setLoading(true);
         let result: API.Result = {success: false};
+        const params: any = {id: record.id};
         const newData: APIAuthResource[] = ls.cloneDeep(AuthResourceListVO);
         // TODO: 【删除】 操作
         if (state === 'deleteFlag') {
-            if (record.id.indexOf('ID_') > -1) {
-                result.success = true;
-            } else {
-                result = await deleteAuthResource({id: record.id});
-            }
+            result = await deleteAuthResource(params);
             // TODO: 删除当前行，更新本地数据
             newData.splice(index, 1);
         }
@@ -163,12 +145,9 @@ const AuthListIndex: React.FC<Props> = (props) => {
         }
     }
 
-    const handleDetail = async (record: any) => {
+    const handleDetail = (record: any) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        history.push({pathname: `/manager/auth/auth-resource/form/${btoa(record.id)}`});
-        const result: any = await handleGetAuthResourceList({id: record.id});
-        console.log(result);
-        // window.location.reload();
+        history.push({pathname: `/system/authority/auth/form/${btoa(record.id)}`});
     }
 
     const columns: ProColumns<APIAuthResource>[] = [
@@ -176,7 +155,7 @@ const AuthListIndex: React.FC<Props> = (props) => {
             title: 'Name', dataIndex: 'name', align: 'left', width: 200,
             tooltip: 'Name is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                record.parentId === AuthParentVO.id || !record.parentId ?
+                record.parentId ? text :
                     <FormItemInput
                         required
                         placeholder=''
@@ -186,13 +165,13 @@ const AuthListIndex: React.FC<Props> = (props) => {
                         disabled={record.enableFlag}
                         rules={[{required: true, message: 'Name'}]}
                         onChange={(val: any) => handleChangeAuthResource(index, record, 'name', val)}
-                    /> : text
+                    />
         },
         {
             title: 'Icon', dataIndex: 'icon', align: 'left',
             tooltip: 'Icon is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                record.parentId === AuthParentVO.id || !record.parentId ?
+                record.parentId ? text :
                     <FormItemInput
                         required
                         placeholder=''
@@ -202,13 +181,13 @@ const AuthListIndex: React.FC<Props> = (props) => {
                         disabled={record.enableFlag}
                         rules={[{required: true, message: 'Icon'}]}
                         onChange={(val: any) => handleChangeAuthResource(index, record, 'icon', val)}
-                    /> : text
+                    />
         },
         {
             title: 'Url', dataIndex: 'url', align: 'left',
             tooltip: 'Url is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                record.parentId === AuthParentVO.id || !record.parentId ?
+                record.parentId ? text :
                     <FormItemInput
                         required
                         placeholder=''
@@ -218,7 +197,7 @@ const AuthListIndex: React.FC<Props> = (props) => {
                         disabled={record.enableFlag}
                         rules={[{required: true, message: 'Url'}]}
                         onChange={(val: any) => handleChangeAuthResource(index, record, 'url', val)}
-                    /> : text
+                    />
         },
         {
             title: 'Action', width: 100, align: 'center',
@@ -252,35 +231,46 @@ const AuthListIndex: React.FC<Props> = (props) => {
     ];
 
     return (
-        <ProTable<APIAuthResource>
-            rowKey={'id'}
-            search={false}
-            options={false}
-            bordered={true}
-            loading={loading}
-            columns={columns}
-            dataSource={AuthResourceListVO}
-            locale={{emptyText: 'No Data'}}
-            className={'ant-pro-table-edit'}
-            rowClassName={(record) => record.enableFlag ? 'ant-table-row-disabled' : ''}
-            headerTitle={
-                <Search
-                    placeholder='' enterButton="Search" loading={loading}
-                    onSearch={async () => await handleGetAuthResourceList({id})}
-                />
-            }
-            toolbar={{
-                actions: [
-                    <Button key={'add'} onClick={handleAddAuth} type={'primary'} icon={<PlusOutlined/>}>
-                        Add AuthResource
-                    </Button>
-                ]
+        <PageContainer
+            loading={false}
+            header={{
+                breadcrumb: {},
             }}
-            pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
-            // @ts-ignore
-            // request={(params: APISearchAuthResource) => handleGetAuthResourceList(params)}
-            // request={async () => AuthResourceListVO}
-        />
+        >
+            <Form form={form}>
+                <ProCard className={'ant-card-pro-table'}>
+                    <ProTable<APIAuthResource>
+                        rowKey={'id'}
+                        search={false}
+                        options={false}
+                        bordered={true}
+                        loading={loading}
+                        columns={columns}
+                        params={searchParams}
+                        dataSource={AuthResourceListVO}
+                        locale={{emptyText: 'No Data'}}
+                        className={'ant-pro-table-edit'}
+                        rowClassName={(record) => record.enableFlag ? 'ant-table-row-disabled' : ''}
+                        headerTitle={
+                            <Search
+                                placeholder='' enterButton="Search" loading={loading}
+                                onSearch={async () => await handleGetAuthResourceList(searchParams)}
+                            />
+                        }
+                        toolbar={{
+                            actions: [
+                                <Button key={'add'} onClick={handleAddAuth} type={'primary'} icon={<PlusOutlined/>}>
+                                    Add AuthResource
+                                </Button>
+                            ]
+                        }}
+                        pagination={{showSizeChanger: true, pageSizeOptions: [15, 30, 50, 100]}}
+                        // @ts-ignore
+                        request={(params: APISearchAuthResource) => handleGetAuthResourceList(params)}
+                    />
+                </ProCard>
+            </Form>
+        </PageContainer>
     )
 }
-export default AuthListIndex;
+export default AuthResourceIndex;

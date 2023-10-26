@@ -150,7 +150,7 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
 
     const handleDetail = (record: any) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        history.push({pathname: `/manager/auth/role/form/${btoa(record.id)}`});
+        history.push({pathname: `/system/authority/role/form/${btoa(record.id)}`});
     }
 
     const columns: ProColumns<APIRole>[] = [

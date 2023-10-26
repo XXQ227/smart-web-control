@@ -212,7 +212,7 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
         }
         if (result.success) {
             message.success('Success');
-            if (id === '0') history.push({pathname: `/manager/business-unit/property/form/${btoa(result.data)}`});
+            if (id === '0') history.push({pathname: `/system/business-unit/property/form/${btoa(result.data)}`});
         } else {
             message.error(result.message)
         }
@@ -272,7 +272,7 @@ const BusinessUnitPropertyForm: React.FC<RouteChildrenProps> = (props) => {
      * @returns
      */
     const handleBack = () => {
-        const url = (state as LocationState)?.payer ? '/manager/business-unit/payer' : '/manager/business-unit/property';
+        const url = (state as LocationState)?.payer ? '/system/business-unit/payer' : '/system/business-unit/property';
         history.push({
             pathname: url,
             state: {

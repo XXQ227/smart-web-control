@@ -53,7 +53,7 @@ export default {
         {
             name: 'manager',  // 唯一 id
             entry: entryManagerUrl[NODE_ENV || 'development'], // 子应用的地址
-            // base: '/manager',
+            // base: '/system',
             // history: 'browser', // 子应用的 history 配置，默认为当前主应用 history 配置
             // mountElementId: 'manager',  // 注意这里是子应用要挂载在父应用上的节点id
             props: {
