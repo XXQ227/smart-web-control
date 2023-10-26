@@ -191,7 +191,7 @@ const PayerListIndex: React.FC<RouteChildrenProps> = (props) => {
     const handleEditBUP = (record: APIPayer) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
         history.push({
-            pathname: `/system/business-unit/property/form/${btoa(record.id)}`,
+            pathname: `/manager/business-unit/property/form/${btoa(record.id)}`,
             state: {
                 searchParams: searchParams,
                 payer: true,

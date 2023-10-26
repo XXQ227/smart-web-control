@@ -110,7 +110,7 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
      */
     const handleEditBUP = (record: APIBUP) => {
         // TODO: 伪加密处理：btoa(type:string) 给 id 做加密处理；atob(type: string)：做解密处理
-        const url = `/system/business-unit/property/form/${btoa(record.id)}`;
+        const url = `/manager/business-unit/property/form/${btoa(record.id)}`;
         if (record.id === '0') {
             console.log(BUParams)
             history.push({

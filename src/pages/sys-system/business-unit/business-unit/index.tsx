@@ -258,7 +258,7 @@ const BusinessUnitListIndex: React.FC<RouteChildrenProps> = (props) => {
     return (
         <PageContainer
             header={{
-                breadcrumb: {}
+                breadcrumb: {},
             }}
         >
             {renderSearch()}
