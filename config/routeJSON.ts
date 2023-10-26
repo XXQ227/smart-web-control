@@ -190,14 +190,14 @@ const routesJSON = [
                 name: 'branch_list',
                 icon: 'icon-branch',
                 path: '/system/branch',
-                component: './sys-manager/branch',
+                component: './sys-system/branch',
             },
             {
                 hideInMenu: true,   // 隐藏不显示
                 name: 'branch_info',
                 icon: 'icon-branch',
                 path: '/system/branch/form/:id',
-                component: './sys-manager/branch/form',
+                component: './sys-system/branch/form',
             },
             // TODO: 业务单位
             {
@@ -210,35 +210,35 @@ const routesJSON = [
                         name: 'business_unit_list',
                         icon: 'icon-business-unit',
                         path: '/system/business-unit/list',
-                        component: './sys-manager/business-unit/business-unit',
+                        component: './sys-system/business-unit/business-unit',
                     },
                     {
                         hideInMenu: true,   // 隐藏不显示
                         name: 'business_unit_info',
                         icon: 'icon-business-unit',
                         path: '/system/business-unit/form/:id',
-                        component: './sys-manager/business-unit/business-unit/form',
+                        component: './sys-system/business-unit/business-unit/form',
                     },
                     // TODO: 业务单位属性
                     {
                         name: 'business_unit_property_list',
                         icon: 'icon-cv-approval',
                         path: '/system/business-unit/property',
-                        component: './sys-manager/business-unit/business-unit-property',
+                        component: './sys-system/business-unit/business-unit-property',
                     },
                     {
                         hideInMenu: true,   // 隐藏不显示
                         name: 'business_unit_property_info',
                         icon: 'icon-business-unit',
                         path: '/system/business-unit/property/form/:id',
-                        component: './sys-manager/business-unit/business-unit-property/form',
+                        component: './sys-system/business-unit/business-unit-property/form',
                     },
                     // TODO: 付款方
                     {
                         name: 'payer_list',
                         icon: 'icon-cv-approval',
                         path: '/system/business-unit/payer',
-                        component: './sys-manager/business-unit/payer',
+                        component: './sys-system/business-unit/payer',
                     },
                     // TODO: 客户审批
                     {
@@ -246,14 +246,14 @@ const routesJSON = [
                         name: 'customer_approval_list',
                         icon: 'icon-cv-approval',
                         path: '/system/business-unit/cv-approval/list',
-                        component: './sys-manager/business-unit/business-unit-property/approval-list',
+                        component: './sys-system/business-unit/business-unit-property/approval-list',
                     },
                     {
                         hideInMenu: true,   // 隐藏不显示
                         name: 'customer_approval_info',
                         icon: 'icon-business-unit',
                         path: '/system/business-unit/cv-approval/form/:id',
-                        component: './sys-manager/business-unit/business-unit-property/form',
+                        component: './sys-system/business-unit/business-unit-property/form',
                     },
                     // TODO: 供应商
                     {
@@ -261,14 +261,14 @@ const routesJSON = [
                         name: 'vendor_list',
                         icon: 'icon-cv-approval',
                         path: '/system/business-unit/vendor/list',
-                        component: './sys-manager/business-unit/vendor/vendor-list',
+                        component: './sys-system/business-unit/vendor/vendor-list',
                     },
                     {
                         hideInMenu: true,   // 隐藏不显示
                         name: 'vendor_info',
                         icon: 'icon-business-unit',
                         path: '/system/vendor/form/:id',
-                        component: './sys-manager/business-unit/vendor/vendor-form',
+                        component: './sys-system/business-unit/vendor/vendor-form',
                     },
                 ],
             },
@@ -277,84 +277,84 @@ const routesJSON = [
                 name: 'credit_list',
                 icon: 'icon-credit',
                 path: '/system/credit',
-                component: './sys-manager/credit',
+                component: './sys-system/credit',
             },
             {
                 hideInMenu: true,   // 隐藏不显示
                 name: 'credit_info',
                 icon: 'icon-credit',
                 path: '/system/credit/form/:id',
-                component: './sys-manager/credit/form',
+                component: './sys-system/credit/form',
             },
             {
                 hideInMenu: true,   // 隐藏不显示
                 name: 'credit_info',
                 icon: 'icon-credit',
                 path: '/system/credit/form/:id/:buId',
-                component: './sys-manager/credit/form',
+                component: './sys-system/credit/form',
             },
             {
                 hideInMenu: true,   // 隐藏不显示
                 name: 'credit_approval',
                 icon: 'icon-credit',
                 path: '/system/credit/approval/:id',
-                component: './sys-manager/credit/approval',
+                component: './sys-system/credit/approval',
             },
             // TODO: 船代
             {
                 name: 'shipping_list',
                 icon: 'icon-shipping',
                 path: '/system/shipping',
-                component: './sys-manager/shipping',
+                component: './sys-system/shipping',
             },
             {
                 hideInMenu: true,   // 隐藏不显示
                 name: 'voyage_info',
                 icon: 'icon-shipping',
                 path: '/system/shipping/voyage/form/:id',
-                component: './sys-manager/shipping/voyage-form',
+                component: './sys-system/shipping/voyage-form',
             },
             // TODO: 账期数据
             {
                 name: 'account_list',
                 icon: 'icon-account-manage',
                 path: '/system/account',
-                component: './sys-manager/account/',
+                component: './sys-system/account/',
             },
             // TODO: 费用名称数据
             {
                 name: 'charge',
                 icon: 'icon-charge-subject',
                 path: '/system/charge',
-                component: './sys-manager/charge',
+                component: './sys-system/charge',
             },
             // TODO: 发票类型
             {
                 name: 'invoiceType_list',
                 icon: 'icon-invoiceType',
                 path: '/system/invoiceType/list',
-                component: './sys-manager/invoiceType',
+                component: './sys-system/invoiceType',
             },
             // TODO: 费用模板数据
             {
                 name: 'charge_template_list',
                 icon: 'icon-charge-manage',
                 path: '/system/charge-template',
-                component: './sys-manager/charge-template',
+                component: './sys-system/charge-template',
             },
             {
                 hideInMenu: true,   // 隐藏不显示
                 name: 'charge_template_info',
                 icon: 'icon-charge-manage',
                 path: '/system/charge-template/form/:id',
-                component: './sys-manager/charge-template/form',
+                component: './sys-system/charge-template/form',
             },
             {
                 hideInMenu: true,   // 隐藏不显示
                 name: 'charge_template_info',
                 icon: 'icon-charge-manage',
                 path: '/system/charge-template/copy/:id',
-                component: './sys-manager/charge-template/form',
+                component: './sys-system/charge-template/form',
             },
             // TODO: 报价数据
             {
@@ -362,63 +362,63 @@ const routesJSON = [
                 name: 'charge_quotation_list',
                 icon: 'icon-charge-quotation',
                 path: '/system/charge-quotation/list',
-                component: './sys-manager/charge-quotation/list',
+                component: './sys-system/charge-quotation/list',
             },
             {
                 hideInMenu: true,   // 隐藏不显示
                 name: 'charge_quotation_info',
                 icon: 'icon-charge-quotation',
                 path: '/system/charge-quotation/form/:id',
-                component: './sys-manager/charge-quotation/form',
+                component: './sys-system/charge-quotation/form',
             },
             // TODO: 部门
             {
                 name: 'department_list',
-                icon: 'icon-department-manager',
+                icon: 'icon-department-system',
                 path: '/system/department',
-                component: './sys-manager/department',
+                component: './sys-system/department',
             },
             {
                 hideInMenu: true,   // 隐藏不显示
                 name: 'department_form',
-                icon: 'icon-department-manager',
+                icon: 'icon-department-system',
                 path: '/system/department/form/:id',
-                component: './sys-manager/department/form',
+                component: './sys-system/department/form',
             },
             // TODO: 项目
             {
                 name: 'project_list',
                 icon: 'icon-project',
                 path: '/system/project',
-                component: './sys-manager/project',
+                component: './sys-system/project',
             },
             {
                 hideInMenu: true,   // 隐藏不显示
                 name: 'project_info',
                 icon: 'icon-project',
                 path: '/system/project/form/:id',
-                component: './sys-manager/project/form',
+                component: './sys-system/project/form',
             },
             // TODO: 用户
             {
                 name: 'user',
-                icon: 'icon-user-manager',
+                icon: 'icon-user-system',
                 path: '/system/user',
-                component: './sys-manager/user/user-list',
+                component: './sys-system/user/user-list',
             },
             // TODO: edi
             {
                 name: 'edi',
                 icon: 'icon-EDI',
                 path: '/system/edi/list',
-                component: './sys-manager/edi',
+                component: './sys-system/edi',
             },
             {
                 hideInMenu: true,   // 隐藏不显示
                 name: 'edi_info',
                 icon: 'icon-EDI',
                 path: '/system/edi/form/:id',
-                component: './sys-manager/edi/form',
+                component: './sys-system/edi/form',
             },
             // TODO: 用户权限
             {
@@ -429,35 +429,35 @@ const routesJSON = [
                     {
                         name: 'auth',
                         path: '/system/authority/auth',
-                        component: './sys-manager/authority',
+                        component: './sys-system/authority',
                     },
                     {
                         name: 'auth_form',
                         hideInMenu: true,
                         icon: 'icon-auth',
                         path: '/system/authority/auth/form/:id',
-                        component: './sys-manager/authority/form',
+                        component: './sys-system/authority/form',
                     },
                     {
                         name: 'role',
-                        path: '/manager/authority/role',
-                        component: './sys-manager/authority/role',
+                        path: '/system/authority/role',
+                        component: './sys-system/authority/role',
                     },
                     {
                         name: 'auth_form',
                         hideInMenu: true,
                         icon: 'icon-auth',
-                        path: '/manager/authority/role/form/:id',
-                        component: './sys-manager/authority/role/form',
+                        path: '/system/authority/role/form/:id',
+                        component: './sys-system/authority/role/form',
                     },
                 ],
             },
             // TODO: bpmn 审批 bpmn-js
             {
                 name: 'bpmn',
-                icon: 'icon-user-manager',
-                path: '/manager/bpmn',
-                component: './sys-manager/bpmn',
+                icon: 'icon-user-system',
+                path: '/system/bpmn',
+                component: './sys-system/bpmn',
                 // routes: [
                 //     {
                 //         path: '/',
@@ -466,14 +466,14 @@ const routesJSON = [
                 //     {
                 //         name: 'sample',
                 //         icon: 'smile',
-                //         path: '/manager/bpmn/sample',
-                //         component: './sys-manager/bpmn/bpmn-sample/BpmnSample',
+                //         path: '/system/bpmn/sample',
+                //         component: './sys-system/bpmn/bpmn-sample/BpmnSample',
                 //     },
                 //     {
                 //         name: 'editor',
                 //         icon: 'smile',
-                //         path: '/manager/bpmn/editor',
-                //         component: './sys-manager/bpmn/bpmn-editor/BpmnEditor',
+                //         path: '/system/bpmn/editor',
+                //         component: './sys-system/bpmn/bpmn-editor/BpmnEditor',
                 //     },
                 // ],
             },

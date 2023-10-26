@@ -17,7 +17,7 @@ const BasicInfo: React.FC<Props> = (props) => {
 
     const {
         SalesList
-    } = useModel('manager.user', (res: any) => ({
+    } = useModel('system.user', (res: any) => ({
         SalesList: res.SalesList
     }));
 

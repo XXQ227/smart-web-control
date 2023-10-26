@@ -31,7 +31,7 @@ const JobInfo: React.FC<Props> = (props) => {
 
     const {
         queryUserCommon, SalesList
-    } = useModel('manager.user', (res: any) => ({
+    } = useModel('system.user', (res: any) => ({
         queryUserCommon: res.queryUserCommon,
         SalesList: res.SalesList,
     }));

@@ -8,7 +8,7 @@ const Option = Select.Option;
 const ChooseBranch: React.FC = () => {
     // const {initialState, setInitialState} = useModel('@@initialState');
     // const userInfo = USER_INFO() || initUserInfo;
-    const {iamUserOrganizationConvert} = useModel('manager.auth', (res: any)=> ({
+    const {iamUserOrganizationConvert} = useModel('system.auth', (res: any)=> ({
         iamUserOrganizationConvert: res.iamUserOrganizationConvert,
     }));
 

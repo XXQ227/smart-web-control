@@ -78,24 +78,24 @@ export async function getInitialState(): Promise<{
                     // TODO: 经营单位<Branch>数据
                     {
                         name: 'branch_list', icon: 'icon-branch',
-                        path: '/system/branch', component: './sys-manager/branch',
+                        path: '/system/branch', component: './sys-system/branch',
                     },
                     {
                         name: 'branch_info', icon: 'icon-branch', hideInMenu: true,   // 隐藏不显示
-                        path: '/system/branch/form/:id', component: './sys-manager/branch/form',
+                        path: '/system/branch/form/:id', component: './sys-system/branch/form',
                     },
                     // TODO: 字典表数据维护
-                    {name: 'dict', icon: 'icon-dictionary', path: '/system/dict', component: './sys-manager/dict',},
+                    {name: 'dict', icon: 'icon-dictionary', path: '/system/dict', component: './sys-system/dict',},
                     {
                         name: 'dict_type', hideInMenu: true,   // 隐藏不显示
-                        path: '/system/dict/form/:id', component: './sys-manager/dict/form',
+                        path: '/system/dict/form/:id', component: './sys-system/dict/form',
                     },
                     // TODO: 港口数据
-                    {name: 'port_list', icon: 'icon-port', path: '/system/port', component: './sys-manager/port',},
+                    {name: 'port_list', icon: 'icon-port', path: '/system/port', component: './sys-system/port',},
                     // TODO: 用户
                     {
-                        name: 'user', icon: 'icon-user-manager',
-                        path: '/system/user', component: './sys-manager/user/user-list',
+                        name: 'user', icon: 'icon-user-system',
+                        path: '/system/user', component: './sys-system/user/user-list',
                     },
                 ],
             },
@@ -155,7 +155,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
                         {name: 'port_list', icon: 'icon-port', path: '/system/port',},
                         // TODO: 用户
                         {
-                            name: 'user', icon: 'icon-user-manager',
+                            name: 'user', icon: 'icon-user-system',
                             path: '/system/user',
                         },
                     ],

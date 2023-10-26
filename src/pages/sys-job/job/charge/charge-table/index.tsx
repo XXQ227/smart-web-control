@@ -44,7 +44,7 @@ const ChargeTable: React.FC<Props> = (props) => {
 
     const {
         queryCurrentExRateByTwoCurrencyAsync,
-    } = useModel('manager.branch', (res: any) => ({
+    } = useModel('system.branch', (res: any) => ({
         queryCurrentExRateByTwoCurrencyAsync: res.queryCurrentExRateByTwoCurrencyAsync,
     }));
 

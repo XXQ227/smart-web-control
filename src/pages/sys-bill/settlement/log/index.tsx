@@ -34,7 +34,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
 
     const {
         SalesList, queryUserCommon
-    } = useModel('manager.user', (res: any) => ({
+    } = useModel('system.user', (res: any) => ({
         SalesList: res.SalesList,
         queryUserCommon: res.queryUserCommon,
     }));

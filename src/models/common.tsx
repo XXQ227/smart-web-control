@@ -3,7 +3,7 @@ import {
     queryBranchCurrencyCommonAPI,
     queryDictCommonAPI, queryDictDetailCommonAPI, queryInvoiceTypeCommonAPI
 } from '@/services/smart/common'
-import {queryAccountPeriodCommonAPI, queryStartAccountPeriodInfoAPI} from '@/services/smart/manager/account'
+import {queryAccountPeriodCommonAPI, queryStartAccountPeriodInfoAPI} from '@/services/smart/system/account'
 import {getTransferDate} from '@/utils/units'
 
 
