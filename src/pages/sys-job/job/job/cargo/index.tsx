@@ -17,6 +17,22 @@ interface Props {
 const Cargo: React.FC<Props> = (props) => {
     const {title} = props;
 
+    const selectAfter = (
+        <ProFormSelect
+            width={75}
+            initialValue={'1'}
+            allowClear={false}
+            placeholder=''
+            name={['cargoInformationParam', 'revenueUnitId']}
+            options={[
+                { label: 'KGS', value: '1',},
+                { label: 'TEU', value: '2',},
+                { label: 'CBM', value: '3',},
+            ]}
+            className={'revenueUnit'}
+        />
+    );
+
     return (
         <ProCard title={title} bordered={true} headerBordered collapsible className={'ant-card'}>
             <Row gutter={rowGrid}>
@@ -36,10 +52,21 @@ const Cargo: React.FC<Props> = (props) => {
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6}>
                             <ProFormText placeholder='' label="HS Code" name={['cargoInformationParam', 'hsCode']}/>
                         </Col>
-                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6} className={'custom-input'}>
+                        {/*<Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6} className={'custom-input'}>
                             <ProFormDigit
                                 placeholder='' label={'Chargeable Weight'} min={0}
                                 name={['cargoInformationParam', 'chargeableWeight']} fieldProps={{addonAfter: 'KG'}}
+                            />
+                        </Col>*/}
+                        <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6} className={'custom-input'}>
+                            <label className={'ant-form-label-required'}>Chargeable Weight</label>
+                            <ProFormDigit
+                                required
+                                placeholder=''
+                                min={0}
+                                name={['cargoInformationParam', 'chargeableWeight']}
+                                fieldProps={{addonAfter: selectAfter}}
+                                rules={[{required: true, message: 'Chargeable Weight'}]}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={6} xxl={6} className={'custom-input'}>
@@ -72,6 +99,7 @@ const Cargo: React.FC<Props> = (props) => {
                         </Col>
                         <Col xs={24} sm={24} md={12} lg={8} xl={4} xxl={4}>
                             <ProFormSelect
+                                required
                                 placeholder=''
                                 name={['cargoInformationParam', 'packagingMethodId']}
                                 label="Packaging Methods"
@@ -80,6 +108,7 @@ const Cargo: React.FC<Props> = (props) => {
                                     {label: 'Stack Pack', value: '2'},
                                     {label: 'Palletizing', value: '3'},
                                 ]}
+                                rules={[{required: true, message: 'Packaging Methods'}]}
                             />
                         </Col>
                     </Row>
