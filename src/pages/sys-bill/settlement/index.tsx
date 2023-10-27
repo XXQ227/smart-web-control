@@ -14,8 +14,8 @@ import {
 import '@/global.less'
 import type {TabsProps} from 'antd';
 import {Button, Col, Divider, Form, message, Popconfirm, Row, Spin, Tabs} from 'antd'
-import {DeleteOutlined, FormOutlined, SearchOutlined} from '@ant-design/icons'
-import {formatNumToMoney, getFormErrorMsg, keepDecimal} from '@/utils/units'
+import {DeleteOutlined, EditOutlined, FormOutlined, SearchOutlined} from '@ant-design/icons'
+import {formatNumToMoney, getFormErrorMsg, keepDecimal, rowGrid} from '@/utils/units'
 import SearchProFormSelect from '@/components/SearchProFormSelect'
 import {useModel} from '@@/plugin-model/useModel'
 import {history} from 'umi'
@@ -26,7 +26,7 @@ import {BRANCH_ID} from '@/utils/auths'
 
 const initSearchData: any = {
     invoiceNum: "",
-    settlementPartyId: null,
+    businessId: null,
     jobCode: "",
     branchId: BRANCH_ID(),
     queryType: 1,
@@ -35,7 +35,7 @@ const initSearchData: any = {
 };
 
 // TODO: 默认为 true；当首次加载数据后，改为 【false】
-let initLoading = true;
+// let initLoading = true;
 
 const Settlement: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
@@ -81,7 +81,7 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
      */
     async function handleQueryUnWriteOffInvoice(val?: any, tabKey?: string) {
         if (!loading) setLoading(true);
-        if (initLoading) initLoading = false;
+        // if (initLoading) initLoading = false;
         try {
             val.state = tabKey || searchInfo.state;
             const params: any = {...initSearchData, ...val};
@@ -204,17 +204,19 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
     }
 
     let columns: ProColumns[] = [
-        {title: 'Type', dataIndex: 'type', width: 60, align: 'center',},
-        {title: 'B-Line', dataIndex: 'bline', width: 60, align: 'center',},
-        {title: 'Invoice No.', dataIndex: 'num', width: 170, align: 'center',},
-        {title: 'Job No.', dataIndex: 'jobCodes', key: 'jobCode', width: 120, align: 'center',},
+        {title: 'Type', dataIndex: 'type', width: 65, align: 'center',},
+        {title: 'B-Line', dataIndex: 'bline', width: 65, align: 'center',},
+        {title: 'Invoice No.', dataIndex: 'num', width: '15%', align: 'center',},
+        {title: 'Job No.', dataIndex: 'jobCodes', key: 'jobCode', width: '11%', align: 'center',},
         {title: 'Payer / Vendor', dataIndex: 'businessName',},
-        {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 90, align: 'center'},
+        {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 95, align: 'center'},
         // TODO: valueType 数据显示格式，
         //  详情见 https://procomponents.ant.design/components/schema#%E8%87%AA%E5%AE%9A%E4%B9%89-valuetype
-        {title: 'Bill AMT', dataIndex: 'billInTaxAmount', width: 100, align: 'center',},
-        {title: 'Issue By', dataIndex: 'createUserName', width: 150, align: 'center'},
-        {title: 'Issue Date', dataIndex: 'createTime', width: 90, align: 'center', valueType: 'date'},
+        {title: 'Bill AMT', dataIndex: 'billInTaxAmount', width: '10%', align: 'right',
+            render: (text) => {return formatNumToMoney(text)},
+        },
+        {title: 'Issue By', dataIndex: 'createUserName', width: 95, align: 'center'},
+        {title: 'Issue Date', dataIndex: 'createTime', width: 95, align: 'center', valueType: 'date'},
         // {title: 'Completion Date', dataIndex: 'completionDate', width: 100, align: 'center', valueType: 'date'},
     ];
 
@@ -306,12 +308,12 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
 
     return (
         <PageContainer
-            header={{breadcrumb: {}}}
+            header={{
+                breadcrumb: {}
+            }}
         >
             <ProForm
                 form={form}
-                omitNil={false}
-                layout={"vertical"}
                 params={searchInfo}
                 name={'form-search-info'}
                 initialValues={initSearchData}
@@ -327,7 +329,9 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
                     // 完全自定义整个区域
                     render: () => {
                         return (
-                            <FooterToolbar extra={<Button onClick={() => history.goBack()}>Back</Button>}>
+                            <FooterToolbar
+                                // extra={<Button onClick={() => history.goBack()}>Back</Button>}
+                            >
                                 <SettlementInvoiceModal
                                     type={type}
                                     settleInfo={settleInfo}
@@ -337,17 +341,18 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
                         );
                     },
                 }}
-                request={async (params: any) => initLoading ? handleQueryUnWriteOffInvoice(params) : {}}
+                request={async (params: any) => handleQueryUnWriteOffInvoice(params)}
+                // request={async (params: any) => initLoading ? handleQueryUnWriteOffInvoice(params) : {}}
             >
                 {/* 搜索 */}
                 <ProCard className={'ant-pro-card-search'}>
-                    <Row gutter={24} className={'ant-row-search'}>
-                        <Col span={21}>
-                            <Row gutter={24}>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={4}>
+                    <Row gutter={rowGrid} className={'ant-row-search'}>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={19} xxl={15}>
+                            <Row gutter={rowGrid}>
+                                <Col xs={24} sm={24} md={6} lg={6} xl={5} xxl={5}>
                                     <ProFormSelect
                                         name="type"
-                                        label="Cettle Type"
+                                        label="Settle Type"
                                         style={{minWidth: 150}}
                                         options={[{label: 'AR', value: 1}, {label: 'AP', value: 2}]}
                                         fieldProps={{
@@ -355,12 +360,12 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
                                         }}
                                     />
                                 </Col>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={10} xxl={10}>
+                                <Col xs={24} sm={24} md={18} lg={18} xl={19} xxl={19}>
                                     <SearchProFormSelect
                                         qty={5}
                                         isShowLabel={true}
-                                        id={'settlementPartyId'}
-                                        name={'settlementPartyId'}
+                                        id={'businessId'}
+                                        name={'businessId'}
                                         label={"Customer or Paying Agent"}
                                         filedValue={'id'} filedLabel={'nameFullEn'}
                                         query={{branchId: BRANCH_ID(), buType: 1}}
@@ -368,8 +373,8 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
                                     />
                                 </Col>
                             </Row>
-                            <Row gutter={24}>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={4} xxl={4}>
+                            <Row gutter={rowGrid}>
+                                <Col xs={24} sm={24} md={8} lg={8} xl={8} xxl={8}>
                                     {
                                         searchInfo.state === '3' ?
                                             <ProFormText name="serialNum" label="Transaction Ref No." placeholder=""/>
@@ -377,10 +382,10 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
                                             <ProFormText name="jobCode" label="Job No." placeholder=""/>
                                     }
                                 </Col>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={4}>
+                                <Col xs={24} sm={24} md={8} lg={8} xl={8} xxl={8}>
                                     <ProFormText name="invoiceNum" label="Invoice No." placeholder=""/>
                                 </Col>
-                                <Col xs={24} sm={24} md={12} lg={12} xl={5} xxl={8}>
+                                <Col xs={24} sm={24} md={8} lg={8} xl={8} xxl={8}>
                                     {
                                         searchInfo.state === '3' ?
                                             <ProFormDateRangePicker
@@ -396,12 +401,20 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
                                 </Col>
                             </Row>
                         </Col>
-                        <Col span={3} className={'ant-row-search-btn'}>
+                        <Col xs={0} sm={0} md={0} lg={0} xl={5} xxl={3} className={'ant-row-search-btn'}>
                             <Button icon={<SearchOutlined/>} htmlType={'submit'}>Search</Button>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={0} xxl={0}>
+                            <Button key={'submit'} type={'primary'} htmlType={'submit'} style={{float: "right"}} icon={<SearchOutlined/>}>
+                                Search
+                            </Button>
                         </Col>
                     </Row>
                 </ProCard>
             </ProForm>
+
             <ProCard className={'ant-tabs-style'}>
                 <Spin spinning={loading}>
                     <Tabs

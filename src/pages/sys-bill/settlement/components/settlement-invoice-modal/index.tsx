@@ -1,16 +1,16 @@
 import React, {Fragment, useEffect, useState} from 'react'
 import type {ProColumns} from '@ant-design/pro-components';
 import {ProFormDatePicker, ProFormSelect, ProFormText, ProFormTextArea, ProTable} from '@ant-design/pro-components'
-import {Button, Col, Form, message, Modal, Row} from 'antd'
+import {Button, Col, Divider, Form, message, Modal, Row} from 'antd'
 import {useModel} from '@@/plugin-model/useModel'
-import {formatNumToMoney, getFormErrorMsg, keepDecimal} from '@/utils/units'
+import {formatNumToMoney, getFormErrorMsg, keepDecimal, rowGrid} from '@/utils/units'
 import InputEditNumber from '@/components/InputEditNumber'
 import moment from 'moment'
 import '../../style.less'
 import {BRANCH_ID} from '@/utils/auths'
 
 interface Props {
-    type: number;       // TODO: 核销类型:1-收款核销2-付款核销3-预付款核销
+    type: number;       // TODO: 核销类型:1-收款核销 2-付款核销 3-预付款核销
     hidden?: boolean;   // TODO: 是否隐藏操作按钮
     settleInfo: any;    // TODO: 核销发票数据
     settleChargeList: any[];
@@ -22,7 +22,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
 
     const initSettleInfo: any = {
         method: 2, serverAmount: 0, discountAmount: 0, serverAmountStr: '0', discountAmountStr: '0',
-        receivePayTime: moment(new Date()).format('YYYY-MM-DD'),    // TODO: 默认为当前时间
+        accountingDate: moment(new Date()).format('YYYY-MM-DD'),    // TODO: 默认为当前时间
     };
 
     // TODO: 银行信息
@@ -31,9 +31,6 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
         {value: '214520456845', label: '渣打银行'},
         {value: '524486532545', label: '汇丰银行'},
     ];
-
-
-
 
     // TODO: 核销列表数据
     const [open, setOpen] = useState<boolean>(false);
@@ -120,7 +117,6 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
         }
     }
 
-
     /**
      * @Description: TODO: 保存水单
      * @author XXQ
@@ -180,10 +176,10 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                         bankName,       // TODO: 银行名
                         invoiceList,
                         status: isPartial ? 2 : 3,  // TODO: 核销状态 1-未核销 2-部份核销 3-全部核销
-                        receivePayTime: moment(val.receivePayTime).format('YYYY-MM-DD'),
+                        accountingDate: moment(val.accountingDate).format('YYYY-MM-DD'),
                         type, branchId: BRANCH_ID(),
-                        settlementPartyId: settleInfo.businessId,
-                        settlementPartyName: settleInfo.businessName,
+                        businessId: settleInfo.businessId,
+                        businessName: settleInfo.businessName,
                     };
 
                     const result: API.Result = await invoiceWriteOff(params);
@@ -204,17 +200,21 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
     }
 
     const columns: ProColumns[] = [
-        {title: 'Job No.', dataIndex: 'jobCode'},
-        {title: 'Invoice No.', dataIndex: 'invoiceNum'},
+        {title: 'Job No.', dataIndex: 'jobCode', align: 'center'},
+        {title: 'Invoice No.', dataIndex: 'invoiceNum', align: 'center'},
         // {title: 'Issue By', dataIndex: 'issueBy', width: 150, align: 'center'},
         // {title: 'Issue Date', dataIndex: 'issueDate', width: 100, align: 'center', valueType: 'date'},
-        {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 110, align: 'right'},
-        {title: 'Bill Amount', dataIndex: 'billInTaxAmount', width: 110, align: 'right'},
-        {title: 'Unsettled AMT', dataIndex: 'unWriteOffBillInTaxAmount', width: 110, align: 'right'},
-        {title: 'Ratio', dataIndex: 'ratio', width: 80, align: 'center'},
+        {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 100, align: 'center'},
+        {title: 'Bill Amount', dataIndex: 'billInTaxAmount', width: 100, align: 'right',
+            render: (text) => {return formatNumToMoney(text)},
+        },
+        {title: 'Unsettled AMT', dataIndex: 'unWriteOffBillInTaxAmount', width: 110, align: 'right',
+            render: (text) => {return formatNumToMoney(text)},
+        },
+        {title: 'Ratio', dataIndex: 'ratio', width: 80, align: 'right'},
         {
             title: 'Settle AMT', dataIndex: 'amount', width: 125, align: 'center',
-            tooltip: 'Name is required; \n\r Must be a number with at most two decimal places.',
+            tooltip: 'Settle AMT is required; \n\r Must be a number with at most two decimal places.',
             render: (text, record: any, index) => (
                 <Form.Item
                     name={`amount_table_${record.id}`}
@@ -238,7 +238,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                     ]}
                 >
                     <InputEditNumber
-                        value={record.amount} valueStr={record.amountStr}
+                        value={record.amount} valueStr={record.amountStr} className={'isNumber-inp'}
                         handleChangeData={(val) => handleRowChange('amount', val, index)}
                     />
                 </Form.Item>
@@ -255,7 +255,6 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
         billInTaxTotal = keepDecimal(billInTaxTotal);
     }
 
-
     return (
         <Fragment>
             <Button
@@ -264,6 +263,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
             >Settle</Button>
 
             <Modal
+                className={'ant-add-modal'}
                 open={open}
                 width={900}
                 title={'Settlement'}
@@ -272,15 +272,14 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                 onOk={handleCreateSettle}
                 onCancel={() => handleModalOP(false)}
             >
+                <Divider />
                 <Form form={form} name={'modalForm'} layout={'vertical'} initialValues={initSettleInfo}>
-                    <Row gutter={24} style={{marginBottom: 24}}>
-                        <Col span={17}>Payer / Vendor：<b>{settleInfo.businessName}</b></Col>
-                        <Col span={7}>Bill CURR：<b>{settleInfo.billCurrencyName}</b></Col>
+                    <Row gutter={rowGrid} style={{marginBottom: 24}}>
+                        <Col span={17}>Payer / Vendor：<b style={{fontSize: 16}}>{settleInfo.businessName}</b></Col>
+                        <Col span={7} style={{textAlign: "right"}}>Bill CURR：<b style={{fontSize: 16}}>{settleInfo.billCurrencyName}</b></Col>
                     </Row>
-
                     <hr/>
-
-                    <Row gutter={24} style={{marginTop: 24}}>
+                    <Row gutter={rowGrid} style={{marginTop: 24}}>
                         <Col span={9}>
                             <ProFormSelect
                                 placeholder={''}
@@ -292,13 +291,14 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                                     onSelect: (val: any) => handleRowChange('method', val, 0)
                                 }}
                                 options={[
-                                    ...bankList,
+                                    // ...bankList,
+                                    {label: 'Bank 銀行', value: 1},
                                     {label: 'CASH 現金', value: 2},
                                     {label: 'Hedge Offset 對沖抵消', value: 3},
                                 ]}
                             />
                         </Col>
-                        <Col span={5}>
+                        <Col span={9}>
                             <ProFormSelect
                                 placeholder={''}
                                 name="bankAccount"
@@ -313,25 +313,16 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                                 ]}
                             />
                         </Col>
-                        <Col span={5}>
-                            <ProFormSelect
-                                placeholder={''}
-                                name="currencyName"
-                                label={'Settle Currency'}
-                                style={{minWidth: 150}}
-                                options={['CNY', 'HKD', 'USD']}
-                            />
-                        </Col>
-                        <Col span={5}>
+                        <Col span={6}>
                             <ProFormDatePicker
                                 placeholder={''}
-                                name={'receivePayTime'} label={'Accounting Date'}
-                                rules={[{required: true, message: 'Account Type'}]}
+                                name={'accountingDate'} label={'Accounting Date'}
+                                rules={[{required: true, message: 'Accounting Date'}]}
                             />
                         </Col>
                     </Row>
-                    <Row gutter={24}>
-                        <Col span={12}>
+                    <Row gutter={rowGrid}>
+                        <Col span={9}>
                             {/*// TODO: 到账/核销 金额*/}
                             <Form.Item
                                 name={'amount'} label={'Amount'}
@@ -350,7 +341,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                                 />
                             </Form.Item>
                         </Col>
-                        <Col span={12}>
+                        <Col span={9}>
                             {/*// TODO: 银行手续费*/}
                             <Form.Item
                                 name={'serverAmount'} label={'Bank Commission'}
@@ -367,7 +358,16 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                                 />
                             </Form.Item>
                         </Col>
-                        <Col span={12}>
+                        {/*<Col span={6}>
+                            <ProFormSelect
+                                placeholder={''}
+                                name="currencyName"
+                                label={'Settle Currency'}
+                                style={{minWidth: 150}}
+                                options={['CNY', 'HKD', 'USD']}
+                            />
+                        </Col>*/}
+                        <Col span={9}>
                             {/*// TODO: 折扣金额*/}
                             <Form.Item
                                 name={'discountAmount'} label={'Discount Amount'}
@@ -384,12 +384,12 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                                 />
                             </Form.Item>
                         </Col>
-                        <Col span={12}>
+                        <Col span={9}>
                             {/*// TODO: 流水号*/}
                             <ProFormText name={'serialNum'} label={'Transaction Reference Number'} placeholder={''}/>
                         </Col>
                     </Row>
-                    <Row gutter={24} style={{marginBottom: 24}}>
+                    <Row gutter={rowGrid} style={{marginBottom: 24}}>
                         <Col span={24}>
                             <ProTable
                                 rowKey={'id'}
@@ -402,7 +402,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                                 className={'antd-pro-table-expandable ant-pro-table-edit ant-pro-table-settle-amount'}
                                 footer={() => {
                                     return (
-                                        <Row gutter={24}>
+                                        <Row gutter={rowGrid}>
                                             <Col span={12}/>
                                             <Col span={12}>
                                                 <span style={{float: 'right'}}>
@@ -422,7 +422,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                             <ProFormText name={'settleChargeList'} hidden={true} />
                         </Col>
                     </Row>
-                    <Row gutter={24}>
+                    <Row gutter={rowGrid}>
                         <Col span={24}>
                             <ProFormTextArea
                                 name={'remark'} label={'Settle Remark'} placeholder={''} fieldProps={{rows: 4}}
