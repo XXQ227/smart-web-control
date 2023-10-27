@@ -428,7 +428,7 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
                     <Col span={24} className={'ant-add-divider'}>
                         <Divider />
                     </Col>
-                    <Col span={23}>
+                    <Col span={23} className={'ant-add-BUP'}>
                         <SearchProFormSelect
                             required
                             qty={10}
