@@ -332,6 +332,10 @@ const manager_route = {
                     name: 'auth_form', hideInMenu: true, icon: 'icon-auth',
                     path: '/system/authority/auth/level2/form/:id', component: './sys-system/authority/auth/form',
                 },
+                {
+                    name: 'auth_form', hideInMenu: true, icon: 'icon-auth',
+                    path: '/system/authority/auth/level2/:pathType/form/:id', component: './sys-system/authority/auth/form',
+                },
                 {name: 'role', path: '/system/authority/role', component: './sys-system/authority/role',},
                 {
                     name: 'auth_form', hideInMenu: true, icon: 'icon-auth',

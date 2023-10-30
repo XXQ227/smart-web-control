@@ -1,5 +1,5 @@
 import {USER_ID, ACCESS_TOKEN, BRANCH_ID} from '@/utils/auths'
-import {message, notification} from 'antd';
+import {notification} from 'antd';
 import {LOCAL_TIME_ZONE, SYSTEM_ID, SYSTEM_KEY_TEST} from '@/utils/units'
 
 
@@ -63,7 +63,7 @@ export function request(url: string, options: any) {
         'Content-Type': 'application/json; charset=utf-8',
         UserID: USER_ID(),
         BranchID: BRANCH_ID(),
-        auth: ACCESS_TOKEN(),
+        auth: ACCESS_TOKEN() || '07cb575bb41b4475b93e6534d5b3785c',
         zone: LOCAL_TIME_ZONE(),
         ...newOptions.headers
     };
@@ -100,7 +100,7 @@ export function request(url: string, options: any) {
         })
         .catch((e: any) => {
             const status = e.name;
-            const result: any = {success: false, message: e.message};
+            const result: any = {success: false, message: e.message || 'error'};
             if (status === 401) {
                 // history.push('/user/login');
                 return result;

@@ -6,7 +6,7 @@ import {useModel} from 'umi';
 import {Button, Form, Input, message, Popconfirm} from 'antd'
 import {DeleteOutlined, PlusOutlined, SaveOutlined} from '@ant-design/icons'
 import ls from 'lodash'
-import {IconFont, getFormErrorMsg, ID_STRING} from '@/utils/units'
+import {IconFont, getFormErrorMsg, ID_STRING, getChildrenListData} from '@/utils/units'
 import {history} from '@@/core/history'
 import DividerCustomize from '@/components/Divider'
 import FormItemInput from '@/components/FormItemComponents/FormItemInput'
@@ -49,6 +49,7 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
         const result: API.Result = await queryAuthResourceTree(params);
         setLoading(false);
         if (result.success) {
+            if (result.data) result.data = getChildrenListData(result.data);
             setAuthResourceListVO(result.data);
         } else {
             message.error(result.message);
@@ -100,10 +101,11 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
                     params.id = record.id;
                     result = await editAuthResource(params);
                 }
-                record.isChange = false;
-                newData.splice(index, 1, record);
                 if (result.success) {
+                    if (state === 'add') record.id = result.data;
                     message.success('Success');
+                    record.isChange = false;
+                    newData.splice(index, 1, record);
                     setAuthResourceListVO(newData);
                 } else {
                     message.error(result.message);
