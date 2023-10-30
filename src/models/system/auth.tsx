@@ -3,6 +3,7 @@ import {
     addAuthResourceAPI, deleteAuthResourceAPI, editAuthResourceAPI, queryAuthResourceTreeAPI,
     queryRoleAPI, addRoleAPI, deleteRoleAPI, editRoleAPI, iamUserOrganizationConvertAPI,
 } from '@/services/smart/system/auth'
+import {getChildrenListData} from '@/utils/units'
 
 type APIAuthResource = APISystem.AuthResource;
 type APIRole = APISystem.Role;
@@ -18,14 +19,7 @@ export default () => {
         // TODO: 请求后台 API
         const response: API.Result = await queryAuthResourceTreeAPI(params);
         if (!response) return;
-        if (response?.data) response.data = getChildrenListData(response.data);
-        if (Number(params.id) === 0) {
-            return response;
-        } else {
-            let result: any = {};
-            result = response.data[0];
-            return result;
-        }
+        return response;
     }, []);
 
     /** 添加 权限  */
@@ -88,20 +82,4 @@ export default () => {
 
         iamUserOrganizationConvert,
     }
-}
-
-// TODO: 处理数据里的 children 子集，如果 children 没有数据时，则删除 children
-function getChildrenListData (data: any[]) {
-    let result: any[] = [];
-    if (data?.length > 0) {
-        result = data.map((x: any)=> {
-            if (x.children?.length === 0) {
-                delete x.children;
-            } else if (x.children?.length > 0) {
-                x.children = getChildrenListData(x.children);
-            }
-            return x;
-        })
-    }
-    return result;
 }

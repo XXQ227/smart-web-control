@@ -991,3 +991,21 @@ export function getServiceTypeName (checkedValue: string) {
     }
     return '';
 }
+
+
+// TODO: 处理数据里的 children 子集，如果 children 没有数据时，则删除 children
+export function getChildrenListData (data: any[]) {
+    let result: any[] = [];
+    if (data?.length > 0) {
+        result = data.map((x: any)=> {
+            if (x.children?.length > 0) {
+                x.children.map((child: any)=> child.type = child.type === 2)
+                x.children = getChildrenListData(x.children);
+            } else {
+                delete x.children;
+            }
+            return x;
+        })
+    }
+    return result;
+}
