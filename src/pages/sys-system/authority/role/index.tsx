@@ -11,7 +11,7 @@ import {IconFont, getFormErrorMsg, ID_STRING, funcTransferTreeData} from '@/util
 import DividerCustomize from '@/components/Divider'
 import FormItemInput from '@/components/FormItemComponents/FormItemInput'
 import FormItemSwitch from '@/components/FormItemComponents/FormItemSwitch'
-import AuthListTree from '@/pages/sys-system/authority/role/modal-form'
+import AuthListTree from '@/pages/sys-system/authority/role/AuthListTree/'
 
 const {Search} = Input;
 
