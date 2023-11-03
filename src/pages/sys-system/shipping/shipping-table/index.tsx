@@ -221,16 +221,11 @@ const ShippingTable: React.FC<Props> = (props) => {
 
     const vesselColumns: ProColumns<APIVessel>[] = [
         {
-            title: 'Vessel Name',
-            dataIndex: 'name',
-            width: 180,
-            tooltip: 'Vessel Name is required',
-            className: 'ant-columns-required',
+            title: 'Vessel Name', dataIndex: 'name', width: 180,
+            tooltip: 'Vessel Name is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    placeholder=''
-                    id={`name${record.id}`}
                     name={`name${record.id}`}
                     initialValue={record.name}
                     disabled={record.enableFlag}
@@ -239,16 +234,11 @@ const ShippingTable: React.FC<Props> = (props) => {
                 />
         },
         {
-            title: 'Code',
-            dataIndex: 'code',
-            width: 120,
-            tooltip: 'Code is required',
-            className: 'ant-columns-required',
+            title: 'Code', dataIndex: 'code', width: 120,
+            tooltip: 'Code is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    placeholder=''
-                    id={`code${record.id}`}
                     name={`code${record.id}`}
                     initialValue={record.code}
                     disabled={record.enableFlag}
@@ -257,14 +247,10 @@ const ShippingTable: React.FC<Props> = (props) => {
                 />
         },
         {
-            title: 'Call Sign',
-            dataIndex: 'callSign',
-            width: 120,
+            title: 'Call Sign', dataIndex: 'callSign', width: 120,
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    placeholder=''
-                    id={`callSign${record.id}`}
                     name={`callSign${record.id}`}
                     initialValue={record.callSign}
                     disabled={record.enableFlag}
@@ -272,14 +258,10 @@ const ShippingTable: React.FC<Props> = (props) => {
                 />
         },
         {
-            title: 'IMO No.',
-            dataIndex: 'imoNum',
-            width: 120,
+            title: 'IMO No.', dataIndex: 'imoNum', width: 120,
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    placeholder=''
-                    id={`imoNum${record.id}`}
                     name={`imoNum${record.id}`}
                     initialValue={record.imoNum}
                     disabled={record.enableFlag}
@@ -287,21 +269,8 @@ const ShippingTable: React.FC<Props> = (props) => {
                 />
         },
         {
-            title: 'Carrier',
-            dataIndex: 'carrierId',
-            tooltip: 'Code is required',
-            className: 'ant-columns-required',
+            title: 'Carrier', dataIndex: 'carrierId', tooltip: 'Code is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                /*<FormItemInput
-                    required
-                    placeholder=''
-                    id={`code${record.id}`}
-                    name={`code${record.id}`}
-                    initialValue={record.code}
-                    disabled={record.enableFlag}
-                    rules={[{required: true, message: 'Code'}]}
-                    onChange={(val: any) => handleChangeShipping(index, record, 'code', val)}
-                />*/
                 <SearchModal
                     qty={20}
                     id={'carrierId'}
@@ -311,14 +280,11 @@ const ShippingTable: React.FC<Props> = (props) => {
                     text={record.carrierName}
                     disabled={!!record.enableFlag}
                     url={"/api/MCommon/GetServiceType"}
-                    handleChangeData={(val: any, option: any) => handleChangeShipping(index, record, 'carrierId', val)}
+                    handleChangeData={(val: any) => handleChangeShipping(index, record, 'carrierId', val)}
                 />
         },
         {
-            title: 'Action',
-            width: 110,
-            align: 'center',
-            className: 'cursorStyle',
+            title: 'Action', width: 110, align: 'center', className: 'cursorStyle',
             render: (text, record, index) => {
                 const isAdd = record?.id?.indexOf('ID_') > -1;
                 return (
@@ -354,16 +320,11 @@ const ShippingTable: React.FC<Props> = (props) => {
 
     const lineColumns: ProColumns<APILine>[] = [
         {
-            title: 'Name',
-            dataIndex: 'name',
-            width: 200,
-            tooltip: 'Name is required',
-            className: 'ant-columns-required',
+            title: 'Name', dataIndex: 'name', width: 200,
+            tooltip: 'Name is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    placeholder=''
-                    id={`name${record.id}`}
                     name={`name${record.id}`}
                     initialValue={record.name}
                     disabled={record.enableFlag}
@@ -372,16 +333,11 @@ const ShippingTable: React.FC<Props> = (props) => {
                 />
         },
         {
-            title: 'Area Code',
-            dataIndex: 'areaCode',
-            width: 120,
-            tooltip: 'Area Code is required',
-            className: 'ant-columns-required',
+            title: 'Area Code', dataIndex: 'areaCode', width: 120,
+            tooltip: 'Area Code is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    placeholder=''
-                    id={`areaCode${record.id}`}
                     name={`areaCode${record.id}`}
                     initialValue={record.areaCode}
                     disabled={record.enableFlag}
@@ -390,14 +346,10 @@ const ShippingTable: React.FC<Props> = (props) => {
                 />
         },
         {
-            title: 'Service ID',
-            dataIndex: 'serverId',
-            width: 120,
+            title: 'Service ID', dataIndex: 'serverId', width: 120,
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    placeholder=''
-                    id={`serverId${record.id}`}
                     name={`serverId${record.id}`}
                     initialValue={record.serverId}
                     disabled={record.enableFlag}
@@ -405,10 +357,7 @@ const ShippingTable: React.FC<Props> = (props) => {
                 />
         },
         {
-            title: 'Carrier',
-            dataIndex: 'carrierId',
-            tooltip: 'Code is required',
-            className: 'ant-columns-required',
+            title: 'Carrier', dataIndex: 'carrierId', tooltip: 'Code is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <SearchModal
                     qty={20}
@@ -424,10 +373,7 @@ const ShippingTable: React.FC<Props> = (props) => {
                 />
         },
         {
-            title: 'Action',
-            width: 110,
-            align: 'center',
-            className: 'cursorStyle',
+            title: 'Action', width: 110, align: 'center', className: 'cursorStyle',
             render: (text, record, index) => {
                 const isAdd = record?.id?.indexOf('ID_') > -1;
                 return (

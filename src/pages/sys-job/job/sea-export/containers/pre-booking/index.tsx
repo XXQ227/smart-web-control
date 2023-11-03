@@ -93,7 +93,6 @@ const ProBooking: React.FC<Props> = (props) => {
             render: (text: any, record, index) =>
                 <FormItemInput
                     required
-                    placeholder={''}
                     initialValue={record.qty}
                     name={`qty_ctn_table_${record.id}`}
                     rules={[{required: true, message: 'QTY'}]}
@@ -133,7 +132,6 @@ const ProBooking: React.FC<Props> = (props) => {
             dataIndex: 'remark',
             render: (text: any, record, index) =>
                 <FormItemInput
-                    placeholder={''}
                     initialValue={text}
                     name={`Remark_ctn_table_${record.id}`}
                     onChange={(e) => onChange(index, record.id, 'remark', e)}

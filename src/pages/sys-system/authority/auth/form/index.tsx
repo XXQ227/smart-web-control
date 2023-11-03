@@ -236,7 +236,6 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 record.parentId === authInfoVO.id || !record.parentId ?
                     <FormItemInput
-                        placeholder=''
                         initialValue={record.name}
                         disabled={record.enableFlag}
                         id={`name_table_${record.id}`}
@@ -251,7 +250,6 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 record.parentId === authInfoVO.id || !record.parentId ?
                     <FormItemInput
-                        placeholder=''
                         disabled={record.enableFlag}
                         initialValue={record.identityCode}
                         name={`identityCode_table_${record.id}`}
@@ -265,7 +263,6 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 record.parentId === authInfoVO.id || !record.parentId ?
                     <FormItemInput
-                        placeholder=''
                         required={!record.type}
                         disabled={record.enableFlag}
                         initialValue={record.pathName}
@@ -280,7 +277,6 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 record.parentId === authInfoVO.id || !record.parentId ?
                     <FormItemInput
-                        placeholder=''
                         required={!record.type}
                         disabled={record.enableFlag}
                         initialValue={record.pathUrl}
@@ -295,7 +291,6 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 record.parentId === authInfoVO.id || !record.parentId ?
                     <FormItemInput
-                        placeholder=''
                         required={!record.type}
                         initialValue={record.icon}
                         disabled={record.enableFlag}
@@ -335,7 +330,6 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 record.parentId === authInfoVO.id || !record.parentId ?
                     <FormItemInput
-                        placeholder=''
                         disabled={record.enableFlag}
                         initialValue={record.redirect}
                         name={`redirect_table_${record.id}`}
@@ -348,7 +342,6 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 record.parentId === authInfoVO.id || !record.parentId ?
                     <FormItemInput
-                        placeholder=''
                         disabled={record.enableFlag}
                         initialValue={record.redirectPath}
                         name={`redirectPath_table_${record.id}`}

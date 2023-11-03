@@ -169,16 +169,11 @@ const InvoiceTypeListIndex: React.FC<RouteChildrenProps> = () => {
 
     const columns: ProColumns<APIInvoiceType>[] = [
         {
-            title: 'Name',
-            dataIndex: 'name',
-            tooltip: 'Name is required',
-            className: 'ant-columns-required',
+            title: 'Name', dataIndex: 'name', tooltip: 'Name is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    placeholder=''
                     disabled={record.enableFlag}
-                    id={`name${record.id}`}
                     name={`name${record.id}`}
                     initialValue={record.name}
                     rules={[{required: true, message: 'Name'}]}
@@ -186,40 +181,28 @@ const InvoiceTypeListIndex: React.FC<RouteChildrenProps> = () => {
                 />
         },
         {
-            title: 'Category Code',
-            dataIndex: 'subCategoryCode',
-            width: '15%',
+            title: 'Category Code', dataIndex: 'subCategoryCode', width: '15%',
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    placeholder=''
                     disabled={record.enableFlag}
-                    id={`subCategoryCode${record.id}`}
                     name={`subCategoryCode${record.id}`}
                     initialValue={record.subCategoryCode}
                     onChange={(val: any) => handleRowChange(index, record, 'subCategoryCode', val)}
                 />
         },
         {
-            title: 'Son Code',
-            dataIndex: 'subSonCode',
-            width: '15%',
+            title: 'Son Code', dataIndex: 'subSonCode', width: '15%',
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    placeholder=''
                     disabled={record.enableFlag}
-                    id={`subSonCode${record.id}`}
                     name={`subSonCode${record.id}`}
                     initialValue={record.subSonCode}
                     onChange={(val: any) => handleRowChange(index, record, 'subSonCode', val)}
                 />
         },
         {
-            title: 'Type',
-            dataIndex: 'type',
-            width: '15%',
-            align: 'center',
-            tooltip: 'Type is required',
-            className: 'ant-columns-required',
+            title: 'Type', dataIndex: 'type', width: '15%', align: 'center',
+            tooltip: 'Type is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemRadio
                     required
@@ -228,7 +211,6 @@ const InvoiceTypeListIndex: React.FC<RouteChildrenProps> = () => {
                         {value: 2, label: 'AP'},
                     ]}
                     disabled={record.enableFlag}
-                    id={`type${record.id}`}
                     name={`type${record.id}`}
                     initialValue={record.type}
                     rules={[{required: true, message: 'Type'}]}
@@ -236,17 +218,12 @@ const InvoiceTypeListIndex: React.FC<RouteChildrenProps> = () => {
                 />
         },
         {
-            title: 'Tax Rate',
-            dataIndex: 'taxRate',
-            width: '15%',
-            tooltip: 'Tax Rate is required',
-            className: 'ant-columns-required',
+            title: 'Tax Rate', dataIndex: 'taxRate', width: '15%',
+            tooltip: 'Tax Rate is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    placeholder=''
                     disabled={record.enableFlag}
-                    id={`taxRate${record.id}`}
                     name={`taxRate${record.id}`}
                     initialValue={record.taxRate}
                     className={'isNumber-inp'}
@@ -255,10 +232,7 @@ const InvoiceTypeListIndex: React.FC<RouteChildrenProps> = () => {
                 />
         },
         {
-            title: 'Action',
-            width: 100,
-            align: 'center',
-            className: 'cursorStyle',
+            title: 'Action', width: 100, align: 'center', className: 'cursorStyle',
             render: (text, record, index) => {
                 const isAdd = record?.id?.indexOf('ID_') > -1;
                 return (

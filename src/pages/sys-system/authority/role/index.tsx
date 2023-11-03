@@ -209,7 +209,6 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
                 record.parentId ? text :
                     <FormItemInput
                         required
-                        placeholder=''
                         disabled={record.enableFlag}
                         initialValue={record.roleName}
                         id={`roleName_table_${record.id}`}
@@ -225,7 +224,6 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
                 record.parentId ? text :
                     <FormItemInput
                         required
-                        placeholder=''
                         disabled={record.enableFlag}
                         initialValue={record.roleCode}
                         id={`roleCode_table_${record.id}`}
@@ -239,7 +237,6 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 record.parentId ? text :
                     <FormItemInput
-                        placeholder=''
                         initialValue={record.url}
                         disabled={record.enableFlag}
                         id={`remark_table_${record.id}`}
@@ -252,6 +249,7 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
             render: (text: any, record: any, index) =>
                 record.parentId ? text :
                     <FormItemSwitch
+                        disabled={record.enableFlag}
                         initialValue={!!record.readOnly}
                         id={`readOnly_table_${record.id}`}
                         name={`readOnly_table_${record.id}`}

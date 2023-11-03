@@ -114,7 +114,6 @@ const BankIndex: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    id={`bankAddress${record.id}`}
                     name={`bankAddress${record.id}`}
                     initialValue={record.bankAddress}
                     rules={[{required: true, message: 'Address'}]}
@@ -129,7 +128,6 @@ const BankIndex: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    id={`name${record.id}`}
                     name={`name${record.id}`}
                     initialValue={record.name}
                     rules={[{required: true, message: 'Account Name'}]}
@@ -144,7 +142,6 @@ const BankIndex: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    id={`num${record.id}`}
                     name={`num${record.id}`}
                     initialValue={record.num}
                     rules={[{required: true, message: 'Account No.'}]}
@@ -175,7 +172,6 @@ const BankIndex: React.FC<Props> = (props) => {
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    id={`swiftCode${record.id}`}
                     name={`swiftCode${record.id}`}
                     initialValue={record.swiftCode}
                     rules={[{required: true, message: 'Swift Code'}]}

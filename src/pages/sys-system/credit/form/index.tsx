@@ -618,7 +618,6 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                         <Col xs={23} sm={23} md={9} lg={6} xl={5} xxl={4}>
                             <FormItemInput
                                 required
-                                placeholder=''
                                 id={'estimatedAnnualRevenue'}
                                 name={'estimatedAnnualRevenue'}
                                 label={'Annual Revenue'}
@@ -631,7 +630,6 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                         <Col xs={23} sm={23} md={9} lg={6} xl={5} xxl={4}>
                             <FormItemInput
                                 required
-                                placeholder=''
                                 id={'estimatedGrossProfit'}
                                 name={'estimatedGrossProfit'}
                                 label={'Gross Profit'}
@@ -694,7 +692,6 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                             />
                             {/*<FormItemInput
                                 required
-                                placeholder=''
                                 id={'creditLine'}
                                 name={'creditLine'}
                                 label={'Credit Line'}
@@ -714,7 +711,6 @@ const CreditForm: React.FC<RouteChildrenProps> = () => {
                             />
                             {/*<FormItemInput
                                 required
-                                placeholder=''
                                 id={'creditDays'}
                                 name={'creditDays'}
                                 label={'Credit Days'}

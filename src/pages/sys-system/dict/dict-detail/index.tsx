@@ -223,85 +223,62 @@ const DictDetailDetailIndex: React.FC<Props> = (props) => {
 
     const columns: ProColumns<APIDictDetail>[] = [
         {
-            title: 'Name',
-            dataIndex: 'name',
-            width: 200,
-            align: 'left',
-            tooltip: 'Code is required',
-            className: 'ant-columns-required',
+            title: 'Name', dataIndex: 'name', width: 200, align: 'left',
+            tooltip: 'Code is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
                     autoFocus
                     disabled={record.enableFlag}
-                    id={`name${record.id}`}
                     name={`name${record.id}`}
                     initialValue={record.name}
                     onChange={(val: any) => handleChangeDictDetail(index, record, 'name', val)}
                 />
         },
         {
-            title: 'Code',
-            dataIndex: 'relatedCode',
-            width: 200,
-            align: 'center',
+            title: 'Code', dataIndex: 'relatedCode', width: 200, align: 'center',
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     disabled={record.enableFlag}
-                    id={`relatedCode${record.id}`}
                     name={`relatedCode${record.id}`}
                     initialValue={record.relatedCode}
                     onChange={(val: any) => handleChangeDictDetail(index, record, 'relatedCode', val)}
                 />
         },
         {
-            title: 'Value',
-            dataIndex: 'value',
-            width: 200,
-            align: 'center',
-            tooltip: 'Code is required',
-            className: 'ant-columns-required',
+            title: 'Value', dataIndex: 'value', width: 200, align: 'center',
+            tooltip: 'Code is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
                     disabled={record.enableFlag}
-                    id={`value${record.id}`}
                     name={`value${record.id}`}
                     initialValue={record.value}
                     onChange={(val: any) => handleChangeDictDetail(index, record, 'value', val)}
                 />
         },
         {
-            title: 'Type',
-            dataIndex: 'relatedType',
-            width: 200,
-            align: 'center',
+            title: 'Type', dataIndex: 'relatedType', width: 200, align: 'center',
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     disabled={record.enableFlag}
-                    id={`relatedType${record.id}`}
                     name={`relatedType${record.id}`}
                     initialValue={record.relatedType}
                     onChange={(val: any) => handleChangeDictDetail(index, record, 'relatedType', val)}
                 />
         },
         {
-            title: 'Remark',
-            dataIndex: 'remark',
-            align: 'center',
+            title: 'Remark', dataIndex: 'remark', align: 'center',
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     disabled={record.enableFlag}
-                    id={`remark${record.id}`}
                     name={`remark${record.id}`}
                     initialValue={record.remark}
                     onChange={(val: any) => handleChangeDictDetail(index, record, 'remark', val)}
                 />
         },
         {
-            title: 'Action',
-            width: 100,
-            align: 'center',
+            title: 'Action', width: 100, align: 'center',
             render: (text, record, index) => {
                 const isAdd = record?.id?.indexOf('ID_') > -1;
                 return (

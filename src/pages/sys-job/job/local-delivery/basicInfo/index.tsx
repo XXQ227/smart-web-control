@@ -116,7 +116,6 @@ const BasicInfo: React.FC<Props> = (props) => {
             render: (text: any, record, index) =>
                 <FormItemInput
                     required
-                    placeholder={''}
                     name={['0', `description_remark_table_${record.id}`]}
                     initialValue={record.description}
                     rules={[{required: true, message: 'Description'}]}

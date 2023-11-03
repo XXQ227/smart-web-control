@@ -162,7 +162,6 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
             tooltip: 'Name is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    placeholder=''
                     initialValue={record.name}
                     disabled={record.enableFlag}
                     id={`name_table_${record.id}`}
@@ -176,7 +175,6 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
             tooltip: 'Identity is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    placeholder=''
                     disabled={record.enableFlag}
                     initialValue={record.identityCode}
                     name={`identityCode_table_${record.id}`}
@@ -189,7 +187,6 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
             tooltip: 'Path Name is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    placeholder=''
                     required={!record.type}
                     disabled={record.enableFlag}
                     initialValue={record.pathName}
@@ -203,7 +200,6 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
             tooltip: 'Url is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    placeholder=''
                     required={!record.type}
                     disabled={record.enableFlag}
                     initialValue={record.pathUrl}
@@ -217,7 +213,6 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
             tooltip: 'Icon is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    placeholder=''
                     required={!record.type}
                     initialValue={record.icon}
                     disabled={record.enableFlag}
@@ -254,7 +249,6 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
             title: 'Redirect', dataIndex: 'redirect', align: 'left', width: 80,
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    placeholder=''
                     disabled={record.enableFlag}
                     initialValue={record.redirect}
                     name={`redirect_table_${record.id}`}
@@ -265,7 +259,6 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
             title: 'Redirect Path', dataIndex: 'redirectPath', align: 'left', width: 120,
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    placeholder=''
                     disabled={record.enableFlag}
                     initialValue={record.redirectPath}
                     name={`redirectPath_table_${record.id}`}

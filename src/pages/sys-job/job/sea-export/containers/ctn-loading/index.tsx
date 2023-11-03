@@ -315,7 +315,6 @@ const CTNLoading: React.FC<Props> = (props) => {
             render: (text: any, record, index) =>
                 <FormItemInput
                     required
-                    placeholder={''}
                     initialValue={text}
                     name={`CTNNum_table_${record.id}`}
                     rules={[{required: true, message: 'Container No.'}]}
@@ -326,7 +325,6 @@ const CTNLoading: React.FC<Props> = (props) => {
             title: 'Seal No.', dataIndex: "sealNum", width: '15%', className: "textCenter",
             render: (text: any, record, index) =>
                 <FormItemInput
-                    placeholder={''}
                     initialValue={text}
                     name={`SealNum_table_${record.id}`}
                     onChange={(val: any) => onChange(index, record.id, 'sealNum', val)}
@@ -337,7 +335,6 @@ const CTNLoading: React.FC<Props> = (props) => {
             render: (text: any, record, index) =>
                 <FormItemInput
                     required
-                    placeholder={''}
                     initialValue={text}
                     name={`qty_table_${record.id}`}
                     rules={[{required: true, message: 'QTY'}]}
@@ -349,7 +346,6 @@ const CTNLoading: React.FC<Props> = (props) => {
             render: (text: any, record, index) =>
                 <FormItemInput
                     required
-                    placeholder={''}
                     initialValue={text}
                     name={`grossWeight_table_${record.id}`}
                     rules={[{required: true, message: 'G.W.'}]}
@@ -361,7 +357,6 @@ const CTNLoading: React.FC<Props> = (props) => {
             render: (text: any, record, index) =>
                 <FormItemInput
                     required
-                    placeholder={''}
                     initialValue={text}
                     name={`measurement_table_${record.id}`}
                     rules={[{required: true, message: 'Meas.'}]}
@@ -372,7 +367,6 @@ const CTNLoading: React.FC<Props> = (props) => {
             title: 'VGM (kg)', dataIndex: "vgm", width: '10%', className: "textRight",
             render: (text: any, record, index) =>
                 <FormItemInput
-                    placeholder={''}
                     initialValue={text}
                     name={`vgm_table_${record.id}`}
                     onChange={(val: any) => onChange(index, record.id, 'vgm', val)}
@@ -387,10 +381,10 @@ const CTNLoading: React.FC<Props> = (props) => {
                 >
                     <SearchModal
                         qty={20}
-                        title={'Packaging Methods'}
                         modalWidth={500}
-                        text={record.packagingMethodName}
                         query={{SystemID: 4}}
+                        title={'Packaging Methods'}
+                        text={record.packagingMethodName}
                         url={"/apiLocal/MCommon/GetPKGTypeByStr"}
                         handleChangeData={(val: any, option: any) => onChange(index, record.id, 'packagingMethodId', val, option)}
                     />
@@ -424,7 +418,6 @@ const CTNLoading: React.FC<Props> = (props) => {
                 title: 'Yard Container No.', dataIndex: "yardContainerNum", className: "textCenter",
                 render: (text: any, record, index) =>
                     <FormItemInput
-                        placeholder=''
                         initialValue={text}
                         name={`yardContainerNum_table_${record.id}`}
                         onChange={(val: any) => onChange(index, record.id, 'yardContainerNum', val)}
@@ -435,7 +428,6 @@ const CTNLoading: React.FC<Props> = (props) => {
             title: 'Tare Weight',   dataIndex: "TareWeight", width: '10%', className: "textRight",
             render: (text: any, record, index) =>
                 <FormItemInput
-                    placeholder={''}
                     initialValue={text}
                     name={`TareWeight_table_${record.id}`}
                     onChange={(val: any) => onChange(index, record.id, 'tareWeight', val)}

@@ -170,16 +170,11 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
     // TODO: 列表
     const columns: ProColumns<APIDict>[] = [
         {
-            title: 'Name',
-            dataIndex: 'name',
-            align: 'left',
-            width: 300,
-            tooltip: 'Name is required',
-            className: 'ant-columns-required',
+            title: 'Name', dataIndex: 'name', align: 'left', width: 300,
+            tooltip: 'Name is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    id={`name${record.id}`}
                     name={`name${record.id}`}
                     initialValue={record.name}
                     disabled={record.enableFlag}
@@ -188,17 +183,12 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                 />
         },
         {
-            title: 'Code',
-            dataIndex: 'code',
-            align: 'left',
-            width: 300,
+            title: 'Code', dataIndex: 'code', align: 'left', width: 300,
             // TODO: 如果是必填字段，回下下面两个
-            tooltip: 'Code is required',
-            className: 'ant-columns-required',
+            tooltip: 'Code is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
                 <FormItemInput
                     required
-                    id={`code${record.id}`}
                     name={`code${record.id}`}
                     initialValue={record.code}
                     disabled={record.enableFlag}
@@ -207,12 +197,9 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                 />
         },
         {
-            title: 'Remark',
-            dataIndex: 'remark',
-            align: 'left',
+            title: 'Remark', dataIndex: 'remark', align: 'left',
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    id={`remark${record.id}`}
                     name={`remark${record.id}`}
                     initialValue={record.remark}
                     disabled={record.enableFlag}
@@ -220,10 +207,7 @@ const DictTypeIndex: React.FC<RouteChildrenProps> = () => {
                 />
         },
         {
-            title: 'Action',
-            width: 120,
-            align: 'center',
-            className: 'cursorStyle',
+            title: 'Action', width: 120, align: 'center', className: 'cursorStyle',
             render: (text, record, index) => {
                 const isAdd = record?.id?.indexOf('ID_') > -1;
                 return (

@@ -87,7 +87,6 @@ const ContainerLayout: React.FC<Props> = (props) => {
             render: (text: any, record, index) =>
                 <FormItemInput
                     required
-                    placeholder=''
                     initialValue={record.qty}
                     name={['0', `qty_ctn_table_${record.id}`]}
                     rules={[{required: true, message: 'QTY'}, {pattern: /^[0-9]*$/, message: 'Only integer numbers can be entered'}]}
@@ -113,7 +112,6 @@ const ContainerLayout: React.FC<Props> = (props) => {
             dataIndex: 'owner',
             render: (text: any, record, index) =>
                 <FormItemInput
-                    placeholder=''
                     initialValue={text}
                     name={['0', `owner_ctn_table_${record.id}`]}
                     onChange={(e) => onChange(index, record.id, 'owner', e)}
@@ -124,7 +122,6 @@ const ContainerLayout: React.FC<Props> = (props) => {
             dataIndex: 'remark',
             render: (text: any, record, index) =>
                 <FormItemInput
-                    placeholder=''
                     initialValue={text}
                     name={['0', `Remark_ctn_table_${record.id}`]}
                     onChange={(e) => onChange(index, record.id, 'remark', e)}

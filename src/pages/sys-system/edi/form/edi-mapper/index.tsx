@@ -88,40 +88,28 @@ const EDIMapperIndex: React.FC<Props> = (props) => {
     const columns: ProColumns<APICGTemp>[] = [
     // const columns: ColumnsType<APICGTemp> = [
         {
-            title: 'Code',
-            dataIndex: 'code',
-            align: 'left',
-            width: '40%',
+            title: 'Code', dataIndex: 'code', align: 'left', width: '40%',
             render: (text: any, record: any, index: number) =>
                 <FormItemInput
-                    placeholder=''
                     required={true}
                     autoFocus={true}
-                    id={`code${record.id}`}
                     name={`code${record.id}`}
                     initialValue={record.code}
                     onChange={(val: any) => handleRowChange(index, record, 'code', val)}
                 />
         },
         {
-            title: 'EDI Code',
-            dataIndex: 'ediCode',
-            align: 'center',
-            width: '40%',
+            title: 'EDI Code', dataIndex: 'ediCode', align: 'center', width: '40%',
             render: (text: any, record: any, index) =>
                 <FormItemInput
-                    placeholder=''
                     required={true}
-                    id={`ediCode${record.id}`}
                     name={`ediCode${record.id}`}
                     initialValue={record.ediCode}
                     onChange={(val: any) => handleRowChange(index, record, 'ediCode', val)}
                 />
         },
         {
-            title: 'Action',
-            width: '10%',
-            align: 'center',
+            title: 'Action', width: '10%', align: 'center',
             render: (text, record, index) =>
                 <Popconfirm
                     onConfirm={() => handleRowChange(index, record, 'deleteFlag')}
