@@ -126,10 +126,10 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
     const handleAddAuth = () => {
         const addDataObj: any = {
             id: ID_STRING(), isChange: true,
-            name: '', url: '', pathName: '', pathUrl: authInfoVO.pathUrl + '/',
-            icon: 'icon-', identityCode: '', type: false, enableFlag: false,
+            name: '', url: '', pathName: '', pathUrl: authInfoVO.pathUrl + '/', type: false,
+            enableFlag: 0, identityCode: authInfoVO.identityCode + '_', icon: 'icon-',  parentId: authInfoVO.id || '',
             // TODO: parentId：上一层的 id；parentIds：上一层的 parentIds + 上一层自己的 id
-            parentId: authInfoVO.id || '', parentIds: (authInfoVO.parentIds || '') + authInfoVO.id
+            parentIds: (authInfoVO.parentIds || '') + (authInfoVO.parentIds ? ',' : '') + authInfoVO.id
         };
         setChildAuthFunc(0,0, addDataObj);
     }
@@ -168,7 +168,8 @@ const AuthResourceForm: React.FC<RouteChildrenProps> = () => {
                 // TODO: 保存、添加 公共参数
                 const params: any = {
                     ...record, level: location.pathname.indexOf('/level2/') > -1 ? 3 : 2,
-                    type: record.type ? 2 : 1, sort: 1, parentId: record.parentId || authInfoVO.id || '',
+                    enableFlag: record.enableFlag ? 1 : 0, type: record.type ? 2 : 1, sort: 1,
+                    parentId: record.parentId || authInfoVO.id || '',
                     parentIds: record.parentIds || ((authInfoVO.parentIds || '') + authInfoVO.id) || ''
                 };
                 // TODO: 添加

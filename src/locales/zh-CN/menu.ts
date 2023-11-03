@@ -35,11 +35,11 @@ export default {
   'menu.bill.audit.job': 'Job',
   'menu.bill.audit.invoice': 'Invoice',
   // TODO: job
-  'menu.cargo': 'Job',
-  'menu.cargo.job': 'Job',
-  'menu.cargo.job-list': 'Job Index',
-  'menu.cargo.job.job-info': 'Job Info',
-  'menu.cargo.job.job-charge': 'Job Charge',
+  'menu.job': 'Job',
+  'menu.job.job': 'Job',
+  'menu.job.job-list': 'Job Index',
+  'menu.job.job.job-info': 'Job Info',
+  'menu.job.job.job-charge': 'Job Charge',
   // TODO: base
   'menu.system': 'System',
   'menu.system.cv_center': 'CV',

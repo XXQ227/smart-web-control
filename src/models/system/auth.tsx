@@ -1,7 +1,7 @@
 import {useCallback} from "react";
 import {
     addAuthResourceAPI, deleteAuthResourceAPI, editAuthResourceAPI, queryAuthResourceTreeAPI,
-    queryRoleAPI, addRoleAPI, deleteRoleAPI, editRoleAPI, iamUserOrganizationConvertAPI,
+    queryRoleAPI, addRoleAPI, deleteRoleAPI, editRoleAPI, iamUserOrganizationConvertAPI, operateRoleAPI,
 } from '@/services/smart/system/auth'
 import {getChildrenListData} from '@/utils/units'
 
@@ -62,6 +62,11 @@ export default () => {
         return await deleteRoleAPI(params);
     }, []);
 
+    /** 删除 权限  */
+    const operateRole = useCallback(async (params: APIRole) => {
+        return await operateRoleAPI(params);
+    }, []);
+
     /** 切换公司组织  */
     const iamUserOrganizationConvert = useCallback(async (params: APIRole) => {
         return await iamUserOrganizationConvertAPI(params);
@@ -79,6 +84,7 @@ export default () => {
         addRole,
         editRole,
         deleteRole,
+        operateRole,
 
         iamUserOrganizationConvert,
     }

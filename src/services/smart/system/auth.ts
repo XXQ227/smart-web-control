@@ -63,6 +63,14 @@ export async function deleteRoleAPI(body: APISystem.Role) {
   });
 }
 
+/** delete authResource */
+export async function operateRoleAPI(body: APISystem.Role) {
+  return request(`/apiBase/role/operateRole`, {
+    method: 'POST',
+    body
+  });
+}
+
 /** 切换公司组织 */
 export async function iamUserOrganizationConvertAPI(body: any) {
   return request(`/apiAuth/iamUserOrganizationConvert/`, {

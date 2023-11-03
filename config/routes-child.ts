@@ -15,7 +15,7 @@ const MICRO_APP_CARGO = (microApp: string) => ({
 
 // TODO: 货代路由
 const job_route = {
-    name: 'cargo',
+    name: 'job',
     icon: 'icon-job-ship',
     path: '/job',
     routes: [

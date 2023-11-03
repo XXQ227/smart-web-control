@@ -169,7 +169,6 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         return menuData;
     }
 
-
     return {
         iconfontUrl: icon_font_url,
         // TODO: 顶部右侧
@@ -177,7 +176,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         title: 'EHK',
         // TODO: 水印
         waterMarkProps: {
-            content: initialState?.userInfo?.DisplayName,
+            content: initialState?.userInfo?.chineseName,
         },
         // TODO: 历史上工具
         rightContentRender: () => <RightContent/>,

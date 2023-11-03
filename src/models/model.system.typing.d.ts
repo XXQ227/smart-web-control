@@ -702,11 +702,11 @@ declare namespace APISystem {
     };
     type Role = {
         id: string; // TODO: 主键ID
-        roleName?: string; // TODO: 角色名称
+        roleName: string; // TODO: 角色名称
         roleCode?: string; // TODO: 角色编码
         remark?: string; // TODO: 备注信息
         enableFlag?: string; // TODO: 启用标识
-        readOnly?: number; // TODO: 只读标识
+        readOnly?: boolean; // TODO: 只读标识
         deleteFlag?: string; // TODO: 删除标识
         createUserId?: string; // TODO: 创建人ID
         createUserName?: string; // TODO: 创建人名称

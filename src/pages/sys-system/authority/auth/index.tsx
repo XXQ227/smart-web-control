@@ -1,15 +1,16 @@
 import React, {Fragment, useState} from 'react';
 import type {RouteChildrenProps} from 'react-router';
-import type { ProColumns} from '@ant-design/pro-components';
+import type {ProColumns} from '@ant-design/pro-components';
 import {PageContainer, ProCard, ProTable} from '@ant-design/pro-components'
 import {useModel} from 'umi';
 import {Button, Form, Input, message, Popconfirm} from 'antd'
 import {DeleteOutlined, PlusOutlined, SaveOutlined} from '@ant-design/icons'
 import ls from 'lodash'
-import {IconFont, getFormErrorMsg, ID_STRING, getChildrenListData} from '@/utils/units'
+import {getChildrenListData, getFormErrorMsg, IconFont, ID_STRING} from '@/utils/units'
 import {history} from '@@/core/history'
 import DividerCustomize from '@/components/Divider'
 import FormItemInput from '@/components/FormItemComponents/FormItemInput'
+import FormItemSwitch from '@/components/FormItemComponents/FormItemSwitch'
 
 const {Search} = Input;
 
@@ -91,7 +92,10 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
                 let result: API.Result;
                 const newData: APIAuthResource[] = ls.cloneDeep(AuthResourceListVO);
                 // TODO: 保存、添加 公共参数
-                const params: any = {name: record.name, icon: record.icon, url: record.url, level: 1, type: 1, sort: 1};
+                const params: any = {
+                    ...record, level: 1,
+                    enableFlag: record.enableFlag ? 1 : 0, type: 1, sort: 1,
+                };
                 // TODO: 添加
                 if (state === 'add') {
                     result = await addAuthResource(params);
@@ -154,52 +158,119 @@ const AuthResourceIndex: React.FC<RouteChildrenProps> = () => {
 
     const columns: ProColumns<APIAuthResource>[] = [
         {
-            title: 'Name', dataIndex: 'name', align: 'left', width: 200,
+            title: 'Name', dataIndex: 'name', align: 'left',
             tooltip: 'Name is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                record.parentId ? text :
-                    <FormItemInput
-                        required
-                        placeholder=''
-                        id={`name${record.id}`}
-                        name={`name${record.id}`}
-                        initialValue={record.name}
-                        disabled={record.enableFlag}
-                        rules={[{required: true, message: 'Name'}]}
-                        onChange={(val: any) => handleChangeAuthResource(index, record, 'name', val)}
-                    />
+                <FormItemInput
+                    placeholder=''
+                    initialValue={record.name}
+                    disabled={record.enableFlag}
+                    id={`name_table_${record.id}`}
+                    name={`name_table_${record.id}`}
+                    rules={[{required: true, message: 'Name'}]}
+                    onChange={(val: any) => handleChangeAuthResource(index, record, 'name', val)}
+                />
         },
         {
-            title: 'Icon', dataIndex: 'icon', align: 'left',
-            tooltip: 'Icon is required', className: 'ant-columns-required',
+            title: 'Identity', dataIndex: 'identityCode', align: 'left', width: 120,
+            tooltip: 'Identity is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                record.parentId ? text :
-                    <FormItemInput
-                        required
-                        placeholder=''
-                        id={`icon${record.id}`}
-                        name={`icon${record.id}`}
-                        initialValue={record.name}
-                        disabled={record.enableFlag}
-                        rules={[{required: true, message: 'Icon'}]}
-                        onChange={(val: any) => handleChangeAuthResource(index, record, 'icon', val)}
-                    />
+                <FormItemInput
+                    placeholder=''
+                    disabled={record.enableFlag}
+                    initialValue={record.identityCode}
+                    name={`identityCode_table_${record.id}`}
+                    rules={[{required: true, message: 'Identity'}]}
+                    onChange={(val: any) => handleChangeAuthResource(index, record, 'identityCode', val)}
+                />
         },
         {
-            title: 'Url', dataIndex: 'url', align: 'left',
+            title: 'Path Name', dataIndex: 'pathName', align: 'left', width: 150,
+            tooltip: 'Path Name is required', className: 'ant-columns-required',
+            render: (text: any, record: any, index) =>
+                <FormItemInput
+                    placeholder=''
+                    required={!record.type}
+                    disabled={record.enableFlag}
+                    initialValue={record.pathName}
+                    name={`pathName_table_${record.id}`}
+                    rules={[{required: !record.type, message: 'Path Name'}]}
+                    onChange={(val: any) => handleChangeAuthResource(index, record, 'pathName', val)}
+                />
+        },
+        {
+            title: 'Url', dataIndex: 'pathUrl', align: 'left', width: 200,
             tooltip: 'Url is required', className: 'ant-columns-required',
             render: (text: any, record: any, index) =>
-                record.parentId ? text :
-                    <FormItemInput
-                        required
-                        placeholder=''
-                        id={`url${record.id}`}
-                        name={`url${record.id}`}
-                        initialValue={record.url}
-                        disabled={record.enableFlag}
-                        rules={[{required: true, message: 'Url'}]}
-                        onChange={(val: any) => handleChangeAuthResource(index, record, 'url', val)}
-                    />
+                <FormItemInput
+                    placeholder=''
+                    required={!record.type}
+                    disabled={record.enableFlag}
+                    initialValue={record.pathUrl}
+                    name={`pathUrl_table_${record.id}`}
+                    rules={[{required: !record.type, message: 'Url'}]}
+                    onChange={(val: any) => handleChangeAuthResource(index, record, 'pathUrl', val)}
+                />
+        },
+        {
+            title: 'Icon', dataIndex: 'icon', align: 'left', width: 200,
+            tooltip: 'Icon is required', className: 'ant-columns-required',
+            render: (text: any, record: any, index) =>
+                <FormItemInput
+                    placeholder=''
+                    required={!record.type}
+                    initialValue={record.icon}
+                    disabled={record.enableFlag}
+                    name={`icon_table_${record.id}`}
+                    rules={[{required: !record.type, message: 'Icon'}]}
+                    onChange={(val: any) => handleChangeAuthResource(index, record, 'icon', val)}
+                />
+        },
+        {
+            title: 'Hidden Menu', dataIndex: 'hideInMenu', align: 'center', width: 110,
+            render: (text: any, record: any, index) =>
+                <FormItemSwitch
+                    checkedChildren="Yes"
+                    unCheckedChildren="No"
+                    disabled={record.enableFlag}
+                    initialValue={!!record.hideInMenu}
+                    name={`hideInMenu_table_${record.id}`}
+                    onChange={(val: any) => handleChangeAuthResource(index, record, 'hideInMenu', val)}
+                />
+        },
+        {
+            title: 'Operate Auth', dataIndex: 'type', align: 'center', width: 110,
+            render: (text: any, record: any, index) =>
+                <FormItemSwitch
+                    checkedChildren="Yes"
+                    unCheckedChildren="No"
+                    initialValue={record.type}
+                    disabled={record.enableFlag}
+                    name={`type_table_${record.id}`}
+                    onChange={(val: any) => handleChangeAuthResource(index, record, 'type', val)}
+                />
+        },
+        {
+            title: 'Redirect', dataIndex: 'redirect', align: 'left', width: 80,
+            render: (text: any, record: any, index) =>
+                <FormItemInput
+                    placeholder=''
+                    disabled={record.enableFlag}
+                    initialValue={record.redirect}
+                    name={`redirect_table_${record.id}`}
+                    onChange={(val: any) => handleChangeAuthResource(index, record, 'redirect', val)}
+                />
+        },
+        {
+            title: 'Redirect Path', dataIndex: 'redirectPath', align: 'left', width: 120,
+            render: (text: any, record: any, index) =>
+                <FormItemInput
+                    placeholder=''
+                    disabled={record.enableFlag}
+                    initialValue={record.redirectPath}
+                    name={`redirectPath_table_${record.id}`}
+                    onChange={(val: any) => handleChangeAuthResource(index, record, 'redirectPath', val)}
+                />
         },
         {
             title: 'Action', width: 100, align: 'center',

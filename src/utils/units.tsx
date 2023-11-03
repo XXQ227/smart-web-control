@@ -998,9 +998,30 @@ export function getChildrenListData (data: any[]) {
     let result: any[] = [];
     if (data?.length > 0) {
         result = data.map((x: any)=> {
+            x.type = x.type === 2;
             if (x.children?.length > 0) {
-                x.children.map((child: any)=> child.type = child.type === 2)
                 x.children = getChildrenListData(x.children);
+            } else {
+                delete x.children;
+            }
+            return x;
+        })
+    }
+    return result;
+}
+
+
+export function funcTransferTreeData (data: any[]) {
+    let result: any[] = [];
+    if (data?.length > 0) {
+        result = data.map((x: any)=> {
+            // TODO: Tree 组件需要用的字段
+            x.key = x.identityCode;
+            // x.key = x.id;
+            x.title = x.name;
+            x.disableCheckbox = x.type === 1;
+            if (x.children?.length > 0) {
+                x.children = funcTransferTreeData(x.children);
             } else {
                 delete x.children;
             }
