@@ -152,14 +152,14 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
             // TODO: 删除当前行，更新本地数据
             newData.splice(index, 1);
         } else {
-            params.enableFlag = !record.enableFlag;
+            params.operate = !record.enableFlag;
             result = await operateRole(params);
 
         }
         if (result.success) {
             message.success('Success!');
             if (state === 'enableFlag') {
-                record.enableFlag = params.enableFlag;
+                record.enableFlag = params.operate;
                 newData.splice(index, 1, record);
             }
             // TODO: 冻结成功后，当能行不能编辑，或者解冻成功后，当前行可编辑
