@@ -1,6 +1,8 @@
 import {useCallback, useState} from "react";
 import {
-    queryBranchCurrencyCommonAPI, queryDepartmentCommonAPI,
+    queryBranchCurrencyCommonAPI,
+    queryDepartmentCommonAPI,
+    queryBankNumCommonAPI,
     queryDictCommonAPI, queryDictDetailCommonAPI, queryInvoiceTypeCommonAPI
 } from '@/services/smart/common'
 import {queryAccountPeriodCommonAPI, queryStartAccountPeriodInfoAPI} from '@/services/smart/system/account'
@@ -23,6 +25,7 @@ export default () => {
     const [InvoTypeList, setInvoTypeList] = useState([]);
     const [BranchCurrency, setBranchCurrency] = useState([]);
     const [funcCurrencyName, setFuncCurrencyName] = useState('');
+    const [bankAccountList, setBankAccountList] = useState([]);
 
     // TODO: 获取字典数据
     const queryDictCommon = useCallback(async (params: {dictCodes: any}) => {
@@ -145,7 +148,10 @@ export default () => {
         }
     }, []);
 
-    // TODO: 获取字典详情(通用接口)
+    // TODO: 查询部门通用列表
+    // POST /base/web/department/queryDepartmentCommon
+    // API ID:91943884
+    // API URL:https://app.apifox.com/link/project/2684231/apis/api-91943884
     const queryDepartmentCommon = useCallback(async (params: any) => {
         // TODO: 请求后台 API
         const response = await queryDepartmentCommonAPI(params);
@@ -153,6 +159,20 @@ export default () => {
         if (response.success) {
             setDivisionList(response.data || []);
         }
+    }, []);
+
+    // TODO: 查询银行账户信息
+    // POST /base/web/bankAccount/queryBankNumCommon
+    // API ID:121211594
+    // API URL:https://app.apifox.com/link/project/2684231/apis/api-121211594
+    const queryBankNumCommon = useCallback(async (params: {branchId: any, bankCurrencyName: string}) => {
+        // TODO: 请求后台 API
+        const response = await queryBankNumCommonAPI(params);
+        if (!response) return;
+        if (response.success) {
+            setBankAccountList(response?.data?.branchCurrencies || [])
+        }
+        return response;
     }, []);
 
     return {
@@ -177,5 +197,7 @@ export default () => {
         funcCurrencyName,
         queryDepartmentCommon,
         DivisionList,
+        queryBankNumCommon,
+        bankAccountList,
     }
 }

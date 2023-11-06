@@ -34,9 +34,17 @@ export async function queryBranchCurrencyCommonAPI(body: any) {
   });
 }
 
-/** 查询公司币种通用列表 */
+/** 查询部门通用列表 */
 export async function queryDepartmentCommonAPI(body: any) {
-  return request(`/apiBase/department/queryDepartmentCommon`, {
+    return request(`/apiBase/department/queryDepartmentCommon`, {
+        method: 'POST',
+        body
+    });
+}
+
+/** 查询公司币种通用列表 */
+export async function queryBankNumCommonAPI(body: any) {
+  return request(`/apiBase/bankAccount/queryBankNumCommon`, {
     method: 'POST',
     body
   });
