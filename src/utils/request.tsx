@@ -63,7 +63,7 @@ export function request(url: string, options: any) {
         'Content-Type': 'application/json; charset=utf-8',
         UserID: USER_ID(),
         BranchID: BRANCH_ID(),
-        auth: ACCESS_TOKEN() || 'c4b2b5a133cf428299115262b0120a28',
+        auth: ACCESS_TOKEN() || '9231f37a48964b7292c2d42051c23edb',
         zone: LOCAL_TIME_ZONE(),
         ...newOptions.headers
     };

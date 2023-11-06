@@ -95,7 +95,7 @@ export async function getInitialState(): Promise<{
                     // TODO: 用户
                     {
                         name: 'user', icon: 'icon-user-system',
-                        path: '/system/user', component: './sys-system/user/user-list',
+                        path: '/system/user', component: './sys-system/user',
                     },
                 ],
             },

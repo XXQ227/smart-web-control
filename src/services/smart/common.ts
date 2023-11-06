@@ -18,7 +18,6 @@ export async function queryDictDetailCommonAPI(body: any) {
   });
 }
 
-
 /** 获取字典详情通用接口 */
 export async function queryInvoiceTypeCommonAPI(body: any) {
   return request(`/apiBase/invoiceType/queryInvoiceTypeCommon`, {
@@ -30,6 +29,14 @@ export async function queryInvoiceTypeCommonAPI(body: any) {
 /** 查询公司币种通用列表 */
 export async function queryBranchCurrencyCommonAPI(body: any) {
   return request(`/apiBase/branch/queryBranchCurrencyCommon`, {
+    method: 'POST',
+    body
+  });
+}
+
+/** 查询公司币种通用列表 */
+export async function queryDepartmentCommonAPI(body: any) {
+  return request(`/apiBase/department/queryDepartmentCommon`, {
     method: 'POST',
     body
   });

@@ -404,7 +404,7 @@ const routesJSON = [
                 name: 'user',
                 icon: 'icon-user-system',
                 path: '/system/user',
-                component: './sys-system/user/user-list',
+                component: './sys-system/user',
             },
             // TODO: edi
             {

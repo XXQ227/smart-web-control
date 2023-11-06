@@ -294,11 +294,6 @@ const manager_route = {
             name: 'charge_quotation_info', icon: 'icon-charge-quotation',
             path: '/system/charge-quotation/form/:id', component: './sys-system/charge-quotation/form',
         },
-        // TODO: 部门
-        {
-            name: 'department_list', icon: 'icon-department-manager',
-            path: '/system/department', component: './sys-system/department',
-        },
         {
             hideInMenu: true,   // 隐藏不显示
             name: 'department_form', icon: 'icon-department-manager',
@@ -311,10 +306,15 @@ const manager_route = {
             name: 'project_info', icon: 'icon-project',
             path: '/system/project/form/:id', component: './sys-system/project/form',
         },
-        // TODO: 用户
-        {name: 'user', icon: 'icon-user-manager', path: '/system/user', component: './sys-system/user/user-list',},
         // TODO: edi
         {name: 'edi', icon: 'icon-EDI', path: '/system/edi/list', component: './sys-system/edi',},
+        // TODO: 部门
+        {
+            name: 'department_list', icon: 'icon-department-manager',
+            path: '/system/department', component: './sys-system/department',
+        },
+        // TODO: 用户
+        {name: 'user', icon: 'icon-user-manager', path: '/system/user', component: './sys-system/user',},
         {
             hideInMenu: true,   // 隐藏不显示
             name: 'edi_info', icon: 'icon-EDI', path: '/system/edi/form/:id', component: './sys-system/edi/form',

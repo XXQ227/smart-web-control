@@ -591,25 +591,26 @@ declare namespace APISystem {
     };
 
     type User = {
-        id: number | string | null; // TODO:
-        nameDisplay: string; // TODO: 用户名
-        nameLogin: string; // TODO: 用户登录名
-        leaderId: string; // TODO: 用户领导 id
-        leaderName: string; // TODO: 用户领导 name
-        branchId: number | null; // TODO: 用户公司 id
-        departmentId: number | null; // TODO: 部门 id
-        oracleId: string; // TODO: oracle id
-        password: string; // TODO: 密码
-        salesFlag: number | null; // TODO: 销售标识：1-是0-不是
-        codeSino: string; // TODO: 中外运编号
-        codeF8: string; // TODO: F8唯一编码
-        enableFlag: number | null; // TODO: 启用标识
-        deleteFlag: number | null; // TODO: 删除标识
-        createUserId: number | null; // TODO: 创建人ID
-        createUserName?: string; // TODO: 创建人名称
-        createTime?: string; // TODO: 创建时间
-        updateUserId: number | null; // TODO: 修改人ID
-        updateUserName?: string; // TODO: 修改人名称
+        id?: number | string | null; // TODO:
+        nameDisplay?: string; // TODO: 用户名
+        nameLogin?: string; // TODO?: 用户登录名
+        leaderId?: string; // TODO?: 用户领导 id
+        leaderName?: string; // TODO?: 用户领导 name
+        branchId?: number | null; // TODO?: 用户公司 id
+        departmentId?: number | null; // TODO?: 部门 id
+        defaultDepartmentName?: string; // TODO?: 部门 id
+        oracleId?: string; // TODO?: oracle id
+        password?: string; // TODO?: 密码
+        salesFlag?: number | null; // TODO?: 销售标识：1-是0-不是
+        codeSino?: string; // TODO?: 中外运编号
+        codeF8?: string; // TODO?: F8唯一编码
+        enableFlag?: number | null; // TODO?: 启用标识
+        deleteFlag?: number | null; // TODO?: 删除标识
+        createUserId?: number | null; // TODO?: 创建人ID
+        createUserName?: string; // TODO?: 创建人名称
+        createTime?: string; // TODO?: 创建时间
+        updateUserId?: number | null; // TODO?: 修改人ID
+        updateUserName?: string; // TODO?: 修改人名称
         updateTime?: string; // TODO: 修改时间
     };
     //endregion

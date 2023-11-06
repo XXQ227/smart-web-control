@@ -56,12 +56,12 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
         setLoading(true);
         // TODO: 分页查询【参数页】
         const result: API.Result = await queryRole(params);
-        setLoading(false);
         if (result.success) {
             setRoleListVO(result.data);
         } else {
             message.error(result.message);
         }
+        setLoading(false);
         return result;
     }
 

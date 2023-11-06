@@ -1,6 +1,6 @@
 import {useCallback, useState} from "react";
 import {
-    queryBranchCurrencyCommonAPI,
+    queryBranchCurrencyCommonAPI, queryDepartmentCommonAPI,
     queryDictCommonAPI, queryDictDetailCommonAPI, queryInvoiceTypeCommonAPI
 } from '@/services/smart/common'
 import {queryAccountPeriodCommonAPI, queryStartAccountPeriodInfoAPI} from '@/services/smart/system/account'
@@ -11,6 +11,7 @@ import {getTransferDate} from '@/utils/units'
 export default () => {
     // TODO: Service 数据 ==> 用于费用模板处
     const [ServicesList, setServicesList] = useState([]);
+    const [DivisionList, setDivisionList] = useState([]);
     const [PurposeOfCallList, setPurposeOfCallList] = useState([]);
     const [PayMethodList, setPayMethodList] = useState([]);
     const [CurrencyList, setCurrencyList] = useState<any[]>([]);
@@ -144,6 +145,16 @@ export default () => {
         }
     }, []);
 
+    // TODO: 获取字典详情(通用接口)
+    const queryDepartmentCommon = useCallback(async (params: any) => {
+        // TODO: 请求后台 API
+        const response = await queryDepartmentCommonAPI(params);
+        if (!response) return;
+        if (response.success) {
+            setDivisionList(response.data || []);
+        }
+    }, []);
+
     return {
         queryDictCommon,
         queryDictCommonReturn,
@@ -164,5 +175,7 @@ export default () => {
         queryBranchCurrencyCommon,
         BranchCurrency,
         funcCurrencyName,
+        queryDepartmentCommon,
+        DivisionList,
     }
 }
