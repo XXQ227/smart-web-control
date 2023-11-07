@@ -42,7 +42,7 @@ export async function queryDepartmentCommonAPI(body: any) {
     });
 }
 
-/** 查询公司币种通用列表 */
+/** 查询银行账户信息 */
 export async function queryBankNumCommonAPI(body: any) {
   return request(`/apiBase/bankAccount/queryBankNumCommon`, {
     method: 'POST',

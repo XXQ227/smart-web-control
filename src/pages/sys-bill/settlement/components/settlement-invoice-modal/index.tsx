@@ -7,34 +7,33 @@ import {formatNumToMoney, getFormErrorMsg, keepDecimal, rowGrid} from '@/utils/u
 import InputEditNumber from '@/components/InputEditNumber'
 import moment from 'moment'
 import '../../style.less'
-import {BRANCH_ID} from '@/utils/auths'
+import {BRANCH_ID, USER_ID, USER_NAME} from '@/utils/auths'
+import SearchTable from "@/components/SearchTable";
+import type {ColumnsType} from "antd/es/table";
 
 interface Props {
-    type: number;       // TODO: 核销类型:1-收款核销 2-付款核销 3-预付款核销
-    hidden?: boolean;   // TODO: 是否隐藏操作按钮
-    settleInfo: any;    // TODO: 核销发票数据
+    status: string;       // TODO: 状态: 1-未核销 2-部分核销 3-全部核销
+    type: number;        // TODO: 核销类型:1-收款核销 2-付款核销 3-预付款核销
+    hidden?: boolean;    // TODO: 是否隐藏操作按钮
+    settleInfo: any;     // TODO: 核销发票数据
     settleChargeList: any[];
+    handleUpdateData: () => void,   // TODO: 核销成功后更新数据
 }
 
 const SettlementInvoiceModal: React.FC<Props> = (props) => {
     const [form] = Form.useForm();
-    const {type, hidden, settleInfo, settleChargeList} = props;
+    const {status, type, hidden, settleInfo, settleChargeList} = props;
 
     const initSettleInfo: any = {
         method: 2, serverAmount: 0, discountAmount: 0, serverAmountStr: '0', discountAmountStr: '0',
         accountingDate: moment(new Date()).format('YYYY-MM-DD'),    // TODO: 默认为当前时间
+        offsetInvoiceNum: '', transactionReferenceNumber: '',
     };
-
-    // TODO: 银行信息
-    const bankList = [
-        {value: '123456415354', label: '中国银行'},
-        {value: '214520456845', label: '渣打银行'},
-        {value: '524486532545', label: '汇丰银行'},
-    ];
 
     // TODO: 核销列表数据
     const [open, setOpen] = useState<boolean>(false);
     const [dataSource, setDataSource] = useState<any[]>([]);
+    const [bankAccountNumList, setBankAccountNumList] = useState<any[]>([]);
 
     const [settleInfoState, setSettleInfoState] = useState<any>(initSettleInfo);
 
@@ -44,10 +43,40 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
         invoiceWriteOff: res.invoiceWriteOff,
     }));
 
+    const {
+        queryBankNumCommon, bankAccountList
+    } = useModel('common', (res: any)=> ({
+        queryBankNumCommon: res.queryBankNumCommon,
+        bankAccountList: res.bankAccountList,
+    }));
+
     useEffect(() => {
+        if (settleInfoState.method === 1 && bankAccountNumList?.length === 0) {
+            handleQueryBankNumCommon().then(r => console.log(r));
+        }
+    }, [settleInfoState])
 
-    }, [])
-
+    /**
+     * @Description: TODO: 查询银行账户信息
+     * @author LLS
+     * @date 2023/9/14
+     * @returns
+     */
+    async function handleQueryBankNumCommon() {
+        try {
+            const result: any = await queryBankNumCommon({branchId: BRANCH_ID(), bankCurrencyName: settleInfo.billCurrencyName});
+            if (result?.success) {
+                result.data = result?.data?.map((item: any) => ({
+                    label: item.bankName + ' ' + item.bankNum, value: item.id
+                }))
+                setBankAccountNumList(result?.data);
+            } else {
+                message.error(result?.message);
+            }
+        } catch (e) {
+            message.error(e);
+        }
+    }
 
     /**
      * @Description: TODO: 核销弹框显示状态操作
@@ -56,11 +85,16 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
      * @param state     弹框状态
      * @returns
      */
-    function handleModalOP(state: boolean) {
+    async function handleModalOP(state: boolean) {
         if (state) {
+            console.log(settleChargeList);
             setDataSource(settleChargeList);
         } else {
+            // 清空控件数据
+            form.resetFields();
             setDataSource([]);
+            setSettleInfoState(initSettleInfo);
+            setBankAccountNumList([]);
         }
         setOpen(state);
     }
@@ -100,14 +134,18 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
             newSettleInfo[filedName] = val;
             // TODO: 编辑核销信息：需要联动处理其他数据时
             let setFiledObj: any = {[filedName]: val};
-            if (filedName === 'method' && val === 2) {
-                setFiledObj = {
-                    ...setFiledObj,
-                    bankAccount: 2,
-                    serverAmount: 0.00,
+            if (filedName === 'method') {
+                if (val === 2) {
+                    setFiledObj = {
+                        ...setFiledObj,
+                        bankAccountId: null,
+                        transactionReferenceNumber: null,
+                        serverAmount: 0.00,
+                    }
                 }
-            } else if (filedName === 'bankAccount') {
-                newSettleInfo.bankName = option.bankName;
+            } else if (filedName === 'bankAccountId') {
+                newSettleInfo.bankName = bankAccountList?.find((item: any) => item.id === val)?.bankName || '';
+                newSettleInfo.bankAccount = bankAccountList?.find((item: any) => item.id === val)?.bankNum || '';
             }
             if (['amount', 'serverAmount', 'discountAmount'].includes(filedName)) {
                 newSettleInfo[`${filedName}Str`] = formatNumToMoney(val);
@@ -164,33 +202,49 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
 
                     const method: number = [2, 3].includes(val.method) ? val.method : 1;
                     let bankName: string = '';
+                    let bankAccount: string = '';
                     // TODO: 【method === 1】：银行核销
                     if (method === 1) {
-                        bankName = bankList.find((item: any) => item.value === val.method)?.label || '';
+                        bankName = bankAccountList.find((item: any) => item.id === val.bankAccountId)?.bankName || '';
+                        bankAccount = bankAccountList.find((item: any) => item.id === val.bankAccountId)?.bankNum || '';
                     }
 
+                    console.log(val);
                     // TODO: 整理参数
                     const params: any = {
                         ...val,
                         method,         // TODO: 核销方式（到账类型）: * 1-银行核销 * 2-现金核销 * 3-Offset Settle(0金额代收代付核销)
-                        bankName,       // TODO: 银行名
+                        bankName,       // TODO: 银行名称
+                        bankAccount,    // TODO: 银行账号
                         invoiceList,
                         status: isPartial ? 2 : 3,  // TODO: 核销状态 1-未核销 2-部份核销 3-全部核销
                         accountingDate: moment(val.accountingDate).format('YYYY-MM-DD'),
-                        type, branchId: BRANCH_ID(),
+                        type,
+                        branchId: BRANCH_ID(),
                         businessId: settleInfo.businessId,
                         businessName: settleInfo.businessName,
+                        currencyName: settleInfo.billCurrencyName,
+                        enableFlag: 0,
+                        deleteFlag: 0,
+                        createUserId: USER_ID(),
+                        createUserName: USER_NAME(),
+                        createTime: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+                        updateUserId: USER_ID(),
+                        updateUserName: USER_NAME(),
+                        updateTime: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
                     };
 
                     const result: API.Result = await invoiceWriteOff(params);
                     if (result.success) {
-                        message.success('success!');
-                        handleModalOP(false);
+                        message.success('Success!!!');
+                        await handleModalOP(false);
+                        // TODO: 核销成功后更新数据
+                        props.handleUpdateData();
                     } else {
                         message.error(result.message);
                     }
                 } catch (e) {
-                    message.error(e)
+                    message.error(e);
                 }
             })
             .catch((errorInfo) => {
@@ -202,18 +256,18 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
     const columns: ProColumns[] = [
         {title: 'Job No.', dataIndex: 'jobCode', align: 'center'},
         {title: 'Invoice No.', dataIndex: 'invoiceNum', align: 'center'},
-        // {title: 'Issue By', dataIndex: 'issueBy', width: 150, align: 'center'},
-        // {title: 'Issue Date', dataIndex: 'issueDate', width: 100, align: 'center', valueType: 'date'},
-        {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 100, align: 'center'},
-        {title: 'Bill Amount', dataIndex: 'billInTaxAmount', width: 100, align: 'right',
+        {title: 'Issue By', dataIndex: 'invoiceCreateUserName', width: 100, align: 'center'},
+        {title: 'Issue Date', dataIndex: 'invoiceCreateTime', width: 100, align: 'center', valueType: 'date'},
+        // {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 120, align: 'center'},
+        {title: 'Bill Amount', dataIndex: 'billInTaxAmount', width: status === '1' ? 120 : 100, align: 'right',
             render: (text) => {return formatNumToMoney(text)},
         },
-        {title: 'Unsettled AMT', dataIndex: 'unWriteOffBillInTaxAmount', width: 110, align: 'right',
+        {title: 'Unsettled AMT', dataIndex: 'unWriteOffBillInTaxAmount', width: status === '1' ? 120 : 100, align: 'right',
             render: (text) => {return formatNumToMoney(text)},
         },
-        {title: 'Ratio', dataIndex: 'ratio', width: 80, align: 'right'},
+        {title: 'Ratio', dataIndex: 'ratio', width: status === '1' ? 80 : 70, align: 'right'},
         {
-            title: 'Settle AMT', dataIndex: 'amount', width: 125, align: 'center',
+            title: 'Settle AMT', dataIndex: 'amount', width: 120, align: 'center',
             tooltip: 'Settle AMT is required; \n\r Must be a number with at most two decimal places.',
             render: (text, record: any, index) => (
                 <Form.Item
@@ -245,6 +299,9 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
             )
         },
     ];
+    if (status === '1') {
+        columns.splice(5, 1,);
+    }
 
     // TODO: 加总核销金额
     let settleTotal: number = 0, billInTaxTotal: number = 0;
@@ -255,11 +312,39 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
         billInTaxTotal = keepDecimal(billInTaxTotal);
     }
 
+    /**
+     * @Description: TODO: 动态改值
+     * @author LLS
+     * @date 2023/11/1
+     * @param filedName
+     * @param offsetInvoiceNum
+     * @param option
+     * @returns
+     */
+    const handleChange = (filedName: string, offsetInvoiceNum: any, option: any) => {
+        /*const setValueObj: any = {termsParam: {[filedName]: val}};
+        switch (filedName) {
+            case 'offsetInvoiceNum':
+                setValueObj.termsParam.payableAtNameEn = option?.name;
+                break;
+            default: break;
+        }
+        form.setFieldsValue(setValueObj);*/
+        // props.handleProFormValueChange(setValueObj);
+    }
+
+    const offsetInvoiceColumns: ColumnsType<any> = [
+        { title: 'InvoiceNum', align: 'center', dataIndex: 'invoiceNum'},
+        { title: 'Bill CURR', align: 'center', width: 120, dataIndex: 'currencyName'},
+        { title: 'Bill AMT', align: 'center', width: 260, dataIndex: 'billInTaxAmount'},
+        { title: 'Issue Date', dataIndex: 'createTime', width: 260, align: 'center'},
+    ];
+
     return (
         <Fragment>
             <Button
                 type={'primary'} onClick={() => handleModalOP(true)} hidden={hidden}
-                disabled={settleChargeList?.length === 0 || settleInfo.businessLineState || settleInfo.billCurrencyNameState}
+                disabled={settleChargeList?.length === 0 || settleInfo.businessLineState || settleInfo.billCurrencyNameState || settleInfo.businessNameState}
             >Settle</Button>
 
             <Modal
@@ -280,49 +365,63 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                     </Row>
                     <hr/>
                     <Row gutter={rowGrid} style={{marginTop: 24}}>
-                        <Col span={9}>
+                        <Col span={[1, 2].includes(settleInfoState.method) ? 7 : 8}>
                             <ProFormSelect
                                 placeholder={''}
                                 // TODO: 核销方式（到账类型）:1-银行核销2-现金核销3-offset settle(0金额代收代付核销)
                                 name="method"
-                                label={'Account Type'}
-                                rules={[{required: true, message: 'Account Type'}]}
+                                label={'Settle Type'}
+                                rules={[{required: true, message: 'Settle Type'}]}
                                 fieldProps={{
                                     onSelect: (val: any) => handleRowChange('method', val, 0)
                                 }}
                                 options={[
-                                    // ...bankList,
                                     {label: 'Bank 銀行', value: 1},
                                     {label: 'CASH 現金', value: 2},
                                     {label: 'Hedge Offset 對沖抵消', value: 3},
                                 ]}
                             />
                         </Col>
-                        <Col span={9}>
+                        <Col span={16} hidden={[1, 2].includes(settleInfoState.method)}>
+                            {/* TODO: 被抵消的发票号 */}
+                            <Form.Item
+                                label={'Offset Invoice Num'}
+                                name={'offsetInvoiceNum'}
+                                rules={[{required: settleInfoState.method === 3, message: 'Offset Invoice Num'}]}
+                            >
+                                <SearchTable
+                                    qty={10}
+                                    rowKey={'invoiceId'}
+                                    modalWidth={900}
+                                    showHeader={true}
+                                    title={'Offset Invoice Num'}
+                                    // selectedIDs={}
+                                    text={settleInfoState?.offsetInvoiceNum}
+                                    customizeColumns={offsetInvoiceColumns}
+                                    url={"/apiAccounting/writeOff/queryWriteOffInvoices"}
+                                    query={{invoiceType: type, businessId: settleInfo.businessId, currencyName: settleInfo.billCurrencyName}}
+                                    name={'offsetInvoiceNum'}
+                                    handleChangeData={(val: any, option: any) => handleChange('offsetInvoiceNum', val, option)}
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={11} hidden={[2, 3].includes(settleInfoState.method)}>
                             <ProFormSelect
                                 placeholder={''}
-                                name="bankAccount"
-                                label={'Account No.'}
-                                rules={[{required: settleInfoState.method !== 2, message: 'Account No.'}]}
+                                name="bankAccountId"
+                                label={'Bank Account Number'}
+                                rules={[{required: settleInfoState.method === 1, message: 'Bank Account Number'}]}
                                 fieldProps={{
-                                    onSelect: (val: any, option: any) => handleRowChange('bankAccount', val, 0, option)
+                                    onSelect: (val: any, option: any) => handleRowChange('bankAccountId', val, 0, option)
                                 }}
-                                options={[
+                                /*options={[
                                     {label: '012-601-0-011722-3', value: 1, bankName: ''},
                                     {label: 'NONE', value: 2}
-                                ]}
+                                ]}*/
+                                options={bankAccountNumList}
                             />
                         </Col>
                         <Col span={6}>
-                            <ProFormDatePicker
-                                placeholder={''}
-                                name={'accountingDate'} label={'Accounting Date'}
-                                rules={[{required: true, message: 'Accounting Date'}]}
-                            />
-                        </Col>
-                    </Row>
-                    <Row gutter={rowGrid}>
-                        <Col span={9}>
                             {/*// TODO: 到账/核销 金额*/}
                             <Form.Item
                                 name={'amount'} label={'Amount'}
@@ -341,7 +440,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                                 />
                             </Form.Item>
                         </Col>
-                        <Col span={9}>
+                        <Col span={6} hidden={[2, 3].includes(settleInfoState.method)}>
                             {/*// TODO: 银行手续费*/}
                             <Form.Item
                                 name={'serverAmount'} label={'Bank Commission'}
@@ -358,16 +457,7 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                                 />
                             </Form.Item>
                         </Col>
-                        {/*<Col span={6}>
-                            <ProFormSelect
-                                placeholder={''}
-                                name="currencyName"
-                                label={'Settle Currency'}
-                                style={{minWidth: 150}}
-                                options={['CNY', 'HKD', 'USD']}
-                            />
-                        </Col>*/}
-                        <Col span={9}>
+                        <Col span={6} hidden={settleInfoState.method === 3}>
                             {/*// TODO: 折扣金额*/}
                             <Form.Item
                                 name={'discountAmount'} label={'Discount Amount'}
@@ -384,11 +474,44 @@ const SettlementInvoiceModal: React.FC<Props> = (props) => {
                                 />
                             </Form.Item>
                         </Col>
-                        <Col span={9}>
+                        <Col span={7} hidden={[2, 3].includes(settleInfoState.method)}>
                             {/*// TODO: 流水号*/}
-                            <ProFormText name={'serialNum'} label={'Transaction Reference Number'} placeholder={''}/>
+                            <Form.Item
+                                name={'transactionReferenceNumber'}
+                                label={'Transaction Reference Number'}
+                                rules={[
+                                    {required: settleInfoState.method === 1, message: 'Transaction Reference Number'},
+                                   /*{
+                                        pattern: /^\d+(\.\d{1,2})?$/,
+                                        message: 'Must be a number with at most two decimal places.'
+                                    }*/
+                                ]}
+                            >
+                                <InputEditNumber
+                                    value={settleInfoState.transactionReferenceNumber}
+                                    handleChangeData={(val) => handleRowChange('transactionReferenceNumber', val)}
+                                />
+                            </Form.Item>
+                        </Col>
+                        <Col span={5}>
+                            <ProFormDatePicker
+                                placeholder={''}
+                                name={'accountingDate'} label={'Accounting Date'}
+                                rules={[{required: true, message: 'Accounting Date'}]}
+                            />
                         </Col>
                     </Row>
+                    {/*<Row gutter={rowGrid}>
+                       <Col span={6}>
+                            <ProFormSelect
+                                placeholder={''}
+                                name="currencyName"
+                                label={'Settle Currency'}
+                                style={{minWidth: 150}}
+                                options={['CNY', 'HKD', 'USD']}
+                            />
+                        </Col>
+                    </Row>*/}
                     <Row gutter={rowGrid} style={{marginBottom: 24}}>
                         <Col span={24}>
                             <ProTable

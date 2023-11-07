@@ -28,6 +28,8 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
         { tab: 'Job', key: 'job', closable: false, },
         { tab: 'Charge', key: 'charge', closable: false, },
         { tab: 'Refund-Charge', key: 'refund-charge', closable: false, },
+        { tab: 'Air Import', key: 'air-import', closable: false },
+        { tab: 'Air Export', key: 'air-export', closable: false },
         /*{ tab: 'Sea (Export)', key: 'sea-export', closable: false },
         { tab: 'Sea (Import)', key: 'sea-import', closable: false },
         { tab: 'Local Delivery', key: 'local-delivery', closable: false },*/
@@ -247,6 +249,8 @@ const TicketForm: React.FC<RouteChildrenProps> = (props) => {
             {activeKey === 'refund-charge' && !isCreate && <ChargeRefund {...baseProps}/>}
             {activeKey === 'sea-import' && <SeaImport {...baseProps}/>}
             {activeKey === 'sea-export' && <SeaExport {...baseProps} headerInfo={headerInfo}/>}
+            {activeKey === 'air-import' && <SeaImport {...baseProps}/>}
+            {activeKey === 'air-export' && <SeaExport {...baseProps} headerInfo={headerInfo}/>}
             {activeKey === 'foreignVehicle' && <LocalDelivery {...baseProps} type='foreignVehicle'/>}
             {activeKey === 'land-forwarder' && <LocalDelivery {...baseProps} type='land-forwarder'/>}
             {activeKey === 'local-delivery' && <LocalDelivery {...baseProps} type='local-delivery'/>}

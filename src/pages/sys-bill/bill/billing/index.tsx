@@ -13,7 +13,7 @@ import {useModel} from '@@/plugin-model/useModel'
 import {BUSINESS_LINE_ENUM} from '@/utils/enum'
 import {history} from 'umi'
 import {BUSINESS_LINE} from '@/utils/common-data'
-import {BRANCH_ID} from '@/utils/auths'
+import {BRANCH_ID, CURRENCY_LIST} from '@/utils/auths'
 
 const initSearchData: any = {
     jobNumber: "",
@@ -23,7 +23,7 @@ const initSearchData: any = {
     customerOrPayingAgentId: "",
     department: '',
     sales: "",
-    billCurrencyName: ["All"],
+    billCurrencyName: "All",
 };
 
 // TODO: 默认为 true；当首次加载数据后，改为 【false】
@@ -85,7 +85,8 @@ const Billing: React.FC<RouteChildrenProps> = () => {
         businessLineState: false, customerState: false, exRateState: false, billCurrencyNameState: false
     });
 
-    const currencyList = ['CNY', 'HKD', 'USD'];
+    // const currencyList = CURRENCY_LIST()?.map((item: any) => item?.currencyName) || [];
+    const currencyList = [];
 
     useEffect(() => {
 
@@ -100,6 +101,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
      */
     async function handleQueryPendingInvoicingCharges(val?: any) {
         if (!loading) setLoading(true);
+        console.log(val)
 
         try {
             // TODO: 获取用户数据
@@ -109,7 +111,7 @@ const Billing: React.FC<RouteChildrenProps> = () => {
             if (typeof val.chargeType === 'number')params.chargeType = [val.chargeType];
             // TODO: 查所有币种时，把 ['ALL'] 改成所有 币种的集合
             if (params.jobBusinessLine === 0) params.jobBusinessLine = [];
-            if (params.billCurrencyName[0] === 'All') params.billCurrencyName = currencyList;
+            params.billCurrencyName = params?.billCurrencyName === 'All' ? currencyList : [params.billCurrencyName];
 
             const result: API.Result = await queryPendingInvoicingCharges(params);
             if (result.success) {

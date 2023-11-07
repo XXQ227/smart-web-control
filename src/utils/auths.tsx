@@ -30,7 +30,7 @@ export function setSystemMes(tokenResult: any = initUserInfo) {
     sessionStorage.setItem('refresh_token', tokenResult.refresh_token);
 
     // TODO: 用户信息
-    const userInfo: any = tokenResult.userInfo || {};
+    const userInfo: any = tokenResult?.userInfo || {};
     sessionStorage.setItem('user_info', userInfo);
     sessionStorage.setItem('userId', userInfo.id);
     sessionStorage.setItem('user_name', userInfo.chineseName);
@@ -41,13 +41,13 @@ export function setSystemMes(tokenResult: any = initUserInfo) {
     sessionStorage.setItem('branch', userInfo.branch);                      // TODO: 公司信息
 
     const branchInfo: any = userInfo?.branch || {};
-    sessionStorage.setItem('branchId', branchInfo.id);
+    sessionStorage.setItem('branchId', userInfo.branchId);
     sessionStorage.setItem('branch_address', branchInfo.address);
     sessionStorage.setItem('branch_contactName', branchInfo.contactName);       // TODO: 公司法人
     sessionStorage.setItem('funcCurrencyName', branchInfo.funcCurrencyName);   // TODO: 本位币
     sessionStorage.setItem('iamCompanyOrgCode', tokenResult.iamCompanyOrgCode);   // TODO: 公司 IAM 号
     // TODO: 公司币种数据集合
-    sessionStorage.setItem('currencyList', JSON.stringify(userInfo.exrateEntity));
+    sessionStorage.setItem('currencyList', JSON.stringify(userInfo?.exrateEntity));
 }
 
 //region TODO: token 信息
@@ -84,6 +84,6 @@ export const USER_NAME = () => sessionStorage.getItem('user_name');
 export const SINOTRANS_NO = () => sessionStorage.getItem('user_code');
 
 // TODO: 币种集合
-export const CURRENCY_LIST = () => JSON.parse(sessionStorage.getItem('currencyList') || '');
+export const CURRENCY_LIST = () => JSON.parse(sessionStorage?.getItem('currencyList') || '');
 //  endregion
 
