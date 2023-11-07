@@ -14,7 +14,7 @@ import {
 import '@/global.less'
 import type {TabsProps} from 'antd';
 import {Button, Col, Divider, Form, message, Popconfirm, Row, Spin, Tabs} from 'antd'
-import {DeleteOutlined, EditOutlined, FormOutlined, SearchOutlined} from '@ant-design/icons'
+import {DeleteOutlined, FormOutlined, SearchOutlined} from '@ant-design/icons'
 import {formatNumToMoney, getFormErrorMsg, keepDecimal, rowGrid} from '@/utils/units'
 import SearchProFormSelect from '@/components/SearchProFormSelect'
 import {useModel} from '@@/plugin-model/useModel'
@@ -66,10 +66,7 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
 
     const [settleId, setSettleId] = useState<string>('');
     const [settleOpen, setSettleOpen] = useState<boolean>(false);
-
-    useEffect(() => {
-
-    }, [])
+    const [initLoading, setInitLoading] = useState<boolean>(true);
 
     /**
      * @Description: TODO: 搜索订单数据
@@ -81,7 +78,7 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
      */
     async function handleQueryUnWriteOffInvoice(val?: any, tabKey?: string) {
         if (!loading) setLoading(true);
-        // if (initLoading) initLoading = false;
+        if (initLoading) setInitLoading(false);
         try {
             val.state = tabKey || searchInfo.state;
             const params: any = {...initSearchData, ...val};
@@ -154,6 +151,8 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
                     item.unWriteOffCharges = item.unWriteOffCharges.map((cg: any) =>
                         ({
                             ...cg, invoiceNum: item.num,
+                            invoiceCreateUserName: item.createUserName,
+                            invoiceCreateTime: item.createTime,
                             amount, amountStr: formatNumToMoney(amount),
                             unWriteOffBillInTaxAmount: item.unWriteOffBillInTaxAmount,
                             ratio: keepDecimal(amount / item.billInTaxAmount) + '%',
@@ -204,19 +203,19 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
     }
 
     let columns: ProColumns[] = [
-        {title: 'Type', dataIndex: 'type', width: 65, align: 'center',},
-        {title: 'B-Line', dataIndex: 'bline', width: 65, align: 'center',},
-        {title: 'Invoice No.', dataIndex: 'num', width: '15%', align: 'center',},
+        {title: 'Type', dataIndex: 'type', width: '6%', align: 'center',},
+        {title: 'B-Line', dataIndex: 'bline', width: '6%', align: 'center',},
+        {title: 'Invoice No.', dataIndex: 'num', width: '16%', align: 'center',},
         {title: 'Job No.', dataIndex: 'jobCodes', key: 'jobCode', width: '11%', align: 'center',},
         {title: 'Payer / Vendor', dataIndex: 'businessName',},
-        {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: 95, align: 'center'},
+        {title: 'Bill CURR', dataIndex: 'billCurrencyName', width: searchInfo.state === '2' ? '6%' : '10%', align: 'center'},
         // TODO: valueType 数据显示格式，
         //  详情见 https://procomponents.ant.design/components/schema#%E8%87%AA%E5%AE%9A%E4%B9%89-valuetype
-        {title: 'Bill AMT', dataIndex: 'billInTaxAmount', width: '10%', align: 'right',
+        {title: 'Bill AMT', dataIndex: 'billInTaxAmount', width: searchInfo.state === '2' ? '7%' : '10%', align: 'right',
             render: (text) => {return formatNumToMoney(text)},
         },
-        {title: 'Issue By', dataIndex: 'createUserName', width: 95, align: 'center'},
-        {title: 'Issue Date', dataIndex: 'createTime', width: 95, align: 'center', valueType: 'date'},
+        {title: 'Issue By', dataIndex: 'createUserName', width: '8%', align: 'center'},
+        {title: 'Issue Date', dataIndex: 'createTime', width: '9%', align: 'center', valueType: 'date'},
         // {title: 'Completion Date', dataIndex: 'completionDate', width: 100, align: 'center', valueType: 'date'},
     ];
 
@@ -226,30 +225,35 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
         addItem = [
             {
                 title: 'Unsettled AMT', dataIndex: 'unWriteOffBillInTaxAmount',
-                width: 110, align: 'center', className: 'ant-table-col-yellow'
+                width: '8%', align: 'right', className: 'ant-table-col-yellow',
+                render: (text: any) => {return formatNumToMoney(text)},
             },
             {
-                title: 'Ratio', dataIndex: 'ratio', tooltip: 'The ratio of Settled',
-                width: 70, align: 'center', className: 'ant-table-col-yellow'
+                title: 'Ratio', dataIndex: 'ratio', /*tooltip: 'The ratio of Settled',*/
+                width: '6%', align: 'center', className: 'ant-table-col-yellow'
             },
         ];
         columns.splice(7, 0, ...addItem);
     } else if (searchInfo.state === '3') {
         columns = [
-            {title: 'Type', dataIndex: 'type', width: 60, align: 'center',},
-            {title: 'B-Line', dataIndex: 'bline', width: 60, align: 'center',},
-            {title: 'Transaction Ref Number', dataIndex: 'num', width: 170, align: 'center',},
-            {title: 'Invoice No.', dataIndex: 'invoiceNums', width: 170, align: 'center',},
+            {title: 'Type', dataIndex: 'type', width: '5%', align: 'center',},
+            {title: 'B-Line', dataIndex: 'bline', width: '6%', align: 'center',},
+            {title: 'Transaction Ref Number', dataIndex: 'num', width: '13%', align: 'center',},
+            {title: 'Invoice No.', dataIndex: 'invoiceNums', width: '11%', align: 'center',},
             {title: 'Payer / Vendor', dataIndex: 'settlementPartyName',},
-            {title: 'Bill AMT', dataIndex: 'invoiceAmount', width: 100, align: 'center',},
-            {title: 'Invoice AMT', dataIndex: 'unWriteOffBillInTaxAmount', width: 100, align: 'center',},
-            {
-                title: 'Settled AMT', dataIndex: 'settledAmount', width: 100,
-                align: 'center', className: 'ant-table-col-yellow'
+            {title: 'Bill CURR', dataIndex: 'currencyName', width: '5%', align: 'center'},
+            {title: 'Invoice AMT', dataIndex: 'invoiceAmount', width: '9%', align: 'right',
+                render: (text: any) => {return formatNumToMoney(text)},
             },
-            {title: 'Settled', dataIndex: 'settleState', width: 90, align: 'center',},
-            {title: 'Settle by', dataIndex: 'settleBy', width: 150, align: 'center'},
-            {title: 'Settle Date', dataIndex: 'settleTime', width: 100, align: 'center', valueType: 'date'},
+            // {title: 'Invoice AMT', dataIndex: 'unWriteOffBillInTaxAmount', width: 100, align: 'center',},
+            {
+                title: 'Settled AMT', dataIndex: 'settledAmount', width: '9%',
+                align: 'center', className: 'ant-table-col-yellow',
+                render: (text: any) => {return formatNumToMoney(text)},
+            },
+            {title: 'All Settled', dataIndex: 'settleState', width: '5%', align: 'center',},
+            {title: 'Settle by', dataIndex: 'createUserName', width: '8%', align: 'center'},
+            {title: 'Settle Date', dataIndex: 'createTime', width: '9%', align: 'center', valueType: 'date'},
             {
                 title: 'Action', align: 'center', width: 60,
                 render: (_: any, record: any, index: number) =>
@@ -282,7 +286,7 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
         onChange: handleTableRowChange,
     };
 
-    const tabItemChildren= (keys?: string) => (
+    const tabItemChildren = (keys?: string) => (
         <ProTable<any>
             bordered
             rowKey={'id'}
@@ -305,6 +309,18 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
         {key: '2', label: 'Partial Settle', children: tabItemChildren(),},
         {key: '3', label: 'Settle Log', children: tabItemChildren('3'),},
     ];
+
+    /**
+     * @Description: TODO: 核销成功后更新数据
+     * @author LLS
+     * @date 2023/11/3
+     * @returns
+     */
+    const handleUpdateData = () => {
+        let invoiceArr: any[] = dataSource.slice(0);
+        invoiceArr = invoiceArr.filter((item: any) => !selectedKeys.includes(item.id)) || [];
+        setDataSource(invoiceArr);
+    };
 
     return (
         <PageContainer
@@ -334,15 +350,16 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
                             >
                                 <SettlementInvoiceModal
                                     type={type}
+                                    status={searchInfo.state}
                                     settleInfo={settleInfo}
                                     settleChargeList={settleChargeList}
+                                    handleUpdateData={handleUpdateData}
                                 />
                             </FooterToolbar>
                         );
                     },
                 }}
-                request={async (params: any) => handleQueryUnWriteOffInvoice(params)}
-                // request={async (params: any) => initLoading ? handleQueryUnWriteOffInvoice(params) : {}}
+                request={async (params: any) => initLoading ? handleQueryUnWriteOffInvoice(params) : {}}
             >
                 {/* 搜索 */}
                 <ProCard className={'ant-pro-card-search'}>
@@ -366,7 +383,7 @@ const Settlement: React.FC<RouteChildrenProps> = () => {
                                         isShowLabel={true}
                                         id={'businessId'}
                                         name={'businessId'}
-                                        label={"Customer or Paying Agent"}
+                                        label={"Payer & Customer"}
                                         filedValue={'id'} filedLabel={'nameFullEn'}
                                         query={{branchId: BRANCH_ID(), buType: 1}}
                                         url={'/apiBase/businessUnitProperty/queryBusinessUnitPropertyCommon'}

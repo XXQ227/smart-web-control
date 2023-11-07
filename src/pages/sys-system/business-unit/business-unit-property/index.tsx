@@ -381,7 +381,7 @@ const BusinessUnitPropertyListIndex: React.FC<RouteChildrenProps> = (props) => {
                     rowKey={'id'}
                     search={false}
                     options={false}
-                    bordered={true}
+                    bordered
                     loading={loading}
                     columns={columns}
                     params={searchParams}

@@ -1,15 +1,18 @@
 import React, {Fragment, useEffect, useMemo, useState} from 'react';
-import {Input, Modal, Table} from 'antd';
+import {Button, Divider, Input, Modal, Table} from 'antd';
 import {debounce} from 'lodash'
 import {IconFont} from '@/utils/units';
 import {fetchData} from '@/utils/fetch-utils'
 import type {ColumnsType} from 'antd/es/table';
+import {ProColumns} from "@ant-design/pro-components";
 
 interface Props {
     name?: any;
     id?: string;
     // value?: any;             // ID 数据 / 其他字符
     text?: string;           // 显示 【Name】 数据
+    customizeColumns?: ColumnsType<any>;    // 自定义Table表格列的配置
+    selectedIDs?: React.Key[];    // 已选中项
     url: string;    // 搜索地址
     qty: number;    // 搜索条数
     query?: any;     // 搜索参数
@@ -30,8 +33,8 @@ interface Props {
 
 const SearchTable: React.FC<Props> = (props) => {
     const {
-        url, query, qty, filedValue, filedLabel,
-        showLabel,
+        customizeColumns, url, query, qty, filedValue, filedLabel,
+        showLabel, selectedIDs
     } = props;
 
     const [visible, setVisible] = useState<boolean>(false);     // TODO: Modal 隐藏显示开关
@@ -42,6 +45,7 @@ const SearchTable: React.FC<Props> = (props) => {
     const [debounceTimeout, setDebounceTimeout] = useState<number>(100);     // TODO: 防抖动时间
 
     const [activeItem, setActiveItem] = useState(-1);           // TODO: 激活的元素 序号
+    const [selectedRowIDs, setSelectedRowIDs] = useState<React.Key[]>(selectedIDs || []);
 
     // TODO: 接口返回的键值
     const resValue: string = filedValue || 'value';
@@ -109,6 +113,7 @@ const SearchTable: React.FC<Props> = (props) => {
         } else {
             setFetching(true);
             debounceFetcher('');
+            setSelectedRowIDs([]);
         }
         // setSearchVal(searchValue);
         setVisible(!visible);
@@ -126,6 +131,22 @@ const SearchTable: React.FC<Props> = (props) => {
         if (props.handleChangeData) props.handleChangeData(record.code, record);
         // setShowText(record.label);
         // if (props.handleChangeData) props.handleChangeData(record.value, record);
+        handleModal('');
+    }
+
+    /**
+     * @Description: TODO: change 事件
+     * @author XXQ
+     * @date 2023/4/17
+     * @returns
+     */
+    const handleOffsetChange = () => {
+        const selectedData = dataSourceList?.filter((item: any) => selectedRowIDs.includes(item.invoiceId)) || [];
+        const offsetInvoiceNum = selectedData?.map((item: any) => {
+            return item.invoiceNum
+        })
+        setShowText(offsetInvoiceNum.toString());
+        if (props.handleChangeData) props.handleChangeData(selectedRowIDs, selectedData);
         handleModal('');
     }
 
@@ -194,6 +215,16 @@ const SearchTable: React.FC<Props> = (props) => {
         { title: 'Country', dataIndex: 'country', width: 260, align: 'center', className: 'columnsStyle', },
     ];
 
+    // TODO: 多选
+    const rowSelection: any = {
+        // selectedRowIDs,
+        columnWidth: 30,
+        onChange: (selectedRowKeys: React.Key[]) => {
+            console.log(selectedRowKeys);
+            setSelectedRowIDs(selectedRowKeys);
+        },
+    };
+
     return (
         <Fragment>
             {showLabel ? <label style={{display: 'block', marginBottom: 8}}>{props.title}</label> : null}
@@ -211,30 +242,41 @@ const SearchTable: React.FC<Props> = (props) => {
             {
                 !visible ? null :
                     <Modal
-                        footer={null}
+                        // className={'ant-add-modal'}
                         open={visible}
                         title={props.title}
                         onCancel={handleModal}
                         width={props.modalWidth || 550}
-                        className={'ant-modal-search-modal'}
+                        className={customizeColumns ? 'ant-add-modal' : 'ant-modal-search-modal'}
+                        footer={customizeColumns ? [
+                            <Button htmlType={"button"} key="back" onClick={handleModal}>
+                                Cancel
+                            </Button>,
+                            <Button htmlType={"submit"} key="submit" type="primary" onClick={handleOffsetChange} disabled={selectedRowIDs.length === 0}>
+                                Add
+                            </Button>,
+                        ] : null}
                     >
-                        <Input
-                            id={'search-input'}
-                            autoComplete={'off'}
-                            autoFocus={true}
-                            // value={searchVal}
-                            placeholder={'Search'}
-                            onChange={handleChangeInput}
-                            onKeyDown={handleKeyDown}
-                        />
+                        { customizeColumns ? <Divider />
+                            : <Input
+                                id={'search-input'}
+                                autoComplete={'off'}
+                                autoFocus={true}
+                                // value={searchVal}
+                                placeholder={'Search'}
+                                onChange={handleChangeInput}
+                                onKeyDown={handleKeyDown}
+                            /> }
                         <Table
-                            columns={columns}
+                            columns={customizeColumns || columns}
                             loading={fetching}
                             pagination={false}
                             dataSource={dataSourceList}
                             className={'table modal-table'}
                             rowKey={props.rowKey || 'value'}
                             showHeader={props.showHeader || false}
+                            rowSelection={customizeColumns ? rowSelection : false}
+                            locale={{emptyText: "NO DATA"}}
                             rowClassName={(record: any, index) => {
                                 let className = '';
                                 if (activeItem === index) {
@@ -243,7 +285,7 @@ const SearchTable: React.FC<Props> = (props) => {
                                 return className;
                             }}
                             onRow={(record) => {
-                                return {
+                                return customizeColumns ? {} : {
                                     onClick: () => {
                                         handleChange(record)
                                     },

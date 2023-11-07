@@ -170,7 +170,7 @@ export default () => {
         const response = await queryBankNumCommonAPI(params);
         if (!response) return;
         if (response.success) {
-            setBankAccountList(response?.data?.branchCurrencies || [])
+            setBankAccountList(response?.data || [])
         }
         return response;
     }, []);
