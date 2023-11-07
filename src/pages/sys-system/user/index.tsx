@@ -34,8 +34,12 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
         queryUser: res.queryUser, deleteUser: res.deleteUser, operateUser: res.operateUser,
         addUser: res.addUser, editUser: res.editUser,
     }));
-    const {queryDepartmentCommon} = useModel('common', (res: any) => ({
-        queryDepartmentCommon: res.queryDepartmentCommon,
+    // const {queryDepartmentCommon} = useModel('common', (res: any) => ({
+    //     queryDepartmentCommon: res.queryDepartmentCommon,
+    // }));
+
+    const {queryRoleByUser} = useModel('system.auth', (res: any) => ({
+        queryRoleByUser: res.queryRoleByUser,
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
@@ -86,12 +90,19 @@ const UserListIndex: React.FC<RouteChildrenProps> = () => {
      * @returns
      */
     const handleDetail = async (index: number, record: any) => {
-        setLoading(true);
-        setUserInfo(record);
-        form.setFieldsValue(record);
-        setDefaultDepartmentName(record.defaultDepartmentName);
-        setOpen(true); setEditIndex(index);
-        setLoading(false);
+        const result: API.Result = await queryRoleByUser({});
+        if (result.success) {
+            console.log(result);
+            setLoading(true);
+            setUserInfo(record);
+            form.setFieldsValue(record);
+            setDefaultDepartmentName(record.defaultDepartmentName);
+            setOpen(true);
+            setEditIndex(index);
+            setLoading(false);
+        } else {
+            message.error(result.message);
+        }
     }
 
     /**

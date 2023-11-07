@@ -7,6 +7,7 @@ import {DownOutlined} from '@ant-design/icons'
 
 interface Props {
     open: boolean;          // TODO: 弹框显示状态
+    authInfoVO: any;            // TODO: 当前编辑行数据
     authListVO: any[];            // TODO: 当前编辑数据集
     handleCancel: () => void;   // TODO: 关闭弹框
     handleSaveAuth: (val: any) => void;   // TODO: 关闭弹框
@@ -14,14 +15,16 @@ interface Props {
 
 const AuthListTree: React.FC<Props> = (props) => {
 
-    const {open, authListVO, handleCancel} = props;
+    const {open, authInfoVO, authListVO, handleCancel} = props;
     const [form] = Form.useForm();
 
     // TODO: 被选中的权限
-    const [_viewAuthKeys, setViewAuthKeys] = useState<React.Key[]>([]);
-    const [_editAuthKeys, setEditAuthKeys] = useState<React.Key[]>([]);
-    const [checkedAuthKeys, setCheckedAuthKeys] = useState<React.Key[]>([]);
-    const [expandedAuthKeys, setExpandedAuthKeys] = useState<React.Key[]>([]);
+    const [_viewAuthKeys, setViewAuthKeys] = useState<React.Key[]>(authInfoVO.authJson || []);
+    const [_editAuthKeys, setEditAuthKeys] = useState<React.Key[]>(authInfoVO.authJson || []);
+
+    const [checkedAuthKeys, setCheckedAuthKeys] = useState<React.Key[]>(authInfoVO.authJson || []);
+    const [expandedAuthKeys, setExpandedAuthKeys] = useState<React.Key[]>(authInfoVO.authJson || []);
+
 
     /**
      * @Description: TODO: 获取选种的权限列
@@ -46,7 +49,6 @@ const AuthListTree: React.FC<Props> = (props) => {
                 }
             })
         }
-
         return result;
     }
 
@@ -107,8 +109,7 @@ const AuthListTree: React.FC<Props> = (props) => {
         const params = {
             // routeJson: JSON.stringify(newData),
             // authJson: JSON.stringify(_newAuthArr),
-            routeJson: '',
-            authJson: _newAuthArr.toString(),
+            routeJson: [], authJson: _newAuthArr || [],
             authorityIds: _newAuthIdArr,
         }
         props.handleSaveAuth(params);

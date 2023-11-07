@@ -47,6 +47,13 @@ export async function addRoleAPI(body: APISystem.Role) {
     body
   });
 }
+/** 查询角色对应的权限详情 */
+export async function queryRoleInfoAPI(body: APISystem.Role) {
+  return request(`/apiBase/role/queryRoleInfo`, {
+    method: 'POST',
+    body
+  });
+}
 /** edit authResource */
 export async function editRoleAPI(body: APISystem.Role) {
   return request(`/apiBase/role/editRole`, {
@@ -66,6 +73,17 @@ export async function deleteRoleAPI(body: APISystem.Role) {
 /** delete authResource */
 export async function operateRoleAPI(body: APISystem.Role) {
   return request(`/apiBase/role/operateRole`, {
+    method: 'POST',
+    body
+  });
+}
+
+/** 查询用户对应角色和角色列表
+ POST /base/web/role/queryRoleByUser
+ 接口ID：122434839
+ 接口地址：https://app.apifox.com/link/project/2684231/apis/api-122434839 */
+export async function queryRoleByUserAPI(body: APISystem.Role) {
+  return request(`/apiBase/role/queryRoleByUser`, {
     method: 'POST',
     body
   });

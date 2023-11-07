@@ -1,7 +1,16 @@
 import {useCallback} from "react";
 import {
-    addAuthResourceAPI, deleteAuthResourceAPI, editAuthResourceAPI, queryAuthResourceTreeAPI,
-    queryRoleAPI, addRoleAPI, deleteRoleAPI, editRoleAPI, iamUserOrganizationConvertAPI, operateRoleAPI,
+    addAuthResourceAPI,
+    deleteAuthResourceAPI,
+    editAuthResourceAPI,
+    queryAuthResourceTreeAPI,
+    queryRoleAPI,
+    addRoleAPI,
+    deleteRoleAPI,
+    editRoleAPI,
+    iamUserOrganizationConvertAPI,
+    operateRoleAPI,
+    queryRoleInfoAPI, queryRoleByUserAPI,
 } from '@/services/smart/system/auth'
 import {getChildrenListData} from '@/utils/units'
 
@@ -47,9 +56,15 @@ export default () => {
         return response;
     }, []);
 
+
     /** 添加 权限  */
     const addRole = useCallback(async (params: APIRole) => {
         return await addRoleAPI(params);
+    }, []);
+
+    /** 查询角色对应的权限详情 */
+    const queryRoleInfo = useCallback(async (params: APIRole) => {
+        return await queryRoleInfoAPI(params);
     }, []);
 
     /** 编辑 权限  */
@@ -67,6 +82,15 @@ export default () => {
         return await operateRoleAPI(params);
     }, []);
 
+
+    /** 查询用户对应角色和角色列表
+     POST /base/web/role/queryRoleByUser
+     接口ID：122434839
+     接口地址：https://app.apifox.com/link/project/2684231/apis/api-122434839 */
+    const queryRoleByUser = useCallback(async (params: APIRole) => {
+        return await queryRoleByUserAPI(params);
+    }, []);
+
     /** 切换公司组织  */
     const iamUserOrganizationConvert = useCallback(async (params: APIRole) => {
         return await iamUserOrganizationConvertAPI(params);
@@ -80,11 +104,15 @@ export default () => {
         addAuthResource,
         editAuthResource,
         deleteAuthResource,
+
         queryRole,
+        queryRoleInfo,
         addRole,
         editRole,
         deleteRole,
         operateRole,
+
+        queryRoleByUser,
 
         iamUserOrganizationConvert,
     }

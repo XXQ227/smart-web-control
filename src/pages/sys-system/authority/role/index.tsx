@@ -29,18 +29,18 @@ const searchParams: APISearchRole = {
 const RoleIndex: React.FC<RouteChildrenProps> = () => {
     const [form] = Form.useForm();
     const {
-        queryRole, deleteRole, addRole, editRole, operateRole, queryAuthResourceTree
+        queryRole, deleteRole, addRole, editRole, operateRole, queryAuthResourceTree, queryRoleInfo
     } = useModel('system.auth', (res: any) => ({
-        queryRole: res.queryRole, deleteRole: res.deleteRole,
+        queryRole: res.queryRole, queryRoleInfo: res.queryRoleInfo, deleteRole: res.deleteRole,
         addRole: res.addRole, editRole: res.editRole, operateRole: res.operateRole,
         queryAuthResourceTree: res.queryAuthResourceTree,
     }));
 
     const [loading, setLoading] = useState<boolean>(false);
     const [RoleListVO, setRoleListVO] = useState<APIRole[]>([]);
-    const [authInfoVO, setAuthInvoVO] = useState<any>({});
     const [authListVO, setAuthListVO] = useState<any[]>([]);
 
+    // TODO: 编辑角色数据
     const [open, setOpen] = useState<boolean>(false);
     const [opIndex, setOpIndex] = useState<number>(0);
     const [authRecord, setAuthRecord] = useState<any>({});
@@ -180,13 +180,14 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
      */
     const handleDetail = async (index: number, record: any) => {
         const result: API.Result = await queryAuthResourceTree({id: 0});
-        let treeData: DataNode[] = [];
-        if (result.success) {
-            treeData = funcTransferTreeData(result.data);
-            setAuthListVO(treeData);
-            setOpen(true);
+        const resultAuth: API.Result = await queryRoleInfo({id: record.id});
+        if (!result.success || !resultAuth.success) {
+            message.error(result.message || resultAuth.message);
+        } else {
+            setAuthListVO(funcTransferTreeData(result.data));
+            setAuthRecord(resultAuth.data);
             setOpIndex(index);
-            setAuthRecord(record);
+            setOpen(true);
         }
     }
 
@@ -342,7 +343,7 @@ const RoleIndex: React.FC<RouteChildrenProps> = () => {
             {!open ? null : <AuthListTree
                 authListVO={authListVO}
                 handleSaveAuth={handleSaveAuth}
-                open={open} record={authInfoVO}
+                open={open} authInfoVO={authRecord}
                 handleCancel={()=> setOpen(false)}
             />}
         </PageContainer>
